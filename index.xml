@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>牛哥聊技术</title><link>https://lingcoder.com/</link><description>Recent content on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 03 Jan 2023 15:00:00 +0800</lastBuildDate><atom:link href="https://lingcoder.com/index.xml" rel="self" type="application/rss+xml"/><item><title>又见第一篇博客</title><link>https://lingcoder.com/p/first-blog/</link><pubDate>Tue, 03 Jan 2023 15:00:00 +0800</pubDate><guid>https://lingcoder.com/p/first-blog/</guid><description>&lt;img src="https://lingcoder.com/p/first-blog/cover.png" alt="Featured image of post 又见第一篇博客" />&lt;p>2023年元旦归来的第一件事，决定再次把博客搞起来。为什么是“又”呢，因为这样的事情做了不下两次了，每次都以荒废告终。
-希望这次能坚持下去。。。&lt;/p>
+慢慢把以前的文章移过来，希望这次能坚持下去。。。&lt;/p>
 &lt;blockquote>
 &lt;p>纸上得来终觉浅，绝知此事要躬行&lt;/p>
 &lt;/blockquote></description></item><item><title>关于</title><link>https://lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://lingcoder.com/archives/</guid><description/></item><item><title>Git和GitHub使用总结</title><link>https://lingcoder.com/p/git-and-github/</link><pubDate>Tue, 01 Jan 2019 14:13:54 +0800</pubDate><guid>https://lingcoder.com/p/git-and-github/</guid><description>&lt;img src="https://lingcoder.com/p/git-and-github/cover.jpg" alt="Featured image of post Git和GitHub使用总结" />&lt;p>Git的官方网站：&lt;a class="link" href="http://git-scm.com/" target="_blank" rel="noopener"
@@ -899,7 +899,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn tag
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="十二-提交日志规范">十二. 提交日志规范&lt;/h3>
+&lt;/div>&lt;h3 id="十二-日志提交规范参考-angularjs-提交规范">十二. 日志提交规范(参考 Angularjs 提交规范)&lt;/h3>
 &lt;ul>
 &lt;li>
 &lt;p>build: 影响构建系统或外部依赖关系的更改（示例范围：gulp，broccoli，npm）&lt;/p>
@@ -938,6 +938,9 @@
 &lt;p>revert: 特殊情况，当前 commit 用于撤销以前的 commit&lt;/p>
 &lt;/li>
 &lt;/ul>
+&lt;blockquote>
+&lt;p>示例&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -945,11 +948,9 @@
 &lt;/span>&lt;span class="lnt">3
 &lt;/span>&lt;span class="lnt">4
 &lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">docs(core): Update inject error documentation(#123)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">build: update eslint dependencies to v5.32.0 (#47016)
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">fix(router): do not call preload method when not necessary (#47007)
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">feat(language-service): support fix the component missing member (#46764)

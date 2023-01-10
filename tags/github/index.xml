@@ -895,7 +895,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn tag
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="十二-提交日志规范">十二. 提交日志规范&lt;/h3>
+&lt;/div>&lt;h3 id="十二-日志提交规范参考-angularjs-提交规范">十二. 日志提交规范(参考 Angularjs 提交规范)&lt;/h3>
 &lt;ul>
 &lt;li>
 &lt;p>build: 影响构建系统或外部依赖关系的更改（示例范围：gulp，broccoli，npm）&lt;/p>
@@ -934,6 +934,9 @@
 &lt;p>revert: 特殊情况，当前 commit 用于撤销以前的 commit&lt;/p>
 &lt;/li>
 &lt;/ul>
+&lt;blockquote>
+&lt;p>示例&lt;/p>
+&lt;/blockquote>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -941,11 +944,9 @@
 &lt;/span>&lt;span class="lnt">3
 &lt;/span>&lt;span class="lnt">4
 &lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
 &lt;/span>&lt;/code>&lt;/pre>&lt;/td>
 &lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">docs(core): Update inject error documentation(#123)
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">build: update eslint dependencies to v5.32.0 (#47016)
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">fix(router): do not call preload method when not necessary (#47007)
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">feat(language-service): support fix the component missing member (#46764)
