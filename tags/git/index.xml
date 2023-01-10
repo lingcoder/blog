@@ -1,5 +1,963 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on 牛哥聊技术</title><link>https://lingcoder.com/tags/git/</link><description>Recent content in Git on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 03 Jan 2023 15:00:00 +0800</lastBuildDate><atom:link href="https://lingcoder.com/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>又见第一篇博客</title><link>https://lingcoder.com/p/first-blog/</link><pubDate>Tue, 03 Jan 2023 15:00:00 +0800</pubDate><guid>https://lingcoder.com/p/first-blog/</guid><description>&lt;img src="https://lingcoder.com/p/first-blog/cover.png" alt="Featured image of post 又见第一篇博客" />&lt;p>2023年元旦归来的第一件事，决定再次把博客搞起来。为什么是“又”呢，因为这样的事情做了不下两次了，每次都以荒废告终。
-希望这次能坚持下去。。。&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git on 牛哥聊技术</title><link>https://lingcoder.com/tags/git/</link><description>Recent content in Git on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 01 Jan 2019 14:13:54 +0800</lastBuildDate><atom:link href="https://lingcoder.com/tags/git/index.xml" rel="self" type="application/rss+xml"/><item><title>Git和GitHub使用总结</title><link>https://lingcoder.com/p/git-and-github/</link><pubDate>Tue, 01 Jan 2019 14:13:54 +0800</pubDate><guid>https://lingcoder.com/p/git-and-github/</guid><description>&lt;img src="https://lingcoder.com/p/git-and-github/cover.jpg" alt="Featured image of post Git和GitHub使用总结" />&lt;p>Git的官方网站：&lt;a class="link" href="http://git-scm.com/" target="_blank" rel="noopener"
+>http://git-scm.com&lt;/a>&lt;/p>
+&lt;h1 id="git和github使用总结">Git和GitHub使用总结&lt;/h1>
+&lt;h2 id="一git初始化设置">一、GIT初始化设置：&lt;/h2>
+&lt;h3 id="创建密钥">创建密钥&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">ssh‐keygen ‐t rsa ‐C &lt;span class="s2">&amp;#34;lingcoder@gmail.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="远程仓库">远程仓库&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">添加远程origin库关联
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote add origin git@github.com:lingcoder/xxx.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">查看远程仓库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">删除远程origin库的关联
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git remote rm origin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="用户名邮箱配置">用户名邮箱配置&lt;/h3>
 &lt;blockquote>
-&lt;p>纸上得来终觉浅，绝知此事要躬行&lt;/p>
-&lt;/blockquote></description></item></channel></rss>
+&lt;p>全局配置&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl"> git config --global user.name &lt;span class="s2">&amp;#34;lingcoder&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git config --global user.email &lt;span class="s2">&amp;#34;lingcoder@gmail.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git config --list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>项目单独配置（在项目根目录下）&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl"> git config user.name &lt;span class="s2">&amp;#34;lingcoder&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git config user.email &lt;span class="s2">&amp;#34;lingcoder@gmail.com&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git config --list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="设置git默认分支名为-main">设置Git默认分支名为 main&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl"> git config --global init.defaultBranch main
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="创建本地仓库">创建本地仓库&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">git init
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="clone远程仓库">Clone远程仓库&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">git clone 项目地址
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="格式化与空白">格式化与空白&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1. 问题来源：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Windows使用回车和换行两个字符来结束一行，而Mac和Linux只使用换行一个字符
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 换行定义：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CR Carriage-Return的缩写： 回车(CR, ASCII 13, \r)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">LF Line-Feed的缩写，换行(LF, ASCII 10, \n)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">window 采用CRLF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Linux，Mac采用LF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 解决办法：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">(0) Git配置
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Git可以在你提交代码时自动地把行结束符CRLF转换成LF，而在检出代码时把LF转换成CRLF
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">⑴ 在Windows系统上与其他系统协作开发
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 用core.autocrlf来打开此项功能，如果是在Windows系统上，把它设置成true，这样当检出 代码时，LF会被转换成CRLF：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> $ git config --global core.autocrlf true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">⑵ 在Linux或Mac系统上与其他系统协作开发
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Linux或Mac系统使用LF作为行结束符，如果你不想Git在检出代码时进行自动的转换，把core.autocrlf设置成input来告诉Git在提交代码时把CRLF转换成LF，检出时不转换：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> $ git config –-global core.autocrlf input
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">这样在Windows系统上检出的代码会保留CRLF；而在Mac和Linux系统上，以及仓库中保留LF。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">⑶ 团队都是在Windows系统上开发
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 如果在Windows系统上开发程序，且正在开发仅运行在Windows上的项目，可以设置false取消此功能，把回车符记录在库中：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> $ git config –-global core.autocrlf false
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="代理设置">代理设置&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">查看全局代理设置
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global http.proxy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">设置http,https,socket代理 以&lt;span class="sb">`&lt;/span>127.0.0.1:1080&lt;span class="sb">`&lt;/span>为例
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global http.proxy &lt;span class="s1">&amp;#39;http://127.0.0.1:1080&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global https.proxy &lt;span class="s1">&amp;#39;http://127.0.0.1:1080&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global http.proxy &lt;span class="s1">&amp;#39;socks5://127.0.0.1:1080&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global https.proxy &lt;span class="s1">&amp;#39;socks5://127.0.0.1:1080&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">需要代理用户名密码的情况,以http为例
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config http.proxy http://username:password@127.0.0.1:1080
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">忽略SSL证书错误
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global http.sslVerify &lt;span class="nb">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">删除 proxy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global --unset http.proxy
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config --global --unset https.proxy
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="自定义操作">自定义操作&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#让Git显示颜色，会让命令输出看起来更醒目&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config ‐‐global color.ui &lt;span class="nb">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#自定义git命令，以简化&amp;#34;git status&amp;#34;成&amp;#34;git st&amp;#34;为例&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config ‐‐global alias.st status
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#自定义日志颜色&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git config ‐‐global alias.lg &lt;span class="s2">&amp;#34;log ‐‐color ‐‐graph ‐‐pretty=format:&amp;#39;%Cred%h%Creset ‐%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&amp;lt;%an&amp;gt;%Creset&amp;#39; ‐‐abbrev‐commit&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git lg
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="更新单个文件">更新单个文件&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">更新本地
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout -- &lt;span class="s2">&amp;#34;[文件路径]/[文件名]&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">更新远程
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git fetch
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout origin/master -- &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="o">[&lt;/span>文件路径&lt;span class="o">]&lt;/span>/&lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="二git基本操作">二、GIT基本操作&lt;/h2>
+&lt;h3 id="添加到暂存区区">添加到暂存区区&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">表示添加所有内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git add -A
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">表示添加新文件和编辑过的文件不包括删除的文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git add .
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">表示添加编辑或者删除的文件，不包括新添加的文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git add -u
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">强制添加一个被.gitignore文件忽略的文件的版本库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git add ‐f &lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="提交">提交&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">普通提交
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit&lt;span class="sb">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">将本次提交的内容合并到上次提交
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git commit --amend
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="删除">删除&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">从版本库删除某个文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git rm &lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="版本回退">版本回退&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">撤回到某个版本
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reset --hard &lt;span class="o">[&lt;/span>提交ID&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">查看过去的提交历史
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">查看所有的提交历史
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reflog
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="撤销修改">撤销修改&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">让file回到最近一次 &lt;span class="s2">&amp;#34;git commit&amp;#34;&lt;/span> 或 &lt;span class="s2">&amp;#34;git add&amp;#34;&lt;/span> 时的状态
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout -- &lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">可以把暂存区的file修改撤销掉（unstage），重新放回工作区
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reset HEAD &lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="三git分支操作">三、GIT分支操作&lt;/h2>
+&lt;h3 id="创建分支">创建分支&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">创建一个dev分支并且切换到dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout ‐b dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">创建dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">切换到dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">创建远程origin的dev分支到本地
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git checkout ‐b dev origin/dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">查看分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>分支命名规范： issue-100 bug修复分支 feature-sms sms功能分支&lt;/p>
+&lt;h3 id="分支合并">分支合并&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">合并dev到当前的分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git merge dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">合并分支，并且禁用 Fast forward
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git merge ‐‐no‐ff ‐m &lt;span class="s2">&amp;#34;merge with no‐ff&amp;#34;&lt;/span> dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Fast forward模式： Git在merge时生成一个新的commit，以便于从分支历史上就可以看出合并分支信息&lt;/p>
+&lt;h3 id="分支推送">分支推送&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">将当前master分支推送到远程,并设置关联
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push ‐u origin master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">强制推送dev分支到远程
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push origin dev -f
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">取出远程dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git fetch origin dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">将当前分支内容重置为取出的dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git reset --hard origin dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="分支绑定">分支绑定&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">将本地的dev分支和远程的origin的dev分支绑定
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch ‐‐set‐upstream-to&lt;span class="o">=&lt;/span>origin/dev dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">以后就可以直接pull了
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git pull
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="分支删除">分支删除&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">删除dev分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch ‐d dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">强行删除
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch ‐D dev
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">修剪远程分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git fetch -p
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="stash功能">stash功能&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">把当前的工作状态保存下来，以便于后面恢复，包括index区。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">把当前的工作状态保存下来，以便于后面恢复，包括index区。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">恢复statsh内容，但是不删除statsh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash apply
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">恢复指定的stash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash apply stash@&lt;span class="o">{&lt;/span>0&lt;span class="o">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">删除stash内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash drop
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">恢复同时删除stash内容
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git stash pop
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="四git标签操作">四、GIT标签操作&lt;/h2>
+&lt;h3 id="本地操作">本地操作&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">查看分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git tag
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">给当前分支打标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git tag
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">给某个提交打标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git tag &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span> &lt;span class="o">[&lt;/span>提交ID&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">创建带有说明的标签，用 -a 指定标签名， -m 指定说明文字
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git tag ‐a &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span> ‐m &lt;span class="s2">&amp;#34;第一个正式版本&amp;#34;&lt;/span> &lt;span class="o">[&lt;/span>提交ID&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">查看标签说明
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git show &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">删除标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git tag -d &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="远程操作">远程操作&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">标签推送
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push origin &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">推送全部尚未推送到远程的本地标签：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git push origin ‐‐tags
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">删除远程标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1. 先删除本地标签
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git tag -d &lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 再推送远程
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push origin :refs/tags/&lt;span class="o">[&lt;/span>标签名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="五github同步原作者代码">五、Github同步原作者代码&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1. 查看远程状态
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote -v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 添加原作者的远程仓库到remote
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote add upstream 原作者远程仓库地址
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 同步fork
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git fetch upstream
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4. 切换到本地主分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git checkout master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5. 把 upstream/master 分支合并到本地 master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git merge upstream/master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6. push到远程仓库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push origin master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7. 解决冲突
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">直接编辑冲突文件，然后提交更改重新push即可
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="六git多人协作的工作模式">六、GIT多人协作的工作模式&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">1. 首先，试图推送自己的修改
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push origin branch-name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 如果推送失败，则因为远程分支比你的本地更新，需先试图合并
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git pull
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 如果合并有冲突，则解决冲突，并在本地提交
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4. 没有冲突或者解决掉冲突后，再推送就能成功！
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push origin branch-name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">如果&lt;span class="s2">&amp;#34;git pull&amp;#34;&lt;/span>提示“no tracking information”，则先命令绑定关系
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git branch --set-upstream branch-name origin/branch-name
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 日常使用顺序&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 去自己的工作分支&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git checkout work
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">工作
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">....
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">提交工作分支的修改
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git commit -a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">回到主分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git checkout master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">获取远程最新的修改，此时不会产生冲突
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git pull
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">回到工作分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git checkout work
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">用rebase合并主干的修改，如果有冲突在此时解决
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git rebase master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">回到主分支
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git checkout master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">合并工作分支的修改，此时不会产生冲突。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git merge work
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">提交到远程主干
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ git push
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="七git关联gitee和github">七、GIT关联Gitee和GitHub&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">1. 删除已有的默认远程库：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote rm origin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 关联码云的远程库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote add &lt;span class="o">[&lt;/span>远程库别名&lt;span class="o">]&lt;/span> git@gitee.com:xxx/xxx.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 关联GitHub远程库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote add &lt;span class="o">[&lt;/span>远程库别名&lt;span class="o">]&lt;/span> git@github.com:xxx/xxx.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4. 查看远程库信息
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git remote ‐v
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5. 分别推送到github和gitee
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 以别名github为例，推送到GitHub，使用命令：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push github master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 以别名gitee为例，推送到码云，使用命令：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git push gitee master
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">至此，我们的本地库就可以同时与多个远程库互相同步
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="八github-解决敏感配置文件上传问题">八、Github 解决敏感配置文件上传问题&lt;/h2>
+&lt;blockquote>
+&lt;ol>
+&lt;li>将真正的config文件加入.gitignore，然后推送一个基本的config_example文件&lt;/li>
+&lt;li>push 结束后，再把 config_example 添加到 .gitignore 中。&lt;/li>
+&lt;li>经典情景： 别人先clone 你的项目，把 config_example 文件 pull 下来后，复制一份再重命名为config，根据自己的环境稍加修改config文件。然后把两文件都添加到.gitignore 中。以后push
+则不会再对远程仓库造成影响。&lt;/li>
+&lt;/ol>
+&lt;/blockquote>
+&lt;h2 id="九gitignore文件忽略原则">九、.gitignore文件忽略原则&lt;/h2>
+&lt;h3 id="忽略文件的原则">忽略文件的原则&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">1. 忽略操作系统自动生成的文件，比如缩略图等；
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 忽略编译生成的中间文件、可执行文件等；
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 忽略你自己的带有敏感信息的配置文件，比如存放口令的配置文件。
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="检查文件忽略情况">检查文件忽略情况&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">git check‐ignore ‐v &lt;span class="o">[&lt;/span>文件名&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="十搭建git私服以ubuntu为例">十、搭建git私服，以ubuntu为例&lt;/h2>
+&lt;h3 id="基本使用">基本使用&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">1. 安装git：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sudo apt-get install git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2. 创建一个git用户，用来运行git服务：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sudo adduser git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3. 创建证书登录：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 收集员工公钥&lt;span class="sb">`&lt;/span>id_rsa.pub&lt;span class="sb">`&lt;/span>文件，导入到&lt;span class="sb">`&lt;/span>/home/git/.ssh/authorized_keys&lt;span class="sb">`&lt;/span>文件里，一行一个。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4. 初始化Git仓库：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 选定目录作为Git仓库，假定是&lt;span class="sb">`&lt;/span>/srv/sample.git&lt;span class="sb">`&lt;/span>，在&lt;span class="sb">`&lt;/span>/srv&lt;span class="sb">`&lt;/span>目录下输入命令：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sudo git init --bare sample.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5. 把owner改为&lt;span class="sb">`&lt;/span>git&lt;span class="sb">`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sudo chown -R git:git sample.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6. 禁用shell登录： 编辑&lt;span class="sb">`&lt;/span>/etc/passwd&lt;span class="sb">`&lt;/span>文件
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git:x:1001:1001:,,,:/home/git:/bin/bash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 改为：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git:x:1001:1001:,,,:/home/git:/usr/bin/git-shell
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7. 克隆远程仓库：
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git clone git@server:/srv/sample.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="十一利用git管理svn">十一、利用git管理svn&lt;/h2>
+&lt;h3 id="简单介绍">简单介绍&lt;/h3>
+&lt;p>GIT自带的git svn命令可以用来管理svn项目，对于习惯使用git的人来说，是一个不错的选择。基本上除了检出，提交，更新代码命令有所区别，大部分都是纯git操作&lt;/p>
+&lt;h3 id="常用命令">常用命令&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 检出svn仓库代码&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn clone
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 例子1 将dapp-parent项目检出到当前目录，文件夹名称dapp-parent&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn clone http://xxx/dapp-parent
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 例子2 将dapp-parent项目检出到当前目录，文件夹名称huizhong&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn clone http://xxx/dapp-parent huizhong
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 更新svn仓库的代码到本地当前分支&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn rebase
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 提交本地分支的代码到svn仓库&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn dcommit
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 查看git管理的svn仓库信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn info
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># 提交git分支到svn分支仓库（需要额外配置，并不常用）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn tag
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="十二-提交日志规范">十二. 提交日志规范&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>build: 影响构建系统或外部依赖关系的更改（示例范围：gulp，broccoli，npm）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>ci: 更改我们的持续集成文件和脚本（e.g.: Travis，GitLab 等）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>docs: 仅文档更改&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>feat: 一个新功能&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>fix: 修复错误&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>perf: 改进性能的代码更改&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>refactor: 代码更改，既不修复错误也不添加功能&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>style: 不影响代码含义的变化（空白，格式化，缺少分号等）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>test: 添加缺失测试或更正现有测试&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>chore: 构建过程或辅助工具的变动&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>release: 版本发布&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>revert: 特殊情况，当前 commit 用于撤销以前的 commit&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">docs(core): Update inject error documentation(#123)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">build: update eslint dependencies to v5.32.0 (#47016)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">fix(router): do not call preload method when not necessary (#47007)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">feat(language-service): support fix the component missing member (#46764)
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">refactor(common): Align PathLocationStrategy constructor(#123)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="扩展使用">扩展使用&lt;/h2>
+&lt;ol>
+&lt;li>管理公钥
+&lt;a class="link" href="https://github.com/res0nat0r/gitosis" target="_blank" rel="noopener"
+>Gitosis&lt;/a>&lt;/li>
+&lt;li>管理权限
+&lt;a class="link" href="https://github.com/sitaramc/gitolite" target="_blank" rel="noopener"
+>Gitolite&lt;/a>&lt;/li>
+&lt;/ol></description></item></channel></rss>
