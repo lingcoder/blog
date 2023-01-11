@@ -2,7 +2,7 @@
 慢慢把以前的文章移过来，希望这次能坚持下去。。。&lt;/p>
 &lt;blockquote>
 &lt;p>纸上得来终觉浅，绝知此事要躬行&lt;/p>
-&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>Git和GitHub使用总结</title><link>https://www.lingcoder.com/p/git-and-github/</link><pubDate>Tue, 01 Jan 2019 14:13:54 +0800</pubDate><guid>https://www.lingcoder.com/p/git-and-github/</guid><description>&lt;img src="https://www.lingcoder.com/p/git-and-github/cover.jpg" alt="Featured image of post Git和GitHub使用总结" />&lt;p>Git的官方网站：&lt;a class="link" href="http://git-scm.com/" target="_blank" rel="noopener"
+&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>Git和GitHub使用总结</title><link>https://www.lingcoder.com/p/git-and-github-summary/</link><pubDate>Tue, 01 Jan 2019 14:13:54 +0800</pubDate><guid>https://www.lingcoder.com/p/git-and-github-summary/</guid><description>&lt;img src="https://www.lingcoder.com/p/git-and-github-summary/cover.jpg" alt="Featured image of post Git和GitHub使用总结" />&lt;p>Git的官方网站：&lt;a class="link" href="http://git-scm.com/" target="_blank" rel="noopener"
 >http://git-scm.com&lt;/a>&lt;/p>
 &lt;h1 id="git和github使用总结">Git和GitHub使用总结&lt;/h1>
 &lt;h2 id="一git初始化设置">一、GIT初始化设置：&lt;/h2>
@@ -965,7 +965,7 @@
 &lt;li>管理权限
 &lt;a class="link" href="https://github.com/sitaramc/gitolite" target="_blank" rel="noopener"
 >Gitolite&lt;/a>&lt;/li>
-&lt;/ol></description></item><item><title>简说Java设计模式-单例模式</title><link>https://www.lingcoder.com/p/java-design-patterns-singleton/</link><pubDate>Mon, 01 Jan 2018 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/java-design-patterns-singleton/</guid><description>&lt;img src="https://www.lingcoder.com/p/java-design-patterns-singleton/cover.jpg" alt="Featured image of post 简说Java设计模式-单例模式" />&lt;h1 id="简说设计模式-单例模式">简说设计模式-单例模式&lt;/h1>
+&lt;/ol></description></item><item><title>简谈Java设计模式-单例模式</title><link>https://www.lingcoder.com/p/java-design-patterns-singleton/</link><pubDate>Mon, 01 Jan 2018 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/java-design-patterns-singleton/</guid><description>&lt;img src="https://www.lingcoder.com/p/java-design-patterns-singleton/cover.jpg" alt="Featured image of post 简谈Java设计模式-单例模式" />&lt;h1 id="简说设计模式-单例模式">简说设计模式-单例模式&lt;/h1>
 &lt;h2 id="单例模式">单例模式&lt;/h2>
 &lt;h3 id="核心作用-">核心作用 :&lt;/h3>
 &lt;ul>
