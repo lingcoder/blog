@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hyper-V on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/hyper-v/</link><description>Recent content in Hyper-V on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 10 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/hyper-v/index.xml" rel="self" type="application/rss+xml"/><item><title>Hyper-V虚拟机固定Ip设置</title><link>https://www.lingcoder.com/p/hyper-v-fixed-ip/</link><pubDate>Fri, 10 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/hyper-v-fixed-ip/</guid><description>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/cover.png" alt="Featured image of post Hyper-V虚拟机固定Ip设置" />&lt;h1 id="hyper-v-虚拟机固定-ip设置">Hyper-V 虚拟机固定 Ip设置&lt;/h1>
+&lt;h2 id="需求来源">需求来源&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>忽略外部网络变化，时刻保持虚拟机的 IP 地址不变。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>物理机与虚拟机互访，虚拟机之间互访，虚拟机联网&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="设置步骤">设置步骤&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>固定虚拟机 IP&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>以 &lt;code>192.168.137.X&lt;/code> 网段，&lt;code>CentOS-7&lt;/code> 操作系统为例。查看虚拟机 IP&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ip addr
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467.png"
+width="681"
+height="242"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu3cb8db2dee8c7f9d34a3e40a2a64974f_29355_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu3cb8db2dee8c7f9d34a3e40a2a64974f_29355_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557467044467"
+class="gallery-image"
+data-flex-grow="281"
+data-flex-basis="675px"
+>&lt;/p>
+&lt;ul>
+&lt;li>得到需要改的网卡信息后，编辑配置文件&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /etc/sysconfig/network-scripts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vim ifcfg-eth0
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>添加下面几行&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-properties" data-lang="properties">&lt;span class="line">&lt;span class="cl">&lt;span class="na">BOOTPROTO&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;static&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">DEVICE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;eth0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ONBOOT&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;yes&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">IPADDR&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;192.168.137.200&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">GATEWAY&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;192.168.137.1&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">DNS1&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;114.114.114.114&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">DNS2&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;114.114.115.115&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">NETMASK&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;255.255.255.0&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445.gif"
+width="786"
+height="480"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu9c1a5652b0305e66738c559192f7c880_4324562_480x0_resize_box_1.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu9c1a5652b0305e66738c559192f7c880_4324562_1024x0_resize_box_1.gif 1024w"
+loading="lazy"
+alt="20190510170445.gif"
+class="gallery-image"
+data-flex-grow="163"
+data-flex-basis="393px"
+>&lt;/p>
+&lt;ul>
+&lt;li>重启网络，使设置生效&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">systemctl restart network
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>如果是 Ubuntu 18.04,修改方式如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编辑 *-cloud-init.yaml 文件,我这里为50-cloud-init.yaml&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/netplan/50-cloud-init.yaml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>配置文件修改如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">network:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">ethernets:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">eth0:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">addresses: [192.168.137.200/24]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">gateway4: 192.168.137.1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">dhcp4: false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">nameservers:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">addresses: [114.114.114.114]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">version: 2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 生效&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo netplan apply
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>打开Hyper-V，点击&lt;code>虚拟机交换管理器&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062.png"
+width="606"
+height="449"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu9f8f264c07e73b80b3415883eb03ee4a_27323_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu9f8f264c07e73b80b3415883eb03ee4a_27323_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557481928062"
+class="gallery-image"
+data-flex-grow="134"
+data-flex-basis="323px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186.png"
+width="714"
+height="317"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu36e99ac2540bb49d3f2e585cfdf6fda6_22782_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu36e99ac2540bb49d3f2e585cfdf6fda6_22782_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557482081186"
+class="gallery-image"
+data-flex-grow="225"
+data-flex-basis="540px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032.png"
+width="597"
+height="650"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hub23063bbfeecbdd04a88a6b5c907d682_37954_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hub23063bbfeecbdd04a88a6b5c907d682_37954_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557482571032"
+class="gallery-image"
+data-flex-grow="91"
+data-flex-basis="220px"
+>&lt;/p>
+&lt;ul>
+&lt;li>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915.gif"
+width="720"
+height="676"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu859bc4283899cf903d711302603251de_7232276_480x0_resize_box_1.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu859bc4283899cf903d711302603251de_7232276_1024x0_resize_box_1.gif 1024w"
+loading="lazy"
+alt="20190510175915"
+class="gallery-image"
+data-flex-grow="106"
+data-flex-basis="255px"
+>&lt;/li>
+&lt;li>打开 &lt;strong>Hyper-V&lt;/strong>，选中虚拟机列表，鼠标右击打开设置：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729.png"
+width="694"
+height="410"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu83e69eb1525e8c724a72cf3072dd53d7_21264_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu83e69eb1525e8c724a72cf3072dd53d7_21264_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557481755729"
+class="gallery-image"
+data-flex-grow="169"
+data-flex-basis="406px"
+>&lt;/p>
+&lt;ul>
+&lt;li>点击左侧&lt;code>网络适配器&lt;/code>后，勾选刚才设置的&lt;code>Centos-server&lt;/code>保存&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638.png"
+width="825"
+height="826"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu9a2a54753342b2c5687d6614e9770392_50796_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu9a2a54753342b2c5687d6614e9770392_50796_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557483196638"
+class="gallery-image"
+data-flex-grow="99"
+data-flex-basis="239px"
+>&lt;/p>
+&lt;ul>
+&lt;li>打开网络设置，点击“更改适配器选项”，找到刚才我们设置生成的新虚拟网卡&lt;code>CentOS-server&lt;/code>,右击选择&lt;code>属性&lt;/code>。打开后再点击&lt;code>Internet协议版本4（TCP/IP）&lt;/code>：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628.png"
+width="601"
+height="578"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hue2c9b1dc9edac633ef94114f6a1e6647_45144_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hue2c9b1dc9edac633ef94114f6a1e6647_45144_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557483291628"
+class="gallery-image"
+data-flex-grow="103"
+data-flex-basis="249px"
+>&lt;/p>
+&lt;ul>
+&lt;li>在打开后的设置框如下图一样设置：&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164.png"
+width="479"
+height="588"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu5628f25c53fe4a149f2b8ed2a90d4a7d_40892_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu5628f25c53fe4a149f2b8ed2a90d4a7d_40892_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557483349164"
+class="gallery-image"
+data-flex-grow="81"
+data-flex-basis="195px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>虚拟机联网&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593.png"
+width="278"
+height="294"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_huaa1b00753d610a5d8dead77ee7630279_20943_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_huaa1b00753d610a5d8dead77ee7630279_20943_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557483478593"
+class="gallery-image"
+data-flex-grow="94"
+data-flex-basis="226px"
+>&lt;/p>
+&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928.png"
+width="435"
+height="605"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu91b339f6126775053e5a29abdc1737b4_31861_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu91b339f6126775053e5a29abdc1737b4_31861_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="1557483431928"
+class="gallery-image"
+data-flex-grow="71"
+data-flex-basis="172px"
+>&lt;/p></description></item></channel></rss>
