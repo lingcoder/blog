@@ -1,0 +1,246 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="内网环境集群主机的时间同步 场景描述 内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网 系统环境 centos7 root权限 实施方案 内网中一台主机A (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间
+主机A对内网提供 NTP 服务
+内网其他机器通过主机A进行对时
+实施过程 主机A设置 1 2 3 4 5 6 7 8 9 10 # 安装NTP软件 # 方式1 yum -y install ntp # 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp） rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm # 编辑NTP配置 vim /etc/ntp.conf ntp.conf 配置如下
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 driftfile /var/lib/ntp/drift # 默认拒绝客户端所有操作 restrict default kod notrap nomodify nopeer noquery # 允许本地操作 restrict 127."><title>内网环境集群主机的时间同步</title><link rel=canonical href=https://www.lingcoder.com/p/intranet-host-ntp/><link rel=stylesheet href=/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css><meta property="og:title" content="内网环境集群主机的时间同步"><meta property="og:description" content="内网环境集群主机的时间同步 场景描述 内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网 系统环境 centos7 root权限 实施方案 内网中一台主机A (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间
+主机A对内网提供 NTP 服务
+内网其他机器通过主机A进行对时
+实施过程 主机A设置 1 2 3 4 5 6 7 8 9 10 # 安装NTP软件 # 方式1 yum -y install ntp # 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp） rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm # 编辑NTP配置 vim /etc/ntp.conf ntp.conf 配置如下
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 driftfile /var/lib/ntp/drift # 默认拒绝客户端所有操作 restrict default kod notrap nomodify nopeer noquery # 允许本地操作 restrict 127."><meta property="og:url" content="https://www.lingcoder.com/p/intranet-host-ntp/"><meta property="og:site_name" content="牛哥聊技术"><meta property="og:type" content="article"><meta property="article:section" content="Post"><meta property="article:tag" content="时钟同步"><meta property="article:tag" content="linux"><meta property="article:published_time" content="2019-06-14T00:15:23+08:00"><meta property="article:modified_time" content="2019-06-14T00:15:23+08:00"><meta property="og:image" content="https://www.lingcoder.com/p/intranet-host-ntp/cover.png"><meta name=twitter:title content="内网环境集群主机的时间同步"><meta name=twitter:description content="内网环境集群主机的时间同步 场景描述 内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网 系统环境 centos7 root权限 实施方案 内网中一台主机A (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间
+主机A对内网提供 NTP 服务
+内网其他机器通过主机A进行对时
+实施过程 主机A设置 1 2 3 4 5 6 7 8 9 10 # 安装NTP软件 # 方式1 yum -y install ntp # 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp） rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm # 编辑NTP配置 vim /etc/ntp.conf ntp.conf 配置如下
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 driftfile /var/lib/ntp/drift # 默认拒绝客户端所有操作 restrict default kod notrap nomodify nopeer noquery # 允许本地操作 restrict 127."><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.lingcoder.com/p/intranet-host-ntp/cover.png"></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu2dd2735f8c129377c41ba8d17222b951_31184_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar></a>
+<span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=social-menu><li><a href=https://www.cnblogs.com/lingcoder/ target=_blank title=Cnblogs rel=me><!doctype html><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg><span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg><span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg><span>链接</span></a></li><li><a href=/about/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span>关于</span></a></li><div class=menu-bottom-section><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg><span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#场景描述>场景描述</a></li><li><a href=#系统环境>系统环境</a></li><li><a href=#实施方案>实施方案</a></li><li><a href=#实施过程>实施过程</a><ol><li><a href=#主机a设置>主机A设置</a></li><li><a href=#其他主机设置>其他主机设置</a></li></ol></li><li><a href=#过程总结>过程总结</a><ol><li><ol><li><a href=#可能失败原因及分析>可能失败原因及分析</a></li></ol></li><li><a href=#stratum-的概念>stratum 的概念</a><ol><li><a href=#ntpd运行过程>NTPD运行过程</a></li><li><a href=#ntpd与ntpdate修改时间的区别>ntpd与ntpdate修改时间的区别</a></li><li><a href=#rtc硬件时间相关命令>RTC硬件时间相关命令</a></li><li><a href=#查看和修改时间>查看和修改时间</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/intranet-host-ntp/><img src=/p/intranet-host-ntp/cover_hudcce0a0c120aae61c393f6578da670d0_3168967_800x0_resize_box_3.png srcset="/p/intranet-host-ntp/cover_hudcce0a0c120aae61c393f6578da670d0_3168967_800x0_resize_box_3.png 800w, /p/intranet-host-ntp/cover_hudcce0a0c120aae61c393f6578da670d0_3168967_1600x0_resize_box_3.png 1600w" width=800 height=640 loading=lazy alt="Featured image of post 内网环境集群主机的时间同步"></a></div><div class=article-details><header class=article-category><a href=/categories/linux/ style=background-color:#2a9d8f;color:#fff>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/intranet-host-ntp/>内网环境集群主机的时间同步</a></h2></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg><time class=article-time--published>2019-06-14</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg><time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><h1 id=内网环境集群主机的时间同步>内网环境集群主机的时间同步</h1><h2 id=场景描述>场景描述</h2><ul><li>内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网</li></ul><h2 id=系统环境>系统环境</h2><ul><li>centos7</li><li>root权限</li></ul><h2 id=实施方案>实施方案</h2><ul><li><p>内网中一台<strong>主机A</strong> (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间</p></li><li><p><strong>主机A</strong>对内网提供 NTP 服务</p></li><li><p>内网其他机器通过<strong>主机A</strong>进行对时</p></li></ul><h2 id=实施过程>实施过程</h2><h3 id=主机a设置>主机A设置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装NTP软件</span>
+</span></span><span class=line><span class=cl><span class=c1># 方式1</span>
+</span></span><span class=line><span class=cl>yum -y install ntp
+</span></span><span class=line><span class=cl><span class=c1># 方式2（严格按照顺序autogen-&gt;ntpdate-&gt;ntp）</span>
+</span></span><span class=line><span class=cl>rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm
+</span></span><span class=line><span class=cl>rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm
+</span></span><span class=line><span class=cl>rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 编辑NTP配置</span>
+</span></span><span class=line><span class=cl>vim /etc/ntp.conf
+</span></span></code></pre></td></tr></table></div></div><p><code>ntp.conf</code> 配置如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-properties data-lang=properties><span class=line><span class=cl><span class=na>driftfile</span> <span class=s>/var/lib/ntp/drift</span>
+</span></span><span class=line><span class=cl><span class=c1># 默认拒绝客户端所有操作</span>
+</span></span><span class=line><span class=cl><span class=na>restrict</span> <span class=s>default kod notrap nomodify nopeer noquery</span>
+</span></span><span class=line><span class=cl><span class=c1># 允许本地操作</span>
+</span></span><span class=line><span class=cl><span class=na>restrict</span> <span class=s>127.0.0.1</span>
+</span></span><span class=line><span class=cl><span class=na>restrict</span> <span class=o>:</span><span class=s>:1</span>
+</span></span><span class=line><span class=cl><span class=c1># 允许该网段同步时间，但不可修改NTP服务器时间</span>
+</span></span><span class=line><span class=cl><span class=na>restrict</span> <span class=s>172.16.59.0 mask 255.255.255.0 nomodify</span>
+</span></span><span class=line><span class=cl><span class=c1># 用于NTPD的上级服务器、本机时钟的同步,以及时钟的层次stratum</span>
+</span></span><span class=line><span class=cl><span class=na>server</span> <span class=s>cn.ntp.org.cn prefer</span>
+</span></span><span class=line><span class=cl><span class=na>server</span> <span class=s>edu.ntp.org.cn iburst</span>
+</span></span><span class=line><span class=cl><span class=c1># 本机时间兜底</span>
+</span></span><span class=line><span class=cl><span class=na>server</span> <span class=s>127.127.1.0</span>
+</span></span><span class=line><span class=cl><span class=na>fudge</span> <span class=s>127.127.1.0 stratum 8</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=na>includefile</span> <span class=s>/etc/ntp/crypto/pw</span>
+</span></span><span class=line><span class=cl><span class=na>keys</span> <span class=s>/etc/ntp/keys</span>
+</span></span><span class=line><span class=cl><span class=na>disable</span> <span class=s>monitor</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 编辑 ntpd 文件</span>
+</span></span><span class=line><span class=cl>vim /etc/sysconfig/ntpd
+</span></span></code></pre></td></tr></table></div></div><p><code>ntpd</code> 文件修改如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>OPTIONS</span><span class=o>=</span><span class=s>&#34;-u ntp:ntp -p /var/run/ntpd.pid&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># BIOS时间也会跟随改变</span>
+</span></span><span class=line><span class=cl><span class=na>SYNC_HWCLOCK</span><span class=o>=</span><span class=s>yes</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看状态</span>
+</span></span><span class=line><span class=cl>systemctl status ntpd.service
+</span></span><span class=line><span class=cl>ntpstat
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 重启服务</span>
+</span></span><span class=line><span class=cl>systemctl restart ntpd.service
+</span></span><span class=line><span class=cl><span class=c1># 开机启动</span>
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> ntpd.service
+</span></span></code></pre></td></tr></table></div></div><h3 id=其他主机设置>其他主机设置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 安装 ntpdate 软件</span>
+</span></span><span class=line><span class=cl><span class=c1># 方式1</span>
+</span></span><span class=line><span class=cl>yum -y install ntp
+</span></span><span class=line><span class=cl><span class=c1># 方式2（严格按照顺序autogen-&gt;ntpdate-&gt;ntp）</span>
+</span></span><span class=line><span class=cl>rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm
+</span></span><span class=line><span class=cl>rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm
+</span></span><span class=line><span class=cl>rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 编辑配置文件</span>
+</span></span><span class=line><span class=cl>vi /etc/ntp.conf
+</span></span></code></pre></td></tr></table></div></div><p><code>ntp.conf</code>配置如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>driftfile /var/lib/ntp/drift</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 默认拒绝客户端所有操作</span>
+</span></span><span class=line><span class=cl><span class=na>restrict default kod notrap nomodify nopeer noquery</span>
+</span></span><span class=line><span class=cl><span class=c1># 禁止本身的server</span>
+</span></span><span class=line><span class=cl><span class=c1># server cn.ntp.org.cn prefer</span>
+</span></span><span class=line><span class=cl><span class=c1># server edu.ntp.org.cn iburst</span>
+</span></span><span class=line><span class=cl><span class=na>restrict 172.16.59.25</span>
+</span></span><span class=line><span class=cl><span class=na>restrict 127.0.0.1</span>
+</span></span><span class=line><span class=cl><span class=na>restrict ::1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=na>server 172.16.59.25</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># server    127.127.1.0    </span>
+</span></span><span class=line><span class=cl><span class=c1># fudge     127.127.1.0 stratum 10</span>
+</span></span><span class=line><span class=cl><span class=na>includefile /etc/ntp/crypto/pw</span>
+</span></span><span class=line><span class=cl><span class=na>keys /etc/ntp/keys</span>
+</span></span><span class=line><span class=cl><span class=na>disable monitor</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 编辑 ntpd 文件</span>
+</span></span><span class=line><span class=cl>vim /etc/sysconfig/ntpd
+</span></span></code></pre></td></tr></table></div></div><p><code>ntpd</code> 文件修改如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ini data-lang=ini><span class=line><span class=cl><span class=na>OPTIONS</span><span class=o>=</span><span class=s>&#34;-u ntp:ntp -p /var/run/ntpd.pid&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># BIOS时间也会跟随改变</span>
+</span></span><span class=line><span class=cl><span class=na>SYNC_HWCLOCK</span><span class=o>=</span><span class=s>yes</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>systemctl restart ntpd.service
+</span></span><span class=line><span class=cl># 开机启动
+</span></span><span class=line><span class=cl>systemctl enable ntpd.service
+</span></span></code></pre></td></tr></table></div></div><h2 id=过程总结>过程总结</h2><h4 id=可能失败原因及分析>可能失败原因及分析</h4><ul><li><p>NTP 服务刚启动后，客户端无法同步时间，需等待几分钟才可以</p></li><li><p>关闭或者设置防火墙，允许123端口</p></li><li><p>网络上存在多个 NTP 服务器时，客户端切换同步源后需要重启</p></li><li><p>如果本机与 NTP 服务器时间误差超过1000s，则同步失败。可以按照下面命令解决。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 更改时区为中国</span>
+</span></span><span class=line><span class=cl>timedatectl set-timezone <span class=s2>&#34;Asia/Shanghai&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># 与外网或者主机A同步一次时间</span>
+</span></span><span class=line><span class=cl>ntpdate cn.ntp.org.cn <span class=c1>#主机A的时间同步</span>
+</span></span><span class=line><span class=cl>ntpdate 主机A的IP <span class=c1># 内网其他机器的时间同步</span>
+</span></span><span class=line><span class=cl><span class=c1># 注意 ntpdate 的缺点</span>
+</span></span></code></pre></td></tr></table></div></div></li></ul><h3 id=stratum-的概念>stratum 的概念</h3><ul><li><p>顶层是1，值为0时表示层数不明，层的值是累加的，比如 NTP 授时方向是 A -> B -> C，假设 A 的层值是3，那么B从A获取到时间层值为4，C从B获取到时间，C的层值被置为5。一般只有整个 NTP 系统最顶层的服务器stratum才设为1。</p></li><li><p>NTP 同步的方向是从stratum 值较小的节点向较大的节点传播，如果某个 NTP 客户端接收到 stratum 比自己还要大，那么 NTP 客户端认为自己的时间比接受到的时间更为精确，不会进行时间的更新。</p></li><li><p>对于大部分 NTP 软件系统来说，服务启动后，stratum 值初始是0，一旦 NTP 服务获取到了时间，NTP 层次就设置为上级服务器 stratum +1。对于具备卫星时钟、原子钟的专业 NTP 设备，一般 stratum 值初始是1。</p></li></ul><h4 id=ntpd运行过程>NTPD运行过程</h4><ul><li><p>NTPD 启动后，stratum 值初始是0，此时 NTPD 接收到 NTP 请求，回复 stratum 字段为0的 NTP 包，客户端接收后，发现 stratum 字段无效，拒绝更新时间，造成时间更新失败。</p></li><li><p>几分钟后，NTPD从上级服务器获取到了更新，设置了正确的 stratum，回复 stratum 字段为 n+1的 NTP 包，客户端接收后，确认 stratum 有效，成功进行时间更新。</p></li><li><p>在 NTPD 上级服务器不可用的情况下，NTPD 将本机时钟服务模拟为一个上级 NTP 服务器，地址使用环回127.127.1.0。服务启动几分钟后，NTPD 从 127.127.1.0 更新了时钟，设置了有效的 stratum，客户端接收后，成功进行时间更新。</p></li></ul><h4 id=ntpd与ntpdate修改时间的区别>ntpd与ntpdate修改时间的区别</h4><p>ntpd 不仅仅是时间同步服务器，他还可以做客户端与标准时间服务器进行同步时间，而且是平滑同步，并非ntpdate立即同步，在生产环境中<strong>慎用ntpdate</strong>，也正如此两者不可同时运行。</p><p>时钟的跃变，对于某些程序会导致<strong>很严重</strong>的问题。许多应用程序依赖连续的时钟——毕竟，这是一项常见的假定，即，取得的时间是线性的，一些操作，例如数据库事务，通常会地依赖这样的事实：时间不会往回跳跃。不幸的是，ntpdate调整时间的方式就是我们所说的”跃变“：在获得一个时间之后，ntpdate使用settimeofday设置系统时间，这有几个非常明显的问题：</p><p>第一，这样做<strong>不安全</strong>。ntpdate的设置依赖于ntp服务器的安全性，攻击者可以利用一些软件设计上的缺陷，拿下ntp服务器并令与其同步的服务器执行某些消耗性的任务。由于ntpdate采用的方式是跳变，跟随它的服务器无法知道是否发生了异常（时间不一样的时候，唯一的办法是以服务器为准）。</p><p>第二，这样做<strong>不精确</strong>。一旦ntp服务器宕机，跟随它的服务器也就会无法同步时间。与此不同，ntpd不仅能够校准计算机的时间，而且能够校准计算机的时钟。</p><p>第三，这样做<strong>不够优雅</strong>。由于是跳变，而不是使时间变快或变慢，依赖时序的程序会出错（例如，如果ntpdate发现你的时间快了，则可能会经历两个相同的时刻，对某些应用而言，这是致命的）。</p><p>因而，唯一一个可以令时间发生跳变的点，是计算机刚刚启动，但还没有启动很多服务的那个时候。其余的时候，理想的做法是使用ntpd来校准时钟，而不是调整计算机时钟上的时间。</p><p>NTPD 在和时间服务器的同步过程中，会把 BIOS 计时器的振荡频率偏差——或者说 Local Clock 的自然漂移(drift)——记录下来。这样即使网络有问题，本机仍然能维持一个相当精确的走时</p><h4 id=rtc硬件时间相关命令>RTC硬件时间相关命令</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>clock –r         显示硬件时钟与日期
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>clock –s         将系统时钟调整为与目前的硬件时钟一致。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>clock –w        将硬件时钟调整为与目前的系统时钟一致
+</span></span></code></pre></td></tr></table></div></div><h4 id=查看和修改时间>查看和修改时间</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看时间和日期</span>
+</span></span><span class=line><span class=cl>date
+</span></span><span class=line><span class=cl>date -R
+</span></span><span class=line><span class=cl>timedatectl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 查看本月月历</span>
+</span></span><span class=line><span class=cl>cal
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 修改时区</span>
+</span></span><span class=line><span class=cl>tzselect
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 更改时区为中国</span>
+</span></span><span class=line><span class=cl>timedatectl set-timezone <span class=s2>&#34;Asia/Shanghai&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置时间和日期</span>
+</span></span><span class=line><span class=cl><span class=c1># 例如：将系统日期设定成2019年11月3日的命令</span>
+</span></span><span class=line><span class=cl>date -s 11/03/2019
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>#将系统时间设定成下午5点55分55秒的命令</span>
+</span></span><span class=line><span class=cl>date -s 17:55:55
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 将当前时间和日期写入BIOS，避免重启后失效**</span>
+</span></span><span class=line><span class=cl>hwclock -w
+</span></span><span class=line><span class=cl><span class=c1># 或者 clock -w</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/%E6%97%B6%E9%92%9F%E5%90%8C%E6%AD%A5/>时钟同步</a>
+<a href=/tags/linux/>linux</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg><span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2023 牛哥聊技术</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.16.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script>
+<script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
