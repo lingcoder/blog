@@ -2,7 +2,7 @@
 慢慢把以前的文章移过来，希望这次能坚持下去。。。&lt;/p>
 &lt;blockquote>
 &lt;p>纸上得来终觉浅，绝知此事要躬行&lt;/p>
-&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/%E5%9C%A8ubuntu18.04%E4%B8%AD%E5%AE%89%E8%A3%85jdk8/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/%E5%9C%A8ubuntu18.04%E4%B8%AD%E5%AE%89%E8%A3%85jdk8/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK&lt;/h2>
+&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK&lt;/h2>
 &lt;p>Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。&lt;/p>
 &lt;ul>
 &lt;li>打开终端并运行命令添加 PPA：&lt;/li>
