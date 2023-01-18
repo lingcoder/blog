@@ -2,7 +2,344 @@
 慢慢把以前的文章移过来，希望这次能坚持下去。。。&lt;/p>
 &lt;blockquote>
 &lt;p>纸上得来终觉浅，绝知此事要躬行&lt;/p>
-&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK&lt;/h2>
+&lt;/blockquote></description></item><item><title>关于</title><link>https://www.lingcoder.com/about/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/about/</guid><description/></item><item><title>归档</title><link>https://www.lingcoder.com/archives/</link><pubDate>Sun, 06 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/archives/</guid><description/></item><item><title>Markdown常用语法</title><link>https://www.lingcoder.com/p/markdown%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/</link><pubDate>Tue, 18 Jan 2022 13:39:24 +0800</pubDate><guid>https://www.lingcoder.com/p/markdown%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95/</guid><description>&lt;img src="https://www.lingcoder.com/cover.png" alt="Featured image of post Markdown常用语法" />&lt;h1 id="markdown常用语法">Markdown常用语法&lt;/h1>
+&lt;p>[TOC]&lt;/p>
+&lt;h2 id="标题">标题&lt;/h2>
+&lt;h3 id="3级标题">3级标题&lt;/h3>
+&lt;h4 id="4级标题">4级标题&lt;/h4>
+&lt;h5 id="5级标题">5级标题&lt;/h5>
+&lt;p>&lt;strong>加粗&lt;/strong>&lt;/p>
+&lt;p>&lt;em>斜体&lt;/em>&lt;/p>
+&lt;p>&lt;code>代码块&lt;/code>&lt;/p>
+&lt;p>&lt;del>删除不用的内容&lt;/del>&lt;/p>
+&lt;h2 id="排序">排序&lt;/h2>
+&lt;ul>
+&lt;li>序号
+&lt;ul>
+&lt;li>次级序号&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>序号&lt;/li>
+&lt;li>序号&lt;/li>
+&lt;/ol>
+&lt;h2 id="待办">待办&lt;/h2>
+&lt;ul>
+&lt;li>&lt;input checked="" disabled="" type="checkbox"> 待办事项&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> 待办事项&lt;/li>
+&lt;/ul>
+&lt;h2 id="代码块">代码块&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-java" data-lang="java">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">System&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">out&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="na">println&lt;/span>&lt;span class="o">(&lt;/span>&lt;span class="s">&amp;#34;hello word&amp;#34;&lt;/span>&lt;span class="o">);&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">rm -rf *
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sql" data-lang="sql">&lt;span class="line">&lt;span class="cl">&lt;span class="k">select&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">from&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">upp_business&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">where&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="n">pay_code&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">is&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="k">null&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="表格">表格&lt;/h2>
+&lt;p>自动生成表格&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">公司名&lt;/th>
+&lt;th>职务&lt;/th>
+&lt;th>工作内容&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">XXXX&lt;/td>
+&lt;td>Java开发&lt;/td>
+&lt;td>滑水&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">XXXX&lt;/td>
+&lt;td>项目经理&lt;/td>
+&lt;td>吹逼&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="分割线">分割线&lt;/h2>
+&lt;hr>
+&lt;h2 id="甘特图">甘特图&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl"> gantt
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> dateFormat YYYY-MM-DD
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> title 项目进度
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> section 任务1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 已完成的任务 :done, des1, 2014-01-06,2014-01-08
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 正在进行的任务 :active, des2, 2014-01-09, 3d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 待完成任务1 : des3, after des2, 5d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 待完成任务2 : des4, after des3, 5d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> section 关键任务
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 已完成的关键任务 :crit, done, 2014-01-06,24h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 已完成的关键任务2 :crit, done, after des1, 2d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 正在进行的关键任务 :crit, active, 3d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 待完成的关键任务 :crit, 5d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 待完成任务 :2d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 待完成任务2 :1d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> section 文档编写
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 描述甘特图语法 :active, a1, after des1, 3d
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 完成甘特图实例1 :after a1 , 20h
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 完成甘特图实例2 :doc1, after a1 , 48h
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">graph LR
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">subgraph 在线库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.11
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.254 --&amp;gt; 172.16.59.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.254 --&amp;gt; 172.16.59.11
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.2 --&amp;gt; 172.16.59.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.2 --&amp;gt; 172.16.59.11
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.64 --&amp;gt; 172.16.59.9
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.64 --&amp;gt; 172.16.59.11
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph 生产VDS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.254
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.64
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.243 ==&amp;gt; 172.16.59.254
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.243 ==&amp;gt; 172.16.59.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph VIP高可用
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.243
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph 离线库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.59
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph OTTER
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.57
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.58
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.60
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.59 -.ETL同步.- 172.16.59.58
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">subgraph 历史主从库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.12
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.56
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.52 ==&amp;gt; 172.16.59.12
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.52 ==&amp;gt; 172.16.59.56
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> subgraph 历史库VDS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.52
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">subgraph 政务云测试库
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.38
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.252 ==&amp;gt; 172.16.59.38
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">subgraph 测试库VDS
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 172.16.59.252
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> end
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="流程图">流程图&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">start=&amp;gt;start: 开始
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">end=&amp;gt;end: 结束
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">a=&amp;gt;inputoutput: 发送资料
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">b=&amp;gt;operation: 审批
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c=&amp;gt;condition: 通过是否
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">d=&amp;gt;operation:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">e=&amp;gt;subroutine: 继续
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">start-&amp;gt;a-&amp;gt;b-&amp;gt;c
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c(no)-&amp;gt;a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">c(yes)-&amp;gt;e-&amp;gt;end
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="时序图">时序图&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">title: 微信教育缴费
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">学生-&amp;gt;微信: 打开微信教育缴费
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信-&amp;gt;统一平台: （schoolInfo接口 每天定时请求/推送学校基础信息）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">统一平台--&amp;gt;微信: （返回学校基础信息）
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信--&amp;gt;学生: 渲染学校基础信息选择列表
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">学生-&amp;gt;微信: 选择区划、学校、学期并填写学生编号后提交
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信-&amp;gt;统一平台: 调用payInfo接口
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">统一平台--&amp;gt;微信: 返回payInfo信息
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信--&amp;gt;学生: 返回缴费信息
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">学生-&amp;gt;微信: 支付成功
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信-&amp;gt;统一平台: 调用2612缴款确认接口
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">统一平台--&amp;gt;微信: 缴费状态更新成功
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">微信-&amp;gt;学生: 显示缴费成功
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="github引用">GITHUB引用&lt;/h2>
+&lt;p>&lt;a class="link" href="https://github.com/lingcoder/OnJava8/stargazers" target="_blank" rel="noopener"
+>&lt;img src="https://www.lingcoder.com/../images/Markdown%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95/OnJava8.svg"
+loading="lazy"
+alt="GitHub stars"
+>&lt;/a>&lt;a class="link" href="https://github.com/lingcoder/OnJava8/fork" target="_blank" rel="noopener"
+>&lt;img src="https://www.lingcoder.com/../images/Markdown%e5%b8%b8%e7%94%a8%e8%af%ad%e6%b3%95/OnJava8.svg"
+loading="lazy"
+alt="GitHub forks"
+>&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="http://www.baidu.com" target="_blank" rel="noopener"
+>百度&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="http://www.baidu.com" target="_blank" rel="noopener"
+>&lt;img src="https://www.baidu.com/img/bd_logo1.png"
+loading="lazy"
+alt="百度"
+>&lt;/a>&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;h2 id="附加">附加&lt;/h2>
+&lt;p>上标 10^2^&lt;/p>
+&lt;p>下标 H~2~O&lt;/p>
+&lt;p>脚注&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>人民日报(http:www.baidu.com)&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK&lt;/h2>
 &lt;p>Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。&lt;/p>
 &lt;ul>
 &lt;li>打开终端并运行命令添加 PPA：&lt;/li>
@@ -3145,7 +3482,170 @@ data-flex-basis="172px"
 &lt;/ul>
 &lt;blockquote>
 &lt;p>静态内部类式 好于 懒汉式&lt;/p>
-&lt;/blockquote></description></item><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">Zookeeper安装和配置&lt;/h1>
+&lt;/blockquote></description></item><item><title>Tomcat8日志切割和定期删除</title><link>https://www.lingcoder.com/p/tomcat8-log-splitter/</link><pubDate>Tue, 17 Oct 2017 09:02:06 +0800</pubDate><guid>https://www.lingcoder.com/p/tomcat8-log-splitter/</guid><description>&lt;h2 id="日志切割">日志切割&lt;/h2>
+&lt;h3 id="安装-cronolog">安装 cronolog&lt;/h3>
+&lt;ul>
+&lt;li>安装&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 下载cronolog-1.6.2.tar.gz 并解压&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget http://cronolog.org/download/cronolog-1.6.2.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 解压&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar zxvf cronolog-1.6.2.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编译安装&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> cronolog-1.6.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> make &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>验证安装&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 验证是否安装成功&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">which cronolog
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示以下信息则成功&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># /usr/local/sbin/cronolog&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h3 id="修改-tomcat-8-配置">修改 Tomcat 8 配置&lt;/h3>
+&lt;ul>
+&lt;li>替换 tomcat 目录下 /bin/Catalina.sh 文件内容&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span> &lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">CATALINA_OUT&lt;/span>&lt;span class="o">=&lt;/span>日志路径/catalina.out
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>为&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span> &lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">CATALINA_OUT&lt;/span>&lt;span class="o">=&lt;/span>日志路径/catalina.%Y-%m-%d.out
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>注释掉 &lt;code>touch &amp;quot;$CATALINA_OUT&amp;quot;&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#touch &amp;#34;$CATALINA_OUT&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>替换（共有两处修改）&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> org.apache.catalina.startup.Bootstrap &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$@&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> start &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> &amp;gt;&amp;gt; &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> 2&amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">1&lt;/span> &lt;span class="p">&amp;amp;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>为&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl"> org.apache.catalina.startup.Bootstrap &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$@&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> start 2&amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">1&lt;/span> &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> &lt;span class="p">|&lt;/span> /usr/local/sbin/cronolog &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &amp;gt;&amp;gt; /dev/null &lt;span class="p">&amp;amp;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重启 tomcat 即可。&lt;/p>
+&lt;h2 id="定时删除">定时删除&lt;/h2>
+&lt;ul>
+&lt;li>新建 xxx.sh 文件，添加内容如下：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/sh
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.out&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.log&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.txt&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>执行 &lt;code>crontab -e&lt;/code> 命令打开定时任务配置文件，在里面录入&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">10 0 * * * sh 目录/xxx.sh &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>定时任务cron命令示例：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ruby" data-lang="ruby">&lt;span class="line">&lt;span class="cl">&lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每隔一分钟执行一次任务 &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每小时的0点执行一次任务，比如6:00，10:00 &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每个月2号，每小时的6分和10分执行一次任务 &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">*/&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">*/&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每隔3分钟或5分钟执行一次任务，比如10:03，10:05，10:06 &lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">Zookeeper安装和配置&lt;/h1>
 &lt;h2 id="准备工作">准备工作&lt;/h2>
 &lt;ol>
 &lt;li>
@@ -3471,169 +3971,6 @@ data-flex-basis="376px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 默认值为5000，单位毫秒，仅支持系统属性方式配置&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 配置在Leader选举过程中各服务器之间进行TCP连接创建的超时时间&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># cnxTimeout=5000&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div></description></item><item><title>Tomcat8日志切割和定期删除</title><link>https://www.lingcoder.com/p/tomcat8-log-splitter/</link><pubDate>Mon, 17 Apr 2017 09:02:06 +0800</pubDate><guid>https://www.lingcoder.com/p/tomcat8-log-splitter/</guid><description>&lt;h2 id="日志切割">日志切割&lt;/h2>
-&lt;h3 id="安装-cronolog">安装 cronolog&lt;/h3>
-&lt;ul>
-&lt;li>安装&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;span class="lnt">7
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 下载cronolog-1.6.2.tar.gz 并解压&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget http://cronolog.org/download/cronolog-1.6.2.tar.gz
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 解压&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar zxvf cronolog-1.6.2.tar.gz
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编译安装&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> cronolog-1.6.2
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> make &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> make install
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>
-&lt;p>验证安装&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 验证是否安装成功&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">which cronolog
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 显示以下信息则成功&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># /usr/local/sbin/cronolog&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;/li>
-&lt;/ul>
-&lt;h3 id="修改-tomcat-8-配置">修改 Tomcat 8 配置&lt;/h3>
-&lt;ul>
-&lt;li>替换 tomcat 目录下 /bin/Catalina.sh 文件内容&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span> &lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">CATALINA_OUT&lt;/span>&lt;span class="o">=&lt;/span>日志路径/catalina.out
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fi&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>为&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">[&lt;/span> -z &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &lt;span class="o">]&lt;/span> &lt;span class="p">;&lt;/span> &lt;span class="k">then&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nv">CATALINA_OUT&lt;/span>&lt;span class="o">=&lt;/span>日志路径/catalina.%Y-%m-%d.out
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">fi&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>注释掉 &lt;code>touch &amp;quot;$CATALINA_OUT&amp;quot;&lt;/code>&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">#touch &amp;#34;$CATALINA_OUT&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>替换（共有两处修改）&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl"> org.apache.catalina.startup.Bootstrap &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$@&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> start &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> &amp;gt;&amp;gt; &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> 2&amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">1&lt;/span> &lt;span class="p">&amp;amp;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>为&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl"> org.apache.catalina.startup.Bootstrap &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$@&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> start 2&amp;gt;&lt;span class="p">&amp;amp;&lt;/span>&lt;span class="m">1&lt;/span> &lt;span class="se">\
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> &lt;span class="p">|&lt;/span> /usr/local/sbin/cronolog &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$CATALINA_OUT&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &amp;gt;&amp;gt; /dev/null &lt;span class="p">&amp;amp;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>重启 tomcat 即可。&lt;/p>
-&lt;h2 id="定时删除">定时删除&lt;/h2>
-&lt;ul>
-&lt;li>新建 xxx.sh 文件，添加内容如下：&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#!/bin/sh
-&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.out&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.log&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2">&amp;#34;*.txt&amp;#34;&lt;/span> -exec rm -rf &lt;span class="o">{}&lt;/span> &lt;span class="se">\;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>执行 &lt;code>crontab -e&lt;/code> 命令打开定时任务配置文件，在里面录入&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">10 0 * * * sh 目录/xxx.sh &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>定时任务cron命令示例：&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-ruby" data-lang="ruby">&lt;span class="line">&lt;span class="cl">&lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每隔一分钟执行一次任务 &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每小时的0点执行一次任务，比如6:00，10:00 &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="mi">6&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">10&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每个月2号，每小时的6分和10分执行一次任务 &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">*/&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="o">*/&lt;/span>&lt;span class="mi">5&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="c1"># 每隔3分钟或5分钟执行一次任务，比如10:03，10:05，10:06 &lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div></description></item><item><title>链接</title><link>https://www.lingcoder.com/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/links/</guid><description/></item><item><title>搜索</title><link>https://www.lingcoder.com/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.lingcoder.com/search/</guid><description/></item></channel></rss>
