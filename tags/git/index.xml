@@ -895,7 +895,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> git svn tag
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="十二-日志提交规范参考-angularjs-提交规范">十二. 日志提交规范(参考 Angularjs 提交规范)&lt;/h2>
+&lt;/div>&lt;h2 id="十二日志提交规范参考-angularjs-提交规范">十二、日志提交规范(参考 Angularjs 提交规范)&lt;/h2>
 &lt;ul>
 &lt;li>
 &lt;p>build: 影响构建系统或外部依赖关系的更改（示例范围：gulp，broccoli，npm）&lt;/p>
@@ -953,7 +953,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">refactor(common): Align PathLocationStrategy constructor(#123)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="十三-将误传至github的敏感资料删除">十三. 将误传至Github的敏感资料删除&lt;/h2>
+&lt;/div>&lt;h2 id="十三将误传至github的敏感资料删除">十三、将误传至Github的敏感资料删除&lt;/h2>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
