@@ -302,7 +302,7 @@ data-flex-basis="376px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 默认值为0，单位为小时，不支持以系统属性方式配置。用于配置Zookeeper进行历史文件自动清理的频率。如果配置为0或负数，表示不需要开启定时清理功能。&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">  autopurge.purgeInterval&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">  
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">  ## 最大保留文件的个数，搭配 autopurge.purgeInterval 使用
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">  &lt;span class="c1">## 最大保留文件的个数，搭配 autopurge.purgeInterval 使用&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">  autopurge.snapRetainCount&lt;span class="o">=&lt;/span>&lt;span class="m">3&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">## 默认值为1000，单位为毫秒，仅支持系统属性方式配置&lt;/span>
