@@ -1,5 +1,382 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>linux on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/linux/</link><description>Recent content in linux on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 14 Jun 2019 00:15:23 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>内网环境集群主机的时间同步</title><link>https://www.lingcoder.com/p/intranet-host-ntp/</link><pubDate>Fri, 14 Jun 2019 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/intranet-host-ntp/</guid><description>内网环境集群主机的时间同步 场景描述 内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网 系统环境 centos7 root权限 实施方案 内网中一台主机A (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间
-主机A对内网提供 NTP 服务
-内网其他机器通过主机A进行对时
-实施过程 主机A设置 1 2 3 4 5 6 7 8 9 10 # 安装NTP软件 # 方式1 yum -y install ntp # 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp） rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm # 编辑NTP配置 vim /etc/ntp.conf ntp.conf 配置如下
-1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 driftfile /var/lib/ntp/drift # 默认拒绝客户端所有操作 restrict default kod notrap nomodify nopeer noquery # 允许本地操作 restrict 127.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>linux on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/linux/</link><description>Recent content in linux on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 14 Jun 2019 00:15:23 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>内网环境集群主机的时间同步</title><link>https://www.lingcoder.com/p/intranet-host-ntp/</link><pubDate>Fri, 14 Jun 2019 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/intranet-host-ntp/</guid><description>&lt;img src="https://www.lingcoder.com/p/intranet-host-ntp/cover.png" alt="Featured image of post 内网环境集群主机的时间同步" />&lt;h1 id="内网环境集群主机的时间同步">内网环境集群主机的时间同步&lt;/h1>
+&lt;h2 id="场景描述">场景描述&lt;/h2>
+&lt;ul>
+&lt;li>内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网&lt;/li>
+&lt;/ul>
+&lt;h2 id="系统环境">系统环境&lt;/h2>
+&lt;ul>
+&lt;li>centos7&lt;/li>
+&lt;li>root权限&lt;/li>
+&lt;/ul>
+&lt;h2 id="实施方案">实施方案&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>内网中一台&lt;strong>主机A&lt;/strong> (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>主机A&lt;/strong>对内网提供 NTP 服务&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>内网其他机器通过&lt;strong>主机A&lt;/strong>进行对时&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="实施过程">实施过程&lt;/h2>
+&lt;h3 id="主机a设置">主机A设置&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装NTP软件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">yum -y install ntp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编辑NTP配置&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vim /etc/ntp.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>ntp.conf&lt;/code> 配置如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-properties" data-lang="properties">&lt;span class="line">&lt;span class="cl">&lt;span class="na">driftfile&lt;/span> &lt;span class="s">/var/lib/ntp/drift&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 默认拒绝客户端所有操作&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict&lt;/span> &lt;span class="s">default kod notrap nomodify nopeer noquery&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 允许本地操作&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict&lt;/span> &lt;span class="s">127.0.0.1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="s">:1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 允许该网段同步时间，但不可修改NTP服务器时间&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict&lt;/span> &lt;span class="s">172.16.59.0 mask 255.255.255.0 nomodify&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 用于NTPD的上级服务器、本机时钟的同步,以及时钟的层次stratum&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">server&lt;/span> &lt;span class="s">cn.ntp.org.cn prefer&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">server&lt;/span> &lt;span class="s">edu.ntp.org.cn iburst&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 本机时间兜底&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">server&lt;/span> &lt;span class="s">127.127.1.0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">fudge&lt;/span> &lt;span class="s">127.127.1.0 stratum 8&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">includefile&lt;/span> &lt;span class="s">/etc/ntp/crypto/pw&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">keys&lt;/span> &lt;span class="s">/etc/ntp/keys&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">disable&lt;/span> &lt;span class="s">monitor&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编辑 ntpd 文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vim /etc/sysconfig/ntpd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>ntpd&lt;/code> 文件修改如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">OPTIONS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;-u ntp:ntp -p /var/run/ntpd.pid&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># BIOS时间也会跟随改变&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">SYNC_HWCLOCK&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">yes&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看状态&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl status ntpd.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ntpstat
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 重启服务&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl restart ntpd.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 开机启动&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl &lt;span class="nb">enable&lt;/span> ntpd.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="其他主机设置">其他主机设置&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装 ntpdate 软件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">yum -y install ntp
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式2（严格按照顺序autogen-&amp;gt;ntpdate-&amp;gt;ntp）&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv autogen-libopts-5.18-5.el7.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv ntpdate-4.2.6p5-18.el7.centos.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rpm -hiv ntp-4.2.6p5-18.el7.centos.x86_64.rpm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编辑配置文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vi /etc/ntp.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>ntp.conf&lt;/code>配置如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">driftfile /var/lib/ntp/drift&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 默认拒绝客户端所有操作&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict default kod notrap nomodify nopeer noquery&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 禁止本身的server&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># server cn.ntp.org.cn prefer&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># server edu.ntp.org.cn iburst&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict 172.16.59.25&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict 127.0.0.1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">restrict ::1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">server 172.16.59.25&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># server 127.127.1.0 &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># fudge 127.127.1.0 stratum 10&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">includefile /etc/ntp/crypto/pw&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">keys /etc/ntp/keys&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">disable monitor&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 编辑 ntpd 文件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vim /etc/sysconfig/ntpd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>ntpd&lt;/code> 文件修改如下&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-ini" data-lang="ini">&lt;span class="line">&lt;span class="cl">&lt;span class="na">OPTIONS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;-u ntp:ntp -p /var/run/ntpd.pid&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># BIOS时间也会跟随改变&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">SYNC_HWCLOCK&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">yes&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">systemctl restart ntpd.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># 开机启动
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl enable ntpd.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="过程总结">过程总结&lt;/h2>
+&lt;h4 id="可能失败原因及分析">可能失败原因及分析&lt;/h4>
+&lt;ul>
+&lt;li>
+&lt;p>NTP 服务刚启动后，客户端无法同步时间，需等待几分钟才可以&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>关闭或者设置防火墙，允许123端口&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>网络上存在多个 NTP 服务器时，客户端切换同步源后需要重启&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>如果本机与 NTP 服务器时间误差超过1000s，则同步失败。可以按照下面命令解决。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更改时区为中国&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">timedatectl set-timezone &lt;span class="s2">&amp;#34;Asia/Shanghai&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 与外网或者主机A同步一次时间&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ntpdate cn.ntp.org.cn &lt;span class="c1">#主机A的时间同步&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ntpdate 主机A的IP &lt;span class="c1"># 内网其他机器的时间同步&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 注意 ntpdate 的缺点&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h3 id="stratum-的概念">stratum 的概念&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>顶层是1，值为0时表示层数不明，层的值是累加的，比如 NTP 授时方向是 A -&amp;gt; B -&amp;gt; C，假设 A 的层值是3，那么B从A获取到时间层值为4，C从B获取到时间，C的层值被置为5。一般只有整个 NTP 系统最顶层的服务器stratum才设为1。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>NTP 同步的方向是从stratum 值较小的节点向较大的节点传播，如果某个 NTP 客户端接收到 stratum 比自己还要大，那么 NTP 客户端认为自己的时间比接受到的时间更为精确，不会进行时间的更新。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>对于大部分 NTP 软件系统来说，服务启动后，stratum 值初始是0，一旦 NTP 服务获取到了时间，NTP 层次就设置为上级服务器 stratum +1。对于具备卫星时钟、原子钟的专业 NTP 设备，一般 stratum 值初始是1。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="ntpd运行过程">NTPD运行过程&lt;/h4>
+&lt;ul>
+&lt;li>
+&lt;p>NTPD 启动后，stratum 值初始是0，此时 NTPD 接收到 NTP 请求，回复 stratum 字段为0的 NTP 包，客户端接收后，发现 stratum 字段无效，拒绝更新时间，造成时间更新失败。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>几分钟后，NTPD从上级服务器获取到了更新，设置了正确的 stratum，回复 stratum 字段为 n+1的 NTP 包，客户端接收后，确认 stratum 有效，成功进行时间更新。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>在 NTPD 上级服务器不可用的情况下，NTPD 将本机时钟服务模拟为一个上级 NTP 服务器，地址使用环回127.127.1.0。服务启动几分钟后，NTPD 从 127.127.1.0 更新了时钟，设置了有效的 stratum，客户端接收后，成功进行时间更新。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="ntpd与ntpdate修改时间的区别">ntpd与ntpdate修改时间的区别&lt;/h4>
+&lt;p>ntpd 不仅仅是时间同步服务器，他还可以做客户端与标准时间服务器进行同步时间，而且是平滑同步，并非ntpdate立即同步，在生产环境中&lt;strong>慎用ntpdate&lt;/strong>，也正如此两者不可同时运行。&lt;/p>
+&lt;p>时钟的跃变，对于某些程序会导致&lt;strong>很严重&lt;/strong>的问题。许多应用程序依赖连续的时钟——毕竟，这是一项常见的假定，即，取得的时间是线性的，一些操作，例如数据库事务，通常会地依赖这样的事实：时间不会往回跳跃。不幸的是，ntpdate调整时间的方式就是我们所说的”跃变“：在获得一个时间之后，ntpdate使用settimeofday设置系统时间，这有几个非常明显的问题：&lt;/p>
+&lt;p>第一，这样做&lt;strong>不安全&lt;/strong>。ntpdate的设置依赖于ntp服务器的安全性，攻击者可以利用一些软件设计上的缺陷，拿下ntp服务器并令与其同步的服务器执行某些消耗性的任务。由于ntpdate采用的方式是跳变，跟随它的服务器无法知道是否发生了异常（时间不一样的时候，唯一的办法是以服务器为准）。&lt;/p>
+&lt;p>第二，这样做&lt;strong>不精确&lt;/strong>。一旦ntp服务器宕机，跟随它的服务器也就会无法同步时间。与此不同，ntpd不仅能够校准计算机的时间，而且能够校准计算机的时钟。&lt;/p>
+&lt;p>第三，这样做&lt;strong>不够优雅&lt;/strong>。由于是跳变，而不是使时间变快或变慢，依赖时序的程序会出错（例如，如果ntpdate发现你的时间快了，则可能会经历两个相同的时刻，对某些应用而言，这是致命的）。&lt;/p>
+&lt;p>因而，唯一一个可以令时间发生跳变的点，是计算机刚刚启动，但还没有启动很多服务的那个时候。其余的时候，理想的做法是使用ntpd来校准时钟，而不是调整计算机时钟上的时间。&lt;/p>
+&lt;p>NTPD 在和时间服务器的同步过程中，会把 BIOS 计时器的振荡频率偏差——或者说 Local Clock 的自然漂移(drift)——记录下来。这样即使网络有问题，本机仍然能维持一个相当精确的走时&lt;/p>
+&lt;h4 id="rtc硬件时间相关命令">RTC硬件时间相关命令&lt;/h4>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">clock –r 显示硬件时钟与日期
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">clock –s 将系统时钟调整为与目前的硬件时钟一致。
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">clock –w 将硬件时钟调整为与目前的系统时钟一致
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="查看和修改时间">查看和修改时间&lt;/h4>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看时间和日期&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">date
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">date -R
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">timedatectl
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看本月月历&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cal
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改时区&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tzselect
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更改时区为中国&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">timedatectl set-timezone &lt;span class="s2">&amp;#34;Asia/Shanghai&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置时间和日期&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 例如：将系统日期设定成2019年11月3日的命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">date -s 11/03/2019
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">#将系统时间设定成下午5点55分55秒的命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">date -s 17:55:55
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 将当前时间和日期写入BIOS，避免重启后失效**&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">hwclock -w
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 或者 clock -w&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>

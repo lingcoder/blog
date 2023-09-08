@@ -1,6 +1,96 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JDK on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/jdk/</link><description>Recent content in JDK on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jun 2020 07:59:17 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/jdk/index.xml" rel="self" type="application/rss+xml"/><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>安装 Oracle JDK Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。
-打开终端并运行命令添加 PPA： 1 sudo add-apt-repository ppa:webupd8team/java ​ 输入密码（输入时不会显示星号），然后按Enter键继续。
-然后运行命令安装Java 8安装程序并在提示时接受许可证： 1 sudo apt-get install oracle-java8-installer 安装完成后，Oracle Java 8应自动设置为默认值。 如果没有，运行命令：
-1 sudo apt-get install oracle-java8-set-default 卸载：
-移除PPA软件包总是很容易，只需打开终端并运行命令即可：
-1 sudo apt-get remove --autoremove oracle-java8-installer oracle-java10-installer 安装 Open JDK 添加 ppa 源 1 sudo add-apt-repository ppa:openjdk-r/ppa 升级系统资源包并安装openjdk1.8： 1 2 3 sudo apt-get update sudo apt-get install openjdk-8-jdk 在多个JDK版本中切换JDK 1 2 sudo update-alternatives --config java sudo update-alternatives --config javac 检查JDK版本： 1 java -version</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JDK on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/jdk/</link><description>Recent content in JDK on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jun 2020 07:59:17 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/jdk/index.xml" rel="self" type="application/rss+xml"/><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK&lt;/h2>
+&lt;p>Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。&lt;/p>
+&lt;ul>
+&lt;li>打开终端并运行命令添加 PPA：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo add-apt-repository ppa:webupd8team/java
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>​ 输入密码（输入时不会显示星号），然后按Enter键继续。&lt;/p>
+&lt;ul>
+&lt;li>然后运行命令安装Java 8安装程序并在提示时接受许可证：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt-get install oracle-java8-installer
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装完成后，Oracle Java 8应自动设置为默认值。 如果没有，运行命令：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt-get install oracle-java8-set-default
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>卸载：&lt;/p>
+&lt;p>移除PPA软件包总是很容易，只需打开终端并运行命令即可：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt-get remove --autoremove oracle-java8-installer oracle-java10-installer
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装-open-jdk">安装 Open JDK&lt;/h2>
+&lt;ul>
+&lt;li>添加 ppa 源&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo add-apt-repository ppa:openjdk-r/ppa
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>升级系统资源包并安装openjdk1.8：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt-get update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt-get install openjdk-8-jdk
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>在多个JDK版本中切换JDK&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo update-alternatives --config java
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo update-alternatives --config javac
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>检查JDK版本：&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">java -version
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
