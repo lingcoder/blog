@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>flutter on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/flutter/</link><description>Recent content in flutter on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 14 Sep 2023 22:59:57 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/flutter/index.xml" rel="self" type="application/rss+xml"/><item><title>Flutter安装与配置</title><link>https://www.lingcoder.com/p/flutter-installation-and-configuration/</link><pubDate>Thu, 14 Sep 2023 22:59:57 +0800</pubDate><guid>https://www.lingcoder.com/p/flutter-installation-and-configuration/</guid><description>&lt;h2 id="下载安装">下载安装&lt;/h2>
+&lt;p>&lt;a class="link" href="https://flutter.dev/docs/get-started/install" target="_blank" rel="noopener"
+>Flutter SDK&lt;/a>
+下载解压&lt;/p>
+&lt;h2 id="环境配置">环境配置&lt;/h2>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">PUB_HOSTED_URL&lt;/span>&lt;span class="o">=&lt;/span>https://pub.flutter-io.cn
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">FLUTTER_STORAGE_BASE_URL&lt;/span>&lt;span class="o">=&lt;/span>https://storage.flutter-io.cn
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git clone -b dev https://github.com/flutter/flutter.git
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$PWD&lt;/span>&lt;span class="s2">/flutter/bin:&lt;/span>&lt;span class="nv">$PATH&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ./flutter
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">flutter doctor
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
