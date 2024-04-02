@@ -1,9 +1,15 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>中间件 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/middleware/</link><description>Recent content in 中间件 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 13 Jan 2020 20:48:02 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/middleware/index.xml" rel="self" type="application/rss+xml"/><item><title>Redis安装和高可用集群搭建</title><link>https://www.lingcoder.com/p/redis-install-and-config/</link><pubDate>Mon, 13 Jan 2020 20:48:02 +0800</pubDate><guid>https://www.lingcoder.com/p/redis-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/redis-install-and-config/cover.jpg" alt="Featured image of post Redis安装和高可用集群搭建" />&lt;h1 id="redis安装和高可用集群搭建">Redis安装和高可用集群搭建&lt;/h1>
-&lt;h2 id="安装步骤">安装步骤&lt;/h2>
-&lt;p>官网下载:&lt;a class="link" href="https://redis.io/download" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>中间件 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/middleware/</link><description>Recent content in 中间件 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Mon, 13 Jan 2020 20:48:02 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/middleware/index.xml" rel="self" type="application/rss+xml"/><item><title>Redis安装和高可用集群搭建</title><link>https://www.lingcoder.com/p/redis-install-and-config/</link><pubDate>Mon, 13 Jan 2020 20:48:02 +0800</pubDate><guid>https://www.lingcoder.com/p/redis-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/redis-install-and-config/cover.jpg" alt="Featured image of post Redis安装和高可用集群搭建" />&lt;h1 id="redis安装和高可用集群搭建">
+&lt;a href="#redis%e5%ae%89%e8%a3%85%e5%92%8c%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
+Redis安装和高可用集群搭建
+&lt;/h1>&lt;h2 id="安装步骤">
+&lt;a href="#%e5%ae%89%e8%a3%85%e6%ad%a5%e9%aa%a4" class="header-anchor">#&lt;/a>
+安装步骤
+&lt;/h2>&lt;p>官网下载:&lt;a class="link" href="https://redis.io/download" target="_blank" rel="noopener"
 >https://redis.io/download&lt;/a>&lt;/p>
-&lt;h3 id="centos-7">CentOS 7&lt;/h3>
-&lt;div class="highlight">&lt;div class="chroma">
+&lt;h3 id="centos-7">
+&lt;a href="#centos-7" class="header-anchor">#&lt;/a>
+CentOS 7
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
@@ -37,8 +43,10 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make &lt;span class="nv">PREFIX&lt;/span>&lt;span class="o">=&lt;/span>/usr/local/redis-cluster install
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="ubunt-1804">Ubunt 18.04&lt;/h3>
-&lt;div class="highlight">&lt;div class="chroma">
+&lt;/div>&lt;h3 id="ubunt-1804">
+&lt;a href="#ubunt-1804" class="header-anchor">#&lt;/a>
+Ubunt 18.04
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
@@ -229,8 +237,10 @@
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ul>
-&lt;h2 id="集群搭建">集群搭建&lt;/h2>
-&lt;p>最低 3主 或者 3主3从&lt;/p>
+&lt;h2 id="集群搭建">
+&lt;a href="#%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
+集群搭建
+&lt;/h2>&lt;p>最低 3主 或者 3主3从&lt;/p>
 &lt;p>按照生产3台机器部署,每台2个实例。 可以把上面redis.conf 文件复制一份，涉及端口 6379 的地方修改端口为6380。另外2台同样操作。&lt;/p>
 &lt;p>举例&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -302,8 +312,10 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">appendonly.aof dump.rdb nodes-8001.conf
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="集群连接">集群连接&lt;/h2>
-&lt;div class="highlight">&lt;div class="chroma">
+&lt;/div>&lt;h2 id="集群连接">
+&lt;a href="#%e9%9b%86%e7%be%a4%e8%bf%9e%e6%8e%a5" class="header-anchor">#&lt;/a>
+集群连接
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
 &lt;/span>&lt;span class="lnt"> 2
@@ -341,17 +353,23 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./redis-cli -a xxx -c -h 192.168.137.201 -p &lt;span class="m">6380&lt;/span> shutdown
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" />&lt;h1 id="kafka集群搭建">Kafka集群搭建&lt;/h1>
-&lt;h2 id="使用场景">使用场景&lt;/h2>
-&lt;ul>
+&lt;/div></description></item><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" />&lt;h1 id="kafka集群搭建">
+&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
+Kafka集群搭建
+&lt;/h1>&lt;h2 id="使用场景">
+&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor">#&lt;/a>
+使用场景
+&lt;/h2>&lt;ul>
 &lt;li>异步处理： 如用户注册后，发送注册邮件，再发送注册短信。&lt;/li>
 &lt;li>应用解耦： 如用户下单后，订单系统需要通知库存系统。&lt;/li>
 &lt;li>流量削峰：如秒杀活动，一般会因为流量过大，导致流量暴增。&lt;/li>
 &lt;li>日志处理：解决大量日志采集后的传输问题。消息队列负责日志后续处理转发。&lt;/li>
 &lt;li>消息通讯：&lt;/li>
 &lt;/ul>
-&lt;h2 id="优点">优点&lt;/h2>
-&lt;ul>
+&lt;h2 id="优点">
+&lt;a href="#%e4%bc%98%e7%82%b9" class="header-anchor">#&lt;/a>
+优点
+&lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>高吞吐量，非常普通的应将kafka也可以支持每秒数百万的消息。&lt;/p>
 &lt;/li>
@@ -362,8 +380,10 @@
 &lt;p>支持hadoop并行数据加载。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="关键概念">关键概念：&lt;/h2>
-&lt;ul>
+&lt;h2 id="关键概念">
+&lt;a href="#%e5%85%b3%e9%94%ae%e6%a6%82%e5%bf%b5" class="header-anchor">#&lt;/a>
+关键概念：
+&lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>broker: kafka集群中的一台或多台服务器统称broker。&lt;/p>
 &lt;/li>
@@ -383,16 +403,22 @@
 &lt;p>consumers：消息和数据消费者，订阅topic并处理其发布的消息的过程叫做consumers。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="安装运行">安装运行&lt;/h2>
-&lt;p>官网地址：http://kafka.apache.org/downloads&lt;/p>
-&lt;h3 id="1-软件环境">1. 软件环境&lt;/h3>
-&lt;ul>
+&lt;h2 id="安装运行">
+&lt;a href="#%e5%ae%89%e8%a3%85%e8%bf%90%e8%a1%8c" class="header-anchor">#&lt;/a>
+安装运行
+&lt;/h2>&lt;p>官网地址：http://kafka.apache.org/downloads&lt;/p>
+&lt;h3 id="1-软件环境">
+&lt;a href="#1-%e8%bd%af%e4%bb%b6%e7%8e%af%e5%a2%83" class="header-anchor">#&lt;/a>
+1. 软件环境
+&lt;/h3>&lt;ul>
 &lt;li>CenOS7/Ubuntu 虚拟机三台。&lt;/li>
 &lt;li>已经搭建好的zookeeper集群。&lt;/li>
 &lt;li>软件版本：kafka_2.12-2.2.0&lt;/li>
 &lt;/ul>
-&lt;h3 id="2-安装步骤">2. 安装步骤&lt;/h3>
-&lt;ul>
+&lt;h3 id="2-安装步骤">
+&lt;a href="#2-%e5%ae%89%e8%a3%85%e6%ad%a5%e9%aa%a4" class="header-anchor">#&lt;/a>
+2. 安装步骤
+&lt;/h3>&lt;ul>
 &lt;li>下载官方二进制包&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -479,8 +505,10 @@ data-flex-basis="970px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">zookeeper.connect&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="3-启动运行">3. 启动运行&lt;/h3>
-&lt;div class="highlight">&lt;div class="chroma">
+&lt;/div>&lt;h3 id="3-启动运行">
+&lt;a href="#3-%e5%90%af%e5%8a%a8%e8%bf%90%e8%a1%8c" class="header-anchor">#&lt;/a>
+3. 启动运行
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
 &lt;/span>&lt;span class="lnt">2
@@ -513,8 +541,10 @@ alt="1558551474814"
 >&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="4-验证是否创建成功">4. 验证是否创建成功&lt;/h3>
-&lt;ul>
+&lt;h3 id="4-验证是否创建成功">
+&lt;a href="#4-%e9%aa%8c%e8%af%81%e6%98%af%e5%90%a6%e5%88%9b%e5%bb%ba%e6%88%90%e5%8a%9f" class="header-anchor">#&lt;/a>
+4. 验证是否创建成功
+&lt;/h3>&lt;ul>
 &lt;li>创建 topic&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -570,8 +600,10 @@ alt="1558551474814"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./kafka-topics.sh --list --zookeeper 192.168.137.1:2181
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="5-常用配置详解">5. 常用配置详解&lt;/h3>
-&lt;ul>
+&lt;/div>&lt;h3 id="5-常用配置详解">
+&lt;a href="#5-%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae%e8%af%a6%e8%a7%a3" class="header-anchor">#&lt;/a>
+5. 常用配置详解
+&lt;/h3>&lt;ul>
 &lt;li>&lt;strong>broker配置参数&lt;/strong>&lt;/li>
 &lt;/ul>
 &lt;table>
@@ -853,8 +885,10 @@ alt="1558551474814"
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h2 id="kafka-manager-搭建">Kafka-manager 搭建&lt;/h2>
-&lt;p>下载地址:https://github.com/yahoo/kafka-manager/releases&lt;/p>
+&lt;h2 id="kafka-manager-搭建">
+&lt;a href="#kafka-manager-%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
+Kafka-manager 搭建
+&lt;/h2>&lt;p>下载地址:https://github.com/yahoo/kafka-manager/releases&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -951,9 +985,13 @@ alt="1558551474814"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nohup ./kafka-manager -Dconfig.file&lt;span class="o">=&lt;/span>../conf/application.conf -Dhttp.port&lt;span class="o">=&lt;/span>&lt;span class="m">9000&lt;/span> &lt;span class="p">&amp;amp;&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">Zookeeper安装和配置&lt;/h1>
-&lt;h2 id="准备工作">准备工作&lt;/h2>
-&lt;ol>
+&lt;/div></description></item><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">
+&lt;a href="#zookeeper%e5%ae%89%e8%a3%85%e5%92%8c%e9%85%8d%e7%bd%ae" class="header-anchor">#&lt;/a>
+Zookeeper安装和配置
+&lt;/h1>&lt;h2 id="准备工作">
+&lt;a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" class="header-anchor">#&lt;/a>
+准备工作
+&lt;/h2>&lt;ol>
 &lt;li>
 &lt;p>安装 JDK,此步略。&lt;/p>
 &lt;/li>
@@ -995,8 +1033,10 @@ alt="1558551474814"
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ol>
-&lt;h2 id="单机版安装">单机版安装&lt;/h2>
-&lt;ol>
+&lt;h2 id="单机版安装">
+&lt;a href="#%e5%8d%95%e6%9c%ba%e7%89%88%e5%ae%89%e8%a3%85" class="header-anchor">#&lt;/a>
+单机版安装
+&lt;/h2>&lt;ol>
 &lt;li>
 &lt;p>切换到 zookeer 软链目录下执行&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
@@ -1047,8 +1087,10 @@ data-flex-basis="376px"
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ol>
-&lt;h2 id="集群安装">集群安装&lt;/h2>
-&lt;p>​ 在zoo.cfg 添加配置,并按照下面的配置部署到相应的机器上,并在相应的服务器的&lt;strong>数据目录&lt;/strong>下创建 &lt;code>myid&lt;/code> 文件,并填写本机对应的 server.NUM 数值.如 server.1,则填 1。&lt;/p>
+&lt;h2 id="集群安装">
+&lt;a href="#%e9%9b%86%e7%be%a4%e5%ae%89%e8%a3%85" class="header-anchor">#&lt;/a>
+集群安装
+&lt;/h2>&lt;p>​ 在zoo.cfg 添加配置,并按照下面的配置部署到相应的机器上,并在相应的服务器的&lt;strong>数据目录&lt;/strong>下创建 &lt;code>myid&lt;/code> 文件,并填写本机对应的 server.NUM 数值.如 server.1,则填 1。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -1071,8 +1113,10 @@ data-flex-basis="376px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># server.3=127.0.0.1:2890:3890 &lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="配置文件详解">配置文件详解&lt;/h2>
-&lt;p>Zookeeper 的默认配置文件为 &lt;code>zookeeper/conf/zoo_sample.cfg&lt;/code>，需要将其修改为 &lt;code>zoo.cfg&lt;/code>。&lt;/p>
+&lt;/div>&lt;h2 id="配置文件详解">
+&lt;a href="#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6%e8%af%a6%e8%a7%a3" class="header-anchor">#&lt;/a>
+配置文件详解
+&lt;/h2>&lt;p>Zookeeper 的默认配置文件为 &lt;code>zookeeper/conf/zoo_sample.cfg&lt;/code>，需要将其修改为 &lt;code>zoo.cfg&lt;/code>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1

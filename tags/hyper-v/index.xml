@@ -1,6 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hyper-V on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/hyper-v/</link><description>Recent content in Hyper-V on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 10 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/hyper-v/index.xml" rel="self" type="application/rss+xml"/><item><title>Hyper-V虚拟机固定Ip设置</title><link>https://www.lingcoder.com/p/hyper-v-fixed-ip/</link><pubDate>Fri, 10 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/hyper-v-fixed-ip/</guid><description>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/cover.png" alt="Featured image of post Hyper-V虚拟机固定Ip设置" />&lt;h1 id="hyper-v-虚拟机固定-ip设置">Hyper-V 虚拟机固定 Ip设置&lt;/h1>
-&lt;h2 id="需求来源">需求来源&lt;/h2>
-&lt;ul>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hyper-V on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/hyper-v/</link><description>Recent content in Hyper-V on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 10 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/hyper-v/index.xml" rel="self" type="application/rss+xml"/><item><title>Hyper-V虚拟机固定Ip设置</title><link>https://www.lingcoder.com/p/hyper-v-fixed-ip/</link><pubDate>Fri, 10 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/hyper-v-fixed-ip/</guid><description>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/cover.png" alt="Featured image of post Hyper-V虚拟机固定Ip设置" />&lt;h1 id="hyper-v-虚拟机固定-ip设置">
+&lt;a href="#hyper-v-%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%9b%ba%e5%ae%9a-ip%e8%ae%be%e7%bd%ae" class="header-anchor">#&lt;/a>
+Hyper-V 虚拟机固定 Ip设置
+&lt;/h1>&lt;h2 id="需求来源">
+&lt;a href="#%e9%9c%80%e6%b1%82%e6%9d%a5%e6%ba%90" class="header-anchor">#&lt;/a>
+需求来源
+&lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>忽略外部网络变化，时刻保持虚拟机的 IP 地址不变。&lt;/p>
 &lt;/li>
@@ -8,8 +12,10 @@
 &lt;p>物理机与虚拟机互访，虚拟机之间互访，虚拟机联网&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="设置步骤">设置步骤&lt;/h2>
-&lt;blockquote>
+&lt;h2 id="设置步骤">
+&lt;a href="#%e8%ae%be%e7%bd%ae%e6%ad%a5%e9%aa%a4" class="header-anchor">#&lt;/a>
+设置步骤
+&lt;/h2>&lt;blockquote>
 &lt;p>&lt;strong>固定虚拟机 IP&lt;/strong>&lt;/p>
 &lt;/blockquote>
 &lt;ul>
