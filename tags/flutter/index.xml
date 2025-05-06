@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Flutter on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/flutter/</link><description>Recent content in Flutter on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 14 Sep 2023 22:59:57 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/flutter/index.xml" rel="self" type="application/rss+xml"/><item><title>Flutter安装与配置</title><link>https://www.lingcoder.com/p/flutter-installation-and-configuration/</link><pubDate>Thu, 14 Sep 2023 22:59:57 +0800</pubDate><guid>https://www.lingcoder.com/p/flutter-installation-and-configuration/</guid><description>&lt;h2 id="下载安装">
-&lt;a href="#%e4%b8%8b%e8%bd%bd%e5%ae%89%e8%a3%85" class="header-anchor">#&lt;/a>
-下载安装
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Flutter on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/flutter/</link><description>Recent content in Flutter on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 14 Sep 2023 22:59:57 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/flutter/index.xml" rel="self" type="application/rss+xml"/><item><title>Flutter安装与配置</title><link>https://www.lingcoder.com/p/flutter-installation-and-configuration/</link><pubDate>Thu, 14 Sep 2023 22:59:57 +0800</pubDate><guid>https://www.lingcoder.com/p/flutter-installation-and-configuration/</guid><description>&lt;h2 id="下载安装">下载安装
 &lt;/h2>&lt;p>&lt;a class="link" href="https://flutter.dev/docs/get-started/install" target="_blank" rel="noopener"
 >Flutter SDK&lt;/a>
 或者使用Git从官方仓库下载&lt;/p>
@@ -13,9 +11,7 @@
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>下载解压&lt;/p>
-&lt;h2 id="环境配置">
-&lt;a href="#%e7%8e%af%e5%a2%83%e9%85%8d%e7%bd%ae" class="header-anchor">#&lt;/a>
-环境配置
+&lt;h2 id="环境配置">环境配置
 &lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1

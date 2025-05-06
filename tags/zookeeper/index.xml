@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Zookeeper on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/zookeeper/</link><description>Recent content in Zookeeper on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 14 May 2017 00:15:23 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/zookeeper/index.xml" rel="self" type="application/rss+xml"/><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">
-&lt;a href="#zookeeper%e5%ae%89%e8%a3%85%e5%92%8c%e9%85%8d%e7%bd%ae" class="header-anchor">#&lt;/a>
-Zookeeper安装和配置
-&lt;/h1>&lt;h2 id="准备工作">
-&lt;a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" class="header-anchor">#&lt;/a>
-准备工作
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Zookeeper on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/zookeeper/</link><description>Recent content in Zookeeper on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 14 May 2017 00:15:23 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/zookeeper/index.xml" rel="self" type="application/rss+xml"/><item><title>Zookeeper安装和配置</title><link>https://www.lingcoder.com/p/zookeeper-install-and-config/</link><pubDate>Sun, 14 May 2017 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/zookeeper-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/cover.png" alt="Featured image of post Zookeeper安装和配置" />&lt;h1 id="zookeeper安装和配置">Zookeeper安装和配置
+&lt;/h1>&lt;h2 id="准备工作">准备工作
 &lt;/h2>&lt;ol>
 &lt;li>
 &lt;p>安装 JDK,此步略。&lt;/p>
@@ -46,9 +42,7 @@ Zookeeper安装和配置
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ol>
-&lt;h2 id="单机版安装">
-&lt;a href="#%e5%8d%95%e6%9c%ba%e7%89%88%e5%ae%89%e8%a3%85" class="header-anchor">#&lt;/a>
-单机版安装
+&lt;h2 id="单机版安装">单机版安装
 &lt;/h2>&lt;ol>
 &lt;li>
 &lt;p>切换到 zookeer 软链目录下执行&lt;/p>
@@ -74,7 +68,7 @@ Zookeeper安装和配置
 &lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/zookeeper-install-and-config/config.png"
 width="622"
 height="396"
-srcset="https://www.lingcoder.com/p/zookeeper-install-and-config/config_hufeaa3cd6b3b77f482645a8917b280b77_49796_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/zookeeper-install-and-config/config_hufeaa3cd6b3b77f482645a8917b280b77_49796_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/zookeeper-install-and-config/config_hu_e177bb57034ddbc1.png 480w, https://www.lingcoder.com/p/zookeeper-install-and-config/config_hu_2c33dad0ec8292f2.png 1024w"
 loading="lazy"
 alt="config"
 class="gallery-image"
@@ -100,9 +94,7 @@ data-flex-basis="376px"
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ol>
-&lt;h2 id="集群安装">
-&lt;a href="#%e9%9b%86%e7%be%a4%e5%ae%89%e8%a3%85" class="header-anchor">#&lt;/a>
-集群安装
+&lt;h2 id="集群安装">集群安装
 &lt;/h2>&lt;p>​ 在zoo.cfg 添加配置,并按照下面的配置部署到相应的机器上,并在相应的服务器的&lt;strong>数据目录&lt;/strong>下创建 &lt;code>myid&lt;/code> 文件,并填写本机对应的 server.NUM 数值.如 server.1,则填 1。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
@@ -126,9 +118,7 @@ data-flex-basis="376px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># server.3=127.0.0.1:2890:3890 &lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="配置文件详解">
-&lt;a href="#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6%e8%af%a6%e8%a7%a3" class="header-anchor">#&lt;/a>
-配置文件详解
+&lt;/div>&lt;h2 id="配置文件详解">配置文件详解
 &lt;/h2>&lt;p>Zookeeper 的默认配置文件为 &lt;code>zookeeper/conf/zoo_sample.cfg&lt;/code>，需要将其修改为 &lt;code>zoo.cfg&lt;/code>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">

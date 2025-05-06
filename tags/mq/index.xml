@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQ on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/mq/</link><description>Recent content in MQ on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/mq/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" />&lt;h1 id="kafka集群搭建">
-&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
-Kafka集群搭建
-&lt;/h1>&lt;h2 id="使用场景">
-&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor">#&lt;/a>
-使用场景
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQ on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/mq/</link><description>Recent content in MQ on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/mq/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" />&lt;h1 id="kafka集群搭建">Kafka集群搭建
+&lt;/h1>&lt;h2 id="使用场景">使用场景
 &lt;/h2>&lt;ul>
 &lt;li>异步处理： 如用户注册后，发送注册邮件，再发送注册短信。&lt;/li>
 &lt;li>应用解耦： 如用户下单后，订单系统需要通知库存系统。&lt;/li>
@@ -11,9 +7,7 @@ Kafka集群搭建
 &lt;li>日志处理：解决大量日志采集后的传输问题。消息队列负责日志后续处理转发。&lt;/li>
 &lt;li>消息通讯：&lt;/li>
 &lt;/ul>
-&lt;h2 id="优点">
-&lt;a href="#%e4%bc%98%e7%82%b9" class="header-anchor">#&lt;/a>
-优点
+&lt;h2 id="优点">优点
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>高吞吐量，非常普通的应将kafka也可以支持每秒数百万的消息。&lt;/p>
@@ -25,9 +19,7 @@ Kafka集群搭建
 &lt;p>支持hadoop并行数据加载。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="关键概念">
-&lt;a href="#%e5%85%b3%e9%94%ae%e6%a6%82%e5%bf%b5" class="header-anchor">#&lt;/a>
-关键概念：
+&lt;h2 id="关键概念">关键概念：
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>broker: kafka集群中的一台或多台服务器统称broker。&lt;/p>
@@ -48,21 +40,15 @@ Kafka集群搭建
 &lt;p>consumers：消息和数据消费者，订阅topic并处理其发布的消息的过程叫做consumers。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="安装运行">
-&lt;a href="#%e5%ae%89%e8%a3%85%e8%bf%90%e8%a1%8c" class="header-anchor">#&lt;/a>
-安装运行
+&lt;h2 id="安装运行">安装运行
 &lt;/h2>&lt;p>官网地址：http://kafka.apache.org/downloads&lt;/p>
-&lt;h3 id="1-软件环境">
-&lt;a href="#1-%e8%bd%af%e4%bb%b6%e7%8e%af%e5%a2%83" class="header-anchor">#&lt;/a>
-1. 软件环境
+&lt;h3 id="1-软件环境">1. 软件环境
 &lt;/h3>&lt;ul>
 &lt;li>CenOS7/Ubuntu 虚拟机三台。&lt;/li>
 &lt;li>已经搭建好的zookeeper集群。&lt;/li>
 &lt;li>软件版本：kafka_2.12-2.2.0&lt;/li>
 &lt;/ul>
-&lt;h3 id="2-安装步骤">
-&lt;a href="#2-%e5%ae%89%e8%a3%85%e6%ad%a5%e9%aa%a4" class="header-anchor">#&lt;/a>
-2. 安装步骤
+&lt;h3 id="2-安装步骤">2. 安装步骤
 &lt;/h3>&lt;ul>
 &lt;li>下载官方二进制包&lt;/li>
 &lt;/ul>
@@ -77,7 +63,7 @@ Kafka集群搭建
 &lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1.png"
 width="837"
 height="207"
-srcset="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu11d73f80b390bb61f902452b2e4bc898_19929_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu11d73f80b390bb61f902452b2e4bc898_19929_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu_10e674885eadcfe7.png 480w, https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu_17351769a9dfc280.png 1024w"
 loading="lazy"
 alt="1558545503830"
 class="gallery-image"
@@ -150,9 +136,7 @@ data-flex-basis="970px"
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">zookeeper.connect&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="3-启动运行">
-&lt;a href="#3-%e5%90%af%e5%8a%a8%e8%bf%90%e8%a1%8c" class="header-anchor">#&lt;/a>
-3. 启动运行
+&lt;/div>&lt;h3 id="3-启动运行">3. 启动运行
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -186,9 +170,7 @@ alt="1558551474814"
 >&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="4-验证是否创建成功">
-&lt;a href="#4-%e9%aa%8c%e8%af%81%e6%98%af%e5%90%a6%e5%88%9b%e5%bb%ba%e6%88%90%e5%8a%9f" class="header-anchor">#&lt;/a>
-4. 验证是否创建成功
+&lt;h3 id="4-验证是否创建成功">4. 验证是否创建成功
 &lt;/h3>&lt;ul>
 &lt;li>创建 topic&lt;/li>
 &lt;/ul>
@@ -205,8 +187,7 @@ alt="1558551474814"
 &lt;p>&lt;code>--replication-factor 2&lt;/code> // 复制两份
 &lt;code>--partitions 1&lt;/code> // 创建1个分区
 &lt;code>--topic&lt;/code> // 主题为my-topic
-&lt;code>-- --zookeeper&lt;/code> // 此处为为zookeeper监听的地址&lt;/p>
-&lt;/blockquote>
+&lt;code>-- --zookeeper&lt;/code> // 此处为为zookeeper监听的地址&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>创建生产者 producer&lt;/li>
 &lt;/ul>
@@ -245,9 +226,7 @@ alt="1558551474814"
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./kafka-topics.sh --list --zookeeper 192.168.137.1:2181
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="5-常用配置详解">
-&lt;a href="#5-%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae%e8%af%a6%e8%a7%a3" class="header-anchor">#&lt;/a>
-5. 常用配置详解
+&lt;/div>&lt;h3 id="5-常用配置详解">5. 常用配置详解
 &lt;/h3>&lt;ul>
 &lt;li>&lt;strong>broker配置参数&lt;/strong>&lt;/li>
 &lt;/ul>
@@ -530,9 +509,7 @@ alt="1558551474814"
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
-&lt;h2 id="kafka-manager-搭建">
-&lt;a href="#kafka-manager-%e6%90%ad%e5%bb%ba" class="header-anchor">#&lt;/a>
-Kafka-manager 搭建
+&lt;h2 id="kafka-manager-搭建">Kafka-manager 搭建
 &lt;/h2>&lt;p>下载地址:https://github.com/yahoo/kafka-manager/releases&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">

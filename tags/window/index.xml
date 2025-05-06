@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Window on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/window/</link><description>Recent content in Window on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 10 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/window/index.xml" rel="self" type="application/rss+xml"/><item><title>Hyper-V虚拟机固定Ip设置</title><link>https://www.lingcoder.com/p/hyper-v-fixed-ip/</link><pubDate>Fri, 10 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/hyper-v-fixed-ip/</guid><description>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/cover.png" alt="Featured image of post Hyper-V虚拟机固定Ip设置" />&lt;h1 id="hyper-v-虚拟机固定-ip设置">
-&lt;a href="#hyper-v-%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%9b%ba%e5%ae%9a-ip%e8%ae%be%e7%bd%ae" class="header-anchor">#&lt;/a>
-Hyper-V 虚拟机固定 Ip设置
-&lt;/h1>&lt;h2 id="需求来源">
-&lt;a href="#%e9%9c%80%e6%b1%82%e6%9d%a5%e6%ba%90" class="header-anchor">#&lt;/a>
-需求来源
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Window on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/window/</link><description>Recent content in Window on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 10 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/window/index.xml" rel="self" type="application/rss+xml"/><item><title>Hyper-V虚拟机固定Ip设置</title><link>https://www.lingcoder.com/p/hyper-v-fixed-ip/</link><pubDate>Fri, 10 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/hyper-v-fixed-ip/</guid><description>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/cover.png" alt="Featured image of post Hyper-V虚拟机固定Ip设置" />&lt;h1 id="hyper-v-虚拟机固定-ip设置">Hyper-V 虚拟机固定 Ip设置
+&lt;/h1>&lt;h2 id="需求来源">需求来源
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>忽略外部网络变化，时刻保持虚拟机的 IP 地址不变。&lt;/p>
@@ -12,12 +8,9 @@ Hyper-V 虚拟机固定 Ip设置
 &lt;p>物理机与虚拟机互访，虚拟机之间互访，虚拟机联网&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="设置步骤">
-&lt;a href="#%e8%ae%be%e7%bd%ae%e6%ad%a5%e9%aa%a4" class="header-anchor">#&lt;/a>
-设置步骤
+&lt;h2 id="设置步骤">设置步骤
 &lt;/h2>&lt;blockquote>
-&lt;p>&lt;strong>固定虚拟机 IP&lt;/strong>&lt;/p>
-&lt;/blockquote>
+&lt;p>&lt;strong>固定虚拟机 IP&lt;/strong>&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>以 &lt;code>192.168.137.X&lt;/code> 网段，&lt;code>CentOS-7&lt;/code> 操作系统为例。查看虚拟机 IP&lt;/li>
 &lt;/ul>
@@ -32,7 +25,7 @@ Hyper-V 虚拟机固定 Ip设置
 &lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467.png"
 width="681"
 height="242"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu3cb8db2dee8c7f9d34a3e40a2a64974f_29355_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu3cb8db2dee8c7f9d34a3e40a2a64974f_29355_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu_b9fc6117e6edf758.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557467044467_hu_6dabed0ed4f4973a.png 1024w"
 loading="lazy"
 alt="1557467044467"
 class="gallery-image"
@@ -78,7 +71,7 @@ data-flex-basis="675px"
 &lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445.gif"
 width="786"
 height="480"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu9c1a5652b0305e66738c559192f7c880_4324562_480x0_resize_box_1.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu9c1a5652b0305e66738c559192f7c880_4324562_1024x0_resize_box_1.gif 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu_ebbac964a9071b88.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510170445_hu_b3862abb0784296a.gif 1024w"
 loading="lazy"
 alt="20190510170445.gif"
 class="gallery-image"
@@ -150,7 +143,7 @@ data-flex-basis="393px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062.png"
 width="606"
 height="449"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu9f8f264c07e73b80b3415883eb03ee4a_27323_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu9f8f264c07e73b80b3415883eb03ee4a_27323_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu_a57427a08fa86c49.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481928062_hu_f32d08f969fa5bc9.png 1024w"
 loading="lazy"
 alt="1557481928062"
 class="gallery-image"
@@ -160,7 +153,7 @@ data-flex-basis="323px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186.png"
 width="714"
 height="317"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu36e99ac2540bb49d3f2e585cfdf6fda6_22782_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu36e99ac2540bb49d3f2e585cfdf6fda6_22782_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu_ac88fe0fe29aea88.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482081186_hu_38961176a945a8a3.png 1024w"
 loading="lazy"
 alt="1557482081186"
 class="gallery-image"
@@ -170,7 +163,7 @@ data-flex-basis="540px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032.png"
 width="597"
 height="650"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hub23063bbfeecbdd04a88a6b5c907d682_37954_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hub23063bbfeecbdd04a88a6b5c907d682_37954_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hu_fd5f9d4f2363dc5.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557482571032_hu_7d4b69642e32982e.png 1024w"
 loading="lazy"
 alt="1557482571032"
 class="gallery-image"
@@ -181,7 +174,7 @@ data-flex-basis="220px"
 &lt;li>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915.gif"
 width="720"
 height="676"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu859bc4283899cf903d711302603251de_7232276_480x0_resize_box_1.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu859bc4283899cf903d711302603251de_7232276_1024x0_resize_box_1.gif 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu_17ffa3eca051f6df.gif 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/20190510175915_hu_1fca7f2d3d6c0f65.gif 1024w"
 loading="lazy"
 alt="20190510175915"
 class="gallery-image"
@@ -193,7 +186,7 @@ data-flex-basis="255px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729.png"
 width="694"
 height="410"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu83e69eb1525e8c724a72cf3072dd53d7_21264_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu83e69eb1525e8c724a72cf3072dd53d7_21264_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu_926aabbdaab4f302.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557481755729_hu_2a0ac09e57838032.png 1024w"
 loading="lazy"
 alt="1557481755729"
 class="gallery-image"
@@ -206,7 +199,7 @@ data-flex-basis="406px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638.png"
 width="825"
 height="826"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu9a2a54753342b2c5687d6614e9770392_50796_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu9a2a54753342b2c5687d6614e9770392_50796_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu_fb6911e0c95b9477.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483196638_hu_2bb1141fa0817ae1.png 1024w"
 loading="lazy"
 alt="1557483196638"
 class="gallery-image"
@@ -219,7 +212,7 @@ data-flex-basis="239px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628.png"
 width="601"
 height="578"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hue2c9b1dc9edac633ef94114f6a1e6647_45144_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hue2c9b1dc9edac633ef94114f6a1e6647_45144_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hu_f2a2b6be8ee4b66a.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483291628_hu_646d35708e38dd8d.png 1024w"
 loading="lazy"
 alt="1557483291628"
 class="gallery-image"
@@ -232,7 +225,7 @@ data-flex-basis="249px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164.png"
 width="479"
 height="588"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu5628f25c53fe4a149f2b8ed2a90d4a7d_40892_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu5628f25c53fe4a149f2b8ed2a90d4a7d_40892_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu_e78f4abfea05971.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483349164_hu_8bcf6d6a91192d9f.png 1024w"
 loading="lazy"
 alt="1557483349164"
 class="gallery-image"
@@ -240,12 +233,11 @@ data-flex-grow="81"
 data-flex-basis="195px"
 >&lt;/p>
 &lt;blockquote>
-&lt;p>&lt;strong>虚拟机联网&lt;/strong>&lt;/p>
-&lt;/blockquote>
+&lt;p>&lt;strong>虚拟机联网&lt;/strong>&lt;/p>&lt;/blockquote>
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593.png"
 width="278"
 height="294"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_huaa1b00753d610a5d8dead77ee7630279_20943_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_huaa1b00753d610a5d8dead77ee7630279_20943_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_hu_ac7f234f2d31d8c5.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483478593_hu_2952c7651ffbf14e.png 1024w"
 loading="lazy"
 alt="1557483478593"
 class="gallery-image"
@@ -255,7 +247,7 @@ data-flex-basis="226px"
 &lt;p>&lt;img src="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928.png"
 width="435"
 height="605"
-srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu91b339f6126775053e5a29abdc1737b4_31861_480x0_resize_box_3.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu91b339f6126775053e5a29abdc1737b4_31861_1024x0_resize_box_3.png 1024w"
+srcset="https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu_a6336e7747818847.png 480w, https://www.lingcoder.com/p/hyper-v-fixed-ip/1557483431928_hu_4a748b2226788d9a.png 1024w"
 loading="lazy"
 alt="1557483431928"
 class="gallery-image"

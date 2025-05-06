@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/linux/</link><description>Recent content in Linux on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jun 2020 07:59:17 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">
-&lt;a href="#%e5%ae%89%e8%a3%85-oracle-jdk" class="header-anchor">#&lt;/a>
-安装 Oracle JDK
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/linux/</link><description>Recent content in Linux on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 18 Jun 2020 07:59:17 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk">安装 Oracle JDK
 &lt;/h2>&lt;p>Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。&lt;/p>
 &lt;ul>
 &lt;li>打开终端并运行命令添加 PPA：&lt;/li>
@@ -44,9 +42,7 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt-get remove --autoremove oracle-java8-installer oracle-java10-installer
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="安装-open-jdk">
-&lt;a href="#%e5%ae%89%e8%a3%85-open-jdk" class="header-anchor">#&lt;/a>
-安装 Open JDK
+&lt;/div>&lt;h2 id="安装-open-jdk">安装 Open JDK
 &lt;/h2>&lt;ul>
 &lt;li>添加 ppa 源&lt;/li>
 &lt;/ul>
@@ -97,25 +93,17 @@
 &lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">java -version
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div></description></item><item><title>内网环境集群主机的时间同步</title><link>https://www.lingcoder.com/p/intranet-host-ntp/</link><pubDate>Fri, 14 Jun 2019 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/intranet-host-ntp/</guid><description>&lt;img src="https://www.lingcoder.com/p/intranet-host-ntp/cover.png" alt="Featured image of post 内网环境集群主机的时间同步" />&lt;h1 id="内网环境集群主机的时间同步">
-&lt;a href="#%e5%86%85%e7%bd%91%e7%8e%af%e5%a2%83%e9%9b%86%e7%be%a4%e4%b8%bb%e6%9c%ba%e7%9a%84%e6%97%b6%e9%97%b4%e5%90%8c%e6%ad%a5" class="header-anchor">#&lt;/a>
-内网环境集群主机的时间同步
-&lt;/h1>&lt;h2 id="场景描述">
-&lt;a href="#%e5%9c%ba%e6%99%af%e6%8f%8f%e8%bf%b0" class="header-anchor">#&lt;/a>
-场景描述
+&lt;/div></description></item><item><title>内网环境集群主机的时间同步</title><link>https://www.lingcoder.com/p/intranet-host-ntp/</link><pubDate>Fri, 14 Jun 2019 00:15:23 +0800</pubDate><guid>https://www.lingcoder.com/p/intranet-host-ntp/</guid><description>&lt;img src="https://www.lingcoder.com/p/intranet-host-ntp/cover.png" alt="Featured image of post 内网环境集群主机的时间同步" />&lt;h1 id="内网环境集群主机的时间同步">内网环境集群主机的时间同步
+&lt;/h1>&lt;h2 id="场景描述">场景描述
 &lt;/h2>&lt;ul>
 &lt;li>内网主机之间时间不一致，需要作同步；主机多数不能连接外网，只有极少数几台能连接外网&lt;/li>
 &lt;/ul>
-&lt;h2 id="系统环境">
-&lt;a href="#%e7%b3%bb%e7%bb%9f%e7%8e%af%e5%a2%83" class="header-anchor">#&lt;/a>
-系统环境
+&lt;h2 id="系统环境">系统环境
 &lt;/h2>&lt;ul>
 &lt;li>centos7&lt;/li>
 &lt;li>root权限&lt;/li>
 &lt;/ul>
-&lt;h2 id="实施方案">
-&lt;a href="#%e5%ae%9e%e6%96%bd%e6%96%b9%e6%a1%88" class="header-anchor">#&lt;/a>
-实施方案
+&lt;h2 id="实施方案">实施方案
 &lt;/h2>&lt;ul>
 &lt;li>
 &lt;p>内网中一台&lt;strong>主机A&lt;/strong> (如172.16.59.25)与外网互通，通过外网 NTP 服务器同步时间&lt;/p>
@@ -127,12 +115,8 @@
 &lt;p>内网其他机器通过&lt;strong>主机A&lt;/strong>进行对时&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="实施过程">
-&lt;a href="#%e5%ae%9e%e6%96%bd%e8%bf%87%e7%a8%8b" class="header-anchor">#&lt;/a>
-实施过程
-&lt;/h2>&lt;h3 id="主机a设置">
-&lt;a href="#%e4%b8%bb%e6%9c%baa%e8%ae%be%e7%bd%ae" class="header-anchor">#&lt;/a>
-主机A设置
+&lt;h2 id="实施过程">实施过程
+&lt;/h2>&lt;h3 id="主机a设置">主机A设置
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -247,9 +231,7 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl &lt;span class="nb">enable&lt;/span> ntpd.service
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h3 id="其他主机设置">
-&lt;a href="#%e5%85%b6%e4%bb%96%e4%b8%bb%e6%9c%ba%e8%ae%be%e7%bd%ae" class="header-anchor">#&lt;/a>
-其他主机设置
+&lt;/div>&lt;h3 id="其他主机设置">其他主机设置
 &lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -354,12 +336,8 @@
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl enable ntpd.service
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h2 id="过程总结">
-&lt;a href="#%e8%bf%87%e7%a8%8b%e6%80%bb%e7%bb%93" class="header-anchor">#&lt;/a>
-过程总结
-&lt;/h2>&lt;h4 id="可能失败原因及分析">
-&lt;a href="#%e5%8f%af%e8%83%bd%e5%a4%b1%e8%b4%a5%e5%8e%9f%e5%9b%a0%e5%8f%8a%e5%88%86%e6%9e%90" class="header-anchor">#&lt;/a>
-可能失败原因及分析
+&lt;/div>&lt;h2 id="过程总结">过程总结
+&lt;/h2>&lt;h4 id="可能失败原因及分析">可能失败原因及分析
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>NTP 服务刚启动后，客户端无法同步时间，需等待几分钟才可以&lt;/p>
@@ -392,9 +370,7 @@
 &lt;/div>
 &lt;/div>&lt;/li>
 &lt;/ul>
-&lt;h3 id="stratum-的概念">
-&lt;a href="#stratum-%e7%9a%84%e6%a6%82%e5%bf%b5" class="header-anchor">#&lt;/a>
-stratum 的概念
+&lt;h3 id="stratum-的概念">stratum 的概念
 &lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>顶层是1，值为0时表示层数不明，层的值是累加的，比如 NTP 授时方向是 A -&amp;gt; B -&amp;gt; C，假设 A 的层值是3，那么B从A获取到时间层值为4，C从B获取到时间，C的层值被置为5。一般只有整个 NTP 系统最顶层的服务器stratum才设为1。&lt;/p>
@@ -406,9 +382,7 @@ stratum 的概念
 &lt;p>对于大部分 NTP 软件系统来说，服务启动后，stratum 值初始是0，一旦 NTP 服务获取到了时间，NTP 层次就设置为上级服务器 stratum +1。对于具备卫星时钟、原子钟的专业 NTP 设备，一般 stratum 值初始是1。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h4 id="ntpd运行过程">
-&lt;a href="#ntpd%e8%bf%90%e8%a1%8c%e8%bf%87%e7%a8%8b" class="header-anchor">#&lt;/a>
-NTPD运行过程
+&lt;h4 id="ntpd运行过程">NTPD运行过程
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>NTPD 启动后，stratum 值初始是0，此时 NTPD 接收到 NTP 请求，回复 stratum 字段为0的 NTP 包，客户端接收后，发现 stratum 字段无效，拒绝更新时间，造成时间更新失败。&lt;/p>
@@ -420,9 +394,7 @@ NTPD运行过程
 &lt;p>在 NTPD 上级服务器不可用的情况下，NTPD 将本机时钟服务模拟为一个上级 NTP 服务器，地址使用环回127.127.1.0。服务启动几分钟后，NTPD 从 127.127.1.0 更新了时钟，设置了有效的 stratum，客户端接收后，成功进行时间更新。&lt;/p>
 &lt;/li>
 &lt;/ul>
-&lt;h4 id="ntpd与ntpdate修改时间的区别">
-&lt;a href="#ntpd%e4%b8%8entpdate%e4%bf%ae%e6%94%b9%e6%97%b6%e9%97%b4%e7%9a%84%e5%8c%ba%e5%88%ab" class="header-anchor">#&lt;/a>
-ntpd与ntpdate修改时间的区别
+&lt;h4 id="ntpd与ntpdate修改时间的区别">ntpd与ntpdate修改时间的区别
 &lt;/h4>&lt;p>ntpd 不仅仅是时间同步服务器，他还可以做客户端与标准时间服务器进行同步时间，而且是平滑同步，并非ntpdate立即同步，在生产环境中&lt;strong>慎用ntpdate&lt;/strong>，也正如此两者不可同时运行。&lt;/p>
 &lt;p>时钟的跃变，对于某些程序会导致&lt;strong>很严重&lt;/strong>的问题。许多应用程序依赖连续的时钟——毕竟，这是一项常见的假定，即，取得的时间是线性的，一些操作，例如数据库事务，通常会地依赖这样的事实：时间不会往回跳跃。不幸的是，ntpdate调整时间的方式就是我们所说的”跃变“：在获得一个时间之后，ntpdate使用settimeofday设置系统时间，这有几个非常明显的问题：&lt;/p>
 &lt;p>第一，这样做&lt;strong>不安全&lt;/strong>。ntpdate的设置依赖于ntp服务器的安全性，攻击者可以利用一些软件设计上的缺陷，拿下ntp服务器并令与其同步的服务器执行某些消耗性的任务。由于ntpdate采用的方式是跳变，跟随它的服务器无法知道是否发生了异常（时间不一样的时候，唯一的办法是以服务器为准）。&lt;/p>
@@ -430,9 +402,7 @@ ntpd与ntpdate修改时间的区别
 &lt;p>第三，这样做&lt;strong>不够优雅&lt;/strong>。由于是跳变，而不是使时间变快或变慢，依赖时序的程序会出错（例如，如果ntpdate发现你的时间快了，则可能会经历两个相同的时刻，对某些应用而言，这是致命的）。&lt;/p>
 &lt;p>因而，唯一一个可以令时间发生跳变的点，是计算机刚刚启动，但还没有启动很多服务的那个时候。其余的时候，理想的做法是使用ntpd来校准时钟，而不是调整计算机时钟上的时间。&lt;/p>
 &lt;p>NTPD 在和时间服务器的同步过程中，会把 BIOS 计时器的振荡频率偏差——或者说 Local Clock 的自然漂移(drift)——记录下来。这样即使网络有问题，本机仍然能维持一个相当精确的走时&lt;/p>
-&lt;h4 id="rtc硬件时间相关命令">
-&lt;a href="#rtc%e7%a1%ac%e4%bb%b6%e6%97%b6%e9%97%b4%e7%9b%b8%e5%85%b3%e5%91%bd%e4%bb%a4" class="header-anchor">#&lt;/a>
-RTC硬件时间相关命令
+&lt;h4 id="rtc硬件时间相关命令">RTC硬件时间相关命令
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
@@ -449,9 +419,7 @@ RTC硬件时间相关命令
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">clock –w 将硬件时钟调整为与目前的系统时钟一致
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;h4 id="查看和修改时间">
-&lt;a href="#%e6%9f%a5%e7%9c%8b%e5%92%8c%e4%bf%ae%e6%94%b9%e6%97%b6%e9%97%b4" class="header-anchor">#&lt;/a>
-查看和修改时间
+&lt;/div>&lt;h4 id="查看和修改时间">查看和修改时间
 &lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
