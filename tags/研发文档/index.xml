@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>研发文档 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/</link><description>Recent content in 研发文档 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 06 May 2025 17:48:31 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/index.xml" rel="self" type="application/rss+xml"/><item><title>软件研发生命周期中的核心文档梳理</title><link>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</link><pubDate>Tue, 06 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</guid><description>&lt;p>在软件研发项目的全流程中，文档是一项不可或缺的支撑工具。它们不仅仅是“凭证”，更是团队协作、需求澄清、技术落地、交付和维护的重要桥梁。对于管理者、产品、开发、测试乃至运维等不同角色，理解并正确使用每类文档，能有效提升项目的效率和质量。本文将对研发生命周期各阶段的主流文档进行梳理，着重说明其主要作用、使用场景和典型使用角色。&lt;/p>
-&lt;hr>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>研发文档 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/</link><description>Recent content in 研发文档 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 06 May 2025 17:48:31 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/index.xml" rel="self" type="application/rss+xml"/><item><title>软件研发生命周期中的核心文档梳理</title><link>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</link><pubDate>Tue, 06 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</guid><description>&lt;h1 id="简说设计模式-单例模式">简说设计模式-单例模式
+&lt;/h1>&lt;p>在软件研发项目的全流程中，文档是一项不可或缺的支撑工具。它们不仅仅是“凭证”，更是团队协作、需求澄清、技术落地、交付和维护的重要桥梁。对于管理者、产品、开发、测试乃至运维等不同角色，理解并正确使用每类文档，能有效提升项目的效率和质量。本文将对研发生命周期各阶段的主流文档进行梳理，着重说明其主要作用、使用场景和典型使用角色。&lt;/p>
 &lt;h2 id="1-项目启动与可行性分析阶段">1. 项目启动与可行性分析阶段
 &lt;/h2>&lt;h3 id="11-项目建议书立项文档">1.1 项目建议书/立项文档
 &lt;/h3>&lt;ul>
@@ -13,7 +13,6 @@
 &lt;li>&lt;strong>使用场景&lt;/strong>：创新性较强、规模较大的项目立项评审阶段。&lt;/li>
 &lt;li>&lt;strong>典型角色&lt;/strong>：架构师、技术负责人、项目管理。&lt;/li>
 &lt;/ul>
-&lt;hr>
 &lt;h2 id="2-需求分析阶段">2. 需求分析阶段
 &lt;/h2>&lt;h3 id="21-业务需求文档需求调研报告">2.1 业务需求文档/需求调研报告
 &lt;/h3>&lt;ul>
@@ -33,7 +32,6 @@
 &lt;li>&lt;strong>使用场景&lt;/strong>：需求澄清、界面评审、前后端协作。&lt;/li>
 &lt;li>&lt;strong>典型角色&lt;/strong>：产品经理、UI/UX设计师、开发、测试。&lt;/li>
 &lt;/ul>
-&lt;hr>
 &lt;h2 id="3-设计阶段">3. 设计阶段
 &lt;/h2>&lt;h3 id="31-概要设计说明书high-level-design-hld">3.1 概要设计说明书（High-Level Design, HLD）
 &lt;/h3>&lt;ul>
@@ -47,7 +45,6 @@
 &lt;li>&lt;strong>使用场景&lt;/strong>：开发任务分解、代码编写前、Code Review。&lt;/li>
 &lt;li>&lt;strong>典型角色&lt;/strong>：开发主程、开发工程师、测试人员、架构师。&lt;/li>
 &lt;/ul>
-&lt;hr>
 &lt;h2 id="4-实现与测试阶段">4. 实现与测试阶段
 &lt;/h2>&lt;h3 id="41-测试用例说明书--测试计划">4.1 测试用例说明书 / 测试计划
 &lt;/h3>&lt;ul>
@@ -61,7 +58,6 @@
 &lt;li>&lt;strong>使用场景&lt;/strong>：测试完成后、阶段性评审、最终上线决策。&lt;/li>
 &lt;li>&lt;strong>典型角色&lt;/strong>：测试工程师、项目经理、开发负责人。&lt;/li>
 &lt;/ul>
-&lt;hr>
 &lt;h2 id="5-上线与运维阶段">5. 上线与运维阶段
 &lt;/h2>&lt;h3 id="51-发布手册上线方案">5.1 发布手册/上线方案
 &lt;/h3>&lt;ul>
@@ -81,7 +77,5 @@
 &lt;li>&lt;strong>使用场景&lt;/strong>：系统上线运维、快速排障、知识传承。&lt;/li>
 &lt;li>&lt;strong>典型角色&lt;/strong>：运维工程师、技术支持、开发团队。&lt;/li>
 &lt;/ul>
-&lt;hr>
 &lt;h2 id="结语">结语
-&lt;/h2>&lt;p>文档贯穿软件研发全流程，不同文档的侧重点各有不同，针对的使用场景和主要角色也各异。正确理解和高效利用这些文档，有助于团队协作、信息传递和项目质量管控。不论项目大小，适度、规范、持续更新的文档体系，都是实现高质量交付与维护的关键保障。&lt;/p>
-&lt;hr></description></item></channel></rss>
+&lt;/h2>&lt;p>文档贯穿软件研发全流程，不同文档的侧重点各有不同，针对的使用场景和主要角色也各异。正确理解和高效利用这些文档，有助于团队协作、信息传递和项目质量管控。不论项目大小，适度、规范、持续更新的文档体系，都是实现高质量交付与维护的关键保障。&lt;/p></description></item></channel></rss>
