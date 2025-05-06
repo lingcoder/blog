@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>研发文档 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/</link><description>Recent content in 研发文档 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 06 May 2025 17:48:31 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E7%A0%94%E5%8F%91%E6%96%87%E6%A1%A3/index.xml" rel="self" type="application/rss+xml"/><item><title>软件研发生命周期中的核心文档梳理</title><link>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</link><pubDate>Tue, 06 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</guid><description>&lt;p>在软件研发项目的全流程中，文档是一项不可或缺的支撑工具。它们不仅仅是“凭证”，更是团队协作、需求澄清、技术落地、交付和维护的重要桥梁。对于管理者、产品、开发、测试乃至运维等不同角色，理解并正确使用每类文档，能有效提升项目的效率和质量。本文将对研发生命周期各阶段的主流文档进行梳理，着重说明其主要作用、使用场景和典型使用角色。&lt;/p>
+&lt;hr>
+&lt;h2 id="1-项目启动与可行性分析阶段">1. 项目启动与可行性分析阶段
+&lt;/h2>&lt;h3 id="11-项目建议书立项文档">1.1 项目建议书/立项文档
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：明确项目背景、预期目标和价值，论证开展该项目的合理性和必要性。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：项目正式启动前，项目申报、资源争取、重大决策时。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：项目负责人、高管、产品经理、业务方。&lt;/li>
+&lt;/ul>
+&lt;h3 id="12-可行性分析报告可选">1.2 可行性分析报告（可选）
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：多维度分析项目在技术、经济、资源、合规等方面的可行性与主要风险。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：创新性较强、规模较大的项目立项评审阶段。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：架构师、技术负责人、项目管理。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="2-需求分析阶段">2. 需求分析阶段
+&lt;/h2>&lt;h3 id="21-业务需求文档需求调研报告">2.1 业务需求文档/需求调研报告
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：全面记录用户实际业务流程、关键需求与问题点，从业务视角定义系统边界。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：需求调研、业务梳理、需求评审前期。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：业务分析师、产品经理、客户代表。&lt;/li>
+&lt;/ul>
+&lt;h3 id="22-软件需求规格说明书srs">2.2 软件需求规格说明书（SRS）
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：作为开发、测试、验收等一切后续工作的正式依据，将功能与非功能需求精确落地。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：需求评审、开发前需求冻结、变更管理、测试验收。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：产品经理、开发、测试、项目管理。&lt;/li>
+&lt;/ul>
+&lt;h3 id="23-原型图--交互设计文档可选">2.3 原型图 / 交互设计文档（可选）
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：通过界面视觉化，帮助各方对齐功能预期和操作流程，提高需求沟通效率。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：需求澄清、界面评审、前后端协作。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：产品经理、UI/UX设计师、开发、测试。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="3-设计阶段">3. 设计阶段
+&lt;/h2>&lt;h3 id="31-概要设计说明书high-level-design-hld">3.1 概要设计说明书（High-Level Design, HLD）
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：定义系统总体架构、模块划分、主要逻辑流程和关键技术选型，为详细设计和开发奠定基础。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：设计方案评审、团队分工、技术决策。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：架构师、技术负责人、开发主程、项目经理。&lt;/li>
+&lt;/ul>
+&lt;h3 id="32-详细设计说明书low-level-design-lld">3.2 详细设计说明书（Low-Level Design, LLD）
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：细致描述各个模块/功能的实现细节，包括数据结构、接口、核心算法和异常处理，为具体编码提供指引。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：开发任务分解、代码编写前、Code Review。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：开发主程、开发工程师、测试人员、架构师。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="4-实现与测试阶段">4. 实现与测试阶段
+&lt;/h2>&lt;h3 id="41-测试用例说明书--测试计划">4.1 测试用例说明书 / 测试计划
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：明确验证每一条需求和功能点的具体方式，涵盖正常/异常流程与边界场景。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：测试设计、开发自测、回归测试、验收测试。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：测试工程师、开发自测、产品经理。&lt;/li>
+&lt;/ul>
+&lt;h3 id="42-测试报告">4.2 测试报告
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：汇总测试执行结果与缺陷情况，为产品发布与质量判断提供依据。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：测试完成后、阶段性评审、最终上线决策。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：测试工程师、项目经理、开发负责人。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="5-上线与运维阶段">5. 上线与运维阶段
+&lt;/h2>&lt;h3 id="51-发布手册上线方案">5.1 发布手册/上线方案
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：规范发布流程，明确上线操作步骤、注意事项、回滚与应急措施。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：系统上线、版本发布、运维流程梳理。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：运维工程师、开发、实施人员。&lt;/li>
+&lt;/ul>
+&lt;h3 id="52-用户手册操作说明">5.2 用户手册/操作说明
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：指导终端用户或业务方规范使用系统，降低培训和支持成本。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：新系统推广、用户培训、客户支持。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：产品经理、技术支持、终端用户。&lt;/li>
+&lt;/ul>
+&lt;h3 id="53-运维手册技术支持文档">5.3 运维手册/技术支持文档
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>主要作用&lt;/strong>：梳理系统部署、监控、常见故障排查和恢复流程。&lt;/li>
+&lt;li>&lt;strong>使用场景&lt;/strong>：系统上线运维、快速排障、知识传承。&lt;/li>
+&lt;li>&lt;strong>典型角色&lt;/strong>：运维工程师、技术支持、开发团队。&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="结语">结语
+&lt;/h2>&lt;p>文档贯穿软件研发全流程，不同文档的侧重点各有不同，针对的使用场景和主要角色也各异。正确理解和高效利用这些文档，有助于团队协作、信息传递和项目质量管控。不论项目大小，适度、规范、持续更新的文档体系，都是实现高质量交付与维护的关键保障。&lt;/p>
+&lt;hr></description></item></channel></rss>
