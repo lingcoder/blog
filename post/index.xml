@@ -145,7 +145,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>Solana钱包专有标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>索拉纳钱包专有标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://ed25519.cr.yp.to/" target="_blank" rel="noopener"
 >Ed25519&lt;/a>: Solana 钱包采用的公私钥加密算法&lt;/li>
@@ -158,14 +158,14 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>Tron 钱包专有标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>波场钱包专有标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/multi-signature" target="_blank" rel="noopener"
 >Tron Multi-signature&lt;/a>：多签账户功能&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="32-bitcoin生态标准">3.2 Bitcoin生态标准
+&lt;h3 id="32-比特币生态标准">3.2 比特币生态标准
 &lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>交易与协议扩展&lt;/strong>&lt;/p>
@@ -218,7 +218,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="33-ethereum生态标准">3.3 Ethereum生态标准
+&lt;h3 id="33-以太坊生态标准">3.3 以太坊生态标准
 &lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>资产与合约标准&lt;/strong>&lt;/p>
@@ -262,7 +262,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h3 id="33-solana生态标准">3.3 Solana生态标准
+&lt;h3 id="33-索拉纳生态标准">3.3 索拉纳生态标准
 &lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>代币与资产标准&lt;/strong>&lt;/p>
@@ -295,7 +295,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h4 id="34-tron生态标准">3.4 TRON生态标准
+&lt;h4 id="34-波场生态标准">3.4 波场生态标准
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>资产与NFT标准&lt;/strong>&lt;/p>
