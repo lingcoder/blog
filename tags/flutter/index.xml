@@ -77,9 +77,8 @@
 &lt;/li>
 &lt;/ul>
 &lt;h2 id="3-标准提案规范">3. 标准提案规范
-&lt;/h2>&lt;h3 id="31-区块链提案">3.1 区块链提案
-&lt;/h3>&lt;h4 id="钱包相关">钱包相关
-&lt;/h4>&lt;ul>
+&lt;/h2>&lt;h3 id="31-钱包相关">3.1 钱包相关
+&lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>通用钱包标准&lt;/strong>&lt;/p>
 &lt;ul>
@@ -166,9 +165,8 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h4 id="生态标准">生态标准
-&lt;/h4>&lt;h5 id="btc链标准">BTC链标准
-&lt;/h5>&lt;ul>
+&lt;h3 id="32-bitcoin生态标准">3.2 Bitcoin生态标准
+&lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>交易与协议扩展&lt;/strong>&lt;/p>
 &lt;ul>
@@ -220,8 +218,8 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h5 id="evm链标准">EVM链标准
-&lt;/h5>&lt;ul>
+&lt;h3 id="33-ethereum生态标准">3.3 Ethereum生态标准
+&lt;/h3>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>资产与合约标准&lt;/strong>&lt;/p>
 &lt;ul>
@@ -264,8 +262,8 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h5 id="solana链标准">Solana链标准
-&lt;/h5>&lt;ul>
+&lt;h4 id="33-solana生态标准">3.3 Solana生态标准
+&lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>代币与资产标准&lt;/strong>&lt;/p>
 &lt;ul>
@@ -297,8 +295,8 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h5 id="tron链标准">TRON链标准
-&lt;/h5>&lt;ul>
+&lt;h4 id="34-tron生态标准">3.4 TRON生态标准
+&lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>资产与NFT标准&lt;/strong>&lt;/p>
 &lt;ul>
