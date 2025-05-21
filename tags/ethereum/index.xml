@@ -76,21 +76,28 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="3-标准规范">3. 标准规范
-&lt;/h2>&lt;h3 id="31-区块链标准">3.1 区块链标准
-&lt;/h3>&lt;h4 id="通用钱包标准">通用钱包标准
+&lt;h2 id="3-标准提案规范">3. 标准提案规范
+&lt;/h2>&lt;h3 id="31-区块链提案">3.1 区块链提案
+&lt;/h3>&lt;h4 id="钱包相关">钱包相关
 &lt;/h4>&lt;ul>
 &lt;li>
-&lt;p>&lt;strong>比特币标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>通用钱包标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki" target="_blank" rel="noopener"
->BIP-32&lt;/a>: 分层确定性钱包&lt;/li>
+>BIP-32&lt;/a>：分层确定性钱包（HD Wallets）&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" target="_blank" rel="noopener"
->BIP-39&lt;/a>: 助记词标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
->BIP-38&lt;/a>: 密码加密私钥（纸钱包、冷备份常用）&lt;/li>
+>BIP-39&lt;/a>：助记词生成与恢复&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki" target="_blank" rel="noopener"
->BIP-44&lt;/a>: 多币种账户结构&lt;/li>
+>BIP-44&lt;/a>：多币种、多账户HD路径结构&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0044.md" target="_blank" rel="noopener"
+>SLIP-0044&lt;/a>：币种编码&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
+>BIP-38&lt;/a>：加密私钥的安全增强（可选）&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>比特币钱包专有标准&lt;/strong>&lt;/p>
+&lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki" target="_blank" rel="noopener"
 >BIP-49&lt;/a>: 多网络支持&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki" target="_blank" rel="noopener"
@@ -104,7 +111,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>以太坊标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>以太坊钱包专有标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-55" target="_blank" rel="noopener"
 >EIP-55&lt;/a>: 校验和地址格式，用于防止用户输入错误的以太坊地址。&lt;/li>
@@ -138,154 +145,204 @@
 >EIP-6963&lt;/a>: 多钱包发现和选择，提升多钱包生态用户体验。&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul>
-&lt;h4 id="链特定标准">链特定标准
-&lt;/h4>&lt;ul>
 &lt;li>
-&lt;p>&lt;strong>EVM 链标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>Solana钱包专有标准&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://ed25519.cr.yp.to/" target="_blank" rel="noopener"
+>Ed25519&lt;/a>: Solana 钱包采用的公私钥加密算法&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/solana-labs/wallet-standard" target="_blank" rel="noopener"
+>Solana Wallet Standard&lt;/a>: 钱包与 DApp 连接与兼容协议&lt;/li>
+&lt;li>&lt;a class="link" href="https://solanapay.com/" target="_blank" rel="noopener"
+>Solana Pay&lt;/a>: 原生扫码/支付请求协议&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts" target="_blank" rel="noopener"
+>Solana Address/Account Model&lt;/a>：账户结构及模型&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/dapps/signing" target="_blank" rel="noopener"
+>Solana Sign Message&lt;/a>: 消息签名标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.solana.com/wallet-guide/file-system-wallet" target="_blank" rel="noopener"
+>Solana CLI Key Formats&lt;/a>: 钱包文件标准&lt;/li>
+&lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>代币标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>Tron 钱包专有标准&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://cn.developers.tron.network/docs/account-intro" target="_blank" rel="noopener"
+>Tron 地址格式与签名算法&lt;/a>：secp256k1 + Base58Check 地址格式（T开头）&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/browser-extension-wallet-api" target="_blank" rel="noopener"
+>TronLink API&lt;/a>：Tron 钱包与 DApp 连接通信接口&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/tronscan/tron-keystore" target="_blank" rel="noopener"
+>TronWalletKeystore (GitHub)&lt;/a>：钱包密钥加密存储&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/account-sign" target="_blank" rel="noopener"
+>Tron Sign Message&lt;/a>：原生消息签名/验证&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/multi-signature" target="_blank" rel="noopener"
+>Tron Multi-signature&lt;/a>：多签账户功能&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/hardware-integration" target="_blank" rel="noopener"
+>TRON Hardware Wallet Integration&lt;/a>：硬件钱包集成标准&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h4 id="生态标准">生态标准
+&lt;/h4>&lt;h5 id="btc链标准">BTC链标准
+&lt;/h5>&lt;ul>
+&lt;li>&lt;strong>交易与协议扩展&lt;/strong>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0002.mediawiki" target="_blank" rel="noopener"
+>BIP-2/BIP-9&lt;/a>: BIP规范流程/软分叉激活讨论&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki" target="_blank" rel="noopener"
+>BIP-21&lt;/a>: 比特币支付URI统一收款标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki" target="_blank" rel="noopener"
+>BIP-47&lt;/a>: 支付代码（静默支付/隐私增强）&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki" target="_blank" rel="noopener"
+>BIP-65&lt;/a>: OP_CHECKLOCKTIMEVERIFY时锁&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki" target="_blank" rel="noopener"
+>BIP-70&lt;/a>: 支付请求协议&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
+>BIP-174&lt;/a>: PSBT部分签名交易格式&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki" target="_blank" rel="noopener"
+>BIP-340/341/342&lt;/a>: Taproot/Schnorr签名/可扩展性升级&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>地址与账号模型&lt;/strong>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki" target="_blank" rel="noopener"
+>BIP-13&lt;/a>: 多重签名P2SH地址&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0170.mediawiki" target="_blank" rel="noopener"
+>BIP-170&lt;/a>: 长度检查/二维码兼容&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>隐私与效率&lt;/strong>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki" target="_blank" rel="noopener"
+>BIP-78&lt;/a>: PayJoin隐私增强支付&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki" target="_blank" rel="noopener"
+>BIP-155&lt;/a>: 节点通讯结构扩展&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki" target="_blank" rel="noopener"
+>BIP-157/158&lt;/a>: 轻钱包同步（Neutrino）&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>扩展与第三方协议&lt;/strong>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/lightningnetwork/lightning-rfc" target="_blank" rel="noopener"
+>Lightning Network&lt;/a>: 闪电网络高效链下转账&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/OpenAssets/open-assets-protocol" target="_blank" rel="noopener"
+>Open Assets&lt;/a>: 比特币链上非标准资产发行&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/Colored-Coins/Colored-Coins-Protocol-Specification" target="_blank" rel="noopener"
+>Colored Coins&lt;/a>: 彩色币-layer2资产协议&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h5 id="evm链标准">EVM链标准
+&lt;/h5>&lt;ul>
+&lt;li>&lt;strong>资产与合约标准&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-20" target="_blank" rel="noopener"
->EIP-20&lt;/a>: 可替代代币标准&lt;/li>
+>EIP-20&lt;/a>: 可替代代币（ERC-20）&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-721" target="_blank" rel="noopener"
->EIP-721&lt;/a>: 非同质化代币标准&lt;/li>
+>EIP-721&lt;/a>: NFT非同质化代币&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1155" target="_blank" rel="noopener"
->EIP-1155&lt;/a>: 多代币标准
-&lt;ul>
+>EIP-1155&lt;/a>: 多代币/混合资产标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4626" target="_blank" rel="noopener"
->EIP-4626&lt;/a>: 代币化保险库标准&lt;/li>
+>EIP-4626&lt;/a>: Vault资产保险库&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>功能标准&lt;/strong>&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
->EIP-2612&lt;/a>: 无 gas 代币转账
+&lt;li>&lt;strong>功能和扩展标准&lt;/strong>
 &lt;ul>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
+>EIP-2612&lt;/a>: 代币无Gas批量操作（Permit）&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
->EIP-4337&lt;/a>: 账户抽象&lt;/li>
+>EIP-4337&lt;/a>: 账户抽象(AA)&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
 >EIP-2930&lt;/a>: 可选访问列表&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3607" target="_blank" rel="noopener"
 >EIP-3607&lt;/a>: 交易重放保护&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2535" target="_blank" rel="noopener"
+>EIP-2535&lt;/a>: Diamond多合约分片架构&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
+>EIP-712&lt;/a>: 结构化签名&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Solana 标准&lt;/strong>&lt;/p>
+&lt;li>&lt;strong>治理与基础设施&lt;/strong>
 &lt;ul>
-&lt;li>&lt;strong>代币标准&lt;/strong>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener"
+>EIP-1967&lt;/a>: Proxy可升级合约标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4824" target="_blank" rel="noopener"
+>EIP-4824&lt;/a>: DAO组织元数据标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-173" target="_blank" rel="noopener"
+>EIP-173&lt;/a>: 合约所有权控制&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h5 id="solana链标准">Solana链标准
+&lt;/h5>&lt;ul>
+&lt;li>&lt;strong>代币与资产标准&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token" target="_blank" rel="noopener"
->SPL Token&lt;/a>: 代币程序标准&lt;/li>
+>SPL Token&lt;/a>: 基础代币标准（SPL Token Program）&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/associated-token-account" target="_blank" rel="noopener"
->SPL Associated Token&lt;/a>: 关联账户标准&lt;/li>
+>SPL Associated Token Account&lt;/a>: 关联Token账户&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.metaplex.com/programs/token-metadata/" target="_blank" rel="noopener"
->SPL Token Metadata&lt;/a>: 代币元数据标准&lt;/li>
+>SPL Token Metadata&lt;/a>: 元数据/NFT扩展&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token-swap" target="_blank" rel="noopener"
->SPL Token Swap&lt;/a>: 代币交换标准&lt;/li>
+>SPL Token Swap&lt;/a>: 代币兑换池&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.metaplex.com/programs/token-metadata" target="_blank" rel="noopener"
+>Metaplex NFT&lt;/a>: NFT铸造/交易标准&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>功能标准&lt;/strong>
+&lt;li>&lt;strong>功能与交互标准&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/name-service" target="_blank" rel="noopener"
->SPL Name Service&lt;/a>: 域名服务标准&lt;/li>
+>SPL Name Service&lt;/a>: 域名服务&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/solana-labs/spl-governance" target="_blank" rel="noopener"
->SPL Governance (GitHub)&lt;/a>: Solana 治理程序标准（官方文档已归档，详见源码与社区文档）&lt;/li>
+>SPL Governance&lt;/a>: 治理/DAO标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://solana.com/docs/economics/staking" target="_blank" rel="noopener"
->SPL Stake&lt;/a>: 质押标准&lt;/li>
+>SPL Stake&lt;/a>: 质押参与规则&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token-lending" target="_blank" rel="noopener"
->SPL Token Lending&lt;/a>: 代币借贷标准&lt;/li>
+>SPL Token Lending&lt;/a>: 借贷协议标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://spl.solana.com/memo" target="_blank" rel="noopener"
+>SPL Memo&lt;/a>: 转账备注消息标准&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;/li>
+&lt;h5 id="tron链标准">TRON链标准
+&lt;/h5>&lt;ul>
 &lt;li>
-&lt;p>&lt;strong>TRON 标准&lt;/strong>&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>代币标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>资产与NFT标准&lt;/strong>&lt;/p>
 &lt;ul>
+&lt;li>&lt;a class="link" href="https://cn.developers.tron.network/docs/trc10-intro" target="_blank" rel="noopener"
+>TRC-10&lt;/a>: 基础资产发行标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-20.md" target="_blank" rel="noopener"
->TRC-20&lt;/a>: 兼容 ERC-20 的代币标准&lt;/li>
+>TRC-20&lt;/a>: ERC-20兼容合约资产&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-721.md" target="_blank" rel="noopener"
->TRC-721&lt;/a>: 兼容 ERC-721 的 NFT 标准&lt;/li>
+>TRC-721&lt;/a>: NFT资产发行协议&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-1155.md" target="_blank" rel="noopener"
->TRC-1155&lt;/a>: 兼容 ERC-1155 的多代币标准&lt;/li>
+>TRC-1155&lt;/a>: 多代币协议&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-30.md" target="_blank" rel="noopener"
->TRC-30&lt;/a>: 代币元数据标准&lt;/li>
+>TRC-30&lt;/a>: 资产元数据、扩展协议&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>资源标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>核心资源与功能&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#bandwidth" target="_blank" rel="noopener"
->带宽模型&lt;/a>: 网络带宽资源分配&lt;/li>
+>带宽模型&lt;/a>: 交易带宽资源分配&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#energy" target="_blank" rel="noopener"
->能量模型&lt;/a>: 智能合约执行资源&lt;/li>
+>能量模型&lt;/a>: 智能合约执行资源管理&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-delegation" target="_blank" rel="noopener"
->资源委托&lt;/a>: 资源代理机制&lt;/li>
+>资源委托&lt;/a>: 资源托管代理&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-exchange" target="_blank" rel="noopener"
->资源交易&lt;/a>: 资源交换机制&lt;/li>
-&lt;li>&lt;strong>治理标准&lt;/strong>
+>资源交易&lt;/a>: 市场化资源换取机制&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>治理体系标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-51.md" target="_blank" rel="noopener"
->TRC-51&lt;/a>: 提案投票机制&lt;/li>
+>TRC-51&lt;/a>: 提案投票制度&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-54.md" target="_blank" rel="noopener"
->TRC-54&lt;/a>: 参数配置机制&lt;/li>
+>TRC-54&lt;/a>: 参数治理配置&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/governance" target="_blank" rel="noopener"
 >链上治理&lt;/a>: 链上治理机制&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/community-governance" target="_blank" rel="noopener"
->社区治理&lt;/a>: 社区治理机制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="32-安全标准">3.2 安全标准
-&lt;/h3>&lt;h4 id="密钥管理">密钥管理
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>密钥派生&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0039.md" target="_blank" rel="noopener"
->SLIP-0039&lt;/a>: Shamir 密钥共享&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0048.md" target="_blank" rel="noopener"
->SLIP-0048&lt;/a>: 硬件钱包认证&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0013.md" target="_blank" rel="noopener"
->SLIP-0013&lt;/a>: 认证设备通道&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0021.md" target="_blank" rel="noopener"
->SLIP-0021&lt;/a>: 硬件钱包通信&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>安全存储&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
->BIP-38&lt;/a>: 加密私钥存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" target="_blank" rel="noopener"
->BIP-39&lt;/a>: 助记词备份&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki" target="_blank" rel="noopener"
->BIP-85&lt;/a>: 确定性熵生成&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
->EIP-2335&lt;/a>: 密钥库格式&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="交易安全">交易安全
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>交易保护&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1559" target="_blank" rel="noopener"
->EIP-1559&lt;/a>: 交易费用机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
->EIP-2930&lt;/a>: 可选访问列表&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3607" target="_blank" rel="noopener"
->EIP-3607&lt;/a>: 交易重放保护&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-5805" target="_blank" rel="noopener"
->EIP-5805&lt;/a>: 钱包安全标准&lt;/li>
+>社区治理&lt;/a>: 社区/开发者治理规则&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
