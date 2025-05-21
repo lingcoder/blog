@@ -469,6 +469,8 @@
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://tokenpocket.pro/" target="_blank" rel="noopener"
 >官方网站&lt;/a>: 官方网站&lt;/li>
+&lt;li>&lt;a class="link" href="https://help.tokenpocket.pro/developer-cn" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 官方文档&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/TP-Lab/TokenPocket-Protocol" target="_blank" rel="noopener"
 >TokenPocket-Protocol&lt;/a>: 该协议可以用于从网页和第三方App拉起TokenPocket钱包做授权
 转账等操作&lt;/li>
@@ -550,6 +552,14 @@
 >管理控制台&lt;/a>: 服务管理平台&lt;/li>
 &lt;/ul>
 &lt;/li>
+&lt;/ul>
+&lt;h4 id="deeplink">DeepLink
+&lt;/h4>&lt;ul>
+&lt;li>&lt;a class="link" href="https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content" target="_blank" rel="noopener"
+>iOS&lt;/a>: iOS
+DeepLink&lt;/li>
+&lt;li>&lt;a class="link" href="https://developer.android.com/training/app-links/deep-linking" target="_blank" rel="noopener"
+>Android&lt;/a>: Android DeepLink&lt;/li>
 &lt;/ul>
 &lt;h2 id="5-开发资源">5. 开发资源
 &lt;/h2>&lt;h3 id="51-flutter-开发资源">5.1 Flutter 开发资源
