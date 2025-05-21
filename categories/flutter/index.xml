@@ -48,175 +48,31 @@
 &lt;/ul>
 &lt;h2 id="2-基础知识">2. 基础知识
 &lt;/h2>&lt;h3 id="21-区块链基础">2.1 区块链基础
-&lt;/h3>&lt;h4 id="核心概念">核心概念
-&lt;/h4>&lt;ul>
+&lt;/h3>&lt;ul>
 &lt;li>
-&lt;p>&lt;strong>共识机制&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>官方文档&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/consensus-mechanisms/pow/" target="_blank" rel="noopener"
->PoW (工作量证明)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/" target="_blank" rel="noopener"
->PoS (权益证明)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/overview#consensus" target="_blank" rel="noopener"
->DPoS (委托权益证明)&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/" target="_blank" rel="noopener"
+>Ethereum 官方文档&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.solana.com" target="_blank" rel="noopener"
+>Solana 官方文档&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developer.bitcoin.org/devguide/" target="_blank" rel="noopener"
+>Bitcoin 开发者文档&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs" target="_blank" rel="noopener"
+>TRON 开发者文档&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>密码学基础&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>区块链浏览器&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/intro-to-ethereum/#cryptography" target="_blank" rel="noopener"
->非对称加密&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/intro-to-ethereum/#hashing" target="_blank" rel="noopener"
->哈希函数&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/transactions/#signing" target="_blank" rel="noopener"
->数字签名&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/accounts/#keys-and-accounts" target="_blank" rel="noopener"
->密钥管理&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>区块链架构&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/blocks/" target="_blank" rel="noopener"
->区块结构&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/transactions/" target="_blank" rel="noopener"
->交易模型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/networking-layer/" target="_blank" rel="noopener"
->网络协议&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="虚拟机">虚拟机
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>EVM (以太坊虚拟机)&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/evm/" target="_blank" rel="noopener"
->工作原理&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/evm/opcodes/" target="_blank" rel="noopener"
->字节码&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/gas/" target="_blank" rel="noopener"
->Gas 机制&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/storage/" target="_blank" rel="noopener"
->存储模型&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>其他虚拟机&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/runtime" target="_blank" rel="noopener"
->Solana Runtime&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.bitcoin.org/devguide/transactions.html#script" target="_blank" rel="noopener"
->Bitcoin Script&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="22-链特性">2.2 链特性
-&lt;/h3>&lt;h4 id="evm-链">EVM 链
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>账户模型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/accounts/#externally-owned-accounts" target="_blank" rel="noopener"
->外部账户 (EOA)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/accounts/#contract-accounts" target="_blank" rel="noopener"
->合约账户&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/accounts/#account-state" target="_blank" rel="noopener"
->账户状态&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/accounts/#nonce" target="_blank" rel="noopener"
->Nonce 机制&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>交易机制&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/transactions/#types-of-transactions" target="_blank" rel="noopener"
->交易类型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/transactions/#transaction-structure" target="_blank" rel="noopener"
->交易结构&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/gas/#gas-fees" target="_blank" rel="noopener"
->Gas 费用&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/transactions/#transaction-lifecycle" target="_blank" rel="noopener"
->交易确认&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>智能合约&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/smart-contracts/" target="_blank" rel="noopener"
->合约开发&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/smart-contracts/interacting-with-smart-contracts/" target="_blank" rel="noopener"
->合约交互&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.openzeppelin.com/upgrades-plugins/1.x/" target="_blank" rel="noopener"
->合约升级&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/smart-contracts/security/" target="_blank" rel="noopener"
->合约安全&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="solana">Solana
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>账户模型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts#program-accounts" target="_blank" rel="noopener"
->程序账户&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts#account-data" target="_blank" rel="noopener"
->账户模型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts#system-accounts" target="_blank" rel="noopener"
->系统账户&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts#account-ownership" target="_blank" rel="noopener"
->账户所有权&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>交易模型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://solana.com/zh/docs/core/transactions" target="_blank" rel="noopener"
->交易结构&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://solana.com/zh/docs/core/fees" target="_blank" rel="noopener"
->费用机制&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/transactions#confirmation" target="_blank" rel="noopener"
->确认机制&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/transactions#transaction-prioritization" target="_blank" rel="noopener"
->交易优先级&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>程序机制&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/overview" target="_blank" rel="noopener"
->程序原理&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/transactions#instructions" target="_blank" rel="noopener"
->指令系统&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="bitcoin">Bitcoin
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>账户模型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://developer.bitcoin.org/devguide/transactions.html#utxo" target="_blank" rel="noopener"
->UTXO 模型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.bitcoin.org/devguide/transactions.html#p2pkh-script-validation" target="_blank" rel="noopener"
->脚本系统&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;hr>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="tron">TRON
-&lt;/h4>&lt;ul>
-&lt;li>&lt;strong>账户模型&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/account" target="_blank" rel="noopener"
->账户类型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model" target="_blank" rel="noopener"
->资源模型&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/transaction" target="_blank" rel="noopener"
->交易结构&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://etherscan.io" target="_blank" rel="noopener"
+>以太坊区块浏览器 (Etherscan)&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://explorer.solana.com" target="_blank" rel="noopener"
+>Solana 区块浏览器 (Solana Explorer)&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.blockchain.com/explorer" target="_blank" rel="noopener"
+>Bitcoin 区块浏览器 (Blockchain Explorer)&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://tronscan.org" target="_blank" rel="noopener"
+>TRON 区块浏览器 (Tronscan)&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -271,23 +127,25 @@
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>EVM 链标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>代币标准&lt;/strong>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>代币标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-20" target="_blank" rel="noopener"
 >EIP-20&lt;/a>: 可替代代币标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-721" target="_blank" rel="noopener"
 >EIP-721&lt;/a>: 非同质化代币标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1155" target="_blank" rel="noopener"
->EIP-1155&lt;/a>: 多代币标准&lt;/li>
+>EIP-1155&lt;/a>: 多代币标准
+&lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4626" target="_blank" rel="noopener"
 >EIP-4626&lt;/a>: 代币化保险库标准&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>功能标准&lt;/strong>
-&lt;ul>
+&lt;li>&lt;strong>功能标准&lt;/strong>&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
->EIP-2612&lt;/a>: 无 gas 代币转账&lt;/li>
+>EIP-2612&lt;/a>: 无 gas 代币转账
+&lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
 >EIP-4337&lt;/a>: 账户抽象&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
@@ -307,7 +165,7 @@
 >SPL Token&lt;/a>: 代币程序标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/associated-token-account" target="_blank" rel="noopener"
 >SPL Associated Token&lt;/a>: 关联账户标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metaplex.com/programs/token-metadata/" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developers.metaplex.com/programs/token-metadata/" target="_blank" rel="noopener"
 >SPL Token Metadata&lt;/a>: 代币元数据标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token-swap" target="_blank" rel="noopener"
 >SPL Token Swap&lt;/a>: 代币交换标准&lt;/li>
@@ -317,10 +175,10 @@
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/name-service" target="_blank" rel="noopener"
 >SPL Name Service&lt;/a>: 域名服务标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/governance" target="_blank" rel="noopener"
->SPL Governance&lt;/a>: 治理程序标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/stake-pool" target="_blank" rel="noopener"
->SPL Stake Pool&lt;/a>: 质押池标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/solana-labs/spl-governance" target="_blank" rel="noopener"
+>SPL Governance (GitHub)&lt;/a>: Solana 治理程序标准（官方文档已归档，详见源码与社区文档）&lt;/li>
+&lt;li>&lt;a class="link" href="https://solana.com/docs/economics/staking" target="_blank" rel="noopener"
+>SPL Stake&lt;/a>: 质押标准&lt;/li>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token-lending" target="_blank" rel="noopener"
 >SPL Token Lending&lt;/a>: 代币借贷标准&lt;/li>
 &lt;/ul>
@@ -329,8 +187,9 @@
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>TRON 标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>代币标准&lt;/strong>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>代币标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-20.md" target="_blank" rel="noopener"
 >TRC-20&lt;/a>: 兼容 ERC-20 的代币标准&lt;/li>
@@ -342,28 +201,27 @@
 >TRC-30&lt;/a>: 代币元数据标准&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>资源标准&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>资源标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#bandwidth" target="_blank" rel="noopener"
 >带宽模型&lt;/a>: 网络带宽资源分配&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/energy" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#energy" target="_blank" rel="noopener"
 >能量模型&lt;/a>: 智能合约执行资源&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-delegation" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-delegation" target="_blank" rel="noopener"
 >资源委托&lt;/a>: 资源代理机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-exchange" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-exchange" target="_blank" rel="noopener"
 >资源交易&lt;/a>: 资源交换机制&lt;/li>
-&lt;/ul>
-&lt;/li>
 &lt;li>&lt;strong>治理标准&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-51.md" target="_blank" rel="noopener"
 >TRC-51&lt;/a>: 提案投票机制&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-54.md" target="_blank" rel="noopener"
 >TRC-54&lt;/a>: 参数配置机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-58.md" target="_blank" rel="noopener"
->TRC-58&lt;/a>: 链上治理机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-61.md" target="_blank" rel="noopener"
->TRC-61&lt;/a>: 社区治理机制&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/governance" target="_blank" rel="noopener"
+>链上治理&lt;/a>: 链上治理机制&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/community-governance" target="_blank" rel="noopener"
+>社区治理&lt;/a>: 社区治理机制&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -419,7 +277,7 @@
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
 >Ethereum Security Best Practices&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/security/best-practices" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
 >Solana Security Best Practices&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -451,8 +309,6 @@
 >核心库&lt;/a>: 状态管理和业务逻辑&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/MetaMask/KeyringController" target="_blank" rel="noopener"
 >Keyring 系统&lt;/a>: 密钥管理实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/TransactionController" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理实现&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -476,12 +332,12 @@
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core" target="_blank" rel="noopener"
 >钱包核心库&lt;/a>: C++ 实现的核心库&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/android" target="_blank" rel="noopener"
+>Android实现&lt;/a>: Android 实现&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/swift" target="_blank" rel="noopener"
->移动端实现&lt;/a>: Swift 实现&lt;/li>
+>iOS实现&lt;/a>: Swift 实现&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/src" target="_blank" rel="noopener"
 >区块链适配器&lt;/a>: 链适配器实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/src/HDWallet" target="_blank" rel="noopener"
->安全模块&lt;/a>: 密钥管理&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -507,10 +363,6 @@
 >React Native 实现&lt;/a>: 完整源码&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/redux" target="_blank" rel="noopener"
 >状态管理&lt;/a>: Redux 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/network" target="_blank" rel="noopener"
->网络层&lt;/a>: 网络请求&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -523,26 +375,10 @@
 &lt;ul>
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/phantom-labs/phantom-wallet-adapter" target="_blank" rel="noopener"
->钱包适配器&lt;/a>: DApp 集成方案&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.phantom.com/" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 官方文档&lt;/li>
 &lt;li>&lt;a class="link" href="https://docs.phantom.app/solana/sending-a-transaction" target="_blank" rel="noopener"
 >交易系统&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.phantom.app/solana/token-management" target="_blank" rel="noopener"
->代币管理&lt;/a>: 代币操作&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.phantom.app/solana/nft-management" target="_blank" rel="noopener"
->NFT 支持&lt;/a>: NFT 功能&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/phantom-labs/phantom-mobile-sdk" target="_blank" rel="noopener"
->移动端 SDK&lt;/a>: 开发工具包&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/phantom-labs/phantom-core" target="_blank" rel="noopener"
->核心库&lt;/a>: 核心功能实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/phantom-labs/phantom-ui" target="_blank" rel="noopener"
->UI 组件&lt;/a>: 界面组件库&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/phantom-labs/phantom-security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -552,26 +388,10 @@
 &lt;ul>
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/wallet-adapter" target="_blank" rel="noopener"
->钱包适配器&lt;/a>: DApp 集成&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solflare.com/solana/sending-a-transaction" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solflare.com/solana/token-management" target="_blank" rel="noopener"
->代币管理&lt;/a>: 代币操作&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solflare.com/solana/staking" target="_blank" rel="noopener"
->质押功能&lt;/a>: 质押管理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-core" target="_blank" rel="noopener"
->核心库&lt;/a>: 核心功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-ui" target="_blank" rel="noopener"
->UI 组件&lt;/a>: 界面实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-api" target="_blank" rel="noopener"
->API 接口&lt;/a>: 接口实现&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.solflare.com/solflare" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 官方文档&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-sdk" target="_blank" rel="noopener"
+>钱包SDK&lt;/a>: DApp 集成&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -585,7 +405,7 @@
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink" target="_blank" rel="noopener"
->钱包协议&lt;/a>: 钱包通信协议&lt;/li>
+>钱包扩展&lt;/a>: 钱包扩展&lt;/li>
 &lt;li>&lt;a class="link" href="https://www.tronlink.org/docs/transaction" target="_blank" rel="noopener"
 >交易系统&lt;/a>: 交易处理&lt;/li>
 &lt;li>&lt;a class="link" href="https://www.tronlink.org/docs/resource" target="_blank" rel="noopener"
@@ -1109,20 +929,16 @@
 &lt;li>
 &lt;p>&lt;strong>Bitcoin 服务&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://blockstream.com/api/" target="_blank" rel="noopener"
->Blockstream&lt;/a>: 比特币节点服务&lt;/li>
 &lt;li>&lt;a class="link" href="https://mempool.space/docs/api" target="_blank" rel="noopener"
 >Mempool&lt;/a>: 内存池服务&lt;/li>
 &lt;li>&lt;a class="link" href="https://www.blockcypher.com/dev/bitcoin/" target="_blank" rel="noopener"
 >BlockCypher&lt;/a>: 比特币 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://bitcore.io/api/" target="_blank" rel="noopener"
->Bitcore&lt;/a>: 比特币开发工具&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
 &lt;h2 id="6-术语解释">6. 术语解释
 &lt;/h2>&lt;h3 id="61-区块链基础">6.1 区块链基础
-&lt;/h3>&lt;h4 id="核心概念-1">核心概念
+&lt;/h3>&lt;h4 id="核心概念">核心概念
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>区块链技术&lt;/strong>&lt;/p>
