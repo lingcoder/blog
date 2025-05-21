@@ -78,48 +78,64 @@
 &lt;/ul>
 &lt;h2 id="3-标准规范">3. 标准规范
 &lt;/h2>&lt;h3 id="31-区块链标准">3.1 区块链标准
-&lt;/h3>&lt;h4 id="通用标准">通用标准
+&lt;/h3>&lt;h4 id="通用钱包标准">通用钱包标准
 &lt;/h4>&lt;ul>
 &lt;li>
-&lt;p>&lt;strong>钱包标准&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>比特币标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki" target="_blank" rel="noopener"
 >BIP-32&lt;/a>: 分层确定性钱包&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" target="_blank" rel="noopener"
 >BIP-39&lt;/a>: 助记词标准&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
+>BIP-38&lt;/a>: 密码加密私钥（纸钱包、冷备份常用）&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki" target="_blank" rel="noopener"
 >BIP-44&lt;/a>: 多币种账户结构&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki" target="_blank" rel="noopener"
+>BIP-49&lt;/a>: 多网络支持&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki" target="_blank" rel="noopener"
 >BIP-84&lt;/a>: Native SegWit 地址&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki" target="_blank" rel="noopener"
+>BIP-85&lt;/a>: 确定性熵生成&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki" target="_blank" rel="noopener"
 >BIP-86&lt;/a>: Taproot 地址&lt;/li>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
->BIP-174&lt;/a>: PSBT (部分签名比特币交易)&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
->BIP-38&lt;/a>: 密码保护的私钥&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki" target="_blank" rel="noopener"
->BIP-85&lt;/a>: 确定性熵生成&lt;/li>
+>BIP-174&lt;/a>: PSBT，促进硬件/软件钱包多方签名协作&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>以太坊标准&lt;/strong>&lt;/p>
 &lt;ul>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-55" target="_blank" rel="noopener"
+>EIP-55&lt;/a>: 校验和地址格式，用于防止用户输入错误的以太坊地址。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-137" target="_blank" rel="noopener"
+>EIP-137&lt;/a>: ENS 域名服务，实现“地址即域名”转账等功能。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-155" target="_blank" rel="noopener"
->EIP-155&lt;/a>: 交易签名重放保护&lt;/li>
+>EIP-155&lt;/a>: 交易签名重放保护，为多链网络防止交易重放攻击。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-681" target="_blank" rel="noopener"
+>EIP-681&lt;/a>: 以太坊 URI 支付请求标准，便于钱包扫码或链接转账请求。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
->EIP-712&lt;/a>: 结构化数据签名&lt;/li>
+>EIP-712&lt;/a>: 结构化数据签名，钱包常用于DApp登录、合约操作等。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1193" target="_blank" rel="noopener"
->EIP-1193&lt;/a>: Provider API 标准&lt;/li>
+>EIP-1193&lt;/a>: Provider API 标准，dApp与钱包之间通信通用接口。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1271" target="_blank" rel="noopener"
+>EIP-1271&lt;/a>: 合约钱包签名验证标准，为智能合约账户带来签名验证。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
->EIP-2255&lt;/a>: 钱包权限管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noopener"
->EIP-4361&lt;/a>: 签名认证消息&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank" rel="noopener"
->EIP-6963&lt;/a>: 多钱包发现和选择&lt;/li>
+>EIP-2255&lt;/a>: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
+>EIP-2335&lt;/a>: Keystore V4 密钥加密存储格式，主流以太坊钱包通用加密文件规范。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
+>EIP-2612&lt;/a>: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
->EIP-3085&lt;/a>: 钱包网络切换请求&lt;/li>
+>EIP-3085&lt;/a>: 钱包网络切换请求，便于dApp添加/切换自定义网络到钱包。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
+>EIP-4337&lt;/a>: 账户抽象（Account Abstraction），智能合约钱包的关键协议。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noopener"
+>EIP-4361&lt;/a>: 使用以太坊地址签名认证（Sign-In With Ethereum）。&lt;/li>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-5805" target="_blank" rel="noopener"
->EIP-5805&lt;/a>: 钱包安全标准&lt;/li>
+>EIP-5805&lt;/a>: 钱包安全标准。&lt;/li>
+&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank" rel="noopener"
+>EIP-6963&lt;/a>: 多钱包发现和选择，提升多钱包生态用户体验。&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
