@@ -357,23 +357,23 @@
 &lt;ul>
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/guide/snaps.html" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://docs.metamask.io/sdk/" target="_blank" rel="noopener"
+>SDK&lt;/a>: SDK 使用&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
 >Snap 系统&lt;/a>: 插件系统，支持自定义功能扩展&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/guide/ethereum-provider.html" target="_blank" rel="noopener"
->Provider API&lt;/a>: 以太坊 Provider 接口&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/guide/signing-data.html" target="_blank" rel="noopener"
->交易签名&lt;/a>: 消息和交易签名&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/guide/network-management.html" target="_blank" rel="noopener"
->网络管理&lt;/a>: 多链网络支持&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
+>钱包服务&lt;/a>: 钱包服务 API&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.metamask.io/wallet/" target="_blank" rel="noopener"
+>钱包API&lt;/a>: 通用钱包 API&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;strong>技术实现&lt;/strong>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/MetaMask/metamask-mobile" target="_blank" rel="noopener"
 >移动端源码&lt;/a>: React Native 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/controllers" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://github.com/MetaMask/core" target="_blank" rel="noopener"
 >核心库&lt;/a>: 状态管理和业务逻辑&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/KeyringController" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://github.com/MetaMask/core/tree/main/packages/keyring-controller" target="_blank" rel="noopener"
 >Keyring 系统&lt;/a>: 密钥管理实现&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -384,14 +384,12 @@
 &lt;ul>
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/wallet-core" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/wallet-core" target="_blank" rel="noopener"
 >多链支持&lt;/a>: 支持 60+ 区块链&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/dapp-browser" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-dapps" target="_blank" rel="noopener"
 >DApp 浏览器&lt;/a>: 内置浏览器&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/tokens" target="_blank" rel="noopener"
+&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-assets" target="_blank" rel="noopener"
 >代币管理&lt;/a>: 代币添加和管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/transactions" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;strong>技术实现&lt;/strong>
@@ -413,22 +411,14 @@
 &lt;ul>
 &lt;li>&lt;strong>核心功能&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/design-system" target="_blank" rel="noopener"
->设计系统&lt;/a>: 现代化 UI 设计&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/entities/transaction" target="_blank" rel="noopener"
->交易管理&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/entities/token" target="_blank" rel="noopener"
->代币管理&lt;/a>: 代币系统&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/entities/wallet" target="_blank" rel="noopener"
->钱包连接&lt;/a>: 钱包集成&lt;/li>
+&lt;li>&lt;a class="link" href="https://rainbow.me/" target="_blank" rel="noopener"
+>官网&lt;/a>: 官方网站&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;strong>技术实现&lt;/strong>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src" target="_blank" rel="noopener"
->React Native 实现&lt;/a>: 完整源码&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow/tree/develop/src/redux" target="_blank" rel="noopener"
->状态管理&lt;/a>: Redux 实现&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow" target="_blank" rel="noopener"
+>源码&lt;/a>: 完整源码&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -443,8 +433,8 @@
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://docs.phantom.com/" target="_blank" rel="noopener"
 >官方文档&lt;/a>: 官方文档&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.phantom.app/solana/sending-a-transaction" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.phantom.com/solana/sending-a-transaction" target="_blank" rel="noopener"
+>交易处理&lt;/a>: 交易处理&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -468,59 +458,20 @@
 &lt;li>
 &lt;p>&lt;strong>TronLink&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink" target="_blank" rel="noopener"
->钱包扩展&lt;/a>: 钱包扩展&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.tronlink.org/docs/transaction" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.tronlink.org/docs/resource" target="_blank" rel="noopener"
->资源管理&lt;/a>: 资源操作&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.tronlink.org/docs/dapp" target="_blank" rel="noopener"
->DApp 支持&lt;/a>: DApp 集成&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink-core" target="_blank" rel="noopener"
->核心库&lt;/a>: 核心功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink-mobile" target="_blank" rel="noopener"
->移动端实现&lt;/a>: 移动端源码&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink-security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TronLink/TronLink-api" target="_blank" rel="noopener"
->API 接口&lt;/a>: 接口实现&lt;/li>
-&lt;/ul>
-&lt;/li>
+&lt;li>&lt;a class="link" href="https://tronlink.org/" target="_blank" rel="noopener"
+>官方网站&lt;/a>: 官方网站&lt;/li>
+&lt;li>&lt;a class="link" href="https://docs.tronlink.org/" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 完整源码&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>TokenPocket&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/tp-lab-wallet-sdk" target="_blank" rel="noopener"
->多链支持&lt;/a>: 多链钱包 SDK&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.tokenpocket.pro/developer-guide/transaction" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.tokenpocket.pro/developer-guide/token" target="_blank" rel="noopener"
->代币管理&lt;/a>: 代币操作&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.tokenpocket.pro/developer-guide/dapp-browser" target="_blank" rel="noopener"
->DApp 浏览器&lt;/a>: 浏览器功能&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/tp-lab-wallet-sdk" target="_blank" rel="noopener"
->SDK 实现&lt;/a>: 开发工具包&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/tp-lab-wallet-core" target="_blank" rel="noopener"
->核心库&lt;/a>: 核心功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/tp-lab-wallet-security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/tp-lab-wallet-api" target="_blank" rel="noopener"
->API 接口&lt;/a>: 接口实现&lt;/li>
-&lt;/ul>
-&lt;/li>
+&lt;li>&lt;a class="link" href="https://tokenpocket.pro/" target="_blank" rel="noopener"
+>官方网站&lt;/a>: 官方网站&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/TokenPocket-Protocol" target="_blank" rel="noopener"
+>TokenPocket-Protocol&lt;/a>: 该协议可以用于从网页和第三方App拉起TokenPocket钱包做授权
+转账等操作&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
@@ -528,67 +479,33 @@
 &lt;/h4>&lt;ul>
 &lt;li>
 &lt;p>&lt;strong>BlueWallet&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/blob/master/class/lightning-custodian-wallet.js" target="_blank" rel="noopener"
->闪电网络&lt;/a>: 闪电网络支持&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/blob/master/class/wallet-transactions.js" target="_blank" rel="noopener"
->交易系统&lt;/a>: 交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/blob/master/class/wallet-addresses.js" target="_blank" rel="noopener"
->地址管理&lt;/a>: 地址生成&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/blob/master/class/wallet-security.js" target="_blank" rel="noopener"
->安全功能&lt;/a>: 安全实现&lt;/li>
-&lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet" target="_blank" rel="noopener"
->完整源码&lt;/a>: React Native 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/tree/master/class" target="_blank" rel="noopener"
->核心库&lt;/a>: 核心功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/tree/master/components" target="_blank" rel="noopener"
->UI 组件&lt;/a>: 界面实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet/tree/master/security" target="_blank" rel="noopener"
->安全模块&lt;/a>: 安全实现&lt;/li>
-&lt;/ul>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://bluewallet.io/" target="_blank" rel="noopener"
+>官方网站&lt;/a>: 官方网站&lt;/p>
 &lt;/li>
-&lt;/ul>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://bluewallet.io/docs/" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 官方文档&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet" target="_blank" rel="noopener"
+>完整源码&lt;/a>: 完整源码&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>Samourai Wallet&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet/privacy" target="_blank" rel="noopener"
->隐私功能&lt;/a>:
-隐私保护&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet/transaction" target="_blank" rel="noopener"
->交易系统&lt;/a>:
-交易处理&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet/security" target="_blank" rel="noopener"
->安全功能&lt;/a>:
-安全实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet/backup" target="_blank" rel="noopener"
->备份恢复&lt;/a>:
-备份机制&lt;/li>
-&lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android" target="_blank" rel="noopener"
->Android 实现&lt;/a>: 完整源码&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet" target="_blank" rel="noopener"
->核心库&lt;/a>:
-核心功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/java/com/samourai/wallet/security" target="_blank" rel="noopener"
->安全模块&lt;/a>:
-安全实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Samourai-Wallet/samourai-wallet-android/tree/master/app/src/main/res" target="_blank" rel="noopener"
->UI 实现&lt;/a>: 界面实现&lt;/li>
-&lt;/ul>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://samouraiwallet.com/" target="_blank" rel="noopener"
+>官方网站&lt;/a>: 官方网站&lt;/p>
 &lt;/li>
-&lt;/ul>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://samouraiwallet.com/docs/" target="_blank" rel="noopener"
+>官方文档&lt;/a>: 官方文档&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a class="link" href="https://github.com/Samourai-Wallet/Samourai-Wallet" target="_blank" rel="noopener"
+>完整源码&lt;/a>: 完整源码&lt;/p>
 &lt;/li>
 &lt;/ul>
 &lt;h3 id="42-钱包集成框架">4.2 钱包集成框架
