@@ -708,14 +708,12 @@ DeepLink&lt;/li>
 &lt;li>
 &lt;p>&lt;strong>以太坊开发&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
->web3dart&lt;/a>: 以太坊开发核心库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/walletconnect_dart" target="_blank" rel="noopener"
->walletconnect_dart&lt;/a>: WalletConnect 核心库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_v2" target="_blank" rel="noopener"
->wallet_connect_v2&lt;/a>: WalletConnect v2 支持&lt;/li>
 &lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_core_bindings" target="_blank" rel="noopener"
 >wallet_core_bindings&lt;/a>: Trust Wallet Core 绑定&lt;/li>
+&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_v2" target="_blank" rel="noopener"
+>wallet_connect_v2&lt;/a>: WalletConnect v2 支持&lt;/li>
+&lt;li>&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
+>web3dart&lt;/a>: 以太坊开发核心库&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
