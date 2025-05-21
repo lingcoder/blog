@@ -156,34 +156,21 @@
 >Solana Pay&lt;/a>: 原生扫码/支付请求协议&lt;/li>
 &lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts" target="_blank" rel="noopener"
 >Solana Address/Account Model&lt;/a>：账户结构及模型&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/dapps/signing" target="_blank" rel="noopener"
->Solana Sign Message&lt;/a>: 消息签名标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/wallet-guide/file-system-wallet" target="_blank" rel="noopener"
->Solana CLI Key Formats&lt;/a>: 钱包文件标准&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>
 &lt;p>&lt;strong>Tron 钱包专有标准&lt;/strong>&lt;/p>
 &lt;ul>
-&lt;li>&lt;a class="link" href="https://cn.developers.tron.network/docs/account-intro" target="_blank" rel="noopener"
->Tron 地址格式与签名算法&lt;/a>：secp256k1 + Base58Check 地址格式（T开头）&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/browser-extension-wallet-api" target="_blank" rel="noopener"
->TronLink API&lt;/a>：Tron 钱包与 DApp 连接通信接口&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronscan/tron-keystore" target="_blank" rel="noopener"
->TronWalletKeystore (GitHub)&lt;/a>：钱包密钥加密存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/account-sign" target="_blank" rel="noopener"
->Tron Sign Message&lt;/a>：原生消息签名/验证&lt;/li>
 &lt;li>&lt;a class="link" href="https://developers.tron.network/docs/multi-signature" target="_blank" rel="noopener"
 >Tron Multi-signature&lt;/a>：多签账户功能&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/hardware-integration" target="_blank" rel="noopener"
->TRON Hardware Wallet Integration&lt;/a>：硬件钱包集成标准&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
 &lt;h4 id="生态标准">生态标准
 &lt;/h4>&lt;h5 id="btc链标准">BTC链标准
 &lt;/h5>&lt;ul>
-&lt;li>&lt;strong>交易与协议扩展&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>交易与协议扩展&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0002.mediawiki" target="_blank" rel="noopener"
 >BIP-2/BIP-9&lt;/a>: BIP规范流程/软分叉激活讨论&lt;/li>
@@ -201,7 +188,8 @@
 >BIP-340/341/342&lt;/a>: Taproot/Schnorr签名/可扩展性升级&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>地址与账号模型&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>地址与账号模型&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki" target="_blank" rel="noopener"
 >BIP-13&lt;/a>: 多重签名P2SH地址&lt;/li>
@@ -209,7 +197,8 @@
 >BIP-170&lt;/a>: 长度检查/二维码兼容&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>隐私与效率&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>隐私与效率&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki" target="_blank" rel="noopener"
 >BIP-78&lt;/a>: PayJoin隐私增强支付&lt;/li>
@@ -219,7 +208,8 @@
 >BIP-157/158&lt;/a>: 轻钱包同步（Neutrino）&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>扩展与第三方协议&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>扩展与第三方协议&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://github.com/lightningnetwork/lightning-rfc" target="_blank" rel="noopener"
 >Lightning Network&lt;/a>: 闪电网络高效链下转账&lt;/li>
@@ -232,7 +222,8 @@
 &lt;/ul>
 &lt;h5 id="evm链标准">EVM链标准
 &lt;/h5>&lt;ul>
-&lt;li>&lt;strong>资产与合约标准&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>资产与合约标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-20" target="_blank" rel="noopener"
 >EIP-20&lt;/a>: 可替代代币（ERC-20）&lt;/li>
@@ -244,7 +235,8 @@
 >EIP-4626&lt;/a>: Vault资产保险库&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>功能和扩展标准&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>功能和扩展标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
 >EIP-2612&lt;/a>: 代币无Gas批量操作（Permit）&lt;/li>
@@ -260,7 +252,8 @@
 >EIP-712&lt;/a>: 结构化签名&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>治理与基础设施&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>治理与基础设施&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener"
 >EIP-1967&lt;/a>: Proxy可升级合约标准&lt;/li>
@@ -273,7 +266,8 @@
 &lt;/ul>
 &lt;h5 id="solana链标准">Solana链标准
 &lt;/h5>&lt;ul>
-&lt;li>&lt;strong>代币与资产标准&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>代币与资产标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/token" target="_blank" rel="noopener"
 >SPL Token&lt;/a>: 基础代币标准（SPL Token Program）&lt;/li>
@@ -287,7 +281,8 @@
 >Metaplex NFT&lt;/a>: NFT铸造/交易标准&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;li>&lt;strong>功能与交互标准&lt;/strong>
+&lt;li>
+&lt;p>&lt;strong>功能与交互标准&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>&lt;a class="link" href="https://spl.solana.com/name-service" target="_blank" rel="noopener"
 >SPL Name Service&lt;/a>: 域名服务&lt;/li>
