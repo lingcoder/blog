@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FF8C5A"/>
+          <stop offset="0.5" stop-color="#FFC890"/>
+          <stop offset="1" stop-color="#FFE4B5"/>
+    </linearGradient>
+      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4A8AA8"/>
+          <stop offset="1" stop-color="#1F4A66"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Sun -->
+    <circle cx="600" cy="320" r="80" fill="#FFE5B0"/>
+    <circle cx="600" cy="320" r="200" fill="#FFE5B0" opacity="0.2"/>
+
+    <!-- Sea -->
+    <rect y="380" width="1200" height="180" fill="url(#sea)"/>
+
+    <!-- Sun reflection -->
+    <g fill="#FFE5B0" opacity="0.5">
+        <ellipse cx="600" cy="395" rx="100" ry="5"/>
+        <ellipse cx="600" cy="415" rx="80" ry="4"/>
+        <ellipse cx="600" cy="435" rx="60" ry="3"/>
+        <ellipse cx="600" cy="455" rx="40" ry="2"/>
+    </g>
+
+    <!-- Wave hints -->
+    <g fill="none" stroke="#FFE5B0" stroke-opacity="0.25" stroke-width="1.5">
+        <path d="M 100 470 q 30 -4 60 0 t 60 0"/>
+        <path d="M 850 460 q 30 -4 60 0 t 60 0"/>
+        <path d="M 200 510 q 40 -5 80 0 t 80 0"/>
+        <path d="M 700 520 q 40 -5 80 0 t 80 0"/>
+  </g>
+
+    <!-- Beach sand -->
+    <path d="M 0 560 Q 600 540 1200 555 L 1200 630 L 0 630 Z" fill="#F0CC8A"/>
+    <path d="M 0 590 Q 600 580 1200 595 L 1200 630 L 0 630 Z" fill="#D8A865"/>
+
+    <!-- Palm tree left -->
+    <g transform="translate(150,560)">
+        <!-- Trunk -->
+        <path d="M 0 0 Q -8 -80 -20 -180 Q -28 -240 -10 -270" stroke="#5C3A1F" stroke-width="10" fill="none"
+              stroke-linecap="round"/>
+        <!-- Leaves -->
+        <g fill="#1F4A2A">
+            <path d="M -10 -270 Q -80 -310 -130 -290 Q -90 -290 -10 -260 Z"/>
+            <path d="M -10 -270 Q 60 -320 110 -300 Q 70 -300 -10 -260 Z"/>
+            <path d="M -10 -270 Q -100 -260 -120 -210 Q -90 -250 -10 -260 Z"/>
+            <path d="M -10 -270 Q 80 -250 100 -200 Q 80 -250 -10 -260 Z"/>
+            <path d="M -10 -270 Q -50 -340 -30 -370 Q -30 -340 -10 -270 Z"/>
+    </g>
+        <!-- Coconuts -->
+        <circle cx="-15" cy="-265" r="4" fill="#3D1F0F"/>
+        <circle cx="-5" cy="-265" r="4" fill="#3D1F0F"/>
+  </g>
+
+    <!-- Palm tree right -->
+    <g transform="translate(1050,560)">
+        <path d="M 0 0 Q 5 -80 15 -180 Q 18 -240 5 -270" stroke="#5C3A1F" stroke-width="9" fill="none"
+              stroke-linecap="round"/>
+        <g fill="#1F4A2A">
+            <path d="M 5 -270 Q 75 -310 125 -290 Q 85 -290 5 -260 Z"/>
+            <path d="M 5 -270 Q -65 -320 -115 -300 Q -75 -300 5 -260 Z"/>
+            <path d="M 5 -270 Q 95 -260 115 -210 Q 85 -250 5 -260 Z"/>
+            <path d="M 5 -270 Q -85 -250 -105 -200 Q -85 -250 5 -260 Z"/>
+            <path d="M 5 -270 Q 35 -340 25 -370 Q 25 -340 5 -270 Z"/>
+    </g>
+  </g>
+
+    <!-- Birds far -->
+    <g fill="none" stroke="#3D1F0F" stroke-width="2" stroke-linecap="round" opacity="0.7">
+        <path d="M 380 200 q 6 -8 12 0 q 6 -8 12 0"/>
+        <path d="M 800 230 q 5 -7 10 0 q 5 -7 10 0"/>
+        <path d="M 700 180 q 4 -6 8 0 q 4 -6 8 0"/>
+  </g>
+
+    <text x="60" y="610" fill="#5C3A1F" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

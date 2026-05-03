@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jakarta EE on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/jakarta-ee/</link><description>Recent content in Jakarta EE on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 17 Jun 2025 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/jakarta-ee/index.xml" rel="self" type="application/rss+xml"/><item><title>Spring Boot 3 与 Spring 6 的变化与迁移</title><link>https://www.lingcoder.com/p/spring-boot-3-and-spring-6/</link><pubDate>Tue, 17 Jun 2025 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-3-and-spring-6/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-3-and-spring-6/cover.svg" alt="Featured image of post Spring Boot 3 与 Spring 6 的变化与迁移" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3.0 / Spring 6.0 在 2022 年 11 月发布，是 Spring 自 Spring 4.0 以来&lt;strong&gt;最大的一次跃迁&lt;/strong&gt;。它不只是版本号 +1——而是整个技术栈的重新对齐：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java 17 是最低基线&lt;/strong&gt;——告别 Java 8/11&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从 javax 到 jakarta&lt;/strong&gt;——命名空间彻底切换&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GraalVM 原生镜像支持&lt;/strong&gt;——启动时间从秒级到毫秒级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内置 Observability&lt;/strong&gt;——Micrometer + OTel&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Servlet 6.0 / Jakarta EE 10&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文讲清楚这些变化、为什么这么变、升级要踩什么坑、什么场景该升、什么场景缓一缓。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一最大的变化javax--jakarta"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%a4%a7%e7%9a%84%e5%8f%98%e5%8c%96javax--jakarta" class="header-anchor"&gt;&lt;/a&gt;一、最大的变化：javax → jakarta
+&lt;/h2&gt;&lt;p&gt;这是最容易踩的坑——所有从 &lt;code&gt;javax.&lt;/code&gt; 开始的标准库包名都改成了 &lt;code&gt;jakarta.&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Spring Boot 2.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.servlet.http.HttpServletRequest&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.persistence.Entity&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.validation.constraints.NotNull&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.annotation.Resource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Spring Boot 3.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.servlet.http.HttpServletRequest&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.persistence.Entity&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.validation.constraints.NotNull&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.annotation.Resource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="为什么改"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%94%b9" class="header-anchor"&gt;&lt;/a&gt;为什么改
+&lt;/h3&gt;&lt;p&gt;Java EE 在 2017 年捐给 Eclipse 基金会成为 Jakarta EE。2019 年 Oracle 正式禁止 Eclipse 在新版本中继续使用 &lt;code&gt;javax.*&lt;/code&gt;——所以从 Jakarta EE 9 开始全部改成 &lt;code&gt;jakarta.*&lt;/code&gt;。Spring 6 跟着改。&lt;/p&gt;
+&lt;h3 id="升级痛点"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e7%97%9b%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;升级痛点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;依赖的第三方库要全是 Jakarta 兼容版本&lt;/strong&gt;——MyBatis、Hibernate、Druid、各种 starter 都要升级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大量 import 要批量替换&lt;/strong&gt;——IDE 有自动迁移工具，但要 review&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;老的 javax 库没升级 → 直接编译失败&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果项目里有依赖&lt;strong&gt;仍在用 javax&lt;/strong&gt;——升 Spring Boot 3 之前必须先确认所有依赖都有兼容版本。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二java-17-最低基线"&gt;&lt;a href="#%e4%ba%8cjava-17-%e6%9c%80%e4%bd%8e%e5%9f%ba%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;二、Java 17 最低基线
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 强制 &lt;strong&gt;Java 17+&lt;/strong&gt;——告别 Java 8/11。&lt;/p&gt;
+&lt;h3 id="java-17-给你的礼物"&gt;&lt;a href="#java-17-%e7%bb%99%e4%bd%a0%e7%9a%84%e7%a4%bc%e7%89%a9" class="header-anchor"&gt;&lt;/a&gt;Java 17 给你的礼物
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Records（数据载体）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;record&lt;/span&gt; &lt;span class="nc"&gt;UserDTO&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Sealed classes&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;sealed&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;Shape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;permits&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Circle&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Square&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Pattern matching for instanceof&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;instanceof&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Switch expressions&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;A&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Active&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;I&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Inactive&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Unknown&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Text blocks（多行字符串）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;name&amp;#34;: &amp;#34;test&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;age&amp;#34;: 30
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这些特性早几年就有，但&lt;strong&gt;Spring Boot 3 让你必须用 Java 17&lt;/strong&gt;——团队终于有理由全员升级。&lt;/p&gt;
+&lt;h3 id="升级痛点-1"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e7%97%9b%e7%82%b9-1" class="header-anchor"&gt;&lt;/a&gt;升级痛点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java 8/11 的 build 脚本要改&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;某些第三方库（特别是字节码操作类）要升级&lt;/strong&gt;——CGLIB、ASM、Lombok 等&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JVM 参数有变化&lt;/strong&gt;——某些 Java 8 时代的参数被废除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三原生镜像启动速度的革命"&gt;&lt;a href="#%e4%b8%89%e5%8e%9f%e7%94%9f%e9%95%9c%e5%83%8f%e5%90%af%e5%8a%a8%e9%80%9f%e5%ba%a6%e7%9a%84%e9%9d%a9%e5%91%bd" class="header-anchor"&gt;&lt;/a&gt;三、原生镜像：启动速度的革命
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 内置 &lt;strong&gt;GraalVM 原生镜像&lt;/strong&gt;支持——把 JVM 应用编译成单个原生二进制：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./mvnw native:compile
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./target/myapp &lt;span class="c1"&gt;# 启动！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="性能对比"&gt;&lt;a href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;性能对比
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;标准 JVM&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;原生镜像&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;启动时间&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5-30 秒&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;30-100ms&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;内存占用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;200-500 MB&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;30-80 MB&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;峰值性能&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;高（JIT 优化）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中（AOT 编译）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;编译时间&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;秒级&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;几分钟&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;镜像体积&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;JAR + JDK&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单二进制&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="适用场景"&gt;&lt;a href="#%e9%80%82%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;适用场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Serverless / FaaS&lt;/strong&gt;——冷启动毫秒级，函数计算成本大降&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CLI 工具&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;K8s 短生命周期 Pod&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;资源受限环境&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="不适合"&gt;&lt;a href="#%e4%b8%8d%e9%80%82%e5%90%88" class="header-anchor"&gt;&lt;/a&gt;不适合
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;峰值性能敏感&lt;/strong&gt;——AOT 编译没 JIT 优化空间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大量动态特性&lt;/strong&gt;（反射、动态代理）——需要额外配置元数据&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;依赖很多的项目&lt;/strong&gt;——编译时间长得受不了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;GraalVM 是杀手锏但不是银弹——&lt;strong&gt;多数业务系统暂时不需要&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四observability-一等公民"&gt;&lt;a href="#%e5%9b%9bobservability-%e4%b8%80%e7%ad%89%e5%85%ac%e6%b0%91" class="header-anchor"&gt;&lt;/a&gt;四、Observability 一等公民
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 把可观测性提到了前所未有的高度——内置 &lt;strong&gt;Micrometer Observation API&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ObservedAspect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;observedAspect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ObservationRegistry&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;registry&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ObservedAspect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;registry&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Service&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;OrderService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Observed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;order.create&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OrderDTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 自动产生 metrics + traces + logs&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;@Observed&lt;/code&gt; 自动产出：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Metrics&lt;/strong&gt;：Prometheus 抓取&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Traces&lt;/strong&gt;：OpenTelemetry 上报到 Tempo/Jaeger&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logs&lt;/strong&gt;：结构化日志带 trace_id&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;统一的 Observability 模型&lt;/strong&gt;——以前要分别配 Micrometer + Sleuth + 自定义 logger，现在一个注解搞定。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五http-interface声明式-http-客户端"&gt;&lt;a href="#%e4%ba%94http-interface%e5%a3%b0%e6%98%8e%e5%bc%8f-http-%e5%ae%a2%e6%88%b7%e7%ab%af" class="header-anchor"&gt;&lt;/a&gt;五、HTTP Interface：声明式 HTTP 客户端
+&lt;/h2&gt;&lt;p&gt;Spring 6 引入&lt;strong&gt;声明式 HTTP 客户端&lt;/strong&gt;——类似 Feign 但内置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@GetExchange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/users/{id}&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@PathVariable&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@PostExchange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/users&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@RequestBody&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserDTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dto&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Builder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;HttpServiceProxyFactory&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;factory&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;HttpServiceProxyFactory&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;builderFor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebClientAdapter&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;baseUrl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://api.com&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;factory&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不需要再引 Feign——&lt;strong&gt;官方原生支持&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六problem-details-rfc-7807"&gt;&lt;a href="#%e5%85%adproblem-details-rfc-7807" class="header-anchor"&gt;&lt;/a&gt;六、Problem Details (RFC 7807)
+&lt;/h2&gt;&lt;p&gt;错误响应标准化——返回 &lt;code&gt;application/problem+json&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://example.com/probs/insufficient-balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;title&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Insufficient balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;detail&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Balance is 100, required 500&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;instance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/orders/12345&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@ExceptionHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InsufficientBalanceException&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InsufficientBalanceException&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;forStatusAndDetail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BAD_REQUEST&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getMessage&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setType&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;URI&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://example.com/probs/insufficient-balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业内标准——前端能用统一姿势处理。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七虚拟线程spring-boot-32"&gt;&lt;a href="#%e4%b8%83%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8bspring-boot-32" class="header-anchor"&gt;&lt;/a&gt;七、虚拟线程（Spring Boot 3.2+）
+&lt;/h2&gt;&lt;p&gt;JDK 21 GA 了虚拟线程——Spring Boot 3.2+ 一键启用：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;threads&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;virtual&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;enabled&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;效果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Tomcat 每个请求一个虚拟线程&lt;/li&gt;
+&lt;li&gt;阻塞 IO 不再占用 OS 线程&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;传统 MVC 风格代码 + 虚拟线程 = WebFlux 的吞吐&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;很多人会问&amp;quot;还要不要 WebFlux？&amp;quot;——&lt;strong&gt;虚拟线程让传统 MVC 代码用接近 WebFlux 的吞吐量服务高并发，且没学习曲线&lt;/strong&gt;。WebFlux 的位置开始变窄。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八其他变化清单"&gt;&lt;a href="#%e5%85%ab%e5%85%b6%e4%bb%96%e5%8f%98%e5%8c%96%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、其他变化清单
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;删除 Java 8 / 11 支持&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除 Spring MVC 老的 path matcher&lt;/strong&gt;（默认走 PathPattern）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新的 PropertyResolver&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CRaC（Coordinated Restore at Checkpoint）&lt;/strong&gt;：JVM 状态快照恢复，再降启动时间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/2 H2C 支持改进&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AOT 编译预处理&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更好的 SQL DSL（Spring Data 改进）&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="九升级实战清单"&gt;&lt;a href="#%e4%b9%9d%e5%8d%87%e7%ba%a7%e5%ae%9e%e6%88%98%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;九、升级实战清单
+&lt;/h2&gt;&lt;h3 id="评估期"&gt;&lt;a href="#%e8%af%84%e4%bc%b0%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;评估期
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 列出所有依赖，确认全部有 Spring Boot 3 / Jakarta 兼容版本&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 确认 Java 17+ 在所有环境（dev、test、prod、CI）可用&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 评估 javax → jakarta 替换工作量&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 检查是否用了将被废弃的 API（如 WebSecurityConfigurerAdapter）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="升级期"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;升级期
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;升 JDK 到 17&lt;/strong&gt;（独立做，验证业务正常）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量替换 javax → jakarta&lt;/strong&gt;（IDE 工具或 OpenRewrite）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;升 Spring Boot 3.0 → 3.x 最新版&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;升所有第三方依赖&lt;/strong&gt;到 Jakarta 兼容版&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修编译错误 + 测试&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Security 改为新 SecurityFilterChain 写法&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;开启 Observability 替换老的 Sleuth&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="验证期"&gt;&lt;a href="#%e9%aa%8c%e8%af%81%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;验证期
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;全量回归测试&lt;/li&gt;
+&lt;li&gt;性能基准比对（启动时间、内存、QPS）&lt;/li&gt;
+&lt;li&gt;灰度发布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="迁移工具"&gt;&lt;a href="#%e8%bf%81%e7%a7%bb%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;迁移工具
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;OpenRewrite&lt;/strong&gt;：&lt;a class="link" href="https://github.com/openrewrite/rewrite-spring" target="_blank" rel="noopener"
+ &gt;github.com/openrewrite/rewrite-spring&lt;/a&gt; 自动改大部分代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot Migrator&lt;/strong&gt;：官方工具&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IntelliJ IDEA&lt;/strong&gt;：内置 jakarta 替换重构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十什么场景该升--什么场景缓一缓"&gt;&lt;a href="#%e5%8d%81%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e5%8d%87--%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e7%bc%93%e4%b8%80%e7%bc%93" class="header-anchor"&gt;&lt;/a&gt;十、什么场景该升 / 什么场景缓一缓
+&lt;/h2&gt;&lt;h3 id="-应该升"&gt;&lt;a href="#-%e5%ba%94%e8%af%a5%e5%8d%87" class="header-anchor"&gt;&lt;/a&gt;✅ 应该升
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目&lt;/strong&gt;——直接用 3.x，不要从 2.x 起步&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JDK 已经在 17+&lt;/strong&gt;——升级成本最小&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;想用虚拟线程 / 原生镜像&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot 2.7 已无 OSS 支持&lt;/strong&gt;（OSS 支持已于 2023 年 11 月结束，商业扩展支持也已于 2025 年 8 月结束）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="-缓一缓"&gt;&lt;a href="#-%e7%bc%93%e4%b8%80%e7%bc%93" class="header-anchor"&gt;&lt;/a&gt;⏳ 缓一缓
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;依赖中有大量未升级的 javax 库&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JDK 还卡在 8/11 升不上去&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务系统稳定，没有强需求&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;团队没人有时间做迁移测试&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;绝大多数项目应该启动迁移&lt;/strong&gt;——Spring Boot 2.7 的 OSS 支持已于 2023 年 11 月结束，商业扩展支持也已于 2025 年 8 月结束，再不升就完全没有安全更新了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一spring-boot-2--3-的几个真实坑"&gt;&lt;a href="#%e5%8d%81%e4%b8%80spring-boot-2--3-%e7%9a%84%e5%87%a0%e4%b8%aa%e7%9c%9f%e5%ae%9e%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;十一、Spring Boot 2 → 3 的几个真实坑
+&lt;/h2&gt;&lt;h3 id="1-jpa-用了-javaxpersistencegenerationtype-等"&gt;&lt;a href="#1-jpa-%e7%94%a8%e4%ba%86-javaxpersistencegenerationtype-%e7%ad%89" class="header-anchor"&gt;&lt;/a&gt;1. JPA 用了 &lt;code&gt;javax.persistence.GenerationType&lt;/code&gt; 等
+&lt;/h3&gt;&lt;p&gt;全局替换 import。&lt;/p&gt;
+&lt;h3 id="2-spring-security-配置类"&gt;&lt;a href="#2-spring-security-%e9%85%8d%e7%bd%ae%e7%b1%bb" class="header-anchor"&gt;&lt;/a&gt;2. Spring Security 配置类
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 2.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SecurityConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;extends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WebSecurityConfigurerAdapter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Override&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;protected&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;HttpSecurity&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;throws&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 3.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SecurityFilterChain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;filterChain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;HttpSecurity&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;throws&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;WebSecurityConfigurerAdapter&lt;/code&gt; 在 3.x 完全删除——&lt;strong&gt;所有项目都要重写 Security 配置&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-swaggeruispringdoc-openapi"&gt;&lt;a href="#3-swaggeruispringdoc-openapi" class="header-anchor"&gt;&lt;/a&gt;3. SwaggerUI（springdoc-openapi）
+&lt;/h3&gt;&lt;p&gt;要从 1.x 升 2.x——配置完全重写。&lt;/p&gt;
+&lt;h3 id="4-spring-cloud-版本对应"&gt;&lt;a href="#4-spring-cloud-%e7%89%88%e6%9c%ac%e5%af%b9%e5%ba%94" class="header-anchor"&gt;&lt;/a&gt;4. Spring Cloud 版本对应
+&lt;/h3&gt;&lt;p&gt;Spring Boot 3 不能用 Spring Cloud 2021.0（仍是 javax）。&lt;strong&gt;对应关系按 Boot 小版本严格区分&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;Spring Boot&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Spring Cloud&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.0.x / 3.1.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2022.0.x（Kilburn）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.2.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2023.0.x（Leyton）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.3.x / 3.4.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2023.0.x 或 2024.0.x（Moorgate）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.5.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2025.0.x（Northfields）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;踩坑提醒&lt;/strong&gt;：跨大版本配错（如 Boot 3.4+ 配 2022.0.x）会出现 starter 缺失、CVE 不修等问题。升 Boot 时务必参照 &lt;a class="link" href="https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions" target="_blank" rel="noopener"
+ &gt;Spring Cloud Supported Versions&lt;/a&gt; 同步升 Cloud。&lt;/p&gt;
+&lt;h3 id="5-mybatis-plus"&gt;&lt;a href="#5-mybatis-plus" class="header-anchor"&gt;&lt;/a&gt;5. MyBatis-Plus
+&lt;/h3&gt;&lt;p&gt;需要 3.5.3+——更老的版本不兼容 Spring Boot 3。&lt;/p&gt;
+&lt;h3 id="6-lombok"&gt;&lt;a href="#6-lombok" class="header-anchor"&gt;&lt;/a&gt;6. Lombok
+&lt;/h3&gt;&lt;p&gt;要 1.18.24+——老版本可能编译不过。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Spring Boot 3 是 Spring 生态进入 Jakarta + Java 17 + 原生镜像 + Observability 时代的入场券——不是小升级，是范式转移。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程实践：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;新项目无脑用 3.x&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;老项目要规划迁移&lt;/strong&gt;——拖到 2.7 EOL 就被动了&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 17+ 是基线&lt;/strong&gt;，不可回避&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenRewrite 自动迁移&lt;/strong&gt;省掉 80% 体力活&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程让传统 MVC 写法逼近 WebFlux 吞吐&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;升 Spring Boot 3 不是&amp;quot;为了升而升&amp;quot;——是 Java 服务端走向下一个十年的必经之路。&lt;/p&gt;</description></item></channel></rss>

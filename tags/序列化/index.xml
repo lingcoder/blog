@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>序列化 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%BA%8F%E5%88%97%E5%8C%96/</link><description>Recent content in 序列化 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 06 Nov 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%BA%8F%E5%88%97%E5%8C%96/index.xml" rel="self" type="application/rss+xml"/><item><title>Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍</title><link>https://www.lingcoder.com/p/protobuf-protocol-deep-dive/</link><pubDate>Thu, 06 Nov 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/protobuf-protocol-deep-dive/</guid><description>&lt;img src="https://www.lingcoder.com/p/protobuf-protocol-deep-dive/cover.svg" alt="Featured image of post Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;写过 gRPC 或 Dubbo 的人都见过 &lt;code&gt;.proto&lt;/code&gt; 文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;repeated&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;编译生成代码、序列化、传输——&lt;strong&gt;业务里只用到几行 API&lt;/strong&gt;，但底层 Protobuf 的二进制格式做了非常多巧妙的设计。&lt;/p&gt;
+&lt;p&gt;理解 Protobuf 的内部原理对工程有几个直接价值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;能解释&lt;strong&gt;为什么 Protobuf 比 JSON 小一半&lt;/strong&gt;——不只是&amp;quot;去掉了字段名&amp;quot;那么简单&lt;/li&gt;
+&lt;li&gt;能避免&lt;strong&gt;字段编号变更&lt;/strong&gt;导致的兼容性灾难&lt;/li&gt;
+&lt;li&gt;能在性能敏感场景&lt;strong&gt;做出精准选型&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文从 wire format 到 Varint 到字段标签，把 Protobuf 的核心机制讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一为什么不是-json"&gt;&lt;a href="#%e4%b8%80%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e6%98%af-json" class="header-anchor"&gt;&lt;/a&gt;一、为什么不是 JSON
+&lt;/h2&gt;&lt;p&gt;JSON 的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段名占大量空间&lt;/strong&gt;——&lt;code&gt;{&amp;quot;username&amp;quot;: &amp;quot;alice&amp;quot;, &amp;quot;age&amp;quot;: 30}&lt;/code&gt; 字段名比值还长&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字编码冗余&lt;/strong&gt;——123456789 当字符串编码要 9 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解析慢&lt;/strong&gt;——要 tokenize、要 parse、要 build object&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无 schema&lt;/strong&gt;——不知道字段类型，要靠运行时推断&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Protobuf 的解法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段名替换为编号&lt;/strong&gt;——&lt;code&gt;username&lt;/code&gt; 变成 &lt;code&gt;1&lt;/code&gt;，&lt;code&gt;age&lt;/code&gt; 变成 &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字用 Varint&lt;/strong&gt;——小数字用更少字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二进制 stream 解析&lt;/strong&gt;——按 schema 直接读&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;schema 是契约&lt;/strong&gt;——sender / receiver 都依赖同一个 .proto&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="二wire-format字段的二进制表示"&gt;&lt;a href="#%e4%ba%8cwire-format%e5%ad%97%e6%ae%b5%e7%9a%84%e4%ba%8c%e8%bf%9b%e5%88%b6%e8%a1%a8%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;二、Wire Format：字段的二进制表示
+&lt;/h2&gt;&lt;p&gt;每个字段在 wire 上都是 &lt;strong&gt;(tag, value)&lt;/strong&gt; 的形式。tag 由两部分组成：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag = (field_number &amp;lt;&amp;lt; 3) | wire_type
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;field_number&lt;/strong&gt;：在 .proto 里定义的字段编号（如 &lt;code&gt;name = 2&lt;/code&gt; 中的 2）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;wire_type&lt;/strong&gt;：3 位，表示 value 的编码方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="wire-types"&gt;&lt;a href="#wire-types" class="header-anchor"&gt;&lt;/a&gt;Wire Types
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;Type&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;名称&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;用途&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;0&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Varint&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;int32 / int64 / uint32 / uint64 / bool / enum&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;1&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;64-bit&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;fixed64 / sfixed64 / double&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;2&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Length-delim&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;string / bytes / message / packed&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;5&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;32-bit&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;fixed32 / sfixed32 / float&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;类型 3、4 是 group 类型（已弃用）。&lt;/p&gt;
+&lt;h3 id="例子"&gt;&lt;a href="#%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;例子
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;message Person { string name = 1; int32 age = 2; }&lt;/code&gt;，对应数据 &lt;code&gt;{name: &amp;quot;abc&amp;quot;, age: 30}&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wire_type&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x0A&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;→&lt;/span&gt; &lt;span class="mi"&gt;61&lt;/span&gt; &lt;span class="mi"&gt;62&lt;/span&gt; &lt;span class="mi"&gt;63&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wire_type&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="err"&gt;→&lt;/span&gt; &lt;span class="mh"&gt;0x1E&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;整个二进制：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mi"&gt;03&lt;/span&gt; &lt;span class="mi"&gt;61&lt;/span&gt; &lt;span class="mi"&gt;62&lt;/span&gt; &lt;span class="mi"&gt;63&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="n"&gt;E&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;只有 7 字节——而 JSON 的 &lt;code&gt;{&amp;quot;name&amp;quot;:&amp;quot;abc&amp;quot;,&amp;quot;age&amp;quot;:30}&lt;/code&gt; 是 22 字节。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三varint变长整数编码"&gt;&lt;a href="#%e4%b8%89varint%e5%8f%98%e9%95%bf%e6%95%b4%e6%95%b0%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;三、Varint：变长整数编码
+&lt;/h2&gt;&lt;p&gt;Varint 是 Protobuf 的核心创新——&lt;strong&gt;小数字用更少字节，大数字才用多字节&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="编码规则"&gt;&lt;a href="#%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;编码规则
+&lt;/h3&gt;&lt;p&gt;每个字节的最高位（MSB）作为&amp;quot;还有更多字节&amp;quot;的标志：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MSB = 1 → 后面还有&lt;/li&gt;
+&lt;li&gt;MSB = 0 → 这是最后一个字节&lt;/li&gt;
+&lt;li&gt;其余 7 位是 payload&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="编码示例"&gt;&lt;a href="#%e7%bc%96%e7%a0%81%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;编码示例
+&lt;/h3&gt;&lt;p&gt;数字 1：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;binary: 00000001
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Varint: 00000001 (1 byte)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;数字 300：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;binary: 100101100 (9 bits)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;groups of 7: 0000010 0101100
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;按小端: 0101100 0000010
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;加 MSB: 1010 1100 0000 0010
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hex: AC 02
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;数字越小占的字节越少：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;数字范围&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Varint 字节数&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;0 - 127&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;128 - 16383&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;2&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;16384 - 2M&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;2M - 268M&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;4&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;268M+&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;业务里 ID 多数小于 2 亿——&lt;strong&gt;Varint 比定长 8 字节 int64 节省 50% 以上&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="varint-的代价"&gt;&lt;a href="#varint-%e7%9a%84%e4%bb%a3%e4%bb%b7" class="header-anchor"&gt;&lt;/a&gt;Varint 的代价
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;负数特别大&lt;/strong&gt;：-1 在补码下是 &lt;code&gt;0xFFFFFFFF...FFFF&lt;/code&gt;（10 字节），所有负数都用 10 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决&lt;/strong&gt;：&lt;code&gt;sint32 / sint64&lt;/code&gt; 用 ZigZag 编码——&lt;strong&gt;正负数交替排列&lt;/strong&gt;，让 -1, 1, -2, 2 都很小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sint32 编码: (n &amp;lt;&amp;lt; 1) ^ (n &amp;gt;&amp;gt; 31)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-1 → 1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1 → 2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-2 → 3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2 → 4
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;有负数的字段一定要用 sint32 / sint64&lt;/strong&gt;——否则空间浪费惊人。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四length-delimited字符串和子消息"&gt;&lt;a href="#%e5%9b%9blength-delimited%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%92%8c%e5%ad%90%e6%b6%88%e6%81%af" class="header-anchor"&gt;&lt;/a&gt;四、Length-delimited：字符串和子消息
+&lt;/h2&gt;&lt;p&gt;string、bytes、嵌套 message、packed repeated 都用 length-delimited：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[tag][length][bytes...]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;length 也是 Varint——所以 1 字节就能表示 0-127 字节的内容。&lt;/p&gt;
+&lt;h3 id="嵌套-message"&gt;&lt;a href="#%e5%b5%8c%e5%a5%97-message" class="header-anchor"&gt;&lt;/a&gt;嵌套 message
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Address&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;city&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Person&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;嵌套消息不是&amp;quot;展开&amp;quot;——而是当作一段嵌入的二进制流：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x12&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="err"&gt;的完整序列化字节&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这意味着——&lt;strong&gt;Protobuf 的解析器是递归的&lt;/strong&gt;，但内存效率极高。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五字段编号兼容性的命脉"&gt;&lt;a href="#%e4%ba%94%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e5%85%bc%e5%ae%b9%e6%80%a7%e7%9a%84%e5%91%bd%e8%84%89" class="header-anchor"&gt;&lt;/a&gt;五、字段编号：兼容性的命脉
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;字段编号是 Protobuf 兼容性的核心约定&lt;/strong&gt;——一旦定了，永不能改：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 之后加的
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="兼容规则"&gt;&lt;a href="#%e5%85%bc%e5%ae%b9%e8%a7%84%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;兼容规则
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新增字段&lt;/strong&gt; → 老 client 解析时跳过未知字段（不报错）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除字段&lt;/strong&gt; → 字段编号&lt;strong&gt;永不复用&lt;/strong&gt;，加 &lt;code&gt;reserved&lt;/code&gt; 防止&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;改类型&lt;/strong&gt; → 大多数情况会破坏兼容（除少数兼容对，如 &lt;code&gt;int32 ↔ int64&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;改字段名&lt;/strong&gt; → 不影响 wire（wire 只用编号）但破坏代码层面 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="reserved-的用法"&gt;&lt;a href="#reserved-%e7%9a%84%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;reserved 的用法
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;reserved&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;reserved&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;old_field&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;防止后人不小心复用了已删除的字段编号——会编译错误。&lt;/p&gt;
+&lt;h3 id="字段编号的成本"&gt;&lt;a href="#%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e7%9a%84%e6%88%90%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;字段编号的成本
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1-15&lt;/strong&gt; 编号占 1 字节 tag&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;16-2047&lt;/strong&gt; 占 2 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2048+&lt;/strong&gt; 占 3 字节&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;高频字段尽量用 1-15 编号&lt;/strong&gt;——能省一字节。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六repeated-和-packed-编码"&gt;&lt;a href="#%e5%85%adrepeated-%e5%92%8c-packed-%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;六、Repeated 和 packed 编码
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;repeated&lt;/span&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;默认编码（proto2）：每个元素&lt;strong&gt;单独发一遍 tag + value&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag value tag value tag value ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;[packed = true]&lt;/code&gt;（proto3 默认）：合并成单个 length-delimited 块：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag length value value value ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;packed 显著节省空间&lt;/strong&gt;——尤其当数组元素都是小数字时。proto3 默认 packed，proto2 要显式声明。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七proto2-vs-proto3"&gt;&lt;a href="#%e4%b8%83proto2-vs-proto3" class="header-anchor"&gt;&lt;/a&gt;七、Proto2 vs Proto3
+&lt;/h2&gt;&lt;h3 id="proto2"&gt;&lt;a href="#proto2" class="header-anchor"&gt;&lt;/a&gt;Proto2
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;字段标记 &lt;code&gt;required&lt;/code&gt; / &lt;code&gt;optional&lt;/code&gt; / &lt;code&gt;repeated&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;默认值显式声明&lt;/li&gt;
+&lt;li&gt;区分&amp;quot;未设置&amp;quot;和&amp;quot;等于默认值&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="proto3"&gt;&lt;a href="#proto3" class="header-anchor"&gt;&lt;/a&gt;Proto3
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;删掉 &lt;code&gt;required&lt;/code&gt; 和 &lt;code&gt;optional&lt;/code&gt;（后又部分恢复）&lt;/li&gt;
+&lt;li&gt;字段总是 optional&lt;/li&gt;
+&lt;li&gt;默认值不发送&lt;/li&gt;
+&lt;li&gt;packed 默认开启&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="现状"&gt;&lt;a href="#%e7%8e%b0%e7%8a%b6" class="header-anchor"&gt;&lt;/a&gt;现状
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目用 proto3&lt;/strong&gt;——更简洁&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2020 年后 proto3 又支持 &lt;code&gt;optional&lt;/code&gt;&lt;/strong&gt;——能区分&amp;quot;没设&amp;quot; vs &amp;ldquo;等于默认值&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;老项目用 proto2 也没问题，但社区主要在 proto3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="八性能对比"&gt;&lt;a href="#%e5%85%ab%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;八、性能对比
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;JSON&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Protobuf&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Avro&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;MessagePack&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;体积（典型业务对象）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;0.4-0.5×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;0.4×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;0.6×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;序列化速度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;5-10×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;反序列化速度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;5-10×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;跨语言&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;人类可读&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Schema 强约束&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Protobuf 的核心优势&lt;/strong&gt;：体积 + 速度 + schema 一致性。&lt;strong&gt;核心劣势&lt;/strong&gt;：不可读 + 必须先有 schema。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九什么场景用-protobuf"&gt;&lt;a href="#%e4%b9%9d%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e7%94%a8-protobuf" class="header-anchor"&gt;&lt;/a&gt;九、什么场景用 Protobuf
+&lt;/h2&gt;&lt;p&gt;✅ 适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gRPC&lt;/strong&gt; 服务调用——Protobuf 是 gRPC 默认序列化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;微服务间通信&lt;/strong&gt;——schema 强约束，避免字段约定问题&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移动端 / IoT&lt;/strong&gt; ——节省带宽&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量数据处理&lt;/strong&gt;（Hadoop / Kafka）——高吞吐&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储优化&lt;/strong&gt;——某些 KV 存储用 Protobuf 序列化 value&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 不适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;对外 REST API&lt;/strong&gt;——前端期望 JSON&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小项目 / 调试期&lt;/strong&gt;——要 .proto 文件 + 编译器，启动成本高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;schema 频繁变化&lt;/strong&gt;——每次都要发版&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;需要人类可读&lt;/strong&gt;——Protobuf 没法直接看&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十几个工程踩坑"&gt;&lt;a href="#%e5%8d%81%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e8%b8%a9%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;十、几个工程踩坑
+&lt;/h2&gt;&lt;h3 id="1-字段编号永不复用"&gt;&lt;a href="#1-%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e6%b0%b8%e4%b8%8d%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;1. 字段编号永不复用
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 删除了 string old_field = 4;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;new_field&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 不能复用编号 4！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;老 client 拿到新数据时会&lt;strong&gt;把 new_field 的内容当成 old_field 解析&lt;/strong&gt;——数据被错乱。&lt;strong&gt;永远 reserved&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-enum-默认值"&gt;&lt;a href="#2-enum-%e9%bb%98%e8%ae%a4%e5%80%bc" class="header-anchor"&gt;&lt;/a&gt;2. enum 默认值
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;enum&lt;/span&gt; &lt;span class="n"&gt;Status&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;PENDING&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 必须有 0 值（默认）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ACTIVE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;proto3 强制 enum 必须有 0 值——&lt;strong&gt;这个值代表&amp;quot;未设置&amp;quot;&lt;/strong&gt;。业务设计 enum 时考虑这个。&lt;/p&gt;
+&lt;h3 id="3-大消息分包"&gt;&lt;a href="#3-%e5%a4%a7%e6%b6%88%e6%81%af%e5%88%86%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;3. 大消息分包
+&lt;/h3&gt;&lt;p&gt;某些 RPC 框架对单个 message 大小有限制（如 gRPC 默认 4MB）——&lt;strong&gt;大数据要 stream 而非单包&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;service&lt;/span&gt; &lt;span class="n"&gt;FileService&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;rpc&lt;/span&gt; &lt;span class="n"&gt;Upload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="n"&gt;FileChunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UploadResp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="4-字符串编码"&gt;&lt;a href="#4-%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;4. 字符串编码
+&lt;/h3&gt;&lt;p&gt;Protobuf string 必须是合法 UTF-8——&lt;strong&gt;塞二进制数据用 bytes 类型&lt;/strong&gt;，否则解析会失败。&lt;/p&gt;
+&lt;h3 id="5-optional-的-has-方法"&gt;&lt;a href="#5-optional-%e7%9a%84-has-%e6%96%b9%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;5. Optional 的 has 方法
+&lt;/h3&gt;&lt;p&gt;proto3 的 optional 字段才能区分&amp;quot;没设&amp;quot;和&amp;quot;等于默认值&amp;quot;——&lt;strong&gt;普通字段无法区分&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 普通：age = 0 和&amp;#34;没设&amp;#34;无法区分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;optional&lt;/span&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;score&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// optional：能区分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业务模型设计时考虑——&lt;strong&gt;重要的&amp;quot;是否存在&amp;quot;语义字段加 optional&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一protobuf-与-grpc-的关系"&gt;&lt;a href="#%e5%8d%81%e4%b8%80protobuf-%e4%b8%8e-grpc-%e7%9a%84%e5%85%b3%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;十一、Protobuf 与 gRPC 的关系
+&lt;/h2&gt;&lt;p&gt;很多人误以为&amp;quot;Protobuf = gRPC&amp;quot;——其实它们独立：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;：序列化协议&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;gRPC&lt;/strong&gt;：基于 HTTP/2 的 RPC 框架，&lt;strong&gt;默认用 Protobuf&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Protobuf 也能用在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不走 gRPC 的 RPC（如 Dubbo3 的 Triple 协议）&lt;/li&gt;
+&lt;li&gt;Kafka 消息序列化&lt;/li&gt;
+&lt;li&gt;自己写的二进制协议&lt;/li&gt;
+&lt;li&gt;文件存储&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Protobuf 不只是『二进制 JSON』——它是 schema-driven 序列化的范式：用编号代替字段名、用 Varint 节省空间、用 wire type 保证可解析、用兼容规则保证演进。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段编号永不复用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小数字用 Varint&lt;/strong&gt;，负数用 sint&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重要字段用 1-15 编号&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;enum 必须有 0 值&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;packed repeated 默认开&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大数据用 stream RPC&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;理解 Protobuf 的内部原理——下次再排查&amp;quot;为什么我的 protobuf 数据 client 解不出来&amp;quot;时，你能瞬间想到是字段编号被改了还是类型不兼容。&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5DAEDF"/>
+          <stop offset="1" stop-color="#A0D4F0"/>
+    </linearGradient>
+      <radialGradient id="shallowWater" cx="0.5" cy="0.5" r="0.6">
+          <stop offset="0" stop-color="#7FE0E0"/>
+          <stop offset="1" stop-color="#3FAACC"/>
+      </radialGradient>
+      <linearGradient id="deepWater" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3FAACC"/>
+          <stop offset="1" stop-color="#1A4A7C"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="200" fill="url(#sky)"/>
+
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.85">
+        <ellipse cx="200" cy="80" rx="130" ry="16"/>
+        <ellipse cx="220" cy="74" rx="90" ry="11"/>
+        <ellipse cx="900" cy="60" rx="120" ry="14"/>
+        <ellipse cx="920" cy="55" rx="80" ry="10"/>
+    </g>
+
+    <!-- Sun -->
+    <circle cx="1000" cy="120" r="40" fill="#FFE5B0"/>
+
+    <!-- Deep ocean (back) -->
+    <rect y="200" width="1200" height="430" fill="url(#deepWater)"/>
+
+    <!-- Shallow water around island -->
+    <ellipse cx="600" cy="380" rx="500" ry="120" fill="url(#shallowWater)"/>
+    <ellipse cx="600" cy="380" rx="380" ry="80" fill="#7FE0E0"/>
+
+    <!-- Sand ring -->
+    <ellipse cx="600" cy="380" rx="280" ry="55" fill="#F5DCA8"/>
+
+    <!-- Island vegetation -->
+    <ellipse cx="600" cy="370" rx="200" ry="40" fill="#3D8C5C"/>
+    <ellipse cx="550" cy="360" rx="100" ry="32" fill="#5CAA70"/>
+    <ellipse cx="660" cy="360" rx="120" ry="35" fill="#5CAA70"/>
+
+    <!-- Palm trees on island -->
+    <g transform="translate(580,370)">
+        <path d="M 0 0 Q -3 -40 -8 -85 Q -10 -100 -2 -110" stroke="#5C3A1F" stroke-width="6" fill="none"
+              stroke-linecap="round"/>
+        <g fill="#1F4A2A">
+            <path d="M -2 -110 Q -45 -130 -65 -120 Q -50 -120 -2 -100 Z"/>
+            <path d="M -2 -110 Q 45 -130 65 -120 Q 50 -120 -2 -100 Z"/>
+            <path d="M -2 -110 Q -55 -100 -60 -75 Q -50 -100 -2 -100 Z"/>
+            <path d="M -2 -110 Q 55 -100 60 -75 Q 50 -100 -2 -100 Z"/>
+            <path d="M -2 -110 Q -25 -150 -15 -160 Q -10 -135 -2 -110 Z"/>
+        </g>
+  </g>
+    <g transform="translate(640,365)">
+        <path d="M 0 0 Q 3 -45 8 -90 Q 10 -100 2 -108" stroke="#5C3A1F" stroke-width="6" fill="none"
+              stroke-linecap="round"/>
+        <g fill="#1F4A2A">
+            <path d="M 2 -108 Q -40 -125 -55 -115 Q -45 -115 2 -100 Z"/>
+            <path d="M 2 -108 Q 40 -125 55 -115 Q 45 -115 2 -100 Z"/>
+            <path d="M 2 -108 Q -50 -100 -55 -75 Q -45 -100 2 -100 Z"/>
+            <path d="M 2 -108 Q 50 -100 55 -75 Q 45 -100 2 -100 Z"/>
+    </g>
+  </g>
+
+    <!-- Sun reflection -->
+    <g fill="#FFE5B0" opacity="0.5">
+        <ellipse cx="1000" cy="220" rx="60" ry="3"/>
+        <ellipse cx="1000" cy="240" rx="48" ry="2.5"/>
+        <ellipse cx="1000" cy="260" rx="36" ry="2"/>
+  </g>
+
+    <!-- Subtle water shimmer -->
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5">
+        <path d="M 100 480 q 30 -4 60 0 t 60 0"/>
+        <path d="M 850 500 q 30 -4 60 0 t 60 0"/>
+        <path d="M 200 555 q 50 -6 100 0 t 100 0"/>
+        <path d="M 800 575 q 50 -6 100 0 t 100 0"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

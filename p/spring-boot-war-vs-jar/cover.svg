@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFD89A"/>
+          <stop offset="1" stop-color="#FFA85C"/>
+    </linearGradient>
+      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFE5B0" stop-opacity="0.6"/>
+          <stop offset="1" stop-color="#FFE5B0" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Sun behind trees -->
+    <circle cx="600" cy="320" r="180" fill="url(#sunRay)"/>
+    <circle cx="600" cy="340" r="48" fill="#FFE5B0" opacity="0.8"/>
+
+    <!-- Distant tree row -->
+    <g fill="#C26E3A" opacity="0.7">
+        <ellipse cx="80" cy="320" rx="50" ry="40"/>
+        <ellipse cx="180" cy="310" rx="60" ry="48"/>
+        <ellipse cx="290" cy="320" rx="55" ry="42"/>
+        <ellipse cx="950" cy="315" rx="60" ry="46"/>
+        <ellipse cx="1060" cy="320" rx="55" ry="40"/>
+        <ellipse cx="1150" cy="310" rx="50" ry="44"/>
+  </g>
+
+    <!-- Path -->
+    <path d="M 540 380 Q 600 500 660 380 Q 600 480 540 380 Z" fill="#8C5430"/>
+    <path d="M 480 480 Q 600 600 720 480 Q 600 590 480 480 Z" fill="#A86A3F"/>
+    <path d="M 380 580 L 820 580 L 720 480 L 480 480 Z" fill="#A86A3F"/>
+
+    <!-- Foreground autumn trees -->
+    <g>
+        <!-- Left tree -->
+        <ellipse cx="200" cy="380" rx="100" ry="80" fill="#D8401C"/>
+        <ellipse cx="180" cy="360" rx="80" ry="70" fill="#FF6B2E"/>
+        <ellipse cx="220" cy="395" rx="75" ry="62" fill="#FFA438"/>
+        <rect x="195" y="430" width="10" height="50" fill="#5C2D14"/>
+
+        <!-- Right tree -->
+        <ellipse cx="1000" cy="380" rx="110" ry="85" fill="#B82E14"/>
+        <ellipse cx="980" cy="355" rx="85" ry="72" fill="#FF7C30"/>
+        <ellipse cx="1020" cy="390" rx="78" ry="65" fill="#FFA438"/>
+        <rect x="995" y="435" width="10" height="50" fill="#5C2D14"/>
+  </g>
+
+    <!-- Ground -->
+    <rect y="540" width="1200" height="90" fill="#5C3220"/>
+
+    <!-- Fallen leaves -->
+    <g>
+        <ellipse cx="380" cy="555" rx="6" ry="4" fill="#D8401C"/>
+        <ellipse cx="430" cy="565" rx="5" ry="3" fill="#FFA438"/>
+        <ellipse cx="500" cy="558" rx="6" ry="4" fill="#FF6B2E"/>
+        <ellipse cx="600" cy="570" rx="6" ry="4" fill="#D8401C"/>
+        <ellipse cx="700" cy="560" rx="5" ry="3" fill="#FFA438"/>
+        <ellipse cx="780" cy="568" rx="6" ry="4" fill="#FF6B2E"/>
+        <ellipse cx="850" cy="555" rx="5" ry="3" fill="#D8401C"/>
+  </g>
+
+    <text x="60" y="608" fill="#FFE5B0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.8"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

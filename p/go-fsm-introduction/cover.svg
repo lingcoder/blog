@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFB870"/>
+          <stop offset="0.5" stop-color="#FFD8A8"/>
+          <stop offset="1" stop-color="#E8E0CC"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Sun -->
+    <circle cx="850" cy="170" r="55" fill="#FFE5A0" opacity="0.95"/>
+    <circle cx="850" cy="170" r="130" fill="#FFE5A0" opacity="0.18"/>
+
+    <!-- Distant ridges -->
+    <path d="M 0 380 L 80 290 L 180 320 L 280 270 L 380 310 L 480 260 L 600 300 L 720 250 L 840 290 L 960 240 L 1080 280 L 1200 250 L 1200 380 Z"
+          fill="#5C7088" opacity="0.5"/>
+
+    <!-- Mid mountains -->
+    <path d="M 0 380 L 100 280 L 200 320 L 320 240 L 440 290 L 560 220 L 680 270 L 800 200 L 920 250 L 1080 220 L 1200 270 L 1200 400 L 0 400 Z"
+          fill="#3D5870" opacity="0.7"/>
+
+    <!-- Foreground mountain with switchback trail -->
+    <path d="M 0 400 L 200 280 L 400 380 L 600 260 L 800 360 L 1000 280 L 1200 360 L 1200 500 L 0 500 Z"
+          fill="#5C7848"/>
+    <path d="M 0 440 L 200 320 L 400 420 L 600 300 L 800 400 L 1000 320 L 1200 400 L 1200 500 L 0 500 Z"
+          fill="#3D5828" opacity="0.85"/>
+
+    <!-- Switchback trail -->
+    <g fill="none" stroke="#C8A878" stroke-width="3" stroke-linecap="round">
+        <path d="M 700 480 Q 720 460 600 440 Q 480 420 500 400 Q 520 380 600 360 Q 680 340 600 320 Q 520 300 580 280"/>
+    </g>
+
+    <!-- Hiker silhouette -->
+    <g fill="#1F2818" transform="translate(580,278)">
+        <circle cx="0" cy="-8" r="3"/>
+        <line x1="0" y1="-5" x2="0" y2="6" stroke="#1F2818" stroke-width="2"/>
+        <line x1="0" y1="6" x2="-3" y2="14" stroke="#1F2818" stroke-width="2"/>
+        <line x1="0" y1="6" x2="3" y2="14" stroke="#1F2818" stroke-width="2"/>
+        <line x1="0" y1="-2" x2="-4" y2="3" stroke="#1F2818" stroke-width="2"/>
+        <line x1="0" y1="-2" x2="6" y2="-6" stroke="#1F2818" stroke-width="2"/>
+    </g>
+
+    <!-- Pines on ridge -->
+    <g fill="#1F3818">
+        <g transform="translate(150,420)">
+            <polygon points="0,0 -10,-25 10,-25 0,-40 -8,-25 8,-25 0,-40"/>
+        </g>
+        <g transform="translate(190,440)">
+            <polygon points="0,0 -8,-22 8,-22 0,-35"/>
+        </g>
+        <g transform="translate(880,440)">
+            <polygon points="0,0 -10,-25 10,-25 0,-40 -8,-25 8,-25 0,-40"/>
+        </g>
+        <g transform="translate(920,455)">
+            <polygon points="0,0 -8,-22 8,-22 0,-35"/>
+        </g>
+        <g transform="translate(950,440)">
+            <polygon points="0,0 -10,-25 10,-25 0,-40 -8,-25 8,-25 0,-40"/>
+        </g>
+    </g>
+
+    <!-- Foreground grass slope -->
+    <path d="M 0 500 Q 600 470 1200 500 L 1200 630 L 0 630 Z" fill="#5C7838"/>
+    <path d="M 0 560 Q 600 540 1200 565 L 1200 630 L 0 630 Z" fill="#3D5818"/>
+
+    <!-- Wildflowers -->
+    <g>
+        <g transform="translate(150,580)">
+            <circle r="4" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(220,600)">
+            <circle r="3.5" fill="#FFB0C8"/>
+        </g>
+        <g transform="translate(320,575)">
+            <circle r="4" fill="#FFFFFF"/>
+        </g>
+        <g transform="translate(900,580)">
+            <circle r="3.5" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(1000,605)">
+            <circle r="4" fill="#FFB0C8"/>
+        </g>
+        <g transform="translate(1080,580)">
+            <circle r="3.5" fill="#FFFFFF"/>
+        </g>
+  </g>
+
+    <text x="60" y="618" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

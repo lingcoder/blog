@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Verifiable Credentials on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/verifiable-credentials/</link><description>Recent content in Verifiable Credentials on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 13 Mar 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/verifiable-credentials/index.xml" rel="self" type="application/rss+xml"/><item><title>数字身份的范式转移——DID 与 VC</title><link>https://www.lingcoder.com/p/decentralized-identifier-introduction/</link><pubDate>Thu, 13 Mar 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/decentralized-identifier-introduction/</guid><description>&lt;img src="https://www.lingcoder.com/p/decentralized-identifier-introduction/cover.svg" alt="Featured image of post 数字身份的范式转移——DID 与 VC" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;互联网时代的&amp;quot;身份&amp;quot;是一笔奇怪的账：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;你的微信账号属于腾讯——封了你就没了&lt;/li&gt;
+&lt;li&gt;你的 Gmail 属于 Google——他们能 disable 你&lt;/li&gt;
+&lt;li&gt;你的银行账号属于银行&lt;/li&gt;
+&lt;li&gt;你的 LinkedIn 简历存在 LinkedIn 服务器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每一个&amp;quot;你的身份&amp;quot;，&lt;strong&gt;实际上都是某个公司租给你的&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;DID（Decentralized Identifier，去中心化身份标识）&lt;/strong&gt; 就是要解决这件事——&lt;strong&gt;让用户真正拥有自己的身份&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是&lt;strong&gt;数字身份的范式转移&lt;/strong&gt;——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
+&lt;p&gt;本文讲清楚 DID 的结构、几种主流实现方法、可验证凭证的玩法、工程上的意义。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一did-长什么样"&gt;&lt;a href="#%e4%b8%80did-%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7" class="header-anchor"&gt;&lt;/a&gt;一、DID 长什么样
+&lt;/h2&gt;&lt;p&gt;DID 是一种 URI——格式：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:method:identifier
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例子：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:ethr:0x3b0BC51Ab9De1e5B7B6E34E5b960285805C41736
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:web:example.com:user:alice
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:ion:EiClkZMDxPKqC9c-umQfTkR8...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;每段含义：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;did&lt;/strong&gt;：固定前缀&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;method&lt;/strong&gt;：用什么&amp;quot;方法&amp;quot;实现这个 DID（决定了它在哪解析、什么类型的密钥等）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;identifier&lt;/strong&gt;：方法内的唯一标识&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;DID 是一个『可解析的身份标识』&lt;/strong&gt;——给定一个 DID，你能解析出对应的&amp;quot;DID Document&amp;quot;，包含：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;@context&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://www.w3.org/ns/did/v1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;verificationMethod&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...#controller&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;EcdsaSecp256k1RecoveryMethod2020&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;controller&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;blockchainAccountId&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;eip155:1:0x3b0BC51A...&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;authentication&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...#controller&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;assertionMethod&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...#controller&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;service&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...#hub&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;IdentityHub&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;serviceEndpoint&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://hub.example.com/users/alice&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;DID Document 描述：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;公钥&lt;/strong&gt;（用于身份验证、签名）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务端点&lt;/strong&gt;（这个身份在哪里能联系到）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;控制者&lt;/strong&gt;（可能委托给别的 DID）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="二did-的核心特性"&gt;&lt;a href="#%e4%ba%8cdid-%e7%9a%84%e6%a0%b8%e5%bf%83%e7%89%b9%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;二、DID 的核心特性
+&lt;/h2&gt;&lt;h3 id="1-用户拥有"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e6%8b%a5%e6%9c%89" class="header-anchor"&gt;&lt;/a&gt;1. 用户拥有
+&lt;/h3&gt;&lt;p&gt;私钥在用户本地——&lt;strong&gt;没有任何中心化机构能&amp;quot;封禁&amp;quot;或&amp;quot;转让&amp;quot;DID&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-全局唯一"&gt;&lt;a href="#2-%e5%85%a8%e5%b1%80%e5%94%af%e4%b8%80" class="header-anchor"&gt;&lt;/a&gt;2. 全局唯一
+&lt;/h3&gt;&lt;p&gt;DID 在全球范围内唯一——不像 username 可能跨平台冲突。&lt;/p&gt;
+&lt;h3 id="3-可解析"&gt;&lt;a href="#3-%e5%8f%af%e8%a7%a3%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;3. 可解析
+&lt;/h3&gt;&lt;p&gt;任何人拿到 DID 字符串都能查出 DID Document——拿到公钥、服务端点等元数据。&lt;/p&gt;
+&lt;h3 id="4-可验证"&gt;&lt;a href="#4-%e5%8f%af%e9%aa%8c%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;4. 可验证
+&lt;/h3&gt;&lt;p&gt;DID Document 里的公钥可以验证签名——证明&amp;quot;这个 DID 的所有者真的是我&amp;quot;。&lt;/p&gt;
+&lt;h3 id="5-可演化"&gt;&lt;a href="#5-%e5%8f%af%e6%bc%94%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;5. 可演化
+&lt;/h3&gt;&lt;p&gt;私钥泄漏？可以更新 DID Document，启用新公钥废止老的——&lt;strong&gt;身份本身不变&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三几种主流-did-方法"&gt;&lt;a href="#%e4%b8%89%e5%87%a0%e7%a7%8d%e4%b8%bb%e6%b5%81-did-%e6%96%b9%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;三、几种主流 DID 方法
+&lt;/h2&gt;&lt;p&gt;DID 规范本身只是个&amp;quot;框架&amp;quot;——具体怎么实现叫&amp;quot;方法（method）&amp;quot;。每种方法有自己的 trade-off：&lt;/p&gt;
+&lt;h3 id="didweb"&gt;&lt;a href="#didweb" class="header-anchor"&gt;&lt;/a&gt;did:web
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:web:example.com:user:alice
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;最简单的方法&lt;/strong&gt;——DID Document 就是 HTTPS 文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;https://example.com/user/alice/did.json
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;✓ 极易部署，企业域名直接用&lt;/li&gt;
+&lt;li&gt;✓ 不依赖区块链&lt;/li&gt;
+&lt;li&gt;✗ 中心化（域名所有者能改 DID Document）&lt;/li&gt;
+&lt;li&gt;✗ 域名失效 DID 也失效&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;适合企业身份场景——&lt;strong&gt;不是真正去中心化，但合规、好用&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="didkey"&gt;&lt;a href="#didkey" class="header-anchor"&gt;&lt;/a&gt;did:key
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;身份就是公钥本身&lt;/strong&gt;——identifier 部分是公钥的 multibase 编码。&lt;/p&gt;
+&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;✓ 最简单的真正去中心化 DID&lt;/li&gt;
+&lt;li&gt;✓ 离线生成，不需要任何外部依赖&lt;/li&gt;
+&lt;li&gt;✗ 无法升级密钥——公钥泄漏 = 身份泄漏&lt;/li&gt;
+&lt;li&gt;✗ 没有服务端点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;适合临时身份、单次签名场景。&lt;/p&gt;
+&lt;h3 id="didethr"&gt;&lt;a href="#didethr" class="header-anchor"&gt;&lt;/a&gt;did:ethr
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;did:ethr:0x3b0BC51Ab9De...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;基于以太坊地址——&lt;strong&gt;身份注册和更新都通过智能合约&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;✓ 真正去中心化，链上可验证&lt;/li&gt;
+&lt;li&gt;✓ 可以更新公钥（通过合约调用）&lt;/li&gt;
+&lt;li&gt;✗ 每次更新要付 Gas&lt;/li&gt;
+&lt;li&gt;✗ 严重依赖以太坊存活&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="didion"&gt;&lt;a href="#didion" class="header-anchor"&gt;&lt;/a&gt;did:ion
+&lt;/h3&gt;&lt;p&gt;微软主导的 ION 网络——基于比特币的&amp;quot;侧链&amp;quot;层 2。&lt;/p&gt;
+&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;✓ 极致可扩展（每秒数千次操作）&lt;/li&gt;
+&lt;li&gt;✓ 几乎免费&lt;/li&gt;
+&lt;li&gt;✗ ION 自身是新基础设施&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="didpeer"&gt;&lt;a href="#didpeer" class="header-anchor"&gt;&lt;/a&gt;did:peer
+&lt;/h3&gt;&lt;p&gt;适合&amp;quot;两人通信&amp;quot;场景——&lt;strong&gt;两端互相交换 DID，无需任何公开注册&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;适合 P2P 通信、物联网设备身份。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四verifiable-credentialsdid-的杀手级用法"&gt;&lt;a href="#%e5%9b%9bverifiable-credentialsdid-%e7%9a%84%e6%9d%80%e6%89%8b%e7%ba%a7%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;四、Verifiable Credentials：DID 的杀手级用法
+&lt;/h2&gt;&lt;p&gt;DID 解决了&amp;quot;你是谁&amp;quot;——但只是个标识。&lt;strong&gt;Verifiable Credentials（VC）&lt;/strong&gt; 是 DID 的搭档——表达&amp;quot;某机构证明了你的某项属性&amp;quot;。&lt;/p&gt;
+&lt;h3 id="例子大学学位证"&gt;&lt;a href="#%e4%be%8b%e5%ad%90%e5%a4%a7%e5%ad%a6%e5%ad%a6%e4%bd%8d%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;例子：大学学位证
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;@context&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;https://www.w3.org/2018/credentials/v1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="s2"&gt;&amp;#34;https://www.w3.org/2018/credentials/examples/v1&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;VerifiableCredential&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;UniversityDegreeCredential&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;issuer&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:web:university.edu&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;issuanceDate&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2025-03-13T00:00:00Z&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;credentialSubject&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:ethr:0x3b0BC51A...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;degree&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;BachelorDegree&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Bachelor of Science in Computer Science&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;university&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Example University&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;year&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2025&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;proof&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Ed25519Signature2020&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;created&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;2025-03-13T00:00:00Z&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;verificationMethod&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;did:web:university.edu#key-1&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;proofPurpose&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;assertionMethod&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;jws&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;eyJhbGciOi...&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="vc-的几个关键角色"&gt;&lt;a href="#vc-%e7%9a%84%e5%87%a0%e4%b8%aa%e5%85%b3%e9%94%ae%e8%a7%92%e8%89%b2" class="header-anchor"&gt;&lt;/a&gt;VC 的几个关键角色
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ Issuer[Issuer&lt;br/&gt;大学] --&gt;|颁发 VC| Holder[Holder&lt;br/&gt;学生]
+ Holder --&gt;|出示 VC| Verifier[Verifier&lt;br/&gt;HR/雇主]
+ Verifier -.解析签名.-&gt; Issuer&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Issuer（颁发者）&lt;/strong&gt;：大学、政府、银行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Holder（持有者）&lt;/strong&gt;：用户自己，存在自己的钱包里&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Verifier（验证者）&lt;/strong&gt;：需要验证用户某项属性的方&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="vc-的革命性"&gt;&lt;a href="#vc-%e7%9a%84%e9%9d%a9%e5%91%bd%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;VC 的革命性
+&lt;/h3&gt;&lt;p&gt;传统流程：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;求职者 → 雇主 → &amp;ldquo;请提供大学学位证明&amp;rdquo; → 学生联系大学 → 大学开纸质证明 → 寄给雇主 → 雇主再核实&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;VC 流程：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;求职者持有数字 VC → 出示给雇主 → 雇主本地验证签名 → 完成&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;雇主不需要联系大学&lt;/strong&gt;——签名就证明了真实性。&lt;strong&gt;用户掌握所有凭证&lt;/strong&gt;——而不是分散在各机构数据库里。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五零知识证明--vc选择性披露"&gt;&lt;a href="#%e4%ba%94%e9%9b%b6%e7%9f%a5%e8%af%86%e8%af%81%e6%98%8e--vc%e9%80%89%e6%8b%a9%e6%80%a7%e6%8a%ab%e9%9c%b2" class="header-anchor"&gt;&lt;/a&gt;五、零知识证明 + VC：选择性披露
+&lt;/h2&gt;&lt;p&gt;VC 的最强组合是&lt;strong&gt;配合零知识证明&lt;/strong&gt;——可以证明&amp;quot;我满足某个条件，但不暴露具体值&amp;quot;。&lt;/p&gt;
+&lt;p&gt;例子：买酒要证明已成年：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;朴素：出示身份证 → 暴露具体生日、姓名、地址&lt;/li&gt;
+&lt;li&gt;VC + ZKP：&lt;strong&gt;证明&amp;quot;我的 VC 中 birthDate 早于今天减 18 年&amp;quot;&lt;/strong&gt; → 没暴露任何具体数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种&lt;strong&gt;选择性披露&lt;/strong&gt;是 DID + VC 在隐私保护上的杀手级能力——传统身份证根本做不到。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六典型应用场景"&gt;&lt;a href="#%e5%85%ad%e5%85%b8%e5%9e%8b%e5%ba%94%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;六、典型应用场景
+&lt;/h2&gt;&lt;h3 id="1-跨平台单点登录"&gt;&lt;a href="#1-%e8%b7%a8%e5%b9%b3%e5%8f%b0%e5%8d%95%e7%82%b9%e7%99%bb%e5%bd%95" class="header-anchor"&gt;&lt;/a&gt;1. 跨平台单点登录
+&lt;/h3&gt;&lt;p&gt;不再用 Google / Apple 第三方登录——&lt;strong&gt;用自己的 DID 登录任何网站&lt;/strong&gt;。网站只验证签名，不依赖第三方。&lt;/p&gt;
+&lt;h3 id="2-数字证书"&gt;&lt;a href="#2-%e6%95%b0%e5%ad%97%e8%af%81%e4%b9%a6" class="header-anchor"&gt;&lt;/a&gt;2. 数字证书
+&lt;/h3&gt;&lt;p&gt;学位、驾照、护照、专业资格——所有&amp;quot;机构颁发的凭证&amp;quot;都能数字化为 VC。&lt;/p&gt;
+&lt;h3 id="3-健康记录"&gt;&lt;a href="#3-%e5%81%a5%e5%ba%b7%e8%ae%b0%e5%bd%95" class="header-anchor"&gt;&lt;/a&gt;3. 健康记录
+&lt;/h3&gt;&lt;p&gt;疫苗证书、医疗记录——用户掌控、跨境通用、可被官方验证。&lt;/p&gt;
+&lt;h3 id="4-kyc-一次完成全平台用"&gt;&lt;a href="#4-kyc-%e4%b8%80%e6%ac%a1%e5%ae%8c%e6%88%90%e5%85%a8%e5%b9%b3%e5%8f%b0%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;4. KYC 一次完成全平台用
+&lt;/h3&gt;&lt;p&gt;Web3 的痛点之一——每个 dapp 都要 KYC。&lt;strong&gt;KYC 提供方颁发 VC，用户在每个 dapp 出示同一个 VC&lt;/strong&gt;——验证一次，处处通用。&lt;/p&gt;
+&lt;h3 id="5-物联网设备身份"&gt;&lt;a href="#5-%e7%89%a9%e8%81%94%e7%bd%91%e8%ae%be%e5%a4%87%e8%ba%ab%e4%bb%bd" class="header-anchor"&gt;&lt;/a&gt;5. 物联网设备身份
+&lt;/h3&gt;&lt;p&gt;每个 IoT 设备一个 DID——设备间相互验证身份，不需要中心化注册中心。&lt;/p&gt;
+&lt;h3 id="6-内容真伪验证"&gt;&lt;a href="#6-%e5%86%85%e5%ae%b9%e7%9c%9f%e4%bc%aa%e9%aa%8c%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;6. 内容真伪验证
+&lt;/h3&gt;&lt;p&gt;媒体、政府公告签发 VC——读者验证签名确认内容来自真实来源（防 deepfake）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七工程上的挑战"&gt;&lt;a href="#%e4%b8%83%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e6%8c%91%e6%88%98" class="header-anchor"&gt;&lt;/a&gt;七、工程上的挑战
+&lt;/h2&gt;&lt;p&gt;DID + VC 想象很美，工程上挑战不少：&lt;/p&gt;
+&lt;h3 id="1-用户体验"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c" class="header-anchor"&gt;&lt;/a&gt;1. 用户体验
+&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如 Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
+&lt;h3 id="2-私钥丢了怎么办"&gt;&lt;a href="#2-%e7%a7%81%e9%92%a5%e4%b8%a2%e4%ba%86%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;2. 私钥丢了怎么办
+&lt;/h3&gt;&lt;p&gt;DID 完全去中心化的代价——&lt;strong&gt;没有&amp;quot;找回密码&amp;quot;&lt;/strong&gt;。私钥丢失就身份永久丢失。社交恢复（social recovery）、多签等机制是部分解决方案。&lt;/p&gt;
+&lt;h3 id="3-撤销机制"&gt;&lt;a href="#3-%e6%92%a4%e9%94%80%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 撤销机制
+&lt;/h3&gt;&lt;p&gt;颁发的 VC 怎么撤销？比如学校发现学位是假的、银行注销账户。&lt;strong&gt;目前主流是颁发者维护一个&amp;quot;撤销列表&amp;quot;&lt;/strong&gt;——验证时检查，但又中心化了。&lt;/p&gt;
+&lt;h3 id="4-跨方法互操作"&gt;&lt;a href="#4-%e8%b7%a8%e6%96%b9%e6%b3%95%e4%ba%92%e6%93%8d%e4%bd%9c" class="header-anchor"&gt;&lt;/a&gt;4. 跨方法互操作
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;did:web&lt;/code&gt; / &lt;code&gt;did:ethr&lt;/code&gt; / &lt;code&gt;did:ion&lt;/code&gt; 等几十种方法——&lt;strong&gt;钱包要支持哪些？验证者要支持哪些？&lt;/strong&gt; 互操作性是大问题。&lt;/p&gt;
+&lt;h3 id="5-合规"&gt;&lt;a href="#5-%e5%90%88%e8%a7%84" class="header-anchor"&gt;&lt;/a&gt;5. 合规
+&lt;/h3&gt;&lt;p&gt;GDPR、个人信息保护法等监管对&amp;quot;链上不可删除的身份数据&amp;quot;有疑虑——DID 设计要明确&amp;quot;链上只放 hash 或公钥，PII 数据存链下&amp;quot;。&lt;/p&gt;
+&lt;h3 id="6-普及度"&gt;&lt;a href="#6-%e6%99%ae%e5%8f%8a%e5%ba%a6" class="header-anchor"&gt;&lt;/a&gt;6. 普及度
+&lt;/h3&gt;&lt;p&gt;DID 现在主要在 Web3 圈子用——&lt;strong&gt;主流互联网公司还没全面拥抱&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八几个要关注的项目和标准"&gt;&lt;a href="#%e5%85%ab%e5%87%a0%e4%b8%aa%e8%a6%81%e5%85%b3%e6%b3%a8%e7%9a%84%e9%a1%b9%e7%9b%ae%e5%92%8c%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;八、几个要关注的项目和标准
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;W3C DID 1.0&lt;/strong&gt; (&lt;a class="link" href="https://www.w3.org/TR/did-core/" target="_blank" rel="noopener"
+ &gt;w3.org/TR/did-core/&lt;/a&gt;)：核心规范&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;W3C Verifiable Credentials&lt;/strong&gt; (&lt;a class="link" href="https://www.w3.org/TR/vc-data-model/" target="_blank" rel="noopener"
+ &gt;w3.org/TR/vc-data-model/&lt;/a&gt;)：VC 规范&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;EBSI&lt;/strong&gt;：欧盟区块链服务基础设施，已在多国部署 DID 应用&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Microsoft Entra Verified ID&lt;/strong&gt;：企业级 VC 平台&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Polygon ID&lt;/strong&gt;：基于以太坊侧链 + ZK 的 DID 解决方案&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Ceramic Network&lt;/strong&gt;：分布式数据网络，存 DID 关联数据&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Veramo&lt;/strong&gt;：JS SDK 给开发者用 DID + VC&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="九对工程师意味着什么"&gt;&lt;a href="#%e4%b9%9d%e5%af%b9%e5%b7%a5%e7%a8%8b%e5%b8%88%e6%84%8f%e5%91%b3%e7%9d%80%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;九、对工程师意味着什么
+&lt;/h2&gt;&lt;p&gt;如果你做的不是 Web3 项目——DID 仍然值得了解：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;未来 5-10 年企业身份系统会逐步引入 VC&lt;/strong&gt;——尤其大企业、政府&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解 DID 让你看清&amp;quot;中心化身份&amp;quot;的局限&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DID 的设计哲学（私钥控制、自主主权、可验证）会渗透到普通互联网产品&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果你做 Web3 / dapp：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;优先用 did:ethr 或 did:web&lt;/strong&gt;——生态成熟&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sign-in with Ethereum (SIWE) 是 DID 的&amp;quot;轻量版&amp;quot;&lt;/strong&gt;——Web3 应用先用 SIWE 替代第三方登录&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户钱包 = 身份&lt;/strong&gt;——不要给用户搞另一套账号体系&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;DID 把『你是谁』的控制权从平台还给用户——加上 VC 让任何机构能签发可验证的凭证——这是数字身份的范式转移。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;理解 DID 的几个核心：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;DID 是 URI 形式的身份标识&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DID Document 描述身份元数据&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;VC 是对身份的&amp;quot;声明&amp;quot;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不同 DID 方法有不同 trade-off&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配合 ZKP 实现选择性披露&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;DID 不是&amp;quot;现在就用&amp;quot;的技术——但它是&lt;strong&gt;值得每个工程师认知的未来基础设施&lt;/strong&gt;。10 年后再回头看，这一定是数字身份史上的关键节点。&lt;/p&gt;</description></item></channel></rss>

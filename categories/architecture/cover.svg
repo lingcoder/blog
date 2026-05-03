@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2D1810"/>
+      <stop offset="1" stop-color="#1A0F0A"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#e76f51" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 节点网络 -->
+  <g font-family="monospace" font-size="14" font-weight="700">
+    <g transform="translate(280,200)">
+      <rect width="120" height="60" rx="6" fill="#e76f51" fill-opacity="0.18" stroke="#e76f51" stroke-width="2.5"/>
+      <text x="60" y="36" text-anchor="middle" fill="#FFB89A">Gateway</text>
+    </g>
+    <g transform="translate(540,160)">
+      <rect width="120" height="60" rx="6" fill="#e76f51" fill-opacity="0.18" stroke="#e76f51" stroke-width="2.5"/>
+      <text x="60" y="36" text-anchor="middle" fill="#FFB89A">Service A</text>
+    </g>
+    <g transform="translate(540,260)">
+      <rect width="120" height="60" rx="6" fill="#e76f51" fill-opacity="0.18" stroke="#e76f51" stroke-width="2.5"/>
+      <text x="60" y="36" text-anchor="middle" fill="#FFB89A">Service B</text>
+    </g>
+    <g transform="translate(800,200)">
+      <rect width="120" height="60" rx="6" fill="#e76f51" fill-opacity="0.18" stroke="#e76f51" stroke-width="2.5"/>
+      <text x="60" y="36" text-anchor="middle" fill="#FFB89A">Service C</text>
+    </g>
+    <g transform="translate(540,380)">
+      <rect width="120" height="60" rx="6" fill="#FCC631" fill-opacity="0.2" stroke="#FCC631" stroke-width="2.5"/>
+      <text x="60" y="36" text-anchor="middle" fill="#FCC631">DB / MQ</text>
+    </g>
+
+    <g stroke="#e76f51" stroke-width="2" stroke-dasharray="4 4" fill="none">
+      <line x1="400" y1="230" x2="540" y2="190"/>
+      <line x1="400" y1="230" x2="540" y2="290"/>
+      <line x1="660" y1="190" x2="800" y2="230"/>
+      <line x1="660" y1="290" x2="800" y2="230"/>
+      <line x1="600" y1="220" x2="600" y2="380"/>
+    </g>
+  </g>
+
+  <text x="80" y="555" fill="#FCC631" font-size="20" font-weight="700" font-family="-apple-system, sans-serif">Architecture</text>
+  <text x="80" y="582" fill="#FFB89A" font-size="13" font-family="-apple-system, sans-serif" letter-spacing="3">MICROSERVICE · DISTRIBUTED</text>
+</svg>

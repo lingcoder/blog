@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1A1126"/>
+      <stop offset="1" stop-color="#0F0A1A"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#8e44ad" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 笔记本与钢笔 -->
+  <g transform="translate(440,180)">
+    <rect width="320" height="270" rx="8" fill="#8e44ad" fill-opacity="0.15" stroke="#8e44ad" stroke-width="2.5"/>
+    <g stroke="#B388D6" stroke-opacity="0.5" stroke-width="1">
+      <line x1="20" y1="50" x2="300" y2="50"/>
+      <line x1="20" y1="80" x2="300" y2="80"/>
+      <line x1="20" y1="110" x2="300" y2="110"/>
+      <line x1="20" y1="140" x2="280" y2="140"/>
+      <line x1="20" y1="170" x2="300" y2="170"/>
+      <line x1="20" y1="200" x2="240" y2="200"/>
+      <line x1="20" y1="230" x2="280" y2="230"/>
+    </g>
+    <!-- handwritten dot -->
+    <circle cx="40" cy="50" r="3" fill="#B388D6"/>
+    <circle cx="40" cy="80" r="3" fill="#B388D6"/>
+    <circle cx="40" cy="110" r="3" fill="#B388D6"/>
+    <circle cx="40" cy="140" r="3" fill="#B388D6"/>
+    <circle cx="40" cy="170" r="3" fill="#B388D6"/>
+  </g>
+
+  <text x="80" y="555" fill="#B388D6" font-size="20" font-weight="700" font-family="-apple-system, sans-serif">个人杂感</text>
+  <text x="80" y="582" fill="#B388D6" font-size="13" font-family="-apple-system, sans-serif" letter-spacing="3">PERSONAL · NOTES</text>
+</svg>

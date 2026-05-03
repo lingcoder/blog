@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>PV on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/pv/</link><description>Recent content in PV on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 15 Aug 2023 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/pv/index.xml" rel="self" type="application/rss+xml"/><item><title>聊聊营销平台中常见的指标：PV、UV、转化、留存、ROI</title><link>https://www.lingcoder.com/p/marketing-platform-key-metrics/</link><pubDate>Tue, 15 Aug 2023 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/marketing-platform-key-metrics/</guid><description>&lt;img src="https://www.lingcoder.com/p/marketing-platform-key-metrics/cover.svg" alt="Featured image of post 聊聊营销平台中常见的指标：PV、UV、转化、留存、ROI" /&gt;&lt;h2 id="数据指标是营销平台的语言"&gt;&lt;a href="#%e6%95%b0%e6%8d%ae%e6%8c%87%e6%a0%87%e6%98%af%e8%90%a5%e9%94%80%e5%b9%b3%e5%8f%b0%e7%9a%84%e8%af%ad%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;数据指标是营销平台的语言
+&lt;/h2&gt;&lt;p&gt;营销平台里所有讨论都围绕几个核心指标——&lt;strong&gt;PV、UV、UA、转化率、留存率、ROI、CPA、CPC、CPM、LTV&lt;/strong&gt;……&lt;/p&gt;
+&lt;p&gt;新人面对这些缩写常常一脸懵。等到要做：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;为什么这周 UV 降了 20%？&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;这次活动 ROI 是多少？怎么算的？&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;你说留存率不对——具体哪里不对？&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;光知道概念是不够的。&lt;strong&gt;指标背后的口径、陷阱、计算方式才是关键&lt;/strong&gt;。本文把营销平台最常见的指标讲清楚，带工程视角看怎么实现、怎么避免常见坑。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一流量类指标pv--uv--ua"&gt;&lt;a href="#%e4%b8%80%e6%b5%81%e9%87%8f%e7%b1%bb%e6%8c%87%e6%a0%87pv--uv--ua" class="header-anchor"&gt;&lt;/a&gt;一、流量类指标：PV / UV / UA
+&lt;/h2&gt;&lt;h3 id="pvpage-view"&gt;&lt;a href="#pvpage-view" class="header-anchor"&gt;&lt;/a&gt;PV（Page View）
+&lt;/h3&gt;&lt;p&gt;页面浏览量——&lt;strong&gt;用户每打开一次页面就 +1&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pv&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event_name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;page_view&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2023-08-15&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同一用户刷新一次页面 +1&lt;/li&gt;
+&lt;li&gt;不同用户访问同一页面，各 +1&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="uvunique-visitor"&gt;&lt;a href="#uvunique-visitor" class="header-anchor"&gt;&lt;/a&gt;UV（Unique Visitor）
+&lt;/h3&gt;&lt;p&gt;独立访客数——&lt;strong&gt;每个用户当天只算一次&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AS&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;uv&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event_name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;page_view&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2023-08-15&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;PV / UV 的比值叫&amp;quot;人均 PV&amp;quot;——反映用户活跃程度。&lt;/p&gt;
+&lt;h3 id="uaunique-action"&gt;&lt;a href="#uaunique-action" class="header-anchor"&gt;&lt;/a&gt;UA（Unique Action）
+&lt;/h3&gt;&lt;p&gt;独立动作数——比 UV 更细粒度，按某个具体动作算去重。比如&amp;quot;独立点击数&amp;quot;、&amp;ldquo;独立购买用户&amp;rdquo;。&lt;/p&gt;
+&lt;h3 id="三个指标的关系"&gt;&lt;a href="#%e4%b8%89%e4%b8%aa%e6%8c%87%e6%a0%87%e7%9a%84%e5%85%b3%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;三个指标的关系
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PV ≥ UA ≥ UV
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;PV 包含所有访问，UA 是某个动作的去重，UV 是用户去重。&lt;/p&gt;
+&lt;h3 id="第一个常见陷阱uv-怎么定义用户"&gt;&lt;a href="#%e7%ac%ac%e4%b8%80%e4%b8%aa%e5%b8%b8%e8%a7%81%e9%99%b7%e9%98%b1uv-%e6%80%8e%e4%b9%88%e5%ae%9a%e4%b9%89%e7%94%a8%e6%88%b7" class="header-anchor"&gt;&lt;/a&gt;第一个常见陷阱：UV 怎么定义&amp;quot;用户&amp;quot;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;未登录用户怎么算 UV？&lt;/strong&gt;——通常用 &lt;code&gt;device_id&lt;/code&gt; / &lt;code&gt;cookie_id&lt;/code&gt; / &lt;code&gt;client_id&lt;/code&gt;。但：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同一用户用三个设备访问 → 算 3 个 UV？&lt;/li&gt;
+&lt;li&gt;同一设备多个浏览器 → 算 N 个 UV？&lt;/li&gt;
+&lt;li&gt;用户清缓存后 → 又是新 UV？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;不同公司有不同口径。&lt;strong&gt;最重要的是『团队对口径达成一致』&lt;/strong&gt;——别在数据评审会上才发现你和数据组算法不一样。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二漏斗指标转化率"&gt;&lt;a href="#%e4%ba%8c%e6%bc%8f%e6%96%97%e6%8c%87%e6%a0%87%e8%bd%ac%e5%8c%96%e7%8e%87" class="header-anchor"&gt;&lt;/a&gt;二、漏斗指标：转化率
+&lt;/h2&gt;&lt;h3 id="单步转化率"&gt;&lt;a href="#%e5%8d%95%e6%ad%a5%e8%bd%ac%e5%8c%96%e7%8e%87" class="header-anchor"&gt;&lt;/a&gt;单步转化率
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;某一步动作人数 / 上一步动作人数 = 单步转化率
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;100 人看到广告（曝光）&lt;/li&gt;
+&lt;li&gt;30 人点击了广告（点击率 = 30%）&lt;/li&gt;
+&lt;li&gt;5 人完成下单（购买率 = 5/30 ≈ 16.7%）&lt;/li&gt;
+&lt;li&gt;整体转化（曝光到购买） = 5/100 = 5%&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="漏斗分析"&gt;&lt;a href="#%e6%bc%8f%e6%96%97%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;漏斗分析
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[曝光 100] --&gt; B[点击 30]
+ B --&gt; C[加购 12]
+ C --&gt; D[下单 5]
+ D --&gt; E[支付 4]&lt;/pre&gt;&lt;p&gt;每一步流失多少——找到漏斗最大流失点对应的优化机会。&lt;/p&gt;
+&lt;h3 id="漏斗的窗口问题"&gt;&lt;a href="#%e6%bc%8f%e6%96%97%e7%9a%84%e7%aa%97%e5%8f%a3%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;漏斗的&amp;quot;窗口&amp;quot;问题
+&lt;/h3&gt;&lt;p&gt;转化是有时间窗口的。&amp;ldquo;看了广告 N 天内购买&amp;quot;算转化吗？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同会话内（30 分钟）→ 直接转化&lt;/li&gt;
+&lt;li&gt;当日内 → 当日转化&lt;/li&gt;
+&lt;li&gt;7 天内 → 7 天归因转化&lt;/li&gt;
+&lt;li&gt;30 天内 → 30 天归因转化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;不同窗口对应的数字差几倍&lt;/strong&gt;。看转化率必须搞清楚窗口。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三留存指标"&gt;&lt;a href="#%e4%b8%89%e7%95%99%e5%ad%98%e6%8c%87%e6%a0%87" class="header-anchor"&gt;&lt;/a&gt;三、留存指标
+&lt;/h2&gt;&lt;h3 id="留存率定义"&gt;&lt;a href="#%e7%95%99%e5%ad%98%e7%8e%87%e5%ae%9a%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;留存率定义
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;某天的某天 N 留存 = 当日新增用户中，N 天后仍活跃的用户数 / 当日新增用户数
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例：8/1 新增 1000 人。8/8 这 1000 人中有 200 人当天活跃 → 8/1 的 7 日留存率是 20%。&lt;/p&gt;
+&lt;h3 id="次日--7日--30日-留存"&gt;&lt;a href="#%e6%ac%a1%e6%97%a5--7%e6%97%a5--30%e6%97%a5-%e7%95%99%e5%ad%98" class="header-anchor"&gt;&lt;/a&gt;次日 / 7日 / 30日 留存
+&lt;/h3&gt;&lt;p&gt;行业惯例：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;次日留存&lt;/strong&gt;：用户来了第二天还来——通常 30%-50% 算不错&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;7 日留存&lt;/strong&gt;：第 7 天还来——15%-30% 算不错&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;30 日留存&lt;/strong&gt;：1 个月后还来——10%-20% 是好产品&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="留存表cohort-分析"&gt;&lt;a href="#%e7%95%99%e5%ad%98%e8%a1%a8cohort-%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;留存表（Cohort 分析）
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Day 0&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Day 1&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Day 7&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Day 30&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;8/1 新增 1000&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;100%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;45%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;18%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;8%&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;8/8 新增 1200&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;100%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;50%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;22%&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;10%&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;按 cohort 看留存——&lt;strong&gt;比平均留存信息量大得多&lt;/strong&gt;。可以看出&amp;quot;哪批用户质量好&amp;rdquo;、&amp;ldquo;产品改了之后留存有没有提升&amp;rdquo;。&lt;/p&gt;
+&lt;h3 id="实现要点"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e8%a6%81%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;实现要点
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 8/1 用户 7 日留存
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;count&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;DISTINCT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;JOIN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;events&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ON&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;register_date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2023-08-01&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;AND&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;event_date&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2023-08-08&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意 join 大表的性能——生产里通常用 &lt;strong&gt;Bitmap / HLL&lt;/strong&gt; 做近似计算。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四成本类指标"&gt;&lt;a href="#%e5%9b%9b%e6%88%90%e6%9c%ac%e7%b1%bb%e6%8c%87%e6%a0%87" class="header-anchor"&gt;&lt;/a&gt;四、成本类指标
+&lt;/h2&gt;&lt;h3 id="cpmcost-per-mille"&gt;&lt;a href="#cpmcost-per-mille" class="header-anchor"&gt;&lt;/a&gt;CPM（Cost Per Mille）
+&lt;/h3&gt;&lt;p&gt;每千次曝光成本：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CPM = 总花费 / (曝光数 / 1000)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例：花 1000 元买了 50 万次曝光 → CPM = 1000 / 500 = 2 元。&lt;/p&gt;
+&lt;p&gt;适合&lt;strong&gt;品牌广告&lt;/strong&gt;——目标是触达，不是直接转化。&lt;/p&gt;
+&lt;h3 id="cpccost-per-click"&gt;&lt;a href="#cpccost-per-click" class="header-anchor"&gt;&lt;/a&gt;CPC（Cost Per Click）
+&lt;/h3&gt;&lt;p&gt;每次点击成本：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CPC = 总花费 / 点击数
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;适合&lt;strong&gt;点击付费广告&lt;/strong&gt;——效果更直接。&lt;/p&gt;
+&lt;h3 id="cpacost-per-action"&gt;&lt;a href="#cpacost-per-action" class="header-anchor"&gt;&lt;/a&gt;CPA（Cost Per Action）
+&lt;/h3&gt;&lt;p&gt;每次目标动作成本——比 CPC 更精细，按&amp;quot;注册&amp;quot;、&amp;ldquo;下单&amp;rdquo;、&amp;ldquo;加好友&amp;quot;等具体动作付费：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CPA = 总花费 / 目标动作完成数
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;CPM&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;CPC&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;CPA&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;含义&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;千次曝光&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单次点击&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单次目标动作&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适合&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;品牌触达&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;点击行为价值&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;实际转化收益&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;风险&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;平台高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;投放方高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;投放方高（依赖效果）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="五收益类指标"&gt;&lt;a href="#%e4%ba%94%e6%94%b6%e7%9b%8a%e7%b1%bb%e6%8c%87%e6%a0%87" class="header-anchor"&gt;&lt;/a&gt;五、收益类指标
+&lt;/h2&gt;&lt;h3 id="ltvlife-time-value"&gt;&lt;a href="#ltvlife-time-value" class="header-anchor"&gt;&lt;/a&gt;LTV（Life Time Value）
+&lt;/h3&gt;&lt;p&gt;用户生命周期价值——&lt;strong&gt;一个用户从注册到流失，给平台贡献多少收入&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;LTV = 平均订单金额 × 平均购买频次 × 用户存活时间
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例：用户平均下单 100 元、年均下单 5 次、平均留 3 年 → LTV ≈ 1500 元。&lt;/p&gt;
+&lt;p&gt;LTV 是营销最重要的&amp;quot;上限&amp;rdquo;——&lt;strong&gt;获客成本（CAC）必须 &amp;lt; LTV&lt;/strong&gt;，否则赔本买卖。&lt;/p&gt;
+&lt;h3 id="roi--roas"&gt;&lt;a href="#roi--roas" class="header-anchor"&gt;&lt;/a&gt;ROI / ROAS
+&lt;/h3&gt;&lt;p&gt;投资回报率 / 广告支出回报：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ROI = (收入 - 成本) / 成本
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ROAS = 广告带来的收入 / 广告花费
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业内常说&amp;quot;ROAS 1.5&amp;quot;意味着花 1 元广告费换 1.5 元收入——通常 ROAS ≥ 3 才算健康。&lt;/p&gt;
+&lt;h3 id="caccustomer-acquisition-cost"&gt;&lt;a href="#caccustomer-acquisition-cost" class="header-anchor"&gt;&lt;/a&gt;CAC（Customer Acquisition Cost）
+&lt;/h3&gt;&lt;p&gt;获客成本：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;CAC = 总营销花费 / 新增付费用户数
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;健康的业务：&lt;code&gt;LTV / CAC ≥ 3&lt;/code&gt;——付费用户带来的总收益至少是获客成本的 3 倍。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六归因模型转化算谁的"&gt;&lt;a href="#%e5%85%ad%e5%bd%92%e5%9b%a0%e6%a8%a1%e5%9e%8b%e8%bd%ac%e5%8c%96%e7%ae%97%e8%b0%81%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;六、归因模型：转化算谁的
+&lt;/h2&gt;&lt;p&gt;某用户在 30 天里：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;8/1 通过广告 A 知道了产品&lt;/li&gt;
+&lt;li&gt;8/15 通过 SEO 搜索访问了产品&lt;/li&gt;
+&lt;li&gt;8/29 通过广告 B 点击后下单&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;这一笔下单算哪个渠道？&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;模型&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;算法&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;First-Touch&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;全归功于广告 A（首次接触）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Last-Touch&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;全归功于广告 B（最后接触）—— 最常用&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Linear&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;三者各 1/3&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Time-Decay&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;越靠近转化的权重越大&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Position-Based&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;首末各 40%，中间均分 20%&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Data-Driven&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;机器学习算每个 touchpoint 的实际贡献&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;不同公司选不同模型——但&lt;strong&gt;必须明确告诉所有相关方&amp;quot;我们用什么模型&amp;quot;&lt;/strong&gt;。否则看到的数字会差几倍。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七营销实验ab-测试"&gt;&lt;a href="#%e4%b8%83%e8%90%a5%e9%94%80%e5%ae%9e%e9%aa%8cab-%e6%b5%8b%e8%af%95" class="header-anchor"&gt;&lt;/a&gt;七、营销实验：A/B 测试
+&lt;/h2&gt;&lt;p&gt;新功能/新页面要不要上线？跑 A/B：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ Users --&gt; Split["流量分流&lt;br/&gt;50/50"]
+ Split --&gt; A[实验组&lt;br/&gt;新版本]
+ Split --&gt; B[对照组&lt;br/&gt;旧版本]
+ A --&gt; M1[转化率 X%]
+ B --&gt; M2[转化率 Y%]
+ M1 --&gt; Stat[统计显著性检验]
+ M2 --&gt; Stat&lt;/pre&gt;&lt;h3 id="关键点"&gt;&lt;a href="#%e5%85%b3%e9%94%ae%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;关键点
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;样本量&lt;/strong&gt;：太少看不出差异——通常要数千以上&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;置信度&lt;/strong&gt;：通常 95%——意味着 5% 的概率结果是偶然&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实验时长&lt;/strong&gt;：覆盖完整业务周期（一个工作周 + 一个周末至少）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不要早停&lt;/strong&gt;：实验跑到一半看到&amp;quot;实验组好&amp;quot;就停掉——选择性偏差&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="工程实现"&gt;&lt;a href="#%e5%b7%a5%e7%a8%8b%e5%ae%9e%e7%8e%b0" class="header-anchor"&gt;&lt;/a&gt;工程实现
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;isInExperimentGroup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expName&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 用 hash 保证同一用户始终落入同一组&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ⚠️ Math.abs(Integer.MIN_VALUE) 仍然返回负数，会让 % 出负值，必须先与 0x7FFFFFFF&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hash&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expName&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;hashCode&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;0x7FFFFFFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;hash&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;100&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;50&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 50% 分流&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;不要随机分流&lt;/strong&gt;——要确定性 hash，避免同一用户在实验间被反复切换。生产推荐用 Guava &lt;code&gt;Hashing.murmur3_32()&lt;/code&gt; 等分布更均匀的 hash 替代 &lt;code&gt;String.hashCode()&lt;/code&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八典型陷阱清单"&gt;&lt;a href="#%e5%85%ab%e5%85%b8%e5%9e%8b%e9%99%b7%e9%98%b1%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、典型陷阱清单
+&lt;/h2&gt;&lt;h3 id="1-指标聚合时的-simpson-悖论"&gt;&lt;a href="#1-%e6%8c%87%e6%a0%87%e8%81%9a%e5%90%88%e6%97%b6%e7%9a%84-simpson-%e6%82%96%e8%ae%ba" class="header-anchor"&gt;&lt;/a&gt;1. 指标聚合时的 Simpson 悖论
+&lt;/h3&gt;&lt;p&gt;整体看：A 渠道转化率 5%，B 渠道转化率 4%——A 更好。
+分群看：男性 A 是 3%，B 是 6%；女性 A 是 8%，B 是 10%——其实都是 B 更好！&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;别只看整体均值，要分群看&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-数据延迟"&gt;&lt;a href="#2-%e6%95%b0%e6%8d%ae%e5%bb%b6%e8%bf%9f" class="header-anchor"&gt;&lt;/a&gt;2. 数据延迟
+&lt;/h3&gt;&lt;p&gt;同一指标，&amp;ldquo;实时大盘&amp;rdquo; vs &amp;ldquo;T+1 报表&amp;quot;可能差 10%——&lt;strong&gt;实时数据有未结算、未对账&lt;/strong&gt;。给老板汇报永远用结算后的数据。&lt;/p&gt;
+&lt;h3 id="3-异常流量"&gt;&lt;a href="#3-%e5%bc%82%e5%b8%b8%e6%b5%81%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;3. 异常流量
+&lt;/h3&gt;&lt;p&gt;突然 PV 暴涨 → 不一定是真实增长，可能是&lt;strong&gt;爬虫、脚本、刷量&lt;/strong&gt;。任何指标异常都要先看流量来源、IP 分布、设备分布。&lt;/p&gt;
+&lt;h3 id="4-跨平台-id-拉通"&gt;&lt;a href="#4-%e8%b7%a8%e5%b9%b3%e5%8f%b0-id-%e6%8b%89%e9%80%9a" class="header-anchor"&gt;&lt;/a&gt;4. 跨平台 ID 拉通
+&lt;/h3&gt;&lt;p&gt;用户在 PC、H5、App、小程序留下不同 ID——&lt;strong&gt;要统一到同一个用户主键&lt;/strong&gt;才能算准 UV / LTV。这是营销平台的基础工程。&lt;/p&gt;
+&lt;h3 id="5-计算口径漂移"&gt;&lt;a href="#5-%e8%ae%a1%e7%ae%97%e5%8f%a3%e5%be%84%e6%bc%82%e7%a7%bb" class="header-anchor"&gt;&lt;/a&gt;5. 计算口径漂移
+&lt;/h3&gt;&lt;p&gt;&amp;ldquo;上周 UV 100 万&amp;quot;和&amp;quot;这周 UV 80 万&amp;rdquo;——&lt;strong&gt;也许是统计口径变了&lt;/strong&gt;，不是真的下降。每次指标讨论先确认口径。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九技术架构怎么算这些指标"&gt;&lt;a href="#%e4%b9%9d%e6%8a%80%e6%9c%af%e6%9e%b6%e6%9e%84%e6%80%8e%e4%b9%88%e7%ae%97%e8%bf%99%e4%ba%9b%e6%8c%87%e6%a0%87" class="header-anchor"&gt;&lt;/a&gt;九、技术架构：怎么算这些指标
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Client[客户端 SDK] --&gt; Collect[埋点采集]
+ Collect --&gt; Kafka
+ Kafka --&gt; Stream[Flink 实时计算]
+ Kafka --&gt; Batch[Spark T+1 计算]
+ Stream --&gt; Realtime[(实时指标 Redis)]
+ Batch --&gt; Warehouse[(数仓 Hive/ClickHouse)]
+ Realtime --&gt; Dashboard[实时大盘]
+ Warehouse --&gt; Dashboard
+ Warehouse --&gt; BI[BI 报表]&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;实时指标&lt;/strong&gt;（PV、UV）：Flink + Redis HLL&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;离线指标&lt;/strong&gt;（次留、LTV）：Hive / ClickHouse 批处理&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;去重&lt;/strong&gt;：HyperLogLog（HLL）做近似 UV，误差 1-2% 但内存占用极小&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;漏斗&lt;/strong&gt;：通常是离线计算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十给工程的几条建议"&gt;&lt;a href="#%e5%8d%81%e7%bb%99%e5%b7%a5%e7%a8%8b%e7%9a%84%e5%87%a0%e6%9d%a1%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;十、给工程的几条建议
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;指标定义要写文档&lt;/strong&gt;——口径明确、覆盖所有边界&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;指标计算代码 + SQL 上版本管理&lt;/strong&gt;——和业务代码一样审 PR&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;异常告警要有&lt;/strong&gt;——指标突然涨/跌 30% 必须触发&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨业务的核心指标统一在一个数据服务&lt;/strong&gt;——别每个业务方自己实现一套&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;永远做&amp;quot;指标对账&amp;rdquo;&lt;/strong&gt;——多个口径的数字定期 cross-check&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;营销平台的所有讨论都围绕指标——但指标的『口径、归因、时间窗口』比『定义』更关键。算错口径会让团队在错误数据上做错决策。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;记住几条：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;PV、UV 必须先达成口径共识&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;转化、留存必须明确时间窗口&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CAC、LTV、ROI 决定业务能不能持续&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;归因模型选哪个，团队要统一&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A/B 测试要先算样本量，不要早停&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;把指标这件事做对，营销平台的&amp;quot;决策质量&amp;quot;会瞬间提一个量级——这是数据驱动的真正价值。&lt;/p&gt;</description></item></channel></rss>

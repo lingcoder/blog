@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>打包 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E6%89%93%E5%8C%85/</link><description>Recent content in 打包 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 30 Oct 2018 17:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E6%89%93%E5%8C%85/index.xml" rel="self" type="application/rss+xml"/><item><title>Spring Boot 项目打包：War 与 Jar 的区别和注意事项</title><link>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</link><pubDate>Tue, 30 Oct 2018 17:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-war-vs-jar/cover.svg" alt="Featured image of post Spring Boot 项目打包：War 与 Jar 的区别和注意事项" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;新人接触 Spring Boot 时常困惑一个问题——明明同样是 Java Web 项目，为什么有的项目用 &lt;code&gt;mvn package&lt;/code&gt; 出来是个 jar，有的项目却出来一个 war，部署方式还截然不同？&lt;/p&gt;
+&lt;p&gt;答案要从 Spring Boot 的设计哲学说起。&lt;strong&gt;Spring Boot 提倡&amp;quot;内嵌容器、可执行 jar&amp;quot;的方式&lt;/strong&gt;——一个 &lt;code&gt;java -jar app.jar&lt;/code&gt; 就跑起来，再也不用 Tomcat 这样的外部容器。但传统的 Java EE 时代，war 包 + 外部容器才是标准玩法。Spring Boot 也兼容这种做法，让老项目能平滑迁移。&lt;/p&gt;
+&lt;p&gt;这两种打包方式选错了，轻则启动姿势别扭，重则配置失效、监控失灵。本文把它们的区别、坑、和实操要点一次讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="war-与-jar-的本质区别"&gt;&lt;a href="#war-%e4%b8%8e-jar-%e7%9a%84%e6%9c%ac%e8%b4%a8%e5%8c%ba%e5%88%ab" class="header-anchor"&gt;&lt;/a&gt;War 与 Jar 的本质区别
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Jar 包&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;War 包&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;用途&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;通用 Java 库、可执行应用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Java Web 应用归档（Web Application Archive）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;入口&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;META-INF/MANIFEST.MF&lt;/code&gt; 的 Main-Class&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;WEB-INF/web.xml&lt;/code&gt; 或 &lt;code&gt;ServletContainerInitializer&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;部署&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;java -jar app.jar&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;拷到 Tomcat/Jetty 的 &lt;code&gt;webapps&lt;/code&gt; 目录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;容器&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;内嵌（Tomcat/Jetty/Undertow）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;外部&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;静态资源&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;BOOT-INF/classes/static&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;项目根目录或 &lt;code&gt;webapp&lt;/code&gt; 下&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;类加载顺序&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;由 Spring Boot Loader 控制&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;由外部容器控制&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;最关键一句话——&lt;strong&gt;jar 把容器装进了应用，war 把应用装进了容器&lt;/strong&gt;。这条决定了两者后续所有差异。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="spring-boot-默认推荐-jar原因是什么"&gt;&lt;a href="#spring-boot-%e9%bb%98%e8%ae%a4%e6%8e%a8%e8%8d%90-jar%e5%8e%9f%e5%9b%a0%e6%98%af%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;Spring Boot 默认推荐 Jar，原因是什么
+&lt;/h2&gt;&lt;p&gt;Spring Boot 默认 jar 不是凭感觉，是经过权衡的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Jar 的好处：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;零运维&lt;/strong&gt;：不需要装 Tomcat，不需要管 &lt;code&gt;server.xml&lt;/code&gt;，部署=拷贝 jar 包&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;环境一致&lt;/strong&gt;：开发、测试、生产用的是同一个内嵌 Tomcat，行为一致&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容器版本可控&lt;/strong&gt;：升级 Tomcat 只是改 pom 依赖&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;天然适合容器化&lt;/strong&gt;：一个 jar 就是一个 Docker 镜像的核心&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每个应用独立运行&lt;/strong&gt;：互不影响，Crash 隔离&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;War 的传统优势在云原生时代逐渐弱化：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;原本&amp;quot;一个 Tomcat 跑多个应用&amp;quot;的模式，被 Kubernetes 一个 Pod 一个应用替代了&lt;/li&gt;
+&lt;li&gt;原本&amp;quot;运维统一管 Tomcat&amp;quot;的优势，被容器编排取代了&lt;/li&gt;
+&lt;li&gt;原本&amp;quot;war 包小，复用容器&amp;quot;的优势，对几百 MB 起步的 Spring 应用根本不算优势&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;所以现在的工程默认建议：除非有明确历史包袱或合规要求，新项目一律 jar。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="怎么打-jar-包"&gt;&lt;a href="#%e6%80%8e%e4%b9%88%e6%89%93-jar-%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;怎么打 Jar 包
+&lt;/h2&gt;&lt;p&gt;Spring Boot 项目默认就是 jar。&lt;code&gt;pom.xml&lt;/code&gt; 里：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;spring-boot-maven-plugin&lt;/code&gt; 的 &lt;code&gt;repackage&lt;/code&gt; 目标会把项目打成&amp;quot;可执行 jar&amp;quot;——里面包含一个特殊的 &lt;code&gt;BOOT-INF/lib/&lt;/code&gt; 装所有依赖，外层有 Spring Boot 自己的 &lt;code&gt;JarLauncher&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jar&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;META&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="bp"&gt;INF&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;│&lt;/span&gt; &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;MANIFEST&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MF&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="n"&gt;Main&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Class&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;springframework&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;JarLauncher&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;springframework&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="n"&gt;Spring&lt;/span&gt; &lt;span class="n"&gt;Boot&lt;/span&gt; &lt;span class="err"&gt;启动类加载器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;BOOT&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="bp"&gt;INF&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;classes&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="err"&gt;你的代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="err"&gt;所有第三方依赖&lt;/span&gt; &lt;span class="n"&gt;jar&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;classpath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;启动方式：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -Xms512m -Xmx2g -jar app.jar --spring.profiles.active&lt;span class="o"&gt;=&lt;/span&gt;prod
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="怎么打-war-包"&gt;&lt;a href="#%e6%80%8e%e4%b9%88%e6%89%93-war-%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;怎么打 War 包
+&lt;/h2&gt;&lt;p&gt;把同一个项目改成 war 输出，需要四步：&lt;/p&gt;
+&lt;h3 id="1-改-packaging"&gt;&lt;a href="#1-%e6%94%b9-packaging" class="header-anchor"&gt;&lt;/a&gt;1. 改 packaging
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;war&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-排除内嵌-tomcat"&gt;&lt;a href="#2-%e6%8e%92%e9%99%a4%e5%86%85%e5%b5%8c-tomcat" class="header-anchor"&gt;&lt;/a&gt;2. 排除内嵌 Tomcat
+&lt;/h3&gt;&lt;p&gt;外部容器已经提供了 Servlet 容器，再带一份会冲突：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-web&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;exclusions&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;exclusion&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/exclusion&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/exclusions&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 编译用，不打进 war --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-启动类继承-springbootservletinitializer"&gt;&lt;a href="#3-%e5%90%af%e5%8a%a8%e7%b1%bb%e7%bb%a7%e6%89%bf-springbootservletinitializer" class="header-anchor"&gt;&lt;/a&gt;3. 启动类继承 &lt;code&gt;SpringBootServletInitializer&lt;/code&gt;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@SpringBootApplication&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Application&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;extends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringBootServletInitializer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Override&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;protected&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringApplicationBuilder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpringApplicationBuilder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sources&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringApplication&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;SpringBootServletInitializer&lt;/code&gt; 会让 war 既能 &lt;code&gt;java -jar&lt;/code&gt; 跑，也能丢进 Tomcat 跑。&lt;strong&gt;保留 &lt;code&gt;main&lt;/code&gt; 方法是个好习惯&lt;/strong&gt;——本地调试还是 &lt;code&gt;java -jar&lt;/code&gt; 最方便。&lt;/p&gt;
+&lt;h3 id="4-部署"&gt;&lt;a href="#4-%e9%83%a8%e7%bd%b2" class="header-anchor"&gt;&lt;/a&gt;4. 部署
+&lt;/h3&gt;&lt;p&gt;把生成的 &lt;code&gt;app.war&lt;/code&gt; 拷贝到 &lt;code&gt;$TOMCAT_HOME/webapps/&lt;/code&gt; 下，Tomcat 自动解压并启动：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;http://host:port/app/... ← context path 默认是 war 包名
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="七个最常见的-war-部署坑"&gt;&lt;a href="#%e4%b8%83%e4%b8%aa%e6%9c%80%e5%b8%b8%e8%a7%81%e7%9a%84-war-%e9%83%a8%e7%bd%b2%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;七个最常见的 War 部署坑
+&lt;/h2&gt;&lt;h3 id="坑-1context-path-不一致"&gt;&lt;a href="#%e5%9d%91-1context-path-%e4%b8%8d%e4%b8%80%e8%87%b4" class="header-anchor"&gt;&lt;/a&gt;坑 1：context path 不一致
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 启动时，Spring Boot 默认 context path 是 &lt;code&gt;/&lt;/code&gt;；war 部署到 Tomcat 时，context path 默认是 &lt;strong&gt;war 文件名&lt;/strong&gt;。前端写死接口路径的话，部署完所有请求 404。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：要么把 war 重命名为 &lt;code&gt;ROOT.war&lt;/code&gt;（context path = &lt;code&gt;/&lt;/code&gt;），要么前端通过相对路径拼接。&lt;/p&gt;
+&lt;h3 id="坑-2内嵌-tomcat-没排干净"&gt;&lt;a href="#%e5%9d%91-2%e5%86%85%e5%b5%8c-tomcat-%e6%b2%a1%e6%8e%92%e5%b9%b2%e5%87%80" class="header-anchor"&gt;&lt;/a&gt;坑 2：内嵌 Tomcat 没排干净
+&lt;/h3&gt;&lt;p&gt;如果忘了 &lt;code&gt;&amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;&lt;/code&gt;，war 里会带一份 Tomcat。在外部 Tomcat 里跑会出现 ClassLoader 冲突——&lt;code&gt;NoSuchMethodError&lt;/code&gt;、&lt;code&gt;LinkageError&lt;/code&gt; 各种奇葩报错。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;mvn dependency:tree&lt;/code&gt; 检查 war 里没有 &lt;code&gt;tomcat-embed-*&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id="坑-3serverport-配置失效"&gt;&lt;a href="#%e5%9d%91-3serverport-%e9%85%8d%e7%bd%ae%e5%a4%b1%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;坑 3：&lt;code&gt;server.port&lt;/code&gt; 配置失效
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;application.yml&lt;/code&gt; 里的 &lt;code&gt;server.port: 8081&lt;/code&gt; 在 war 部署里完全无效——端口由外部 Tomcat 决定。同理 &lt;code&gt;server.servlet.context-path&lt;/code&gt; 也无效。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：明确知道这些&amp;quot;server.*&amp;ldquo;配置只对内嵌容器生效。&lt;/p&gt;
+&lt;h3 id="坑-4propertysource-找不到外部配置"&gt;&lt;a href="#%e5%9d%91-4propertysource-%e6%89%be%e4%b8%8d%e5%88%b0%e5%a4%96%e9%83%a8%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;坑 4：&lt;code&gt;@PropertySource&lt;/code&gt; 找不到外部配置
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 时 Spring Boot 会自动加载 jar 同级目录的 &lt;code&gt;application.yml&lt;/code&gt; 覆盖内置；war 部署时没有&amp;quot;jar 同级目录&amp;quot;这个概念，外部配置要显式放在 Tomcat 的 &lt;code&gt;lib&lt;/code&gt; 或者通过 &lt;code&gt;-Dspring.config.location=&lt;/code&gt; 指定。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 在 Tomcat 启动参数里加&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-Dspring.config.location&lt;span class="o"&gt;=&lt;/span&gt;file:/etc/myapp/application.yml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="坑-5日志文件路径混乱"&gt;&lt;a href="#%e5%9d%91-5%e6%97%a5%e5%bf%97%e6%96%87%e4%bb%b6%e8%b7%af%e5%be%84%e6%b7%b7%e4%b9%b1" class="header-anchor"&gt;&lt;/a&gt;坑 5：日志文件路径混乱
+&lt;/h3&gt;&lt;p&gt;Spring Boot 的 &lt;code&gt;logging.file.name=app.log&lt;/code&gt; 是相对当前工作目录的，war 部署时这个目录是 Tomcat 的 &lt;code&gt;bin/&lt;/code&gt;，不是你以为的项目目录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：日志路径&lt;strong&gt;永远写绝对路径&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="坑-6jsp-默认不支持"&gt;&lt;a href="#%e5%9d%91-6jsp-%e9%bb%98%e8%ae%a4%e4%b8%8d%e6%94%af%e6%8c%81" class="header-anchor"&gt;&lt;/a&gt;坑 6：JSP 默认不支持
+&lt;/h3&gt;&lt;p&gt;Spring Boot 的可执行 jar &lt;strong&gt;不支持 JSP&lt;/strong&gt;（这也是为什么老项目改造时会被卡）。war 部署时虽然支持，但前提是：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.tomcat.embed&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;tomcat-embed-jasper&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：新项目用 Thymeleaf / Freemarker / 前后端分离，远离 JSP。&lt;/p&gt;
+&lt;h3 id="坑-7filter--listener-触发顺序"&gt;&lt;a href="#%e5%9d%91-7filter--listener-%e8%a7%a6%e5%8f%91%e9%a1%ba%e5%ba%8f" class="header-anchor"&gt;&lt;/a&gt;坑 7：Filter / Listener 触发顺序
+&lt;/h3&gt;&lt;p&gt;外部 Tomcat 加载 war 时，&lt;code&gt;@WebFilter&lt;/code&gt; 等注解的扫描机制和 Spring Boot 自带容器有差异。某些 Filter 可能比 Spring 容器还早初始化，导致 &lt;code&gt;@Autowired&lt;/code&gt; 是 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;FilterRegistrationBean&lt;/code&gt; 显式注册 Filter，由 Spring 控制生命周期。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="镜像化时代的最佳实践"&gt;&lt;a href="#%e9%95%9c%e5%83%8f%e5%8c%96%e6%97%b6%e4%bb%a3%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;镜像化时代的最佳实践
+&lt;/h2&gt;&lt;p&gt;如果你的项目要打 Docker 镜像，&lt;strong&gt;强烈推荐用 jar&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;eclipse-temurin:17-jre&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; target/app.jar /app.jar&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ENTRYPOINT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;java&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;-jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/app.jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;简单、清晰、可复制。&lt;strong&gt;war + Tomcat&lt;/strong&gt; 的镜像虽然也能跑，但要装 Tomcat、改 &lt;code&gt;server.xml&lt;/code&gt;、暴露端口，且镜像体积更大、启动更慢。&lt;/p&gt;
+&lt;p&gt;进一步的优化是用 Spring Boot 的 &lt;code&gt;Layered Jar&lt;/code&gt; 把不变的依赖和频繁变化的业务代码分层，加速 Docker 镜像构建：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;layers&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;enabled&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/enabled&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/layers&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;eclipse-temurin:17-jre&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/app&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; target/app.jar app.jar&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; java -Djarmode&lt;span class="o"&gt;=&lt;/span&gt;layertools -jar app.jar extract&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Spring Boot 3.2+ 路径&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ENTRYPOINT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;java&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;org.springframework.boot.loader.launch.JarLauncher&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;版本注意&lt;/strong&gt;：ENTRYPOINT 类路径在 Boot 3.2 处发生过迁移——&lt;strong&gt;Boot 3.2+ 用 &lt;code&gt;org.springframework.boot.loader.launch.JarLauncher&lt;/code&gt;，3.1 及以下是 &lt;code&gt;org.springframework.boot.loader.JarLauncher&lt;/code&gt;&lt;/strong&gt;。两者写错都会启动报 &lt;code&gt;ClassNotFoundException&lt;/code&gt;，按你实际的 Boot 版本选。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="选择决策树"&gt;&lt;a href="#%e9%80%89%e6%8b%a9%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;选择决策树
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([新项目还是老项目?])
+ Start --&gt;|新项目| Jar1[直接用 Jar]
+ Start --&gt;|老项目| Old{有外部 Tomcat 集群?}
+ Old --&gt;|没有| Jar2[迁移成 Jar]
+ Old --&gt;|有| Reason{为什么用外部 Tomcat?}
+ Reason --&gt;|历史习惯| Migrate[评估迁移成本，建议慢慢转 Jar]
+ Reason --&gt;|多应用共享容器| Docker[考虑 K8s 替代]
+ Reason --&gt;|合规/审计要求| War[继续用 War]
+ Reason --&gt;|JSP/老旧依赖| War&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;War 与 Jar 的选择，本质上是&amp;quot;跟着 Java EE 时代的部署模式走，还是跟着云原生的部署模式走&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;给一句决策建议：&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;新项目无脑 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;Spring Boot 仍然完整支持 war 是为了向后兼容，不是推荐方向。把这点拎清楚，后面所有选择就都顺了。&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#C8B8B0"/>
+          <stop offset="1" stop-color="#FFE0C8"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Soft sun behind clouds -->
+    <circle cx="800" cy="180" r="60" fill="#FFE5C0" opacity="0.7"/>
+    <circle cx="800" cy="180" r="120" fill="#FFE5C0" opacity="0.18"/>
+
+    <!-- Wispy clouds -->
+    <g fill="#FFFFFF" opacity="0.75">
+        <ellipse cx="200" cy="120" rx="120" ry="14"/>
+        <ellipse cx="400" cy="150" rx="150" ry="12"/>
+        <ellipse cx="700" cy="100" rx="140" ry="14"/>
+        <ellipse cx="1000" cy="140" rx="130" ry="12"/>
+    </g>
+
+    <!-- Distant rolling hills (multi-layer) -->
+    <path d="M 0 380 Q 200 340 400 360 Q 600 330 800 360 Q 1000 340 1200 360 L 1200 430 L 0 430 Z" fill="#9C8870"
+          opacity="0.55"/>
+    <path d="M 0 410 Q 250 370 500 400 Q 750 370 1000 410 Q 1100 400 1200 410 L 1200 470 L 0 470 Z" fill="#7C6850"
+          opacity="0.7"/>
+
+    <!-- Foreground hills -->
+    <path d="M 0 460 Q 300 420 600 450 Q 900 420 1200 460 L 1200 540 L 0 540 Z" fill="#A87858"/>
+    <path d="M 0 510 Q 400 480 800 500 Q 1000 490 1200 510 L 1200 580 L 0 580 Z" fill="#7C5838"/>
+
+    <!-- Foreground earth -->
+    <path d="M 0 560 Q 400 540 800 555 Q 1000 545 1200 560 L 1200 630 L 0 630 Z" fill="#5C3820"/>
+
+    <!-- Bare trees -->
+    <g stroke="#3D2010" stroke-width="2" fill="none" stroke-linecap="round">
+        <g transform="translate(180,460)">
+            <line x1="0" y1="0" x2="0" y2="-90"/>
+            <line x1="0" y1="-30" x2="-25" y2="-60"/>
+            <line x1="0" y1="-30" x2="20" y2="-65"/>
+            <line x1="0" y1="-50" x2="-20" y2="-80"/>
+            <line x1="0" y1="-50" x2="22" y2="-85"/>
+            <line x1="0" y1="-70" x2="-12" y2="-95"/>
+            <line x1="0" y1="-70" x2="15" y2="-100"/>
+            <line x1="-25" y1="-60" x2="-35" y2="-80"/>
+            <line x1="20" y1="-65" x2="30" y2="-85"/>
+    </g>
+        <g transform="translate(280,470)">
+            <line x1="0" y1="0" x2="0" y2="-70"/>
+            <line x1="0" y1="-25" x2="-20" y2="-50"/>
+            <line x1="0" y1="-25" x2="18" y2="-55"/>
+            <line x1="0" y1="-50" x2="-15" y2="-72"/>
+            <line x1="0" y1="-50" x2="15" y2="-75"/>
+    </g>
+        <g transform="translate(900,460)">
+            <line x1="0" y1="0" x2="0" y2="-95"/>
+            <line x1="0" y1="-30" x2="-28" y2="-60"/>
+            <line x1="0" y1="-30" x2="22" y2="-70"/>
+            <line x1="0" y1="-55" x2="-22" y2="-85"/>
+            <line x1="0" y1="-55" x2="25" y2="-90"/>
+            <line x1="0" y1="-75" x2="-15" y2="-100"/>
+            <line x1="0" y1="-75" x2="18" y2="-105"/>
+            <line x1="-28" y1="-60" x2="-38" y2="-80"/>
+            <line x1="22" y1="-70" x2="32" y2="-90"/>
+    </g>
+        <g transform="translate(1020,470)">
+            <line x1="0" y1="0" x2="0" y2="-75"/>
+            <line x1="0" y1="-25" x2="-22" y2="-55"/>
+            <line x1="0" y1="-25" x2="20" y2="-58"/>
+            <line x1="0" y1="-50" x2="-15" y2="-78"/>
+    </g>
+  </g>
+
+    <!-- Fence -->
+    <g stroke="#5C3820" stroke-width="3">
+        <line x1="0" y1="540" x2="1200" y2="540" opacity="0.7"/>
+        <line x1="0" y1="555" x2="1200" y2="555" opacity="0.7"/>
+    </g>
+    <g fill="#5C3820">
+        <rect x="100" y="525" width="4" height="40"/>
+        <rect x="200" y="525" width="4" height="40"/>
+        <rect x="300" y="525" width="4" height="40"/>
+        <rect x="400" y="525" width="4" height="40"/>
+        <rect x="500" y="525" width="4" height="40"/>
+        <rect x="600" y="525" width="4" height="40"/>
+        <rect x="700" y="525" width="4" height="40"/>
+        <rect x="800" y="525" width="4" height="40"/>
+        <rect x="1000" y="525" width="4" height="40"/>
+        <rect x="1100" y="525" width="4" height="40"/>
+    </g>
+
+    <!-- Crows -->
+    <g fill="#1F1008">
+        <g transform="translate(450,520)">
+            <ellipse cx="0" cy="0" rx="10" ry="6"/>
+            <circle cx="-9" cy="-2" r="3"/>
+            <polygon points="-12,-2 -16,-3 -12,0"/>
+        </g>
+        <g transform="translate(700,512)">
+            <ellipse cx="0" cy="0" rx="10" ry="6"/>
+            <circle cx="-9" cy="-2" r="3"/>
+            <polygon points="-12,-2 -16,-3 -12,0"/>
+    </g>
+  </g>
+
+    <text x="60" y="615" fill="#5C3820" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

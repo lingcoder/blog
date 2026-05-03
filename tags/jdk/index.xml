@@ -1,4 +1,331 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JDK on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/jdk/</link><description>Recent content in JDK on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 18 Jun 2020 07:59:17 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/jdk/index.xml" rel="self" type="application/rss+xml"/><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk"&gt;&lt;a href="#%e5%ae%89%e8%a3%85-oracle-jdk" class="header-anchor"&gt;&lt;/a&gt;安装 Oracle JDK
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>JDK on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/jdk/</link><description>Recent content in JDK on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 21 Mar 2026 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/jdk/index.xml" rel="self" type="application/rss+xml"/><item><title>从 Lambda 到虚拟线程——Java 关键特性演进</title><link>https://www.lingcoder.com/p/java-version-evolution-and-trend/</link><pubDate>Sat, 21 Mar 2026 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/java-version-evolution-and-trend/</guid><description>&lt;img src="https://www.lingcoder.com/p/java-version-evolution-and-trend/cover.svg" alt="Featured image of post 从 Lambda 到虚拟线程——Java 关键特性演进" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;Java 已经走过 30 年——从 1995 年发布到 2025 年的 25——它&lt;strong&gt;死了几十次又活了几十次&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;很多人对 Java 的印象停留在 8——Lambda、Stream、&lt;code&gt;Optional&lt;/code&gt;。但 Java 8 之后&lt;strong&gt;每 6 个月一个版本&lt;/strong&gt;——加入了大量颠覆性特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;9-11&lt;/strong&gt;：模块化、var、HTTP Client&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;14-17&lt;/strong&gt;：Records、Sealed Classes、Pattern Matching&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;19-21&lt;/strong&gt;：虚拟线程、结构化并发、Pattern Matching for Switch&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;22-25&lt;/strong&gt;：Valhalla 进展、String Templates、Stream 增强&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文按时间线梳理——&lt;strong&gt;从 Java 8（2014）一路到 Java 25（2025），再看未来 5 年走向何方&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一java-82014函数式革命"&gt;&lt;a href="#%e4%b8%80java-82014%e5%87%bd%e6%95%b0%e5%bc%8f%e9%9d%a9%e5%91%bd" class="header-anchor"&gt;&lt;/a&gt;一、Java 8（2014）：函数式革命
+&lt;/h2&gt;&lt;p&gt;仍是 2026 年最广泛使用的版本——&lt;strong&gt;全球生产环境的 Java 中至少 30% 还在 Java 8&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;核心特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Lambda 表达式&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stream API&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Optional&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新 Date/Time API&lt;/strong&gt;（替代腐朽的 &lt;code&gt;Date&lt;/code&gt; / &lt;code&gt;Calendar&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接口默认方法 / 静态方法&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Java 8 让 Java &lt;strong&gt;从纯 OOP 拥抱函数式&lt;/strong&gt;——是 Java 的&amp;quot;现代化转折&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二java-112018第一个-lts-之后"&gt;&lt;a href="#%e4%ba%8cjava-112018%e7%ac%ac%e4%b8%80%e4%b8%aa-lts-%e4%b9%8b%e5%90%8e" class="header-anchor"&gt;&lt;/a&gt;二、Java 11（2018）：第一个 LTS 之后
+&lt;/h2&gt;&lt;p&gt;Java 9-10 是过渡——Java 11 是&lt;strong&gt;第一个长期支持版本&lt;/strong&gt;（LTS）。&lt;/p&gt;
+&lt;p&gt;核心特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;var&lt;/code&gt; 局部变量类型推断&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP Client&lt;/strong&gt;（替代笨重的 HttpURLConnection）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;String 增强&lt;/strong&gt;（&lt;code&gt;isBlank&lt;/code&gt;、&lt;code&gt;lines&lt;/code&gt;、&lt;code&gt;strip&lt;/code&gt; 等）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除 Java EE 模块&lt;/strong&gt;（javax.xml、java.activation 等）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;G1 GC 默认&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Java 11 是当下&lt;strong&gt;仍在生产广泛使用&lt;/strong&gt;的版本——多数中型项目的现状。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三java-172021第二个-lts"&gt;&lt;a href="#%e4%b8%89java-172021%e7%ac%ac%e4%ba%8c%e4%b8%aa-lts" class="header-anchor"&gt;&lt;/a&gt;三、Java 17（2021）：第二个 LTS
+&lt;/h2&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;Spring Boot 3 的最低基线——&lt;strong&gt;强迫整个生态升级&lt;/strong&gt;。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;新增：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Records&lt;/strong&gt;：数据载体类&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sealed Classes&lt;/strong&gt;：限定的继承&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pattern Matching for instanceof&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Switch Expressions&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Text Blocks&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除 Applet API&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pseudorandom Number Generators&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Java 17 是&lt;strong&gt;目前最值得长期 commit 的版本&lt;/strong&gt;——稳定 + 现代 + 生态全面支持。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四java-212023虚拟线程时代"&gt;&lt;a href="#%e5%9b%9bjava-212023%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8b%e6%97%b6%e4%bb%a3" class="header-anchor"&gt;&lt;/a&gt;四、Java 21（2023）：虚拟线程时代
+&lt;/h2&gt;&lt;p&gt;第三个 LTS——&lt;strong&gt;Java 21 的核心特性可能是 Java 史上最重要的&lt;/strong&gt;：&lt;/p&gt;
+&lt;h3 id="虚拟线程project-loom"&gt;&lt;a href="#%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8bproject-loom" class="header-anchor"&gt;&lt;/a&gt;虚拟线程（Project Loom）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 之前：每个请求一个 OS 线程&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ExecutorService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Executors&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newFixedThreadPool&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;200&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 现在：虚拟线程，能开几百万个&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ExecutorService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pool&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Executors&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newVirtualThreadPerTaskExecutor&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;虚拟线程让&lt;strong&gt;传统 MVC 同步代码 = 异步性能&lt;/strong&gt;——不需要学 WebFlux / Reactive 了。&lt;/p&gt;
+&lt;h3 id="结构化并发"&gt;&lt;a href="#%e7%bb%93%e6%9e%84%e5%8c%96%e5%b9%b6%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;结构化并发
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;StructuredTaskScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;ShutdownOnFailure&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;StructuredTaskScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Subtask&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userTask&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;fork&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fetchUser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;StructuredTaskScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Subtask&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Order&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderTask&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;fork&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fetchOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;join&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;throwIfFailed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Result&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userTask&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderTask&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;注：&lt;code&gt;scope.fork(...)&lt;/code&gt; 在 Java 21 返回的是 &lt;code&gt;StructuredTaskScope.Subtask&amp;lt;T&amp;gt;&lt;/code&gt;，不是 &lt;code&gt;Future&amp;lt;T&amp;gt;&lt;/code&gt;。&lt;strong&gt;未 &lt;code&gt;join()&lt;/code&gt; 之前直接 &lt;code&gt;Subtask.get()&lt;/code&gt; 会抛 &lt;code&gt;IllegalStateException&lt;/code&gt;&lt;/strong&gt;——必须先 &lt;code&gt;join()&lt;/code&gt; 让所有子任务终止、再 &lt;code&gt;throwIfFailed()&lt;/code&gt; 处理失败、最后才能 &lt;code&gt;get()&lt;/code&gt; 取值。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;让&amp;quot;一组并发任务&amp;quot;有清晰的生命周期——避免 goroutine 泄漏式的反模式。&lt;/p&gt;
+&lt;h3 id="pattern-matching-for-switch"&gt;&lt;a href="#pattern-matching-for-switch" class="header-anchor"&gt;&lt;/a&gt;Pattern Matching for Switch
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;when&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;positive int &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;non-positive int &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;string of length &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;null&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;unknown&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;模式匹配让代码极简——&lt;strong&gt;Java 在向 Scala / Kotlin 学&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="records--sealed-升级"&gt;&lt;a href="#records--sealed-%e5%8d%87%e7%ba%a7" class="header-anchor"&gt;&lt;/a&gt;Records &amp;amp; Sealed 升级
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;sealed&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;Shape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;permits&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Circle&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Square&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Triangle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;record&lt;/span&gt; &lt;span class="nc"&gt;Circle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;radius&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;implements&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Shape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kt"&gt;double&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;area&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Shape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Circle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Math&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PI&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;radius&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;radius&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Square&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sq&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sq&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;side&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sq&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;side&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Triangle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;5&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;base&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;height&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Records + Sealed + Pattern Matching = &lt;strong&gt;代数数据类型（ADT）&lt;/strong&gt; ——表达力大幅提升。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五java-252025-lts当下的最新-lts"&gt;&lt;a href="#%e4%ba%94java-252025-lts%e5%bd%93%e4%b8%8b%e7%9a%84%e6%9c%80%e6%96%b0-lts" class="header-anchor"&gt;&lt;/a&gt;五、Java 25（2025 LTS）：当下的最新 LTS
+&lt;/h2&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;2025 年 9 月发布——&lt;strong&gt;第四个 LTS&lt;/strong&gt;。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;新加 / 标准化的特性：&lt;/p&gt;
+&lt;h3 id="stream-gatherers标准化"&gt;&lt;a href="#stream-gatherers%e6%a0%87%e5%87%86%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;Stream Gatherers（标准化）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;List&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;windows&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Stream&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;gather&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Gatherers&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;windowFixed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;2&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toList&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// [[1, 2], [3, 4], [5]]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Stream API 的扩展点——能写自己的中间操作。&lt;/p&gt;
+&lt;h3 id="scoped-values替代-threadlocal"&gt;&lt;a href="#scoped-values%e6%9b%bf%e4%bb%a3-threadlocal" class="header-anchor"&gt;&lt;/a&gt;Scoped Values（替代 ThreadLocal）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ScopedValue&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;CURRENT_USER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ScopedValue&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newInstance&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ScopedValue&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CURRENT_USER&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 任意位置可读 CURRENT_USER.get()&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;比 ThreadLocal 更安全（不可变）、虚拟线程友好。&lt;/p&gt;
+&lt;h3 id="class-file-api"&gt;&lt;a href="#class-file-api" class="header-anchor"&gt;&lt;/a&gt;Class-File API
+&lt;/h3&gt;&lt;p&gt;操作 .class 文件的标准 API——&lt;strong&gt;替代第三方 ASM / Javassist&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="pattern-matching-进一步增强"&gt;&lt;a href="#pattern-matching-%e8%bf%9b%e4%b8%80%e6%ad%a5%e5%a2%9e%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;Pattern Matching 进一步增强
+&lt;/h3&gt;&lt;p&gt;支持 deconstruction patterns：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;instanceof&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;Point&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 直接解构出 x, y&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="kemkey-encapsulation-mechanismapi"&gt;&lt;a href="#kemkey-encapsulation-mechanismapi" class="header-anchor"&gt;&lt;/a&gt;KEM（Key Encapsulation Mechanism）API
+&lt;/h3&gt;&lt;p&gt;后量子密码学的标准 API——为量子计算时代做准备。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六未来在路上的特性"&gt;&lt;a href="#%e5%85%ad%e6%9c%aa%e6%9d%a5%e5%9c%a8%e8%b7%af%e4%b8%8a%e7%9a%84%e7%89%b9%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;六、未来：在路上的特性
+&lt;/h2&gt;&lt;h3 id="project-valhallavalue-types"&gt;&lt;a href="#project-valhallavalue-types" class="header-anchor"&gt;&lt;/a&gt;Project Valhalla：Value Types
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Java 历史上最大的待发布特性之一&lt;/strong&gt;——把 &lt;code&gt;int&lt;/code&gt; / &lt;code&gt;long&lt;/code&gt; 这种&amp;quot;值&amp;quot;也变成 first-class 类型：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Point&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Point 像 int 一样在栈上，没有 object header&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;对性能极其敏感的场景&lt;/strong&gt;（数值计算、大量小对象）会有数量级的提升。预计 Java 27/28 才能正式 GA。&lt;/p&gt;
+&lt;h3 id="project-panama原生互操作"&gt;&lt;a href="#project-panama%e5%8e%9f%e7%94%9f%e4%ba%92%e6%93%8d%e4%bd%9c" class="header-anchor"&gt;&lt;/a&gt;Project Panama：原生互操作
+&lt;/h3&gt;&lt;p&gt;替代 JNI——&lt;strong&gt;让 Java 直接调 C 库不需要写胶水代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;SymbolLookup&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SymbolLookup&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;libraryLookup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;c&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;arena&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;MethodHandle&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;strlen&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Linker&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;nativeLinker&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;downcallHandle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;strlen&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;orElseThrow&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;FunctionDescriptor&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;JAVA_LONG&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ADDRESS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;部分功能在 Java 22 已 GA（FFM API）——后续完善中。&lt;/p&gt;
+&lt;h3 id="project-leydenaot-编译"&gt;&lt;a href="#project-leydenaot-%e7%bc%96%e8%af%91" class="header-anchor"&gt;&lt;/a&gt;Project Leyden：AOT 编译
+&lt;/h3&gt;&lt;p&gt;让 Java 启动时间更接近 GraalVM Native Image——&lt;strong&gt;但保留 JVM 的全部能力&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="project-lilliput紧凑对象头"&gt;&lt;a href="#project-lilliput%e7%b4%a7%e5%87%91%e5%af%b9%e8%b1%a1%e5%a4%b4" class="header-anchor"&gt;&lt;/a&gt;Project Lilliput：紧凑对象头
+&lt;/h3&gt;&lt;p&gt;把对象头从 96 位压到 64 位——&lt;strong&gt;所有 Java 对象内存占用减小&lt;/strong&gt;，对小对象密集场景显著。&lt;/p&gt;
+&lt;h3 id="project-babylonhatheterogeneous-accelerator-toolkit"&gt;&lt;a href="#project-babylonhatheterogeneous-accelerator-toolkit" class="header-anchor"&gt;&lt;/a&gt;Project Babylon：HAT（Heterogeneous Accelerator Toolkit）
+&lt;/h3&gt;&lt;p&gt;让 Java 直接利用 GPU / TPU——&lt;strong&gt;为 AI 时代准备&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七生态展望"&gt;&lt;a href="#%e4%b8%83%e7%94%9f%e6%80%81%e5%b1%95%e6%9c%9b" class="header-anchor"&gt;&lt;/a&gt;七、生态展望
+&lt;/h2&gt;&lt;p&gt;几条趋势性判断，2026 年看：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程改变了 Reactive 的位置&lt;/strong&gt;——Java 21+ 让传统 MVC + 虚拟线程在高并发场景接近 WebFlux 的吞吐，多团队从 WebFlux 回到 MVC + 虚拟线程，Reactive 的适用面收窄到流式/背压场景。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Native Image 在特定场景成为主流&lt;/strong&gt;——Serverless 冷启动、CLI 工具、短生命周期 K8s Pod 这类场景里 GraalVM Native Image 已是常见选择；通用业务系统仍用 JVM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;企业 AI 服务的部署主力仍是 Java&lt;/strong&gt;——Python 主导训练，但模型上线后的高 QPS 推理服务、RAG 中台、Agent 编排，Spring AI、LangChain4j 等 Java 框架在快速吃这块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot 3 强制 Java 17+&lt;/strong&gt; 让&amp;quot;还在 Java 8/11&amp;quot;的项目数量在 2026 年明显下降。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Kotlin 在 Android 仍占主导，服务端推进缓慢&lt;/strong&gt;——Java 21/25 已吸收了 Kotlin 大部分语法优势，服务端从 Java 转 Kotlin 的动力变弱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;至于 Java 还有没有未来——TIOBE 长期前 5（近年常驻第 3-4）、GitHub Octoverse 长期前 5、金融/电信/政府企业市场 90% 仍是 Java、Stack Overflow 调查显示使用率稳定。&lt;strong&gt;生态成熟 + 性能稳定 + 工具完善 + 招聘容易&lt;/strong&gt;这四条没有变。可以预期的几个落地方向：服务端主力（金融、电商、SaaS 后端）、大数据基础设施（Kafka / Flink / Spark / Elasticsearch 都是 JVM）、企业 AI 服务部署。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八给开发者的实战建议"&gt;&lt;a href="#%e5%85%ab%e7%bb%99%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;八、给开发者的实战建议
+&lt;/h2&gt;&lt;h3 id="1-升级路径"&gt;&lt;a href="#1-%e5%8d%87%e7%ba%a7%e8%b7%af%e5%be%84" class="header-anchor"&gt;&lt;/a&gt;1. 升级路径
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java 8&lt;/strong&gt; → &lt;strong&gt;Java 17&lt;/strong&gt;：主要工作是 module path / removed API 检查&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 11&lt;/strong&gt; → &lt;strong&gt;Java 17&lt;/strong&gt;：相对平滑&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 17&lt;/strong&gt; → &lt;strong&gt;Java 21&lt;/strong&gt;：稳健，主要享受虚拟线程&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 21&lt;/strong&gt; → &lt;strong&gt;Java 25&lt;/strong&gt;：仅加新特性，向后兼容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;没有 LTS 间跳跃的特殊难点&lt;/strong&gt;——多数升级 1-2 周能完成。&lt;/p&gt;
+&lt;h3 id="2-选择当下的-lts"&gt;&lt;a href="#2-%e9%80%89%e6%8b%a9%e5%bd%93%e4%b8%8b%e7%9a%84-lts" class="header-anchor"&gt;&lt;/a&gt;2. 选择当下的 LTS
+&lt;/h3&gt;&lt;p&gt;如果要长期 commit：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目&lt;/strong&gt; → Java 21 或 25&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;稳定老项目&lt;/strong&gt; → 先升 17，再考虑 21&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特殊老系统&lt;/strong&gt; → Java 8 仍可用，但 Spring Boot 2.7 EOL 在即&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="3-关注的特性"&gt;&lt;a href="#3-%e5%85%b3%e6%b3%a8%e7%9a%84%e7%89%b9%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;3. 关注的特性
+&lt;/h3&gt;&lt;p&gt;按重要性：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程&lt;/strong&gt;（Java 21+）——直接影响架构选择&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pattern Matching&lt;/strong&gt;（Java 21+）——影响日常代码风格&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Records / Sealed&lt;/strong&gt;（Java 17+）——值类对象设计&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Text Blocks&lt;/strong&gt;（Java 17+）——SQL / JSON 嵌入更舒适&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Switch Expressions&lt;/strong&gt;（Java 17+）——告别 break&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="4-工具链"&gt;&lt;a href="#4-%e5%b7%a5%e5%85%b7%e9%93%be" class="header-anchor"&gt;&lt;/a&gt;4. 工具链
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;JDK 发行版&lt;/strong&gt;：Eclipse Temurin（默认推荐）、Amazon Corretto、Azul Zulu、GraalVM&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;构建工具&lt;/strong&gt;：Maven 仍主流，Gradle 在新项目崛起&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IDE&lt;/strong&gt;：IntelliJ IDEA 是事实标准&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Java 不是『过气』也不是『万能』——它是『稳健、强生态、持续演进』的成熟语言。从 8 到 25，每一步都在补齐缺陷，但保留了向后兼容的稳定性。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;当下 LTS 用 Java 21 或 25&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot 3 强制 Java 17+&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程改变了高并发架构选择&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pattern Matching 让代码现代化&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Valhalla / Panama / Leyden 是未来 5 年最大的 Java 项目&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你 5 年没升过 Java——&lt;strong&gt;2026 是该升的时刻&lt;/strong&gt;。Java 21+ 真的不一样了。&lt;/p&gt;</description></item><item><title>在Ubuntu18.04中安装JDK8</title><link>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</link><pubDate>Thu, 18 Jun 2020 07:59:17 +0800</pubDate><guid>https://www.lingcoder.com/p/install-jdk8-on-ubuntu1804/</guid><description>&lt;h2 id="安装-oracle-jdk"&gt;&lt;a href="#%e5%ae%89%e8%a3%85-oracle-jdk" class="header-anchor"&gt;&lt;/a&gt;安装 Oracle JDK
 &lt;/h2&gt;&lt;p&gt;Webupd8 Team维护一个PPA存储库，其中包含适用于所有当前Ubuntu版本的Oracle Java 8安装程序脚本。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;打开终端并运行命令添加 PPA：&lt;/li&gt;

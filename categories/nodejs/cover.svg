@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0A1F0A"/>
+      <stop offset="1" stop-color="#040E04"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#339933" stroke-opacity="0.1" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 六边形（Node.js logo 简化） -->
+  <g transform="translate(600,310)">
+    <polygon points="0,-150 130,-75 130,75 0,150 -130,75 -130,-75"
+             fill="#339933" fill-opacity="0.18"
+             stroke="#339933" stroke-width="3"/>
+    <polygon points="0,-110 95,-55 95,55 0,110 -95,55 -95,-55"
+             fill="#339933" fill-opacity="0.1"
+             stroke="#339933" stroke-width="2"/>
+    <text y="14" text-anchor="middle" fill="#7BC97B" font-family="-apple-system, sans-serif" font-size="40" font-weight="800">JS</text>
+  </g>
+
+  <text x="80" y="555" fill="#7BC97B" font-size="20" font-weight="700" font-family="-apple-system, sans-serif">Node.js</text>
+  <text x="80" y="582" fill="#7BC97B" font-size="13" font-family="-apple-system, sans-serif" letter-spacing="3">JAVASCRIPT · SERVER · TOOLING</text>
+</svg>

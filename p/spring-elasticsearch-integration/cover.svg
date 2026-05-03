@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE5C8"/>
+          <stop offset="1" stop-color="#FFB58A"/>
+      </linearGradient>
+      <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#D8AC7C"/>
+          <stop offset="1" stop-color="#A87830"/>
+    </linearGradient>
+      <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A87830"/>
+          <stop offset="1" stop-color="#5A4218"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="280" fill="url(#sky)"/>
+
+    <!-- Sun low -->
+    <circle cx="950" cy="240" r="55" fill="#FFE5A0" opacity="0.92"/>
+    <circle cx="950" cy="240" r="160" fill="#FFE5A0" opacity="0.18"/>
+
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.6">
+        <ellipse cx="200" cy="100" rx="130" ry="13"/>
+        <ellipse cx="700" cy="80" rx="100" ry="11"/>
+    </g>
+
+    <!-- Distant rolling hills -->
+    <path d="M 0 280 Q 200 240 400 270 T 800 250 T 1200 280 L 1200 340 L 0 340 Z"
+          fill="url(#hill1)" opacity="0.85"/>
+
+    <!-- Mid hills -->
+    <path d="M 0 340 Q 250 280 500 320 T 950 300 T 1200 340 L 1200 410 L 0 410 Z"
+          fill="url(#hill2)"/>
+
+    <!-- Vineyard rows -->
+    <g fill="#5A4218">
+        <!-- Row 1 -->
+        <ellipse cx="100" cy="430" rx="14" ry="10"/>
+        <ellipse cx="160" cy="430" rx="14" ry="10"/>
+        <ellipse cx="220" cy="430" rx="14" ry="10"/>
+        <ellipse cx="280" cy="430" rx="14" ry="10"/>
+        <ellipse cx="340" cy="430" rx="14" ry="10"/>
+        <ellipse cx="400" cy="430" rx="14" ry="10"/>
+        <ellipse cx="460" cy="430" rx="14" ry="10"/>
+        <ellipse cx="520" cy="430" rx="14" ry="10"/>
+        <ellipse cx="580" cy="430" rx="14" ry="10"/>
+        <ellipse cx="640" cy="430" rx="14" ry="10"/>
+        <ellipse cx="700" cy="430" rx="14" ry="10"/>
+        <ellipse cx="760" cy="430" rx="14" ry="10"/>
+        <ellipse cx="820" cy="430" rx="14" ry="10"/>
+        <ellipse cx="880" cy="430" rx="14" ry="10"/>
+        <ellipse cx="940" cy="430" rx="14" ry="10"/>
+        <ellipse cx="1000" cy="430" rx="14" ry="10"/>
+        <ellipse cx="1060" cy="430" rx="14" ry="10"/>
+        <ellipse cx="1120" cy="430" rx="14" ry="10"/>
+  </g>
+    <g fill="#3D2A0F">
+        <!-- Row 2 -->
+        <ellipse cx="80" cy="490" rx="18" ry="13"/>
+        <ellipse cx="160" cy="490" rx="18" ry="13"/>
+        <ellipse cx="240" cy="490" rx="18" ry="13"/>
+        <ellipse cx="320" cy="490" rx="18" ry="13"/>
+        <ellipse cx="400" cy="490" rx="18" ry="13"/>
+        <ellipse cx="480" cy="490" rx="18" ry="13"/>
+        <ellipse cx="560" cy="490" rx="18" ry="13"/>
+        <ellipse cx="640" cy="490" rx="18" ry="13"/>
+        <ellipse cx="720" cy="490" rx="18" ry="13"/>
+        <ellipse cx="800" cy="490" rx="18" ry="13"/>
+        <ellipse cx="880" cy="490" rx="18" ry="13"/>
+        <ellipse cx="960" cy="490" rx="18" ry="13"/>
+        <ellipse cx="1040" cy="490" rx="18" ry="13"/>
+        <ellipse cx="1120" cy="490" rx="18" ry="13"/>
+    </g>
+    <g fill="#2A1A08">
+        <!-- Row 3 (front, bigger) -->
+        <ellipse cx="60" cy="565" rx="24" ry="17"/>
+        <ellipse cx="160" cy="565" rx="24" ry="17"/>
+        <ellipse cx="260" cy="565" rx="24" ry="17"/>
+        <ellipse cx="360" cy="565" rx="24" ry="17"/>
+        <ellipse cx="460" cy="565" rx="24" ry="17"/>
+        <ellipse cx="560" cy="565" rx="24" ry="17"/>
+        <ellipse cx="660" cy="565" rx="24" ry="17"/>
+        <ellipse cx="760" cy="565" rx="24" ry="17"/>
+        <ellipse cx="860" cy="565" rx="24" ry="17"/>
+        <ellipse cx="960" cy="565" rx="24" ry="17"/>
+        <ellipse cx="1060" cy="565" rx="24" ry="17"/>
+        <ellipse cx="1140" cy="565" rx="24" ry="17"/>
+    </g>
+
+    <!-- Stone farmhouse on hill -->
+    <g transform="translate(700,280)">
+        <rect x="0" y="0" width="60" height="40" fill="#F0DCB0"/>
+        <polygon points="0,0 30,-22 60,0" fill="#A85A30"/>
+        <rect x="25" y="18" width="10" height="22" fill="#5C3A1F"/>
+        <rect x="8" y="10" width="8" height="8" fill="#7C5A2A"/>
+        <rect x="44" y="10" width="8" height="8" fill="#7C5A2A"/>
+  </g>
+
+    <text x="60" y="610" fill="#3D2A0F" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

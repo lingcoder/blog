@@ -1,5 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kafka on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/kafka/</link><description>Recent content in Kafka on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/kafka/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" /&gt;&lt;h1 id="kafka集群搭建"&gt;&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Kafka集群搭建
-&lt;/h1&gt;&lt;h2 id="使用场景"&gt;&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;使用场景
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kafka on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/kafka/</link><description>Recent content in Kafka on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/kafka/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka 集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka 集群搭建" /&gt;&lt;h1 id="kafka集群搭建"&gt;&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Kafka集群搭建
+&lt;/h1&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;版本说明（2026 年补）&lt;/strong&gt;：本文撰写时使用的是 &lt;code&gt;kafka_2.12-2.2.0&lt;/code&gt;（2019 年发布），属于 ZooKeeper 模式 + 老 Scala producer / high-level consumer 时代。Kafka 自 2.8 引入 KRaft 预览、3.3 GA、&lt;strong&gt;4.0 起强制 KRaft 不再支持 ZooKeeper&lt;/strong&gt;；新 Java consumer 自 0.9 就已替代 high-level consumer。下面 broker 配置中关于&amp;quot;新版本不再使用 zookeeper&amp;quot;的注释、以及 producer / high-level consumer 配置参数表，都是当时旧版本的写法，搭新集群请直接看 KRaft 模式与新 KafkaProducer / KafkaConsumer API。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;h2 id="使用场景"&gt;&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;使用场景
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;异步处理： 如用户注册后，发送注册邮件，再发送注册短信。&lt;/li&gt;
 &lt;li&gt;应用解耦： 如用户下单后，订单系统需要通知库存系统。&lt;/li&gt;
@@ -102,8 +107,6 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;15
 &lt;/span&gt;&lt;span class="lnt"&gt;16
 &lt;/span&gt;&lt;span class="lnt"&gt;17
-&lt;/span&gt;&lt;span class="lnt"&gt;18
-&lt;/span&gt;&lt;span class="lnt"&gt;19
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 不可重复&lt;/span&gt;
@@ -117,13 +120,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;log.retention.hours&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;24&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 新增下面三项&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;message.max.byte&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;5242880&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;message.max.bytes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;5242880&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;default.replication.factor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;2&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;replica.fetch.max.bytes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;5242880&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 设置zookeeper的连接端口,新版本的kafka不再使用zookeeper&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 而是通过brokerlist的配置让producer直接连接broker&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这个brokerlist可以配置多个，只要有一个能连接上，就可以让producer获取道集群中的其他broker的信息,绕过了zookeeper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# zookeeper 连接端口（本文使用 ZooKeeper 模式；KRaft 模式下不需要这一项）&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;zookeeper.connect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -155,8 +156,7 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;jps
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;img alt="1558551474814" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="../images/1558551474814.png"&gt;&lt;/p&gt;
-&lt;/li&gt;
+&lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="4-验证是否创建成功"&gt;&lt;a href="#4-%e9%aa%8c%e8%af%81%e6%98%af%e5%90%a6%e5%88%9b%e5%bb%ba%e6%88%90%e5%8a%9f" class="header-anchor"&gt;&lt;/a&gt;4. 验证是否创建成功
 &lt;/h3&gt;&lt;ul&gt;
@@ -491,7 +491,7 @@
  &lt;tr&gt;
  &lt;td&gt;request.required.acks&lt;/td&gt;
  &lt;td&gt;0&lt;/td&gt;
- &lt;td&gt;0表示producer无需等待leader的确认，1代表需要leader确认写入它的本地log并立即确认，-1代表所有的备份都完成后确认。 仅仅for sync&lt;/td&gt;
+ &lt;td&gt;0表示producer无需等待leader的确认，1代表需要leader确认写入它的本地log并立即确认，-1代表所有的备份都完成后确认。（同步/异步发送均生效）&lt;/td&gt;
  &lt;/tr&gt;
  &lt;tr&gt;
  &lt;td&gt;request.timeout.ms&lt;/td&gt;

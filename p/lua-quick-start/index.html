@@ -1,0 +1,441 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Lua 是一门设计极简但表达力丰富的小语言，本文从语法、表、metatable 到协程，给出一份能上手的核心特性梳理"><title>Lua 速通——核心语法与特性</title><link rel=canonical href=https://www.lingcoder.com/p/lua-quick-start/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="Lua 速通——核心语法与特性"><meta property='og:description' content="Lua 是一门设计极简但表达力丰富的小语言，本文从语法、表、metatable 到协程，给出一份能上手的核心特性梳理"><meta property='og:url' content='https://www.lingcoder.com/p/lua-quick-start/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Lua'><meta property='article:tag' content='LuaJIT'><meta property='article:tag' content='编程语言'><meta property='article:tag' content='脚本语言'><meta property='article:published_time' content='2025-04-22T15:00:00+08:00'><meta property='article:modified_time' content='2025-04-22T15:00:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/lua-quick-start/cover.svg'><meta name=twitter:title content="Lua 速通——核心语法与特性"><meta name=twitter:description content="Lua 是一门设计极简但表达力丰富的小语言，本文从语法、表、metatable 到协程，给出一份能上手的核心特性梳理"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/lua-quick-start/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#写在前面>写在前面</a></li><li><a href=#一最基本的语法>一、最基本的语法</a></li><li><a href=#二控制流>二、控制流</a></li><li><a href=#三函数>三、函数</a></li><li><a href=#四tablelua-唯一的数据结构>四、Table——Lua 唯一的数据结构</a><ol><li><a href=#表的常用操作>表的常用操作</a></li></ol></li><li><a href=#五字符串与模式匹配>五、字符串与模式匹配</a><ol><li><a href=#模式匹配>模式匹配</a></li></ol></li><li><a href=#六metatable-与面向对象>六、Metatable 与面向对象</a><ol><li><a href=#元方法metamethods>元方法（metamethods）</a></li><li><a href=#继承>继承</a></li></ol></li><li><a href=#七协程coroutine>七、协程（coroutine）</a></li><li><a href=#八模块化>八、模块化</a></li><li><a href=#九几个常踩的语法陷阱>九、几个常踩的语法陷阱</a><ol><li><a href=#1-数组从-1-开始>1. 数组从 1 开始</a></li><li><a href=#2-nil-不能放在数组中间>2. nil 不能放在数组中间</a></li><li><a href=#3-0-和--是-truthy>3. 0 和 "" 是 truthy</a></li><li><a href=#4-字符串与数字自动转换>4. 字符串与数字自动转换</a></li><li><a href=#5-默认全局>5. 默认全局</a></li><li><a href=#6-整数与浮点53>6. 整数与浮点（5.3+）</a></li></ol></li><li><a href=#十lua-的设计哲学>十、Lua 的设计哲学</a></li><li><a href=#十一lua-版本与-luajit>十一、Lua 版本与 LuaJIT</a><ol><li><a href=#lua-5x-版本演进>Lua 5.x 版本演进</a></li><li><a href=#luajit>LuaJIT</a></li><li><a href=#包管理>包管理</a></li></ol></li><li><a href=#十二什么场景该用-lua>十二、什么场景该用 Lua</a><ol><li><a href=#-适合>✅ 适合</a></li><li><a href=#-不适合>❌ 不适合</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/lua-quick-start/><img alt="Featured image of post Lua 速通——核心语法与特性" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/lua-quick-start/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/programming-languages/ style=background-color:#9b59b6;color:#fff>编程语言</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/lua-quick-start/>Lua 速通——核心语法与特性</a></h2><h3 class=article-subtitle>Lua 是一门设计极简但表达力丰富的小语言，本文从语法、表、metatable 到协程，给出一份能上手的核心特性梳理</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-04-22T15:00:00+08:00>2025-04-22</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#写在前面>写在前面</a></li><li><a href=#一最基本的语法>一、最基本的语法</a></li><li><a href=#二控制流>二、控制流</a></li><li><a href=#三函数>三、函数</a></li><li><a href=#四tablelua-唯一的数据结构>四、Table——Lua 唯一的数据结构</a><ol><li><a href=#表的常用操作>表的常用操作</a></li></ol></li><li><a href=#五字符串与模式匹配>五、字符串与模式匹配</a><ol><li><a href=#模式匹配>模式匹配</a></li></ol></li><li><a href=#六metatable-与面向对象>六、Metatable 与面向对象</a><ol><li><a href=#元方法metamethods>元方法（metamethods）</a></li><li><a href=#继承>继承</a></li></ol></li><li><a href=#七协程coroutine>七、协程（coroutine）</a></li><li><a href=#八模块化>八、模块化</a></li><li><a href=#九几个常踩的语法陷阱>九、几个常踩的语法陷阱</a><ol><li><a href=#1-数组从-1-开始>1. 数组从 1 开始</a></li><li><a href=#2-nil-不能放在数组中间>2. nil 不能放在数组中间</a></li><li><a href=#3-0-和--是-truthy>3. 0 和 "" 是 truthy</a></li><li><a href=#4-字符串与数字自动转换>4. 字符串与数字自动转换</a></li><li><a href=#5-默认全局>5. 默认全局</a></li><li><a href=#6-整数与浮点53>6. 整数与浮点（5.3+）</a></li></ol></li><li><a href=#十lua-的设计哲学>十、Lua 的设计哲学</a></li><li><a href=#十一lua-版本与-luajit>十一、Lua 版本与 LuaJIT</a><ol><li><a href=#lua-5x-版本演进>Lua 5.x 版本演进</a></li><li><a href=#luajit>LuaJIT</a></li><li><a href=#包管理>包管理</a></li></ol></li><li><a href=#十二什么场景该用-lua>十二、什么场景该用 Lua</a><ol><li><a href=#-适合>✅ 适合</a></li><li><a href=#-不适合>❌ 不适合</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=写在前面><a href=#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2 class=header-anchor></a>写在前面</h2><p>Lua 是一门有意保持小巧的脚本语言——核心语法只有几十条规则，标准库非常精简，参考实现的解释器只有约 2.4 万行 C 代码（含标准库），编译后产物约 250 KB。</p><p>但它表达力并不弱：first-class function、metatable、协程、模式匹配——很多被现代语言陆续吸收的特性，Lua 早就有。</p><p>本文给一份偏语言本身的速通——讲清楚 Lua 的核心语法、表、面向对象的实现方式、协程，以及一些容易踩的语法陷阱。读完之后你能看懂多数
+Lua 代码，也能写出一些不丢人的 Lua。</p><hr><h2 id=一最基本的语法><a href=#%e4%b8%80%e6%9c%80%e5%9f%ba%e6%9c%ac%e7%9a%84%e8%af%ad%e6%b3%95 class=header-anchor></a>一、最基本的语法</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=c1>-- 注释从两个减号开始</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=s2>&#34;Hello, world!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 变量（默认全局）</span>
+</span></span><span class=line><span class=cl><span class=n>x</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>y</span> <span class=o>=</span> <span class=mi>20</span>    <span class=c1>-- local 是局部，强烈推荐永远用 local</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 字符串</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>name</span> <span class=o>=</span> <span class=s2>&#34;Lua&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=s2>&#34;Hi, &#34;</span> <span class=o>..</span> <span class=n>name</span><span class=p>)</span>   <span class=c1>-- 字符串拼接用 ..</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=o>#</span><span class=n>name</span><span class=p>)</span>             <span class=c1>-- # 取长度</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 数字</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>a</span> <span class=o>=</span> <span class=mf>1.5</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>b</span> <span class=o>=</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- nil（不存在/未定义）</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>nothing</span> <span class=o>=</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 布尔（注意：只有 false 和 nil 是 falsy，0 是 truthy！）</span>
+</span></span><span class=line><span class=cl><span class=kr>if</span> <span class=mi>0</span> <span class=kr>then</span> <span class=n>print</span><span class=p>(</span><span class=s2>&#34;0 是 truthy&#34;</span><span class=p>)</span> <span class=kr>end</span>   <span class=c1>-- 会执行</span>
+</span></span></code></pre></td></tr></table></div></div><p>⚠️ <strong>几个和主流语言不一样的地方</strong>：</p><ul><li><code>nil</code> 不是 <code>null</code>——访问不存在的字段返回 <code>nil</code></li><li><code>0</code> 是真值！这和大多数语言相反</li><li>字符串拼接用 <code>..</code>，不是 <code>+</code></li><li>取长度用 <code>#str</code>，不是 <code>len(str)</code></li></ul><hr><h2 id=二控制流><a href=#%e4%ba%8c%e6%8e%a7%e5%88%b6%e6%b5%81 class=header-anchor></a>二、控制流</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=c1>-- if</span>
+</span></span><span class=line><span class=cl><span class=kr>if</span> <span class=n>x</span> <span class=o>&gt;</span> <span class=mi>10</span> <span class=kr>then</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;big&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>elseif</span> <span class=n>x</span> <span class=o>&gt;</span> <span class=mi>5</span> <span class=kr>then</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;medium&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>else</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;small&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- while</span>
+</span></span><span class=line><span class=cl><span class=kr>while</span> <span class=n>x</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>    <span class=n>x</span> <span class=o>=</span> <span class=n>x</span> <span class=o>-</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- repeat-until（条件为 true 时退出）</span>
+</span></span><span class=line><span class=cl><span class=kr>repeat</span>
+</span></span><span class=line><span class=cl>    <span class=n>x</span> <span class=o>=</span> <span class=n>x</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=kr>until</span> <span class=n>x</span> <span class=o>&gt;</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- for（数值型）</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>10</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span> <span class=kr>end</span>          <span class=c1>-- 1 到 10</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>2</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span> <span class=kr>end</span>       <span class=c1>-- 步长 2</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span> <span class=kr>end</span>      <span class=c1>-- 倒序</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- for（迭代器）</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>pairs</span><span class=p>(</span><span class=n>table</span><span class=p>)</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>k</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span> <span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>ipairs</span><span class=p>(</span><span class=n>array</span><span class=p>)</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span> <span class=kr>end</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意——<strong>for 没有 <code>++</code> <code>--</code>，循环结束用 <code>end</code></strong>。</p><hr><h2 id=三函数><a href=#%e4%b8%89%e5%87%bd%e6%95%b0 class=header-anchor></a>三、函数</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kr>function</span> <span class=nf>add</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=n>a</span> <span class=o>+</span> <span class=n>b</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 多返回值（Lua 一大特色）</span>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nf>divmod</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=n>a</span> <span class=o>/</span> <span class=n>b</span><span class=p>,</span> <span class=n>a</span> <span class=o>%</span> <span class=n>b</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>q</span><span class=p>,</span> <span class=n>r</span> <span class=o>=</span> <span class=n>divmod</span><span class=p>(</span><span class=mi>7</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 可变参数</span>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nf>printAll</span><span class=p>(...)</span>
+</span></span><span class=line><span class=cl>    <span class=kd>local</span> <span class=n>args</span> <span class=o>=</span> <span class=p>{...}</span>
+</span></span><span class=line><span class=cl>    <span class=kr>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>ipairs</span><span class=p>(</span><span class=n>args</span><span class=p>)</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span> <span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 匿名函数 + 局部变量</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>sayHello</span> <span class=o>=</span> <span class=kr>function</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;Hello, &#34;</span> <span class=o>..</span> <span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=n>sayHello</span><span class=p>(</span><span class=s2>&#34;World&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>函数是 first-class value</strong>——可以传递、返回、存进表，闭包语义和 JS / Python 类似。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kr>function</span> <span class=nf>counter</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=kd>local</span> <span class=n>n</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=kr>function</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>n</span> <span class=o>=</span> <span class=n>n</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>        <span class=kr>return</span> <span class=n>n</span>
+</span></span><span class=line><span class=cl>    <span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>next</span> <span class=o>=</span> <span class=n>counter</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>next</span><span class=p>())</span>   <span class=c1>-- 1</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>next</span><span class=p>())</span>   <span class=c1>-- 2</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=四tablelua-唯一的数据结构><a href=#%e5%9b%9btablelua-%e5%94%af%e4%b8%80%e7%9a%84%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84 class=header-anchor></a>四、Table——Lua 唯一的数据结构</h2><p>Lua 的核心是 <strong>table</strong>——既是数组、又是字典、又是对象——一个数据结构表达所有：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=c1>-- 数组式</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>arr</span> <span class=o>=</span> <span class=p>{</span><span class=mi>10</span><span class=p>,</span> <span class=mi>20</span><span class=p>,</span> <span class=mi>30</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>arr</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>       <span class=c1>-- 10（注意从 1 开始！）</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=o>#</span><span class=n>arr</span><span class=p>)</span>         <span class=c1>-- 3</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 字典式</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>user</span> <span class=o>=</span> <span class=p>{</span> <span class=n>name</span> <span class=o>=</span> <span class=s2>&#34;alice&#34;</span><span class=p>,</span> <span class=n>age</span> <span class=o>=</span> <span class=mi>30</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>user.name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>user</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 混合</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>mixed</span> <span class=o>=</span> <span class=p>{</span> <span class=s2>&#34;a&#34;</span><span class=p>,</span> <span class=s2>&#34;b&#34;</span><span class=p>,</span> <span class=s2>&#34;c&#34;</span><span class=p>,</span> <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;red&#34;</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>⚠️ <strong>Lua 的数组从 1 开始！</strong> 不是 0。这是和 99% 主流语言的不同——也是新手最容易踩的坑。</p><h3 id=表的常用操作><a href=#%e8%a1%a8%e7%9a%84%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c class=header-anchor></a>表的常用操作</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=n>table.insert</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=mi>40</span><span class=p>)</span>       <span class=c1>-- 末尾追加</span>
+</span></span><span class=line><span class=cl><span class=n>table.remove</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>         <span class=c1>-- 移除第 1 个</span>
+</span></span><span class=line><span class=cl><span class=n>table.concat</span><span class=p>(</span><span class=n>arr</span><span class=p>,</span> <span class=s2>&#34;, &#34;</span><span class=p>)</span>      <span class=c1>-- 拼成字符串</span>
+</span></span><span class=line><span class=cl><span class=n>table.sort</span><span class=p>(</span><span class=n>arr</span><span class=p>)</span>              <span class=c1>-- 排序</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 字典遍历</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>pairs</span><span class=p>(</span><span class=n>user</span><span class=p>)</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>k</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 数组遍历</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>ipairs</span><span class=p>(</span><span class=n>arr</span><span class=p>)</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>pairs</code> 遍历所有键值对（包括字符串 key）；<code>ipairs</code> 只遍历数字索引 1, 2, 3&mldr;——遇到 nil 停止。</p><hr><h2 id=五字符串与模式匹配><a href=#%e4%ba%94%e5%ad%97%e7%ac%a6%e4%b8%b2%e4%b8%8e%e6%a8%a1%e5%bc%8f%e5%8c%b9%e9%85%8d class=header-anchor></a>五、字符串与模式匹配</h2><p>字符串是 Lua 里仅次于 table 的常用类型，标准库里有不少利器：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>s</span> <span class=o>=</span> <span class=s2>&#34;Hello, Lua!&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=o>#</span><span class=n>s</span><span class=p>)</span>                    <span class=c1>-- 11</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>string.upper</span><span class=p>(</span><span class=n>s</span><span class=p>))</span>       <span class=c1>-- HELLO, LUA!</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>string.sub</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>10</span><span class=p>))</span>  <span class=c1>-- Lua</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>string.rep</span><span class=p>(</span><span class=s2>&#34;ab&#34;</span><span class=p>,</span> <span class=mi>3</span><span class=p>))</span>   <span class=c1>-- ababab</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 也可以用 OO 调用</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>s</span><span class=p>:</span><span class=n>upper</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>s</span><span class=p>:</span><span class=n>find</span><span class=p>(</span><span class=s2>&#34;Lua&#34;</span><span class=p>))</span>         <span class=c1>-- 8  10</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=模式匹配><a href=#%e6%a8%a1%e5%bc%8f%e5%8c%b9%e9%85%8d class=header-anchor></a>模式匹配</h3><p>Lua 没有正则，但有自己的轻量"模式"语法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>date</span> <span class=o>=</span> <span class=s2>&#34;2025-04-22&#34;</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>y</span><span class=p>,</span> <span class=n>m</span><span class=p>,</span> <span class=n>d</span> <span class=o>=</span> <span class=n>string.match</span><span class=p>(</span><span class=n>date</span><span class=p>,</span> <span class=s2>&#34;(%d+)-(%d+)-(%d+)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>y</span><span class=p>,</span> <span class=n>m</span><span class=p>,</span> <span class=n>d</span><span class=p>)</span>               <span class=c1>-- 2025  04  22</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>-- 替换</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>string.gsub</span><span class=p>(</span><span class=s2>&#34;hello world&#34;</span><span class=p>,</span> <span class=s2>&#34;world&#34;</span><span class=p>,</span> <span class=s2>&#34;Lua&#34;</span><span class=p>))</span>   <span class=c1>-- hello Lua  1</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>%d</code> 数字、<code>%a</code> 字母、<code>%w</code> 字母数字、<code>%s</code> 空白——和 PCRE 不完全一样但够用，性能也好。</p><hr><h2 id=六metatable-与面向对象><a href=#%e5%85%admetatable-%e4%b8%8e%e9%9d%a2%e5%90%91%e5%af%b9%e8%b1%a1 class=header-anchor></a>六、Metatable 与面向对象</h2><p>Lua 没有 class，但 <strong>metatable 几乎能模拟出任何 OO 特性</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>Animal</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=n>Animal.__index</span> <span class=o>=</span> <span class=n>Animal</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nc>Animal</span><span class=p>.</span><span class=nf>new</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kd>local</span> <span class=n>self</span> <span class=o>=</span> <span class=n>setmetatable</span><span class=p>({},</span> <span class=n>Animal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>self.name</span> <span class=o>=</span> <span class=n>name</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=n>self</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nc>Animal</span><span class=p>:</span><span class=nf>eat</span><span class=p>()</span>                <span class=c1>-- 注意冒号 :</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>self.name</span> <span class=o>..</span> <span class=s2>&#34; is eating&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>dog</span> <span class=o>=</span> <span class=n>Animal.new</span><span class=p>(</span><span class=s2>&#34;Rex&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>dog</span><span class=p>:</span><span class=n>eat</span><span class=p>()</span>                            <span class=c1>-- 调用也用冒号</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>冒号 <code>:</code> 是语法糖</strong>——<code>obj:method()</code> 等价于 <code>obj.method(obj)</code>，自动传 self。</p><h3 id=元方法metamethods><a href=#%e5%85%83%e6%96%b9%e6%b3%95metamethods class=header-anchor></a>元方法（metamethods）</h3><p>metatable 里几个特殊键名能"重载"运算符：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>Vec</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl><span class=n>Vec.__index</span> <span class=o>=</span> <span class=n>Vec</span>
+</span></span><span class=line><span class=cl><span class=n>Vec.__add</span> <span class=o>=</span> <span class=kr>function</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span> <span class=kr>return</span> <span class=n>setmetatable</span><span class=p>({</span><span class=n>x</span> <span class=o>=</span> <span class=n>a.x</span> <span class=o>+</span> <span class=n>b.x</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=n>a.y</span> <span class=o>+</span> <span class=n>b.y</span><span class=p>},</span> <span class=n>Vec</span><span class=p>)</span> <span class=kr>end</span>
+</span></span><span class=line><span class=cl><span class=n>Vec.__tostring</span> <span class=o>=</span> <span class=kr>function</span><span class=p>(</span><span class=n>v</span><span class=p>)</span> <span class=kr>return</span> <span class=s2>&#34;(&#34;</span> <span class=o>..</span> <span class=n>v.x</span> <span class=o>..</span> <span class=s2>&#34;, &#34;</span> <span class=o>..</span> <span class=n>v.y</span> <span class=o>..</span> <span class=s2>&#34;)&#34;</span> <span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>v1</span> <span class=o>=</span> <span class=n>setmetatable</span><span class=p>({</span><span class=n>x</span> <span class=o>=</span> <span class=mi>1</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=mi>2</span><span class=p>},</span> <span class=n>Vec</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>v2</span> <span class=o>=</span> <span class=n>setmetatable</span><span class=p>({</span><span class=n>x</span> <span class=o>=</span> <span class=mi>3</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=mi>4</span><span class=p>},</span> <span class=n>Vec</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>v1</span> <span class=o>+</span> <span class=n>v2</span><span class=p>)</span>               <span class=c1>-- (4, 6)</span>
+</span></span></code></pre></td></tr></table></div></div><p>常用元方法：<code>__index</code> / <code>__newindex</code> / <code>__add</code> / <code>__sub</code> / <code>__mul</code> / <code>__eq</code> / <code>__lt</code> / <code>__tostring</code> / <code>__call</code>。</p><h3 id=继承><a href=#%e7%bb%a7%e6%89%bf class=header-anchor></a>继承</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>Dog</span> <span class=o>=</span> <span class=n>setmetatable</span><span class=p>({},</span> <span class=p>{</span><span class=n>__index</span> <span class=o>=</span> <span class=n>Animal</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nc>Dog</span><span class=p>:</span><span class=nf>bark</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=n>self.name</span> <span class=o>..</span> <span class=s2>&#34;: woof!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span></code></pre></td></tr></table></div></div><p>子类查找方法时，自身没有就沿 <code>__index</code> 一路向上找——这就是 Lua 的"原型继承"。</p><hr><h2 id=七协程coroutine><a href=#%e4%b8%83%e5%8d%8f%e7%a8%8bcoroutine class=header-anchor></a>七、协程（coroutine）</h2><p>协程是 Lua 一个常被忽略的强项——<strong>轻量级、对称式协程</strong>，比线程便宜得多：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>co</span> <span class=o>=</span> <span class=n>coroutine.create</span><span class=p>(</span><span class=kr>function</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;start: &#34;</span> <span class=o>..</span> <span class=n>a</span> <span class=o>..</span> <span class=s2>&#34;, &#34;</span> <span class=o>..</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kd>local</span> <span class=n>c</span> <span class=o>=</span> <span class=n>coroutine.yield</span><span class=p>(</span><span class=n>a</span> <span class=o>+</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>print</span><span class=p>(</span><span class=s2>&#34;resumed with: &#34;</span> <span class=o>..</span> <span class=n>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=s2>&#34;done&#34;</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>coroutine.resume</span><span class=p>(</span><span class=n>co</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>))</span>      <span class=c1>-- start: 1, 2 \n true  3</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>coroutine.resume</span><span class=p>(</span><span class=n>co</span><span class=p>,</span> <span class=mi>99</span><span class=p>))</span>        <span class=c1>-- resumed with: 99 \n true  done</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>yield</code> 把控制权还给调用者并把值传出去；<code>resume</code> 重新激活协程并把值传进去。</p><p>协程能用来写<strong>生成器</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=kr>function</span> <span class=nf>range</span><span class=p>(</span><span class=n>from</span><span class=p>,</span> <span class=n>to</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=n>coroutine.wrap</span><span class=p>(</span><span class=kr>function</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=kr>for</span> <span class=n>i</span> <span class=o>=</span> <span class=n>from</span><span class=p>,</span> <span class=n>to</span> <span class=kr>do</span>
+</span></span><span class=line><span class=cl>            <span class=n>coroutine.yield</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=kr>end</span>
+</span></span><span class=line><span class=cl>    <span class=kr>end</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>v</span> <span class=kr>in</span> <span class=n>range</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>5</span><span class=p>)</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>v</span><span class=p>)</span> <span class=kr>end</span>   <span class=c1>-- 1 2 3 4 5</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>coroutine.wrap</code> 是 <code>create + resume</code> 的简化包装。</p><hr><h2 id=八模块化><a href=#%e5%85%ab%e6%a8%a1%e5%9d%97%e5%8c%96 class=header-anchor></a>八、模块化</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=c1>-- mylib.lua</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>M</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>function</span> <span class=nc>M</span><span class=p>.</span><span class=nf>greet</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=kr>return</span> <span class=s2>&#34;Hello, &#34;</span> <span class=o>..</span> <span class=n>name</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kr>return</span> <span class=n>M</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=c1>-- main.lua</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>lib</span> <span class=o>=</span> <span class=n>require</span><span class=p>(</span><span class=s2>&#34;mylib&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>lib.greet</span><span class=p>(</span><span class=s2>&#34;World&#34;</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>require</code> 自动从 <code>package.path</code> 里找 <code>.lua</code> 文件，结果会被缓存——同一个模块多次 require 只加载一次。</p><hr><h2 id=九几个常踩的语法陷阱><a href=#%e4%b9%9d%e5%87%a0%e4%b8%aa%e5%b8%b8%e8%b8%a9%e7%9a%84%e8%af%ad%e6%b3%95%e9%99%b7%e9%98%b1 class=header-anchor></a>九、几个常踩的语法陷阱</h2><h3 id=1-数组从-1-开始><a href=#1-%e6%95%b0%e7%bb%84%e4%bb%8e-1-%e5%bc%80%e5%a7%8b class=header-anchor></a>1. 数组从 1 开始</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=mi>10</span><span class=p>,</span> <span class=mi>20</span><span class=p>,</span> <span class=mi>30</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>a</span><span class=p>[</span><span class=mi>0</span><span class=p>])</span>    <span class=c1>-- nil（不是 10！）</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=n>a</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>    <span class=c1>-- 10</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=2-nil-不能放在数组中间><a href=#2-nil-%e4%b8%8d%e8%83%bd%e6%94%be%e5%9c%a8%e6%95%b0%e7%bb%84%e4%b8%ad%e9%97%b4 class=header-anchor></a>2. nil 不能放在数组中间</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=kc>nil</span><span class=p>,</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=o>#</span><span class=n>a</span><span class=p>)</span>      <span class=c1>-- 不一定是 4，可能是 2</span>
+</span></span><span class=line><span class=cl><span class=kr>for</span> <span class=n>i</span><span class=p>,</span><span class=n>v</span> <span class=kr>in</span> <span class=n>ipairs</span><span class=p>(</span><span class=n>a</span><span class=p>)</span> <span class=kr>do</span> <span class=n>print</span><span class=p>(</span><span class=n>v</span><span class=p>)</span> <span class=kr>end</span>   <span class=c1>-- 只打到 2</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>ipairs</code> 遇 nil 停——这种 sparse array 在 Lua 里要特别小心。</p><h3 id=3-0-和--是-truthy><a href=#3-0-%e5%92%8c--%e6%98%af-truthy class=header-anchor></a>3. 0 和 "" 是 truthy</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kr>if</span> <span class=mi>0</span> <span class=kr>then</span> <span class=n>print</span><span class=p>(</span><span class=s2>&#34;yes&#34;</span><span class=p>)</span> <span class=kr>end</span>       <span class=c1>-- yes</span>
+</span></span><span class=line><span class=cl><span class=kr>if</span> <span class=s2>&#34;&#34;</span> <span class=kr>then</span> <span class=n>print</span><span class=p>(</span><span class=s2>&#34;yes&#34;</span><span class=p>)</span> <span class=kr>end</span>       <span class=c1>-- yes</span>
+</span></span><span class=line><span class=cl><span class=kr>if</span> <span class=kc>nil</span> <span class=kr>then</span> <span class=n>print</span><span class=p>(</span><span class=s2>&#34;yes&#34;</span><span class=p>)</span> <span class=kr>end</span>      <span class=c1>-- 不打印</span>
+</span></span><span class=line><span class=cl><span class=kr>if</span> <span class=kc>false</span> <span class=kr>then</span> <span class=n>print</span><span class=p>(</span><span class=s2>&#34;yes&#34;</span><span class=p>)</span> <span class=kr>end</span>    <span class=c1>-- 不打印</span>
+</span></span></code></pre></td></tr></table></div></div><p>只有 <code>false</code> 和 <code>nil</code> 是 falsy。</p><h3 id=4-字符串与数字自动转换><a href=#4-%e5%ad%97%e7%ac%a6%e4%b8%b2%e4%b8%8e%e6%95%b0%e5%ad%97%e8%87%aa%e5%8a%a8%e8%bd%ac%e6%8d%a2 class=header-anchor></a>4. 字符串与数字自动转换</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kd>local</span> <span class=n>x</span> <span class=o>=</span> <span class=s2>&#34;10&#34;</span> <span class=o>+</span> <span class=mi>5</span>    <span class=c1>-- 15（字符串自动转数字）</span>
+</span></span><span class=line><span class=cl><span class=kd>local</span> <span class=n>y</span> <span class=o>=</span> <span class=mi>10</span> <span class=o>..</span> <span class=s2>&#34;abc&#34;</span> <span class=c1>-- &#34;10abc&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>便利但容易隐藏 bug——<strong>关键代码显式 <code>tonumber()</code> / <code>tostring()</code></strong>。</p><h3 id=5-默认全局><a href=#5-%e9%bb%98%e8%ae%a4%e5%85%a8%e5%b1%80 class=header-anchor></a>5. 默认全局</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=kr>function</span> <span class=nf>foo</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>x</span> <span class=o>=</span> <span class=mi>10</span>        <span class=c1>-- 这是全局变量！</span>
+</span></span><span class=line><span class=cl>    <span class=kd>local</span> <span class=n>y</span> <span class=o>=</span> <span class=mi>20</span>  <span class=c1>-- 这才是局部</span>
+</span></span><span class=line><span class=cl><span class=kr>end</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>永远写 <code>local</code></strong>——否则一不小心污染全局。</p><h3 id=6-整数与浮点53><a href=#6-%e6%95%b4%e6%95%b0%e4%b8%8e%e6%b5%ae%e7%82%b953 class=header-anchor></a>6. 整数与浮点（5.3+）</h3><p>Lua 5.3 引入了原生 integer 类型，整数除法用 <code>//</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-lua data-lang=lua><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=mi>7</span> <span class=o>/</span> <span class=mi>2</span><span class=p>)</span>   <span class=c1>-- 3.5（浮点）</span>
+</span></span><span class=line><span class=cl><span class=n>print</span><span class=p>(</span><span class=mi>7</span> <span class=o>//</span> <span class=mi>2</span><span class=p>)</span>  <span class=c1>-- 3 （整除）</span>
+</span></span></code></pre></td></tr></table></div></div><p>5.3 之前所有数字都是 double——<strong>老脚本升到 5.3 时除法行为可能微妙改变</strong>。</p><hr><h2 id=十lua-的设计哲学><a href=#%e5%8d%81lua-%e7%9a%84%e8%ae%be%e8%ae%a1%e5%93%b2%e5%ad%a6 class=header-anchor></a>十、Lua 的设计哲学</h2><p>了解一下 Lua 之所以这么设计的几条核心原则：</p><ul><li><strong>极简正交</strong>：核心特性极少，但每条都正交，能组合出强大能力</li><li><strong>机制不策略</strong>：metatable 是机制，怎么实现 OO / 继承 / 运算符重载都是策略</li><li><strong>数据结构唯一性</strong>：只用 table 表达所有复合数据</li><li><strong>首类函数 + 闭包</strong>：函数式编程的基本元素都齐了</li></ul><p>正是这种克制让 Lua 能在两万多行 C 代码里塞下一门完整的语言——也让它的标准库相对寒酸（&ldquo;麻雀虽小五脏不全&rdquo;），需要用 <code>luarocks</code>
+或 LuaJIT 的 ffi 补足。</p><hr><h2 id=十一lua-版本与-luajit><a href=#%e5%8d%81%e4%b8%80lua-%e7%89%88%e6%9c%ac%e4%b8%8e-luajit class=header-anchor></a>十一、Lua 版本与 LuaJIT</h2><h3 id=lua-5x-版本演进><a href=#lua-5x-%e7%89%88%e6%9c%ac%e6%bc%94%e8%bf%9b class=header-anchor></a>Lua 5.x 版本演进</h3><ul><li><strong>5.1</strong>：经典版，使用面最广</li><li><strong>5.2</strong>：引入 <code>goto</code>、bit32 库</li><li><strong>5.3</strong>：引入原生 integer 类型、整除 <code>//</code>、<strong>原生位运算符 <code>&</code> <code>|</code> <code>~</code> <code>&lt;&lt;</code> <code>>></code>（bit32 库被废弃）</strong></li><li><strong>5.4</strong>：generational GC、<code>&lt;const></code> 与 <code>&lt;close></code> 属性</li></ul><p>5.1 → 5.4 不完全兼容——升级时要核对每条变化。</p><h3 id=luajit><a href=#luajit class=header-anchor></a>LuaJIT</h3><p>LuaJIT 是 Lua 的 JIT 编译器实现——<strong>比标准 Lua 快 5-10 倍</strong>，性能直逼 C。它的 ffi 库还能直接调用 C 函数，扩展能力极强。</p><p>不过 LuaJIT 主要兼容 5.1 + 部分 5.2 特性——<strong>和 5.3 / 5.4 的 integer 等新特性不兼容</strong>。</p><h3 id=包管理><a href=#%e5%8c%85%e7%ae%a1%e7%90%86 class=header-anchor></a>包管理</h3><p><code>luarocks</code> 是事实标准——类似 npm/pip。</p><hr><h2 id=十二什么场景该用-lua><a href=#%e5%8d%81%e4%ba%8c%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e7%94%a8-lua class=header-anchor></a>十二、什么场景该用 Lua</h2><h3 id=-适合><a href=#-%e9%80%82%e5%90%88 class=header-anchor></a>✅ 适合</h3><ul><li><strong>轻量脚本</strong>：启动快、依赖少，比 Python 启动几十倍快</li><li><strong>DSL / 配置</strong>：用作业务规则、配置文件的承载语言</li><li><strong>作为宿主程序的扩展层</strong>：被嵌入到其他程序里执行业务逻辑（这是它历史上最常见的用法之一）</li><li><strong>性能敏感的脚本</strong>：LuaJIT 性能接近 C</li></ul><h3 id=-不适合><a href=#-%e4%b8%8d%e9%80%82%e5%90%88 class=header-anchor></a>❌ 不适合</h3><ul><li><strong>独立大型应用</strong>：标准库薄，生态远不如 Python / Node</li><li><strong>复杂业务系统</strong>：OO 弱、错误处理粗糙</li><li><strong>数据科学</strong>：没有 NumPy / Pandas 之类生态</li></ul><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p>**Lua 是一门用很少的概念表达很多能力的小语言——核心是 table 与 first-class function，加上 metatable 和协程，几乎能覆盖任何脚本场景。
+**</p></blockquote><p>记住几个关键点：</p><ul><li><strong>数组从 1 开始</strong></li><li><strong><code>local</code> 永远要写</strong></li><li><strong><code>nil</code> 和 <code>false</code> 才是 falsy</strong></li><li><strong>字符串拼接用 <code>..</code></strong></li><li><strong>table 是唯一复合数据结构</strong></li><li><strong>metatable 是 Lua OO 与运算符重载的统一机制</strong></li><li><strong>协程是它被低估的强项</strong></li></ul><p>掌握了这些，你已经可以读懂 95% 的 Lua 代码，并写出符合语言风格的脚本。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/lua/>Lua</a>
+<a href=/tags/luajit/>LuaJIT</a>
+<a href=/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/>编程语言</a>
+<a href=/tags/%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/>脚本语言</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/go-generics-vs-java-generics/><div class=article-image><img alt="Featured image of post Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用" loading=lazy src=/p/go-generics-vs-java-generics/cover.svg></div><div class=article-details><h2 class=article-title>Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

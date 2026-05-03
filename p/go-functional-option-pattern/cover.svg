@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1F3A40"/>
+          <stop offset="0.6" stop-color="#5A7E78"/>
+          <stop offset="1" stop-color="#FFD08A"/>
+    </linearGradient>
+      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Sun glow through trees -->
+    <circle cx="700" cy="320" r="280" fill="url(#sunRay)"/>
+    <circle cx="700" cy="320" r="48" fill="#FFE5A0"/>
+
+    <!-- Light rays -->
+    <g opacity="0.18" fill="#FFE5A0">
+        <polygon points="700,320 680,630 720,630"/>
+        <polygon points="640,330 620,630 660,630"/>
+        <polygon points="760,330 740,630 780,630"/>
+        <polygon points="580,340 560,630 600,630"/>
+        <polygon points="820,340 800,630 840,630"/>
+    </g>
+
+    <!-- Distant pines -->
+    <g fill="#1A2D2A" opacity="0.65">
+        <polygon points="80,460 60,360 100,360 70,300 110,300 80,250"/>
+        <polygon points="160,470 140,370 180,370 150,310 190,310 160,260"/>
+        <polygon points="240,460 220,360 260,360 230,300 270,300 240,250"/>
+        <polygon points="320,470 300,370 340,370 310,310 350,310 320,260"/>
+        <polygon points="900,460 880,360 920,360 890,300 930,300 900,250"/>
+        <polygon points="980,470 960,370 1000,370 970,310 1010,310 980,260"/>
+        <polygon points="1060,460 1040,360 1080,360 1050,300 1090,300 1060,250"/>
+        <polygon points="1140,470 1120,370 1160,370 1130,310 1170,310 1140,260"/>
+  </g>
+
+    <!-- Front pines (very dark) -->
+    <g fill="#0A1816">
+        <polygon points="40,550 18,420 62,420 30,340 70,340 40,270"/>
+        <polygon points="120,570 98,440 142,440 108,360 148,360 120,290"/>
+        <polygon points="220,550 198,420 242,420 208,340 248,340 220,270"/>
+        <polygon points="320,580 298,450 342,450 308,370 348,370 320,300"/>
+        <polygon points="880,580 858,450 902,450 868,370 908,370 880,300"/>
+        <polygon points="980,550 958,420 1002,420 968,340 1008,340 980,270"/>
+        <polygon points="1080,570 1058,440 1102,440 1068,360 1108,360 1080,290"/>
+        <polygon points="1160,550 1138,420 1182,420 1148,340 1188,340 1160,270"/>
+    </g>
+
+    <!-- Forest floor -->
+    <rect y="540" width="1200" height="90" fill="#0A1816"/>
+    <ellipse cx="600" cy="555" rx="700" ry="20" fill="#FFE5A0" opacity="0.18"/>
+
+    <!-- Deer silhouette -->
+    <g fill="#000000" transform="translate(580,510)">
+        <!-- Body -->
+        <ellipse cx="0" cy="0" rx="32" ry="14"/>
+        <!-- Neck -->
+        <path d="M -25 -5 Q -42 -25 -38 -42 L -32 -42 Q -32 -22 -16 -8 Z"/>
+        <!-- Head -->
+        <ellipse cx="-38" cy="-44" rx="9" ry="6"/>
+        <!-- Antlers -->
+        <path d="M -42 -50 Q -50 -65 -52 -75 M -42 -50 Q -45 -68 -55 -70 M -42 -50 Q -38 -68 -42 -78 M -34 -50 Q -30 -65 -32 -75 M -34 -50 Q -28 -68 -22 -72"
+              stroke="#000000" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Legs -->
+        <rect x="-22" y="6" width="3" height="22"/>
+        <rect x="-12" y="6" width="3" height="22"/>
+        <rect x="14" y="6" width="3" height="22"/>
+        <rect x="22" y="6" width="3" height="22"/>
+        <!-- Tail -->
+        <ellipse cx="30" cy="-4" rx="3" ry="6"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFE5A0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

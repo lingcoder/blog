@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0A0F2A"/>
+          <stop offset="1" stop-color="#1A2050"/>
+      </linearGradient>
+      <linearGradient id="aurora1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3CFFCB" stop-opacity="0"/>
+          <stop offset="0.4" stop-color="#3CFFCB" stop-opacity="0.6"/>
+          <stop offset="1" stop-color="#3CFFCB" stop-opacity="0"/>
+    </linearGradient>
+      <linearGradient id="aurora2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A050E0" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="#A050E0" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#A050E0" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="aurora3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5C8AFF" stop-opacity="0"/>
+          <stop offset="0.5" stop-color="#5C8AFF" stop-opacity="0.5"/>
+          <stop offset="1" stop-color="#5C8AFF" stop-opacity="0"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Stars -->
+    <g fill="#FFFFFF">
+        <circle cx="100" cy="80" r="1.3" opacity="0.85"/>
+        <circle cx="240" cy="50" r="1" opacity="0.65"/>
+        <circle cx="380" cy="100" r="1.2" opacity="0.8"/>
+        <circle cx="540" cy="60" r="1" opacity="0.7"/>
+        <circle cx="680" cy="90" r="1.3" opacity="0.85"/>
+        <circle cx="820" cy="40" r="1.2" opacity="0.8"/>
+        <circle cx="960" cy="80" r="1" opacity="0.7"/>
+        <circle cx="1080" cy="60" r="1.3" opacity="0.85"/>
+        <circle cx="60" cy="200" r="1" opacity="0.6"/>
+        <circle cx="600" cy="220" r="1.2" opacity="0.7"/>
+        <circle cx="1140" cy="200" r="1" opacity="0.65"/>
+    </g>
+
+    <!-- Aurora ribbons -->
+    <path d="M 0 50 Q 200 200 400 130 Q 600 60 800 180 Q 1000 100 1200 150 L 1200 450 Q 1000 360 800 410 Q 600 320 400 380 Q 200 460 0 380 Z"
+          fill="url(#aurora1)" opacity="0.7"/>
+    <path d="M 100 100 Q 300 220 500 150 Q 700 80 900 200 Q 1050 130 1200 180 L 1200 380 Q 1050 320 900 360 Q 700 280 500 340 Q 300 400 100 340 Z"
+          fill="url(#aurora2)" opacity="0.55"/>
+    <path d="M 0 180 Q 250 280 500 220 Q 750 150 1000 250 Q 1100 200 1200 220 L 1200 360 Q 1100 320 1000 340 Q 750 280 500 320 Q 250 380 0 320 Z"
+          fill="url(#aurora3)" opacity="0.5"/>
+
+    <!-- Reflection in water -->
+    <rect y="450" width="1200" height="180" fill="#0A0F2A"/>
+    <g transform="translate(0,950) scale(1,-1)" opacity="0.35">
+        <path d="M 0 50 Q 200 200 400 130 Q 600 60 800 180 Q 1000 100 1200 150 L 1200 450 Q 1000 360 800 410 Q 600 320 400 380 Q 200 460 0 380 Z"
+              fill="url(#aurora1)"/>
+  </g>
+
+    <!-- Mountains/fjord cliffs -->
+    <path d="M 0 470 L 80 360 L 160 410 L 240 330 L 340 420 L 420 350 L 500 460 L 500 480 L 0 480 Z" fill="#0A0F1F"/>
+    <path d="M 700 480 L 760 400 L 840 440 L 940 350 L 1020 410 L 1100 360 L 1200 440 L 1200 480 L 700 480 Z"
+          fill="#0A0F1F"/>
+
+    <!-- Snow on peaks -->
+    <g fill="#FFFFFF" opacity="0.6">
+        <polygon points="240,330 250,360 230,360"/>
+        <polygon points="940,350 952,378 928,378"/>
+  </g>
+
+    <!-- Water ripples -->
+    <g fill="none" stroke="#3CFFCB" stroke-opacity="0.25" stroke-width="1.5">
+        <path d="M 100 530 q 30 -5 60 0 t 60 0"/>
+        <path d="M 500 555 q 40 -6 80 0 t 80 0"/>
+        <path d="M 900 540 q 30 -5 60 0 t 60 0"/>
+        <path d="M 200 590 q 50 -6 100 0 t 100 0"/>
+        <path d="M 800 600 q 50 -6 100 0 t 100 0"/>
+  </g>
+
+    <text x="60" y="615" fill="#3CFFCB" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFB570"/>
+          <stop offset="0.5" stop-color="#FFD8A0"/>
+          <stop offset="1" stop-color="#FFE8C8"/>
+      </linearGradient>
+      <linearGradient id="cloud" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE0C0"/>
+          <stop offset="1" stop-color="#FFB58A"/>
+    </linearGradient>
+      <linearGradient id="peak" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE0A0"/>
+          <stop offset="0.5" stop-color="#A87060"/>
+          <stop offset="1" stop-color="#3D2820"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Sun rising -->
+    <circle cx="800" cy="220" r="80" fill="#FFE5A0" opacity="0.9"/>
+    <circle cx="800" cy="220" r="160" fill="#FFE5A0" opacity="0.25"/>
+
+    <!-- Distant peaks emerging from cloud sea -->
+    <path d="M 0 380 L 100 320 L 180 350 L 260 310 L 340 360 L 0 360 Z" fill="#5C4030" opacity="0.55"/>
+    <path d="M 320 370 L 420 290 L 500 340 L 580 280 L 660 350 L 320 350 Z" fill="#7C5840" opacity="0.65"/>
+    <path d="M 920 360 L 1020 280 L 1100 330 L 1200 270 L 1200 360 Z" fill="#5C4030" opacity="0.55"/>
+
+    <!-- Main foreground peak -->
+    <path d="M 380 450 L 540 200 L 620 280 L 720 180 L 880 450 Z" fill="url(#peak)"/>
+    <!-- Snow on peak -->
+    <path d="M 540 200 L 560 240 L 600 260 L 580 230 L 620 280 L 600 250 L 660 240 L 720 180 L 700 220 L 740 240 Z"
+          fill="#FFFFFF" opacity="0.85"/>
+
+    <!-- Cloud sea -->
+    <g fill="url(#cloud)">
+        <ellipse cx="200" cy="450" rx="280" ry="50"/>
+        <ellipse cx="600" cy="470" rx="320" ry="55"/>
+        <ellipse cx="1000" cy="455" rx="280" ry="50"/>
+    </g>
+    <g fill="#FFE8C8" opacity="0.9">
+        <ellipse cx="100" cy="490" rx="180" ry="35"/>
+        <ellipse cx="450" cy="510" rx="220" ry="40"/>
+        <ellipse cx="800" cy="495" rx="200" ry="38"/>
+        <ellipse cx="1100" cy="500" rx="180" ry="35"/>
+    </g>
+    <g fill="#FFFFFF" opacity="0.95">
+        <ellipse cx="0" cy="540" rx="200" ry="40"/>
+        <ellipse cx="350" cy="550" rx="240" ry="45"/>
+        <ellipse cx="700" cy="540" rx="220" ry="42"/>
+        <ellipse cx="1050" cy="555" rx="240" ry="48"/>
+    </g>
+    <rect y="580" width="1200" height="50" fill="#FFFFFF"/>
+
+    <!-- Soft light rays -->
+    <g stroke="#FFE5A0" stroke-width="2" opacity="0.4">
+        <line x1="800" y1="220" x2="500" y2="60"/>
+        <line x1="800" y1="220" x2="700" y2="50"/>
+        <line x1="800" y1="220" x2="950" y2="50"/>
+        <line x1="800" y1="220" x2="1100" y2="80"/>
+    </g>
+
+    <!-- Birds -->
+    <g fill="none" stroke="#5C3020" stroke-width="2" stroke-linecap="round">
+        <path d="M 350 200 q 6 -7 12 0 q 6 -7 12 0"/>
+        <path d="M 410 230 q 5 -6 10 0 q 5 -6 10 0"/>
+        <path d="M 460 210 q 5 -6 10 0 q 5 -6 10 0"/>
+  </g>
+
+    <text x="60" y="610" fill="#7C4020" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

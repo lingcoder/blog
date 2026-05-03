@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FF8090"/>
+          <stop offset="0.5" stop-color="#FFB098"/>
+          <stop offset="1" stop-color="#FFE0C0"/>
+      </linearGradient>
+      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFA098"/>
+          <stop offset="1" stop-color="#A06078"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Sun -->
+    <circle cx="600" cy="280" r="60" fill="#FFE0A8" opacity="0.95"/>
+    <circle cx="600" cy="280" r="160" fill="#FFE0A8" opacity="0.2"/>
+
+    <!-- Distant clouds -->
+    <g fill="#FFFFFF" opacity="0.65">
+        <ellipse cx="200" cy="120" rx="120" ry="14"/>
+        <ellipse cx="900" cy="150" rx="140" ry="14"/>
+        <ellipse cx="500" cy="80" rx="100" ry="12"/>
+    </g>
+
+    <!-- Distant headland -->
+    <path d="M 0 350 Q 100 320 200 340 Q 280 320 380 350 Z" fill="#7C4858" opacity="0.7"/>
+    <path d="M 850 360 Q 950 330 1050 350 Q 1130 340 1200 360 Z" fill="#7C4858" opacity="0.65"/>
+
+    <!-- Sea -->
+    <rect y="380" width="1200" height="180" fill="url(#sea)"/>
+
+    <!-- Sun reflection -->
+    <ellipse cx="600" cy="400" rx="80" ry="6" fill="#FFE0A8" opacity="0.7"/>
+    <ellipse cx="600" cy="430" rx="120" ry="5" fill="#FFE0A8" opacity="0.45"/>
+    <ellipse cx="600" cy="460" rx="160" ry="4" fill="#FFE0A8" opacity="0.3"/>
+    <ellipse cx="600" cy="490" rx="200" ry="3" fill="#FFE0A8" opacity="0.2"/>
+
+    <!-- Wave caps -->
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.5">
+        <path d="M 100 440 q 30 -5 60 0 t 60 0"/>
+        <path d="M 900 450 q 30 -5 60 0 t 60 0"/>
+        <path d="M 200 500 q 50 -7 100 0 t 100 0"/>
+        <path d="M 800 510 q 50 -7 100 0 t 100 0"/>
+    </g>
+
+    <!-- Heart shape in clouds -->
+    <g transform="translate(300,200)" fill="#FFFFFF" opacity="0.6">
+        <path d="M 0 -10 C -5 -25, -25 -25, -25 -10 C -25 0, -10 12, 0 22 C 10 12, 25 0, 25 -10 C 25 -25, 5 -25, 0 -10 Z"/>
+    </g>
+    <g transform="translate(300,200)" fill="#FFC8C8" opacity="0.7">
+        <path d="M 0 -8 C -4 -22, -22 -22, -22 -8 C -22 -2, -8 10, 0 18 C 8 10, 22 -2, 22 -8 C 22 -22, 4 -22, 0 -8 Z"/>
+    </g>
+
+    <!-- Sand beach -->
+    <path d="M 0 560 Q 600 540 1200 565 L 1200 630 L 0 630 Z" fill="#F8DCB8"/>
+    <path d="M 0 600 Q 600 590 1200 605 L 1200 630 L 0 630 Z" fill="#E8C098"/>
+
+    <!-- Footprints in sand -->
+    <g fill="#A88068" opacity="0.7">
+        <ellipse cx="200" cy="585" rx="6" ry="3"/>
+        <ellipse cx="240" cy="595" rx="6" ry="3"/>
+        <ellipse cx="280" cy="585" rx="6" ry="3"/>
+        <ellipse cx="320" cy="600" rx="6" ry="3"/>
+        <ellipse cx="360" cy="588" rx="6" ry="3"/>
+    </g>
+
+    <!-- Hearts written in sand -->
+    <g transform="translate(800,590)" fill="#A04050" opacity="0.7">
+        <path d="M 0 -3 C -2 -10, -10 -10, -10 -3 C -10 0, -4 5, 0 9 C 4 5, 10 0, 10 -3 C 10 -10, 2 -10, 0 -3 Z"/>
+    </g>
+
+    <!-- Couple silhouette -->
+    <g fill="#3D1828" transform="translate(900,540)">
+        <circle cx="-8" cy="-12" r="3"/>
+        <line x1="-8" y1="-9" x2="-8" y2="0" stroke="#3D1828" stroke-width="2.5"/>
+        <line x1="-8" y1="0" x2="-12" y2="14" stroke="#3D1828" stroke-width="2.5"/>
+        <line x1="-8" y1="0" x2="-4" y2="14" stroke="#3D1828" stroke-width="2.5"/>
+        <circle cx="6" cy="-10" r="3"/>
+        <line x1="6" y1="-7" x2="6" y2="0" stroke="#3D1828" stroke-width="2.5"/>
+        <line x1="6" y1="0" x2="2" y2="14" stroke="#3D1828" stroke-width="2.5"/>
+        <line x1="6" y1="0" x2="10" y2="14" stroke="#3D1828" stroke-width="2.5"/>
+        <line x1="-7" y1="-4" x2="5" y2="-4" stroke="#3D1828" stroke-width="2"/>
+    </g>
+
+    <!-- Birds -->
+    <g fill="none" stroke="#5C2030" stroke-width="2" stroke-linecap="round">
+        <path d="M 850 200 q 6 -7 12 0 q 6 -7 12 0"/>
+        <path d="M 920 230 q 5 -6 10 0 q 5 -6 10 0"/>
+  </g>
+
+    <text x="60" y="618" fill="#5C2030" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

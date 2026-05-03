@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>协议 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%8D%8F%E8%AE%AE/</link><description>Recent content in 协议 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 20 Aug 2024 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%8D%8F%E8%AE%AE/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenSea Seaport 协议详解</title><link>https://www.lingcoder.com/p/opensea-seaport-protocol/</link><pubDate>Tue, 20 Aug 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/opensea-seaport-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/opensea-seaport-protocol/cover.svg" alt="Featured image of post OpenSea Seaport 协议详解" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;OpenSea 是 NFT 市场的事实垄断者——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了 NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多对多交易&lt;/strong&gt;：一笔订单能涉及多种资产、多个发送方、多个接收方&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;极致 Gas 优化&lt;/strong&gt;：单次撮合成本比 Wyvern 低 35%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无需特殊代理合约&lt;/strong&gt;：用户授权流程大大简化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Order Type 抽象&lt;/strong&gt;：能表达拍卖、固定价、批量、套件等多种交易模式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;理解 Seaport 不只是为了使用 OpenSea SDK——&lt;strong&gt;它代表了 NFT 协议设计的现代范式&lt;/strong&gt;。本文讲清楚 Seaport 的核心机制和它解决的问题。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一wyvern-的痛点"&gt;&lt;a href="#%e4%b8%80wyvern-%e7%9a%84%e7%97%9b%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;一、Wyvern 的痛点
+&lt;/h2&gt;&lt;p&gt;Wyvern 是 OpenSea 早期协议的基础。它的核心思想是&amp;quot;&lt;strong&gt;让两笔配对的订单互相调用对方&lt;/strong&gt;&amp;quot;——非常通用，但也有几个硬伤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;每个用户都要部署一个『代理合约』&lt;/strong&gt;——首次使用要额外支付一次合约部署 Gas（昂贵）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;撮合一笔订单要执行 12 个合约调用&lt;/strong&gt;——Gas 成本高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;订单数据格式僵化&lt;/strong&gt;——无法灵活表达&amp;quot;批量买&amp;quot;、&amp;ldquo;套件&amp;rdquo;、&amp;ldquo;提供其他 NFT 换&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;协议升级困难&lt;/strong&gt;——和 OpenSea 业务深度绑定&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;2022 年的 NFT 市场已经不止&amp;quot;一个 NFT 换 ETH&amp;quot;那么简单——开发者需要更灵活的协议。Seaport 应运而生。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二seaport-的核心抽象order"&gt;&lt;a href="#%e4%ba%8cseaport-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%8a%bd%e8%b1%a1order" class="header-anchor"&gt;&lt;/a&gt;二、Seaport 的核心抽象：Order
+&lt;/h2&gt;&lt;p&gt;Seaport 把任何交易抽象成一个 &lt;strong&gt;Order&lt;/strong&gt; 结构：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="nc"&gt;OrderParameters&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;offerer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 提供资产的人
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;zone&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 可选的&amp;#34;裁判&amp;#34;合约
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;OfferItem&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;offer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 提供出去的资产清单
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ConsiderationItem&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;consideration&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 期望获得的资产清单
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;OrderType&lt;/span&gt; &lt;span class="n"&gt;orderType&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;startTime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;endTime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;bytes32&lt;/span&gt; &lt;span class="n"&gt;zoneHash&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;salt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;bytes32&lt;/span&gt; &lt;span class="n"&gt;conduitKey&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;totalOriginalConsiderationItems&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;关键：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;offer&lt;/code&gt;&lt;/strong&gt;：我&lt;strong&gt;愿意给出&lt;/strong&gt;什么（NFT、ERC20、ETH）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;consideration&lt;/code&gt;&lt;/strong&gt;：我&lt;strong&gt;期望换回&lt;/strong&gt;什么（同样可以是任意组合）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;这种&amp;quot;我给 X，要 Y&amp;quot;的对称结构能表达几乎所有交易类型&lt;/strong&gt;——固定价、拍卖、套件、批量、租赁、转移……&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三典型订单形态"&gt;&lt;a href="#%e4%b8%89%e5%85%b8%e5%9e%8b%e8%ae%a2%e5%8d%95%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;三、典型订单形态
+&lt;/h2&gt;&lt;h3 id="1-固定价出售"&gt;&lt;a href="#1-%e5%9b%ba%e5%ae%9a%e4%bb%b7%e5%87%ba%e5%94%ae" class="header-anchor"&gt;&lt;/a&gt;1. 固定价出售
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [NFT_A]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [10 ETH]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;我（offerer）给出 NFT_A，要求 10 ETH。&lt;/p&gt;
+&lt;h3 id="2-收-offer"&gt;&lt;a href="#2-%e6%94%b6-offer" class="header-anchor"&gt;&lt;/a&gt;2. 收 offer
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [10 ETH]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [NFT_A]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;我给 10 ETH，要求 NFT_A。任何持有 NFT_A 的人可以接受。&lt;/p&gt;
+&lt;h3 id="3-套件交易bundle"&gt;&lt;a href="#3-%e5%a5%97%e4%bb%b6%e4%ba%a4%e6%98%93bundle" class="header-anchor"&gt;&lt;/a&gt;3. 套件交易（Bundle）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [NFT_A, NFT_B, NFT_C]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [25 ETH]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;打包卖三个 NFT，要求 25 ETH。&lt;/p&gt;
+&lt;h3 id="4-物物交换"&gt;&lt;a href="#4-%e7%89%a9%e7%89%a9%e4%ba%a4%e6%8d%a2" class="header-anchor"&gt;&lt;/a&gt;4. 物物交换
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [NFT_A]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [NFT_B + 1 ETH]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;用我的 NFT_A 换你的 NFT_B 加 1 ETH 找零。&lt;/p&gt;
+&lt;h3 id="5-带版税"&gt;&lt;a href="#5-%e5%b8%a6%e7%89%88%e7%a8%8e" class="header-anchor"&gt;&lt;/a&gt;5. 带版税
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [NFT_A]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 9 ETH → seller,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 0.75 ETH → marketplace fee,
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 0.25 ETH → creator royalty
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;consideration&lt;/code&gt; 是数组——支持把&amp;quot;售价&amp;quot;拆给多方。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四撮合take-和-fulfill"&gt;&lt;a href="#%e5%9b%9b%e6%92%ae%e5%90%88take-%e5%92%8c-fulfill" class="header-anchor"&gt;&lt;/a&gt;四、撮合：take 和 fulfill
+&lt;/h2&gt;&lt;p&gt;订单创建后挂在链下（OpenSea 后端数据库）——&lt;strong&gt;只在被 fulfill 时才上链&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="几种-fulfill-函数"&gt;&lt;a href="#%e5%87%a0%e7%a7%8d-fulfill-%e5%87%bd%e6%95%b0" class="header-anchor"&gt;&lt;/a&gt;几种 fulfill 函数
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;fulfillBasicOrder&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;// 最简单的固定价
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;fulfillOrder&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;// 标准订单
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;fulfillAdvancedOrder&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;// 带 criteria（如&amp;#34;任意 BAYC&amp;#34;）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;fulfillAvailableAdvancedOrders&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;// 批量撮合多个订单
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;matchAdvancedOrders&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c1"&gt;// 多个订单互相匹配
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;fulfillBasicOrder&lt;/code&gt; 是最高频的——OpenSea 80% 的交易走它。它对最常见的&amp;quot;NFT 换 ETH/WETH/ERC20&amp;quot;做了&lt;strong&gt;特殊 Gas 优化&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;减少 storage 读写&lt;/li&gt;
+&lt;li&gt;跳过不必要的检查&lt;/li&gt;
+&lt;li&gt;更短的 calldata 编码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="五conduit授权管理的核心创新"&gt;&lt;a href="#%e4%ba%94conduit%e6%8e%88%e6%9d%83%e7%ae%a1%e7%90%86%e7%9a%84%e6%a0%b8%e5%bf%83%e5%88%9b%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;五、Conduit：授权管理的核心创新
+&lt;/h2&gt;&lt;p&gt;Wyvern 让每个用户部署独立代理合约——&lt;strong&gt;首次使用又贵又慢&lt;/strong&gt;。Seaport 用 &lt;strong&gt;Conduit&lt;/strong&gt; 解决：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ User[用户] --&gt;|approve once| Conduit[共享 Conduit]
+ Seaport --&gt;|on fulfill| Conduit
+ Conduit --&gt;|safeTransferFrom| Token&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Conduit 是共享合约&lt;/strong&gt;——多个用户共用一个 Conduit&lt;/li&gt;
+&lt;li&gt;用户&lt;strong&gt;只需 approve 一次 Conduit&lt;/strong&gt;——之后所有 Seaport 交易都走它&lt;/li&gt;
+&lt;li&gt;合约部署费用全市场用户共担&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OpenSea 自己有个官方 Conduit，但&lt;strong&gt;任何人可以创建自己的 Conduit&lt;/strong&gt;——这是 Seaport 设计可扩展性的体现。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六zone可选的裁判"&gt;&lt;a href="#%e5%85%adzone%e5%8f%af%e9%80%89%e7%9a%84%e8%a3%81%e5%88%a4" class="header-anchor"&gt;&lt;/a&gt;六、Zone：可选的&amp;quot;裁判&amp;quot;
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;zone&lt;/code&gt; 字段允许订单挂一个&lt;strong&gt;可选的裁判合约&lt;/strong&gt;——成交前 Seaport 会调用 zone 的 &lt;code&gt;validateOrder&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;validateOrder&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ZoneParameters&lt;/span&gt; &lt;span class="n"&gt;calldata&lt;/span&gt; &lt;span class="n"&gt;zoneParameters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bytes4&lt;/span&gt; &lt;span class="n"&gt;validOrderMagicValue&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;zone 能做：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;白名单检查&lt;/strong&gt;——只允许 KYC 用户成交&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;价格保护&lt;/strong&gt;——市场价剧烈波动时拒绝成交&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;延时撮合&lt;/strong&gt;——某条件未达到时阻止&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;链下签名验证&lt;/strong&gt;——用户最后确认才放行&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;zone 让 Seaport &lt;strong&gt;可以扩展协议行为而不改 Seaport 本身&lt;/strong&gt;——是关键的&amp;quot;开放性&amp;quot;设计。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七offerer--0开放成交"&gt;&lt;a href="#%e4%b8%83offerer--0%e5%bc%80%e6%94%be%e6%88%90%e4%ba%a4" class="header-anchor"&gt;&lt;/a&gt;七、Offerer = 0：开放成交
+&lt;/h2&gt;&lt;p&gt;Seaport 支持一种特殊设计——&lt;strong&gt;&lt;code&gt;offerer&lt;/code&gt; 写成 &lt;code&gt;address(0)&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offerer: 0x0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;offer: [10 ETH]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;consideration: [NFT_A]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这表示&amp;quot;任何提供 NFT_A 的人，10 ETH 是给你的&amp;quot;——&lt;strong&gt;OpenSea 的『接收 offer』功能就是这么实现的&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八为什么-seaport-比-wyvern-省-gas"&gt;&lt;a href="#%e5%85%ab%e4%b8%ba%e4%bb%80%e4%b9%88-seaport-%e6%af%94-wyvern-%e7%9c%81-gas" class="header-anchor"&gt;&lt;/a&gt;八、为什么 Seaport 比 Wyvern 省 Gas
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Wyvern&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Seaport&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;个人代理&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;必须部署&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;共享 Conduit&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;撮合调用次数&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;12+&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;4-6&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Calldata&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;大量重复&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;紧凑编码&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;storage 读写&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;多&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;少&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;实际 Gas&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;~250K&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;~150K&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;OpenSea 上线 Seaport 的第一周——&lt;strong&gt;用户节省了上千万美元 Gas&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九安全设计"&gt;&lt;a href="#%e4%b9%9d%e5%ae%89%e5%85%a8%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;九、安全设计
+&lt;/h2&gt;&lt;p&gt;Seaport 经过多次审计（OpenZeppelin、Trail of Bits 等）+ 公开 bug bounty——但仍有&lt;strong&gt;一些值得关注的设计点&lt;/strong&gt;：&lt;/p&gt;
+&lt;h3 id="1-订单签名"&gt;&lt;a href="#1-%e8%ae%a2%e5%8d%95%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;1. 订单签名
+&lt;/h3&gt;&lt;p&gt;订单是 EIP-712 签名——&lt;strong&gt;可读签名内容&lt;/strong&gt;，但用户仍要小心钓鱼网站让你签复杂订单。&lt;/p&gt;
+&lt;h3 id="2-nonce-管理"&gt;&lt;a href="#2-nonce-%e7%ae%a1%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;2. nonce 管理
+&lt;/h3&gt;&lt;p&gt;每个订单有 nonce——&lt;strong&gt;取消的方式有两种&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;调用 &lt;code&gt;incrementCounter()&lt;/code&gt;——一次性把所有未成交订单作废&lt;/li&gt;
+&lt;li&gt;单独 &lt;code&gt;cancel(orderHash)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;历史上有用户&lt;strong&gt;误调 incrementCounter 把所有挂单作废&lt;/strong&gt;——成本是一次 Gas。&lt;/p&gt;
+&lt;h3 id="3-无限授权"&gt;&lt;a href="#3-%e6%97%a0%e9%99%90%e6%8e%88%e6%9d%83" class="header-anchor"&gt;&lt;/a&gt;3. 无限授权
+&lt;/h3&gt;&lt;p&gt;approve Conduit 时通常是无限授权——&lt;strong&gt;Conduit 被攻破的话所有授权用户都受影响&lt;/strong&gt;。OpenSea 的 Conduit 经过严格审计但用户应该知道这个风险。&lt;/p&gt;
+&lt;h3 id="4-zone-的双刃剑"&gt;&lt;a href="#4-zone-%e7%9a%84%e5%8f%8c%e5%88%83%e5%89%91" class="header-anchor"&gt;&lt;/a&gt;4. zone 的双刃剑
+&lt;/h3&gt;&lt;p&gt;恶意 zone 可以&lt;strong&gt;任意拒绝合法成交&lt;/strong&gt;——用户接受订单时要确认 zone 是可信的。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十seaport-1x-之后的演进"&gt;&lt;a href="#%e5%8d%81seaport-1x-%e4%b9%8b%e5%90%8e%e7%9a%84%e6%bc%94%e8%bf%9b" class="header-anchor"&gt;&lt;/a&gt;十、Seaport 1.x 之后的演进
+&lt;/h2&gt;&lt;p&gt;OpenSea 持续迭代 Seaport：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Seaport 1.4 / 1.5&lt;/strong&gt;：引入&amp;quot;协议版本&amp;quot;管理、性能优化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Seaport 1.6&lt;/strong&gt;：原生支持 ERC-2981 版税&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;未来&lt;/strong&gt;：跨链交易、链下撮合 + 链上结算&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Seaport 协议本身&lt;strong&gt;完全开源（MIT 协议）&lt;/strong&gt;——任何项目都能直接用，不绑定 OpenSea。Blur、LooksRare 等竞争对手都在用 Seaport 或它的衍生版。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一对开发者的意义"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%af%b9%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e6%84%8f%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;十一、对开发者的意义
+&lt;/h2&gt;&lt;p&gt;如果你做 NFT 相关产品：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;直接用 Seaport SDK&lt;/strong&gt;——&lt;code&gt;@opensea/seaport-js&lt;/code&gt; 已经封装好所有细节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解 Order 结构&lt;/strong&gt;——能让你设计出更灵活的业务（套件、订阅、租赁）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;学习 Conduit + Zone 设计&lt;/strong&gt;——是协议级&amp;quot;模块化&amp;quot;的范例&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;关注 EIP-712 签名规范&lt;/strong&gt;——前端怎么 sign，后端怎么 verify&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;如果你做协议设计——Seaport 是当代 Solidity 设计的&lt;strong&gt;最佳学习材料之一&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Gas 优化的极致追求&lt;/li&gt;
+&lt;li&gt;模块化扩展能力（zone、conduit）&lt;/li&gt;
+&lt;li&gt;复杂业务的简洁抽象&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Seaport 用『offer / consideration』的对称模型 + Conduit 共享授权 + Zone 可扩展裁判，把 NFT 交易的灵活性和 Gas 效率推到了新的高度。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;任何 NFT 业务都可以用 Order 结构表达&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Conduit 解决了&amp;quot;每用户部署代理合约&amp;quot;的痛&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Zone 让协议可扩展而不需要改 Seaport 本身&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fulfillBasicOrder 是高频路径，专门优化过&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;EIP-712 签名让用户能看清自己签了什么&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;理解 Seaport，&lt;strong&gt;理解的不只是 OpenSea&lt;/strong&gt;——是 2024 年 NFT 协议设计的范式。&lt;/p&gt;</description></item></channel></rss>

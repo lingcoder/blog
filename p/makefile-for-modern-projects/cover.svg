@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0F2A28"/>
+          <stop offset="0.55" stop-color="#3A5C50"/>
+          <stop offset="1" stop-color="#FFD8A0"/>
+    </linearGradient>
+      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Sun rays through trees -->
+    <g opacity="0.18" fill="#FFE5A0">
+        <polygon points="600,300 580,630 620,630"/>
+        <polygon points="650,310 640,630 680,630"/>
+        <polygon points="540,310 520,630 560,630"/>
+        <polygon points="700,320 700,630 740,630"/>
+        <polygon points="490,320 460,630 500,630"/>
+    </g>
+
+    <!-- Sun glow center -->
+    <circle cx="600" cy="320" r="200" fill="url(#sunRay)"/>
+    <circle cx="600" cy="320" r="40" fill="#FFE5A0"/>
+
+    <!-- Distant pines -->
+    <g fill="#1A3528" opacity="0.65">
+        <polygon points="80,500 60,400 100,400 70,340 110,340 80,290"/>
+        <polygon points="160,510 140,410 180,410 150,350 190,350 160,300"/>
+        <polygon points="240,500 220,400 260,400 230,340 270,340 240,290"/>
+        <polygon points="320,510 300,410 340,410 310,350 350,350 320,300"/>
+        <polygon points="900,500 880,400 920,400 890,340 930,340 900,290"/>
+        <polygon points="980,510 960,410 1000,410 970,350 1010,350 980,300"/>
+        <polygon points="1060,500 1040,400 1080,400 1050,340 1090,340 1060,290"/>
+        <polygon points="1140,510 1120,410 1160,410 1130,350 1170,350 1140,300"/>
+    </g>
+
+    <!-- Front pines very dark -->
+    <g fill="#0A1A14">
+        <polygon points="60,560 30,440 90,440 50,360 100,360 60,280"/>
+        <polygon points="180,580 150,450 210,450 175,370 215,370 180,290"/>
+        <polygon points="280,560 250,430 310,430 275,350 315,350 280,270"/>
+        <polygon points="400,580 370,450 430,450 395,370 435,370 400,290"/>
+        <polygon points="780,580 750,450 810,450 775,370 815,370 780,290"/>
+        <polygon points="900,560 870,430 930,430 895,350 935,350 900,270"/>
+        <polygon points="1020,580 990,450 1050,450 1015,370 1055,370 1020,290"/>
+        <polygon points="1140,560 1110,440 1170,440 1135,360 1175,360 1140,280"/>
+  </g>
+
+    <!-- Forest floor with mist -->
+    <rect y="560" width="1200" height="70" fill="#0A1A14"/>
+    <ellipse cx="600" cy="565" rx="500" ry="20" fill="#FFFFFF" opacity="0.18"/>
+
+    <text x="60" y="610" fill="#FFE5A0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

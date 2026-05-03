@@ -1,0 +1,253 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="JSON 让机器能读，JSON-LD 让机器能『理解』。一篇讲清两者差异、JSON-LD 的本质和它在 SEO、知识图谱里的真实价值"><title>给数据加上语义——JSON-LD 入门</title><link rel=canonical href=https://www.lingcoder.com/p/json-ld-introduction/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="给数据加上语义——JSON-LD 入门"><meta property='og:description' content="JSON 让机器能读，JSON-LD 让机器能『理解』。一篇讲清两者差异、JSON-LD 的本质和它在 SEO、知识图谱里的真实价值"><meta property='og:url' content='https://www.lingcoder.com/p/json-ld-introduction/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='JSON'><meta property='article:tag' content='JSON-LD'><meta property='article:tag' content='语义网'><meta property='article:tag' content='SEO'><meta property='article:tag' content='知识图谱'><meta property='article:published_time' content='2021-08-04T15:30:00+08:00'><meta property='article:modified_time' content='2021-08-04T15:30:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/json-ld-introduction/cover.svg'><meta name=twitter:title content="给数据加上语义——JSON-LD 入门"><meta name=twitter:description content="JSON 让机器能读，JSON-LD 让机器能『理解』。一篇讲清两者差异、JSON-LD 的本质和它在 SEO、知识图谱里的真实价值"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/json-ld-introduction/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#一段看似差不多的代码>一段看似差不多的代码</a></li><li><a href=#一json-缺了什么>一、JSON 缺了什么</a></li><li><a href=#二json-ld-怎么解决这个问题>二、JSON-LD 怎么解决这个问题</a></li><li><a href=#三json-ld-的核心机制>三、JSON-LD 的核心机制</a><ol><li><a href=#1-context上下文>1. <code>@context</code>：上下文</a></li><li><a href=#2-type类型>2. <code>@type</code>：类型</a></li><li><a href=#3-id标识符>3. <code>@id</code>：标识符</a></li><li><a href=#4-graph多对象集合>4. <code>@graph</code>：多对象集合</a></li></ol></li><li><a href=#四关联数据linked-datajson-ld-的真正价值>四、关联数据（Linked Data）：JSON-LD 的真正价值</a></li><li><a href=#五json-ld-的真实落地场景>五、JSON-LD 的真实落地场景</a><ol><li><a href=#1-seo-结构化数据最普及>1. SEO 结构化数据（最普及）</a></li><li><a href=#2-知识图谱>2. 知识图谱</a></li><li><a href=#3-web3--去中心化身份>3. Web3 / 去中心化身份</a></li><li><a href=#4-rdf-兼容>4. RDF 兼容</a></li></ol></li><li><a href=#六json-ld-vs-microdata-vs-rdfa>六、JSON-LD vs Microdata vs RDFa</a></li><li><a href=#七几个工程实践>七、几个工程实践</a><ol><li><a href=#1-不要手工写>1. 不要手工写</a></li><li><a href=#2-验证工具>2. 验证工具</a></li><li><a href=#3-context-缓存>3. context 缓存</a></li><li><a href=#4-不要塞业务字段>4. 不要塞业务字段</a></li><li><a href=#5-seo-价值的真实预期>5. SEO 价值的真实预期</a></li></ol></li><li><a href=#八什么场景该用-json-ld>八、什么场景该用 JSON-LD</a></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/json-ld-introduction/><img alt="Featured image of post 给数据加上语义——JSON-LD 入门" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/json-ld-introduction/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/architecture/ style=background-color:#e76f51;color:#fff>架构</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/json-ld-introduction/>给数据加上语义——JSON-LD 入门</a></h2><h3 class=article-subtitle>JSON 让机器能读，JSON-LD 让机器能『理解』。一篇讲清两者差异、JSON-LD 的本质和它在 SEO、知识图谱里的真实价值</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2021-08-04T15:30:00+08:00>2021-08-04</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#一段看似差不多的代码>一段看似差不多的代码</a></li><li><a href=#一json-缺了什么>一、JSON 缺了什么</a></li><li><a href=#二json-ld-怎么解决这个问题>二、JSON-LD 怎么解决这个问题</a></li><li><a href=#三json-ld-的核心机制>三、JSON-LD 的核心机制</a><ol><li><a href=#1-context上下文>1. <code>@context</code>：上下文</a></li><li><a href=#2-type类型>2. <code>@type</code>：类型</a></li><li><a href=#3-id标识符>3. <code>@id</code>：标识符</a></li><li><a href=#4-graph多对象集合>4. <code>@graph</code>：多对象集合</a></li></ol></li><li><a href=#四关联数据linked-datajson-ld-的真正价值>四、关联数据（Linked Data）：JSON-LD 的真正价值</a></li><li><a href=#五json-ld-的真实落地场景>五、JSON-LD 的真实落地场景</a><ol><li><a href=#1-seo-结构化数据最普及>1. SEO 结构化数据（最普及）</a></li><li><a href=#2-知识图谱>2. 知识图谱</a></li><li><a href=#3-web3--去中心化身份>3. Web3 / 去中心化身份</a></li><li><a href=#4-rdf-兼容>4. RDF 兼容</a></li></ol></li><li><a href=#六json-ld-vs-microdata-vs-rdfa>六、JSON-LD vs Microdata vs RDFa</a></li><li><a href=#七几个工程实践>七、几个工程实践</a><ol><li><a href=#1-不要手工写>1. 不要手工写</a></li><li><a href=#2-验证工具>2. 验证工具</a></li><li><a href=#3-context-缓存>3. context 缓存</a></li><li><a href=#4-不要塞业务字段>4. 不要塞业务字段</a></li><li><a href=#5-seo-价值的真实预期>5. SEO 价值的真实预期</a></li></ol></li><li><a href=#八什么场景该用-json-ld>八、什么场景该用 JSON-LD</a></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=一段看似差不多的代码><a href=#%e4%b8%80%e6%ae%b5%e7%9c%8b%e4%bc%bc%e5%b7%ae%e4%b8%8d%e5%a4%9a%e7%9a%84%e4%bb%a3%e7%a0%81 class=header-anchor></a>一段看似差不多的代码</h2><p>JSON 这种数据：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;鲁迅&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;birthDate&#34;</span><span class=p>:</span> <span class=s2>&#34;1881-09-25&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;occupation&#34;</span><span class=p>:</span> <span class=s2>&#34;Writer&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>JSON-LD 这种数据：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;鲁迅&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;birthDate&#34;</span><span class=p>:</span> <span class=s2>&#34;1881-09-25&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;occupation&#34;</span><span class=p>:</span> <span class=s2>&#34;Writer&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>肉眼看几乎一样——多了 <code>@context</code> 和 <code>@type</code> 两行。但<strong>它们做的事在量级上完全不同</strong>：</p><ul><li>JSON 让机器能 <strong>读</strong> 这段数据</li><li>JSON-LD 让机器能 <strong>理解</strong> 这段数据是关于一个 <code>Person</code> 的</li></ul><p>理解这个差别，是看懂"语义网"、&ldquo;结构化数据 SEO&rdquo;、&ldquo;知识图谱"为什么需要 JSON-LD 的关键。本文把 JSON 和 JSON-LD 的差异、JSON-LD 的本质、它的真实落地场景讲清楚。</p><hr><h2 id=一json-缺了什么><a href=#%e4%b8%80json-%e7%bc%ba%e4%ba%86%e4%bb%80%e4%b9%88 class=header-anchor></a>一、JSON 缺了什么</h2><p>JSON 是非常成功的数据交换格式——简单、轻量、跨语言。但它有一个根本缺陷：</p><blockquote><p><strong>JSON 描述了数据的结构，不描述数据的语义。</strong></p></blockquote><p>举个具体例子：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;李华&#34;</span><span class=p>,</span> <span class=nt>&#34;age&#34;</span><span class=p>:</span> <span class=mi>30</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这段 JSON 里——</p><ul><li>&ldquo;name&rdquo; 是什么意思？人的名字？产品的名字？文件名？</li><li>&ldquo;age&rdquo; 是数字"30 岁"还是 30 天 / 30 个月？</li><li>&ldquo;李华&rdquo; 是个人，还是品牌名，还是化名？</li></ul><p><strong>机器只看到字符串和数字，没法做任何"理解"层面的事</strong>。</p><p>如果两个系统要交换数据，他们必须<strong>事先约定每个字段的含义</strong>——这正是为什么数据集成、API 对接永远那么痛苦：每对接一个新系统都要写文档、对齐字段。</p><hr><h2 id=二json-ld-怎么解决这个问题><a href=#%e4%ba%8cjson-ld-%e6%80%8e%e4%b9%88%e8%a7%a3%e5%86%b3%e8%bf%99%e4%b8%aa%e9%97%ae%e9%a2%98 class=header-anchor></a>二、JSON-LD 怎么解决这个问题</h2><p>JSON-LD（JSON for Linked Data）由 W3C 标准化，<strong>给 JSON 加了"语义层&rdquo;</strong>：每个字段都引用一个公开 URI 定义的"概念"。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;鲁迅&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;birthDate&#34;</span><span class=p>:</span> <span class=s2>&#34;1881-09-25&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li><code>@context: https://schema.org</code> —— 告诉机器：&ldquo;本文档使用 Schema.org 词汇表&rdquo;</li><li><code>@type: Person</code> —— 告诉机器：&ldquo;本对象是一个 Schema.org 定义的 Person&rdquo;</li><li><code>name</code>、<code>birthDate</code> —— 这些字段在 Schema.org 中有明确定义</li></ul><p>任何机器（搜索引擎、抓取器、知识图谱）拿到这段数据后，<strong>只要它支持 Schema.org，就立刻知道这是一个人，name 是人的姓名，birthDate 是人的出生日期</strong>。</p><p>不需要事先约定。不需要写文档。<strong>语义来自 URI</strong>。</p><hr><h2 id=三json-ld-的核心机制><a href=#%e4%b8%89json-ld-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%9c%ba%e5%88%b6 class=header-anchor></a>三、JSON-LD 的核心机制</h2><p>JSON-LD 主要靠四个 <code>@</code> 关键字：</p><h3 id=1-context上下文><a href=#1-context%e4%b8%8a%e4%b8%8b%e6%96%87 class=header-anchor></a>1. <code>@context</code>：上下文</h3><p>声明数据使用的词汇体系。<strong>最重要的关键字</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=s2>&#34;@context&#34;</span><span class=err>:</span> <span class=s2>&#34;https://schema.org&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>也可以自定义：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=s2>&#34;@context&#34;</span><span class=err>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;http://example.com/vocab#fullName&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;age&#34;</span><span class=p>:</span>  <span class=s2>&#34;http://example.com/vocab#yearsOld&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>每个 key 都映射到一个 URI——这就是"语义"的来源。</p><h3 id=2-type类型><a href=#2-type%e7%b1%bb%e5%9e%8b class=header-anchor></a>2. <code>@type</code>：类型</h3><p>告诉机器这个对象是"什么"：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=s2>&#34;@type&#34;</span><span class=err>:</span> <span class=s2>&#34;Person&#34;</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;@type&#34;</span><span class=err>:</span> <span class=s2>&#34;Product&#34;</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;@type&#34;</span><span class=err>:</span> <span class=s2>&#34;Organization&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=3-id标识符><a href=#3-id%e6%a0%87%e8%af%86%e7%ac%a6 class=header-anchor></a>3. <code>@id</code>：标识符</h3><p>为对象提供一个唯一标识（通常是 URI）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@id&#34;</span><span class=p>:</span> <span class=s2>&#34;https://example.com/person/lingcoder&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;lingcoder&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>@id</code> 让两条 JSON-LD 数据可以<strong>引用同一个实体</strong>——这是构建知识图谱的基础。</p><h3 id=4-graph多对象集合><a href=#4-graph%e5%a4%9a%e5%af%b9%e8%b1%a1%e9%9b%86%e5%90%88 class=header-anchor></a>4. <code>@graph</code>：多对象集合</h3><p>一个文档里描述多个对象：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@graph&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span> <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span> <span class=nt>&#34;@id&#34;</span><span class=p>:</span> <span class=s2>&#34;#zhang&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;张三&#34;</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span> <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Organization&#34;</span><span class=p>,</span> <span class=nt>&#34;@id&#34;</span><span class=p>:</span> <span class=s2>&#34;#abc&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;ABC 公司&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=四关联数据linked-datajson-ld-的真正价值><a href=#%e5%9b%9b%e5%85%b3%e8%81%94%e6%95%b0%e6%8d%aelinked-datajson-ld-%e7%9a%84%e7%9c%9f%e6%ad%a3%e4%bb%b7%e5%80%bc class=header-anchor></a>四、关联数据（Linked Data）：JSON-LD 的真正价值</h2><p>JSON-LD 的"LD"是 Linked Data——<strong>让数据之间能相互引用、形成图</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Article&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;headline&#34;</span><span class=p>:</span> <span class=s2>&#34;Spring Cloud 微服务实战&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;author&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;@id&#34;</span><span class=p>:</span> <span class=s2>&#34;https://example.com/person/lingcoder&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;lingcoder&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;publisher&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Organization&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;@id&#34;</span><span class=p>:</span> <span class=s2>&#34;https://example.com/org/abc&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;ABC 出版社&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>文章 → 作者（Person）→ 出版社（Organization）——<strong>这些都是独立的实体，通过 @id 相互引用</strong>。</p><p>任何爬虫拿到这段数据后，<strong>自动知道</strong>：</p><ul><li>有一个文章对象</li><li>它有一个 Person 作者</li><li>它有一个 Organization 出版社</li><li>这些实体可能也存在于其他网页上（通过 <code>@id</code> 关联）</li></ul><p>这是"知识图谱"的本质——<strong>图就是节点 + 边</strong>，JSON-LD 把节点（@id）和边（关系）都标准化了。</p><hr><h2 id=五json-ld-的真实落地场景><a href=#%e4%ba%94json-ld-%e7%9a%84%e7%9c%9f%e5%ae%9e%e8%90%bd%e5%9c%b0%e5%9c%ba%e6%99%af class=header-anchor></a>五、JSON-LD 的真实落地场景</h2><h3 id=1-seo-结构化数据最普及><a href=#1-seo-%e7%bb%93%e6%9e%84%e5%8c%96%e6%95%b0%e6%8d%ae%e6%9c%80%e6%99%ae%e5%8f%8a class=header-anchor></a>1. SEO 结构化数据（最普及）</h3><p>Google / Bing / 百度都支持 JSON-LD 作为结构化数据格式。在 HTML 里加：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>script</span> <span class=na>type</span><span class=o>=</span><span class=s>&#34;application/ld+json&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;@context&#34;</span><span class=o>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;@type&#34;</span><span class=o>:</span> <span class=s2>&#34;Article&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;headline&#34;</span><span class=o>:</span> <span class=s2>&#34;JSON 与 JSON-LD&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;author&#34;</span><span class=o>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;@type&#34;</span><span class=o>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;name&#34;</span><span class=o>:</span> <span class=s2>&#34;lingcoder&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;datePublished&#34;</span><span class=o>:</span> <span class=s2>&#34;2021-08-04&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;image&#34;</span><span class=o>:</span> <span class=s2>&#34;https://example.com/cover.svg&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>script</span><span class=p>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>搜索引擎抓到这段后，能在搜索结果里展示<strong>富片段</strong>（rich snippet）——评分、价格、作者、发布时间——大大提升点击率。</p><pre class=mermaid style=visibility:hidden>flowchart LR
+    Page[网页] --> SE[搜索引擎]
+    SE --> Plain[普通搜索结果<br>纯文本摘要]
+    Page -.JSON-LD.-> SE2[搜索引擎]
+    SE2 --> Rich[富片段<br>评分/价格/作者]</pre><p><strong>这是 JSON-LD 在 Web 上最广泛、最实用的应用</strong>。</p><h3 id=2-知识图谱><a href=#2-%e7%9f%a5%e8%af%86%e5%9b%be%e8%b0%b1 class=header-anchor></a>2. 知识图谱</h3><p>学术领域的论文数据库、医疗领域的病例数据、电商的商品图谱——<strong>用 JSON-LD 把不同来源的数据串起来</strong>。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;MedicalCondition&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;糖尿病&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;associatedAnatomy&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;AnatomicalStructure&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;胰腺&#34;</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;possibleTreatment&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span> <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;Drug&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;胰岛素&#34;</span> <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span> <span class=nt>&#34;@type&#34;</span><span class=p>:</span> <span class=s2>&#34;MedicalTherapy&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;饮食控制&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=3-web3--去中心化身份><a href=#3-web3--%e5%8e%bb%e4%b8%ad%e5%bf%83%e5%8c%96%e8%ba%ab%e4%bb%bd class=header-anchor></a>3. Web3 / 去中心化身份</h3><p>DID（Decentralized Identifier）和 Verifiable Credentials（VC）规范用 JSON-LD 描述身份和凭证：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;@context&#34;</span><span class=p>:</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://www.w3.org/2018/credentials/v1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://www.w3.org/2018/credentials/examples/v1&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;VerifiableCredential&#34;</span><span class=p>,</span> <span class=s2>&#34;UniversityDegreeCredential&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;issuer&#34;</span><span class=p>:</span> <span class=s2>&#34;did:example:university&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;credentialSubject&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;id&#34;</span><span class=p>:</span> <span class=s2>&#34;did:example:alice&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;degree&#34;</span><span class=p>:</span> <span class=p>{</span> <span class=nt>&#34;type&#34;</span><span class=p>:</span> <span class=s2>&#34;BachelorDegree&#34;</span><span class=p>,</span> <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;Bachelor of Science&#34;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=4-rdf-兼容><a href=#4-rdf-%e5%85%bc%e5%ae%b9 class=header-anchor></a>4. RDF 兼容</h3><p>JSON-LD <strong>直接可以转成 RDF 三元组</strong>——和学术界、政府开放数据互通。</p><hr><h2 id=六json-ld-vs-microdata-vs-rdfa><a href=#%e5%85%adjson-ld-vs-microdata-vs-rdfa class=header-anchor></a>六、JSON-LD vs Microdata vs RDFa</h2><p>HTML 结构化数据三种主流格式：</p><div class=table-wrapper><table><thead><tr><th style=text-align:left></th><th style=text-align:left>JSON-LD</th><th style=text-align:left>Microdata</th><th style=text-align:left>RDFa</th></tr></thead><tbody><tr><td style=text-align:left>写法</td><td style=text-align:left><code>&lt;script></code> 块</td><td style=text-align:left>HTML 标签里加属性</td><td style=text-align:left>HTML 标签里加属性</td></tr><tr><td style=text-align:left>内嵌位置</td><td style=text-align:left>任意</td><td style=text-align:left>紧贴对应内容</td><td style=text-align:left>紧贴对应内容</td></tr><tr><td style=text-align:left>与内容耦合</td><td style=text-align:left>解耦</td><td style=text-align:left>强耦合</td><td style=text-align:left>强耦合</td></tr><tr><td style=text-align:left>谷歌推荐</td><td style=text-align:left><strong>首选</strong></td><td style=text-align:left>支持</td><td style=text-align:left>支持</td></tr><tr><td style=text-align:left>易维护</td><td style=text-align:left>✓</td><td style=text-align:left>△</td><td style=text-align:left>△</td></tr></tbody></table></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=c>&lt;!-- Microdata（侵入式） --&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>div</span> <span class=na>itemscope</span> <span class=na>itemtype</span><span class=o>=</span><span class=s>&#34;https://schema.org/Person&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>span</span> <span class=na>itemprop</span><span class=o>=</span><span class=s>&#34;name&#34;</span><span class=p>&gt;</span>鲁迅<span class=p>&lt;/</span><span class=nt>span</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>span</span> <span class=na>itemprop</span><span class=o>=</span><span class=s>&#34;birthDate&#34;</span><span class=p>&gt;</span>1881-09-25<span class=p>&lt;/</span><span class=nt>span</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c>&lt;!-- JSON-LD（独立块） --&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>script</span> <span class=na>type</span><span class=o>=</span><span class=s>&#34;application/ld+json&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>{</span> <span class=s2>&#34;@context&#34;</span><span class=o>:</span> <span class=s2>&#34;https://schema.org&#34;</span><span class=p>,</span> <span class=s2>&#34;@type&#34;</span><span class=o>:</span> <span class=s2>&#34;Person&#34;</span><span class=p>,</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>script</span><span class=p>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>Google 官方推荐 JSON-LD</strong>——和 HTML 结构解耦，易于运维，模板化生成方便。</p><hr><h2 id=七几个工程实践><a href=#%e4%b8%83%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e5%ae%9e%e8%b7%b5 class=header-anchor></a>七、几个工程实践</h2><h3 id=1-不要手工写><a href=#1-%e4%b8%8d%e8%a6%81%e6%89%8b%e5%b7%a5%e5%86%99 class=header-anchor></a>1. 不要手工写</h3><p>JSON-LD 字段嵌套深、重复多——<strong>代码生成</strong>，别手写。Java 用 <code>org.schema.javasdk</code>，Node 用 <code>schema-dts</code>，能避免拼字段错。</p><h3 id=2-验证工具><a href=#2-%e9%aa%8c%e8%af%81%e5%b7%a5%e5%85%b7 class=header-anchor></a>2. 验证工具</h3><p>写完用 <a class=link href=https://search.google.com/test/rich-results target=_blank rel=noopener>Google Rich Results Test</a> 验证——<strong>不验证就上线，搜索引擎抓不到富片段</strong>。</p><h3 id=3-context-缓存><a href=#3-context-%e7%bc%93%e5%ad%98 class=header-anchor></a>3. context 缓存</h3><p><code>https://schema.org</code> 是个真实的 URL，机器抓数据时会去访问。生产场景把 context 缓存在本地，避免延迟。</p><h3 id=4-不要塞业务字段><a href=#4-%e4%b8%8d%e8%a6%81%e5%a1%9e%e4%b8%9a%e5%8a%a1%e5%ad%97%e6%ae%b5 class=header-anchor></a>4. 不要塞业务字段</h3><p>JSON-LD 是<strong>对外用</strong>——只放标准 Schema.org 字段。内部业务字段（数据库 ID、内部状态）不要塞进 JSON-LD，<strong>会污染语义</strong>。</p><h3 id=5-seo-价值的真实预期><a href=#5-seo-%e4%bb%b7%e5%80%bc%e7%9a%84%e7%9c%9f%e5%ae%9e%e9%a2%84%e6%9c%9f class=header-anchor></a>5. SEO 价值的真实预期</h3><p>加了 JSON-LD 不一定立刻有富片段——<strong>Google 决定是否展示，并不保证</strong>。但<strong>没加一定没有</strong>——成本极低，回报概率高，工程上是无脑加的事。</p><hr><h2 id=八什么场景该用-json-ld><a href=#%e5%85%ab%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e7%94%a8-json-ld class=header-anchor></a>八、什么场景该用 JSON-LD</h2><p>✅ 适合：</p><ul><li><strong>公开网页的结构化标注</strong>（最普及场景，做 SEO）</li><li><strong>跨系统数据交换</strong>（标准化语义）</li><li><strong>知识图谱构建</strong></li><li><strong>Web3 / DID / VC</strong></li></ul><p>❌ 不适合：</p><ul><li>普通的 API 数据交换——用 JSON 就够了</li><li>内部系统通信——加 <code>@context</code> 是开销</li><li>性能敏感场景——JSON-LD 文档体积比 JSON 大</li></ul><p>普通 API 用普通 JSON，<strong>只有"数据需要被外部理解"时上 JSON-LD</strong>。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>JSON 让机器读得到数据，JSON-LD 让机器读懂数据。前者解决传输，后者解决语义。</strong></p></blockquote><p>工程上的实践：</p><ul><li><strong>公开网页加 JSON-LD</strong>——SEO 富片段几乎无成本</li><li><strong>用 Schema.org 词汇表</strong>，不要造私有词汇</li><li><strong>用工具生成，用 Google Rich Results Test 验证</strong></li><li><strong>内部系统不必折腾</strong>——纯 JSON 就够</li></ul><p>理解 JSON-LD 不是为了在每个项目里都用它，而是<strong>理解"语义网"为什么重要</strong>——当你下次要让机器"看懂"数据而不只是"读懂"时，知道有这件武器可用。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/json/>JSON</a>
+<a href=/tags/json-ld/>JSON-LD</a>
+<a href=/tags/%E8%AF%AD%E4%B9%89%E7%BD%91/>语义网</a>
+<a href=/tags/seo/>SEO</a>
+<a href=/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/>知识图谱</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/protobuf-protocol-deep-dive/><div class=article-image><img alt="Featured image of post Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍" loading=lazy src=/p/protobuf-protocol-deep-dive/cover.svg></div><div class=article-details><h2 class=article-title>Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍</h2></div></a></article><article class=has-image><a href=/p/i18n-for-dict-and-menu-tables/><div class=article-image><img alt="Featured image of post 数据字典表与菜单的国际化方案" loading=lazy src=/p/i18n-for-dict-and-menu-tables/cover.svg></div><div class=article-details><h2 class=article-title>数据字典表与菜单的国际化方案</h2></div></a></article><article class=has-image><a href=/p/qr-code-login-flow/><div class=article-image><img alt="Featured image of post 扫码登录的完整设计" loading=lazy src=/p/qr-code-login-flow/cover.svg></div><div class=article-details><h2 class=article-title>扫码登录的完整设计</h2></div></a></article><article class=has-image><a href=/p/raft-consensus-explained/><div class=article-image><img alt="Featured image of post 浅谈 Raft：让分布式一致性变可理解的算法" loading=lazy src=/p/raft-consensus-explained/cover.svg></div><div class=article-details><h2 class=article-title>浅谈 Raft：让分布式一致性变可理解的算法</h2></div></a></article><article class=has-image><a href=/p/how-to-pass-user-context-between-microservices/><div class=article-image><img alt="Featured image of post 微服务之间，到底应如何传递用户信息" loading=lazy src=/p/how-to-pass-user-context-between-microservices/cover.svg></div><div class=article-details><h2 class=article-title>微服务之间，到底应如何传递用户信息</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script><div class=mermaid-modal id=mermaid-modal><div class=mermaid-modal-header><div class=mermaid-modal-controls><button data-zoom=-1>− Zoom Out</button>
+<button data-zoom=0>Reset (100%)</button>
+<button data-zoom=1>+ Zoom In</button>
+<button data-zoom=fit>Fit to Screen</button></div><button class=mermaid-modal-close id=mermaid-modal-close>✕ Close (Esc)</button></div><div class=mermaid-modal-body id=mermaid-modal-body><div class=mermaid-modal-content id=mermaid-modal-content></div></div></div><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script type=module>
+import { initMermaidPage } from '\/ts\/mermaid.js';
+initMermaidPage({"darkTheme":"dark","darkThemeVariables":{},"htmlLabels":true,"lightTheme":"default","lightThemeVariables":{},"look":"classic","securityLevel":"strict","transparentBackground":false});
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

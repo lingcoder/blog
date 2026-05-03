@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>外键 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%A4%96%E9%94%AE/</link><description>Recent content in 外键 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 15 Mar 2017 15:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%A4%96%E9%94%AE/index.xml" rel="self" type="application/rss+xml"/><item><title>关联用 ID 还是 CODE：数据库主键与外键设计实践</title><link>https://www.lingcoder.com/p/db-foreign-key-id-vs-code/</link><pubDate>Wed, 15 Mar 2017 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/db-foreign-key-id-vs-code/</guid><description>&lt;img src="https://www.lingcoder.com/p/db-foreign-key-id-vs-code/cover.svg" alt="Featured image of post 关联用 ID 还是 CODE：数据库主键与外键设计实践" /&gt;&lt;h2 id="一个常被反复争论的设计问题"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e5%b8%b8%e8%a2%ab%e5%8f%8d%e5%a4%8d%e4%ba%89%e8%ae%ba%e7%9a%84%e8%ae%be%e8%ae%a1%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一个常被反复争论的设计问题
+&lt;/h2&gt;&lt;p&gt;每个数据库表都有一个自增 &lt;code&gt;id&lt;/code&gt; 主键——这件事几乎没人会争。但&lt;strong&gt;外键到底应该引用 &lt;code&gt;id&lt;/code&gt; 还是引用业务编码（code）&lt;/strong&gt;，争论从未停止。&lt;/p&gt;
+&lt;p&gt;举个最常见的例子：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 方案 A：用 ID 关联
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;CREATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TABLE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;BIGINT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;PRIMARY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;BIGINT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;-- 关联 order_status.id
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 方案 B：用 CODE 关联
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;CREATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TABLE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;BIGINT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;PRIMARY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;-- 关联 order_status.code
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;注：示例里用 &lt;code&gt;orders&lt;/code&gt; 而不是 &lt;code&gt;order&lt;/code&gt;——&lt;code&gt;order&lt;/code&gt; 是 SQL 保留字，直接拿来当表名要么报语法错误，要么必须加反引号 &lt;code&gt;`order`&lt;/code&gt;。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;哪种好？两派都各有铁粉，争论起来谁也说服不了谁。本文把两种方案的优劣、适用边界、工程取舍讲清楚——不给标准答案，但讲清楚什么场景该选什么。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="第一原则先区分两类外键"&gt;&lt;a href="#%e7%ac%ac%e4%b8%80%e5%8e%9f%e5%88%99%e5%85%88%e5%8c%ba%e5%88%86%e4%b8%a4%e7%b1%bb%e5%a4%96%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;第一原则：先区分两类外键
+&lt;/h2&gt;&lt;p&gt;讨论这个问题前必须先把&amp;quot;外键&amp;quot;分成两大类——&lt;strong&gt;它们的处理逻辑完全不同&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;关联类外键&lt;/strong&gt;：链接两个&lt;strong&gt;业务实体&lt;/strong&gt;。例如 &lt;code&gt;order.user_id&lt;/code&gt; 指向 &lt;code&gt;user.id&lt;/code&gt;、&lt;code&gt;order_item.product_id&lt;/code&gt; 指向 &lt;code&gt;product.id&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;枚举类外键&lt;/strong&gt;：链接到&lt;strong&gt;字典/枚举&lt;/strong&gt;。例如 &lt;code&gt;order.status&lt;/code&gt; 表示订单状态、&lt;code&gt;user.gender&lt;/code&gt; 表示性别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ O1[order] --&gt;|user_id| User[user]
+ O1 --&gt;|status_code| Dict[order_status&lt;br/&gt;字典]
+ O2[order_item] --&gt;|product_id| Product[product]&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;关联类外键和枚举类外键，结论不一样。下面分开讲。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一关联类外键建议用-id"&gt;&lt;a href="#%e4%b8%80%e5%85%b3%e8%81%94%e7%b1%bb%e5%a4%96%e9%94%ae%e5%bb%ba%e8%ae%ae%e7%94%a8-id" class="header-anchor"&gt;&lt;/a&gt;一、关联类外键：建议用 ID
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;order.user_id&lt;/code&gt; 这种&amp;quot;指向另一个业务实体&amp;quot;的外键，&lt;strong&gt;强烈建议用 ID 关联&lt;/strong&gt;——也就是数据库自增主键或雪花 ID。&lt;/p&gt;
+&lt;h3 id="为什么用-id"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e7%94%a8-id" class="header-anchor"&gt;&lt;/a&gt;为什么用 ID
+&lt;/h3&gt;&lt;h4 id="1-id-是不变的业务编码可能变"&gt;&lt;a href="#1-id-%e6%98%af%e4%b8%8d%e5%8f%98%e7%9a%84%e4%b8%9a%e5%8a%a1%e7%bc%96%e7%a0%81%e5%8f%af%e8%83%bd%e5%8f%98" class="header-anchor"&gt;&lt;/a&gt;1. ID 是不变的，业务编码可能变
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;user_no = &amp;quot;U20170315001&amp;quot;&lt;/code&gt; 这种&amp;quot;业务用户编号&amp;quot;看起来像永久标识，但&lt;strong&gt;业务发起人随时可能要求改格式&lt;/strong&gt;：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&amp;ldquo;把所有用户编号前缀从 U 改成 A，因为合并了 A 公司的系统。&amp;rdquo;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;如果 100 张表都用 &lt;code&gt;user_no&lt;/code&gt; 关联，&lt;strong&gt;改一次格式要重写 100 张表的引用&lt;/strong&gt;——可能涉及上亿行数据。如果用 ID，业务编码爱怎么变怎么变。&lt;/p&gt;
+&lt;h4 id="2-数字索引比字符串索引快"&gt;&lt;a href="#2-%e6%95%b0%e5%ad%97%e7%b4%a2%e5%bc%95%e6%af%94%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%b4%a2%e5%bc%95%e5%bf%ab" class="header-anchor"&gt;&lt;/a&gt;2. 数字索引比字符串索引快
+&lt;/h4&gt;&lt;p&gt;数据库的 B+ Tree 索引中，整数 8 字节、字符串 32 字节起步。&lt;strong&gt;整数索引的 IO 和比较都快得多&lt;/strong&gt;——尤其在 join 大量数据时差距明显。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 整数 join
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 字符串 join
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_no&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;user_no&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;千万级数据下，前者比后者快 30%-50% 不是稀奇事。&lt;/p&gt;
+&lt;h4 id="3-id-是单调递增的写入友好"&gt;&lt;a href="#3-id-%e6%98%af%e5%8d%95%e8%b0%83%e9%80%92%e5%a2%9e%e7%9a%84%e5%86%99%e5%85%a5%e5%8f%8b%e5%a5%bd" class="header-anchor"&gt;&lt;/a&gt;3. ID 是单调递增的，写入友好
+&lt;/h4&gt;&lt;p&gt;InnoDB 是按主键聚簇存储的——递增 ID 写入时&lt;strong&gt;永远是 append&lt;/strong&gt;，热点页只有一个。如果用业务编码（不一定单调），写入时容易引发&lt;strong&gt;页分裂&lt;/strong&gt;，影响写性能。&lt;/p&gt;
+&lt;h4 id="4-不暴露业务信息"&gt;&lt;a href="#4-%e4%b8%8d%e6%9a%b4%e9%9c%b2%e4%b8%9a%e5%8a%a1%e4%bf%a1%e6%81%af" class="header-anchor"&gt;&lt;/a&gt;4. 不暴露业务信息
+&lt;/h4&gt;&lt;p&gt;ID 是个&amp;quot;无意义数字&amp;quot;，不会泄漏业务规模。&lt;code&gt;order.id = 9876543&lt;/code&gt; 攻击者拿到也猜不出实际订单量；但 &lt;code&gt;order.order_no = &amp;quot;ORD-20170315-00001&amp;quot;&lt;/code&gt; 一看就知道当天第几单。&lt;/p&gt;
+&lt;h3 id="但-id-也不是完美"&gt;&lt;a href="#%e4%bd%86-id-%e4%b9%9f%e4%b8%8d%e6%98%af%e5%ae%8c%e7%be%8e" class="header-anchor"&gt;&lt;/a&gt;但 ID 也不是完美
+&lt;/h3&gt;&lt;h4 id="1-跨库迁移痛"&gt;&lt;a href="#1-%e8%b7%a8%e5%ba%93%e8%bf%81%e7%a7%bb%e7%97%9b" class="header-anchor"&gt;&lt;/a&gt;1. 跨库迁移痛
+&lt;/h4&gt;&lt;p&gt;ID 是数据库自增，&lt;strong&gt;两个库的数据合并时 ID 必然冲突&lt;/strong&gt;——常见做法是用雪花 ID 或一开始就用 UUID。&lt;/p&gt;
+&lt;h4 id="2-读起来不友好"&gt;&lt;a href="#2-%e8%af%bb%e8%b5%b7%e6%9d%a5%e4%b8%8d%e5%8f%8b%e5%a5%bd" class="header-anchor"&gt;&lt;/a&gt;2. 读起来不友好
+&lt;/h4&gt;&lt;p&gt;日志里看到 &lt;code&gt;user_id=12345&lt;/code&gt; 你要去查另一张表才知道是谁。所以&lt;strong&gt;业务对外的 API 通常还是返回 user_no&lt;/strong&gt;——内部 ID + 外部 code 双轨制。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二枚举类外键建议用-code"&gt;&lt;a href="#%e4%ba%8c%e6%9e%9a%e4%b8%be%e7%b1%bb%e5%a4%96%e9%94%ae%e5%bb%ba%e8%ae%ae%e7%94%a8-code" class="header-anchor"&gt;&lt;/a&gt;二、枚举类外键：建议用 CODE
+&lt;/h2&gt;&lt;p&gt;订单状态、性别、城市编码这种&amp;quot;指向字典&amp;quot;的外键，&lt;strong&gt;反过来——建议用 CODE 关联&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="为什么用-code"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e7%94%a8-code" class="header-anchor"&gt;&lt;/a&gt;为什么用 CODE
+&lt;/h3&gt;&lt;h4 id="1-可读性极强"&gt;&lt;a href="#1-%e5%8f%af%e8%af%bb%e6%80%a7%e6%9e%81%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;1. 可读性极强
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 用 ID
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;-- 用 CODE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;WHERE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;PAID&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不用 join 字典表都能看懂&amp;quot;已支付&amp;quot;。&lt;strong&gt;线上排查问题时这个差别非常大&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id="2-字典基本不会改"&gt;&lt;a href="#2-%e5%ad%97%e5%85%b8%e5%9f%ba%e6%9c%ac%e4%b8%8d%e4%bc%9a%e6%94%b9" class="header-anchor"&gt;&lt;/a&gt;2. 字典基本不会改
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;order_status&lt;/code&gt; 这种字典——&lt;code&gt;PAID&lt;/code&gt;、&lt;code&gt;SHIPPED&lt;/code&gt;、&lt;code&gt;COMPLETED&lt;/code&gt;——一旦确定，几乎不会变（业务有变化也是新增，不是修改）。&lt;strong&gt;code 不会改的前提下，ID 的&amp;quot;不变性优势&amp;quot;就消失了&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id="3-跨系统一致"&gt;&lt;a href="#3-%e8%b7%a8%e7%b3%bb%e7%bb%9f%e4%b8%80%e8%87%b4" class="header-anchor"&gt;&lt;/a&gt;3. 跨系统一致
+&lt;/h4&gt;&lt;p&gt;字典经常要给前端、第三方对接、数据导出。&lt;strong&gt;&lt;code&gt;PAID&lt;/code&gt; 比 &lt;code&gt;3&lt;/code&gt; 通用得多&lt;/strong&gt;——前端不用维护&amp;quot;3=已支付&amp;quot;的对照表，直接看 code 写逻辑。&lt;/p&gt;
+&lt;h4 id="4-代码层面更清爽"&gt;&lt;a href="#4-%e4%bb%a3%e7%a0%81%e5%b1%82%e9%9d%a2%e6%9b%b4%e6%b8%85%e7%88%bd" class="header-anchor"&gt;&lt;/a&gt;4. 代码层面更清爽
+&lt;/h4&gt;&lt;p&gt;业务代码用枚举 + 字符串 code 是天然契合：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;enum&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderStatus&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UNPAID&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;UNPAID&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;PAID&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PAID&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SHIPPED&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SHIPPED&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;COMPLETED&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;COMPLETED&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;final&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderStatus&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// SQL 里直接 status_code = &amp;#39;PAID&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Java 里 status == OrderStatus.PAID&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 前端直接 status === &amp;#39;PAID&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果用 ID，代码里到处是 &lt;code&gt;status_id == 3&lt;/code&gt; 这种&lt;strong&gt;魔法数字&lt;/strong&gt;，可读性差，加新状态时容易和已有 ID 撞。&lt;/p&gt;
+&lt;h4 id="5-字典表本身也得有"&gt;&lt;a href="#5-%e5%ad%97%e5%85%b8%e8%a1%a8%e6%9c%ac%e8%ba%ab%e4%b9%9f%e5%be%97%e6%9c%89" class="header-anchor"&gt;&lt;/a&gt;5. 字典表本身也得有
+&lt;/h4&gt;&lt;p&gt;国内项目还有种做法是&lt;strong&gt;根本不建字典表，code 直接写在代码枚举里&lt;/strong&gt;。这有它的优势——一致性强、没有&amp;quot;代码和数据库不同步&amp;quot;的问题，但缺点是&lt;strong&gt;修改要发版&lt;/strong&gt;，前端没法动态拉取选项。&lt;/p&gt;
+&lt;p&gt;工程上常见做法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;简单字典直接代码枚举&lt;/li&gt;
+&lt;li&gt;需要后台管理、能配置的字典建表（status_code 作为 PK 或唯一索引）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三混用一种实用模式"&gt;&lt;a href="#%e4%b8%89%e6%b7%b7%e7%94%a8%e4%b8%80%e7%a7%8d%e5%ae%9e%e7%94%a8%e6%a8%a1%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;三、混用：一种实用模式
+&lt;/h2&gt;&lt;p&gt;很多项目其实是混用——&lt;strong&gt;业务实体用 ID 关联，枚举用 code&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;CREATE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TABLE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orders&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;BIGINT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;PRIMARY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;KEY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order_no&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;UNIQUE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;-- 业务编号，对外用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;BIGINT&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;-- 关联 user.id（关联类）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;status_code&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;VARCHAR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;-- 关联 order_status.code（枚举类）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这是一种&amp;quot;按字段类型选方案&amp;quot;的混合姿势，比&amp;quot;全 ID&amp;quot;或&amp;quot;全 CODE&amp;quot;都更贴合实际。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四第三种争论uuid--雪花-id"&gt;&lt;a href="#%e5%9b%9b%e7%ac%ac%e4%b8%89%e7%a7%8d%e4%ba%89%e8%ae%bauuid--%e9%9b%aa%e8%8a%b1-id" class="header-anchor"&gt;&lt;/a&gt;四、第三种争论：UUID / 雪花 ID
+&lt;/h2&gt;&lt;p&gt;Long 自增 ID 适合单库，分布式场景常被替换为 UUID 或雪花 ID。&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;方案&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;优点&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;缺点&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;自增 ID&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;紧凑、有序、写入友好&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单库限制、跨库迁移痛&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;UUID&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;全局唯一、无中心化&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;二进制 16 字节 / 文本 36 字符、v4 无序、写入页分裂、读取慢&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;雪花 ID&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;紧凑（Long）、有序、分布式&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;时钟回拨问题、需要部署机器号&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;关联类外键用什么主键，CODE 关联问题不大&lt;/strong&gt;。但用 UUID 时务必走 &lt;code&gt;BINARY(16)&lt;/code&gt; 存储而不是 &lt;code&gt;CHAR(36)&lt;/code&gt;——前者只占一半空间且索引性能高得多（不止一倍）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五外键约束要不要加-fk-constraint"&gt;&lt;a href="#%e4%ba%94%e5%a4%96%e9%94%ae%e7%ba%a6%e6%9d%9f%e8%a6%81%e4%b8%8d%e8%a6%81%e5%8a%a0-fk-constraint" class="header-anchor"&gt;&lt;/a&gt;五、外键约束：要不要加 FK constraint
+&lt;/h2&gt;&lt;p&gt;讨论&amp;quot;用 ID 还是 CODE&amp;quot;时，常常顺带聊另一个问题——&lt;strong&gt;要不要在数据库层面建外键约束&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sql" data-lang="sql"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ALTER&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;TABLE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;ADD&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;CONSTRAINT&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;fk_user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;FOREIGN&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;KEY&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;REFERENCES&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;国内绝大多数生产项目&lt;strong&gt;不建外键约束&lt;/strong&gt;，原因：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;性能影响&lt;/strong&gt;：每次写入都要校验外键，高并发下是负担&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分库分表后约束失效&lt;/strong&gt;：跨库 FK 是不可能的&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运维痛点&lt;/strong&gt;：表的清理、备份、迁移都被外键卡住&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;业内主流做法是——&lt;strong&gt;逻辑外键&lt;/strong&gt;（应用层保证一致性，数据库不强制）。这意味着：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;表设计上仍然要有&amp;quot;外键&amp;quot;概念&lt;/li&gt;
+&lt;li&gt;命名规范要清晰：&lt;code&gt;user_id&lt;/code&gt; / &lt;code&gt;product_id&lt;/code&gt; 这种命名让人一眼看出关联&lt;/li&gt;
+&lt;li&gt;数据一致性靠应用代码 + 单测覆盖&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="六实战建议"&gt;&lt;a href="#%e5%85%ad%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;六、实战建议
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([这个外键关联什么?])
+ Start --&gt; Type{业务实体 or 枚举字典?}
+ Type --&gt;|业务实体| ID[用 ID 关联&lt;br/&gt;同时保留 业务编码 字段对外]
+ Type --&gt;|枚举字典| CHANGE{字典变化频率?}
+ CHANGE --&gt;|几乎不变| CODE[用 CODE，不依赖字典表]
+ CHANGE --&gt;|偶尔会改| BOTH[code 关联，但字典建表持久化]&lt;/pre&gt;&lt;p&gt;具体几条建议：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;业务实体外键用 ID&lt;/strong&gt;——&lt;code&gt;user_id&lt;/code&gt;、&lt;code&gt;product_id&lt;/code&gt;、&lt;code&gt;order_id&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;枚举/字典外键用 CODE&lt;/strong&gt;——&lt;code&gt;status_code&lt;/code&gt;、&lt;code&gt;type_code&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;xxx_no&lt;/code&gt; / &lt;code&gt;xxx_code&lt;/code&gt; 字段建唯一索引&lt;/strong&gt;——业务上对外暴露但 DB 关联用 ID&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生产环境基本都不加 FK 约束&lt;/strong&gt;——逻辑外键 + 应用层校验&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不要把&amp;quot;自增 ID&amp;quot;暴露给前端&lt;/strong&gt;——容易暴露业务规模 + 不好做加密短链&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨库场景上雪花 ID 不要 UUID&lt;/strong&gt;——写入性能差距很大&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="七一些反例"&gt;&lt;a href="#%e4%b8%83%e4%b8%80%e4%ba%9b%e5%8f%8d%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;七、一些反例
+&lt;/h2&gt;&lt;h3 id="反例-1user_no-当外键"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-1user_no-%e5%bd%93%e5%a4%96%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反例 1：&lt;code&gt;user_no&lt;/code&gt; 当外键
+&lt;/h3&gt;&lt;p&gt;某项目用 &lt;code&gt;U20170315001&lt;/code&gt; 这种用户编号当所有外键。三年后业务并购，要把所有 U 开头的用户改成 A 开头——&lt;strong&gt;全表 update + 全部关联表 update&lt;/strong&gt;，停服 12 小时。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;业务编号永远可能改格式&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="反例-2状态用-id"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-2%e7%8a%b6%e6%80%81%e7%94%a8-id" class="header-anchor"&gt;&lt;/a&gt;反例 2：状态用 ID
+&lt;/h3&gt;&lt;p&gt;订单状态字典表里 &lt;code&gt;1=未付款&lt;/code&gt;、&lt;code&gt;2=已付款&lt;/code&gt;、&lt;code&gt;3=已发货&lt;/code&gt;。某天产品提需求：&amp;ldquo;把&amp;rsquo;已付款&amp;rsquo;拆成&amp;rsquo;部分付款&amp;rsquo;和&amp;rsquo;全额付款&amp;rsquo;&amp;quot;。开发以为只要在字典加一条，&lt;strong&gt;结果全代码搜 &lt;code&gt;status_id == 2&lt;/code&gt; 漏改了三处&lt;/strong&gt;——线上有&amp;quot;全额付款的订单被识别为部分付款&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;枚举用数字 ID 容易让代码里有魔法数字&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="反例-3用业务编码当主键"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-3%e7%94%a8%e4%b8%9a%e5%8a%a1%e7%bc%96%e7%a0%81%e5%bd%93%e4%b8%bb%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反例 3：用业务编码当主键
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;order_no&lt;/code&gt; 设为 &lt;code&gt;order&lt;/code&gt; 表的主键——单字段、有序、看似优雅。但：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VARCHAR 主键聚簇索引大、IO 多&lt;/li&gt;
+&lt;li&gt;业务编码格式偶尔要改（前缀、长度）→ 主键变化引发整表 rebuild&lt;/li&gt;
+&lt;li&gt;子表关联用 VARCHAR(32) 占空间多&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;教训：&lt;strong&gt;主键应当稳定、无意义、紧凑&lt;/strong&gt;——&lt;code&gt;bigint id&lt;/code&gt; 是最佳形态。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;业务实体之间用 ID 关联，枚举字典之间用 CODE 关联——稳定的东西用稳定的标识，可读的东西用可读的标识。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;记住几条工程铁律：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;ID 主键永不暴露给业务规则&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务编码做唯一索引但不做外键&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;枚举字典 code 全大写下划线，永不复用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;生产环境逻辑外键 + 应用层校验&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代码里别留魔法数字，永远用枚举 + code 比较&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把这几条吃透，数据库设计这层基本不会出大问题。&lt;/p&gt;</description></item></channel></rss>

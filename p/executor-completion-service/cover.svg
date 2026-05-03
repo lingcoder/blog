@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1F1B5C"/>
+          <stop offset="0.45" stop-color="#5C2A8A"/>
+          <stop offset="1" stop-color="#E89B5C"/>
+    </linearGradient>
+      <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFB57A" stop-opacity="0.6"/>
+          <stop offset="1" stop-color="#FFB57A" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="450" fill="url(#sky)"/>
+
+    <!-- Sun glow on horizon -->
+    <ellipse cx="600" cy="430" rx="500" ry="60" fill="url(#sunGlow)"/>
+
+    <!-- Stars -->
+    <g fill="#FFFFFF">
+        <circle cx="80" cy="80" r="1.2" opacity="0.85"/>
+        <circle cx="220" cy="50" r="1" opacity="0.7"/>
+        <circle cx="380" cy="100" r="1.4" opacity="0.9"/>
+        <circle cx="520" cy="60" r="1.1" opacity="0.7"/>
+        <circle cx="180" cy="160" r="1" opacity="0.6"/>
+        <circle cx="320" cy="200" r="0.9" opacity="0.5"/>
+    </g>
+
+    <!-- Distant skyline -->
+    <g fill="#3D2A6E" opacity="0.85">
+        <rect x="0" y="350" width="60" height="100"/>
+        <rect x="80" y="340" width="40" height="110"/>
+        <rect x="140" y="360" width="50" height="90"/>
+        <rect x="210" y="330" width="55" height="120"/>
+        <rect x="280" y="345" width="45" height="105"/>
+        <rect x="950" y="345" width="55" height="105"/>
+        <rect x="1020" y="335" width="45" height="115"/>
+        <rect x="1080" y="350" width="60" height="100"/>
+        <rect x="1160" y="340" width="40" height="110"/>
+  </g>
+
+    <!-- Mid skyline -->
+    <g fill="#1F1438">
+        <rect x="320" y="290" width="40" height="160"/>
+        <rect x="370" y="270" width="55" height="180"/>
+        <rect x="435" y="310" width="35" height="140"/>
+        <rect x="480" y="240" width="60" height="210"/>
+        <rect x="550" y="280" width="45" height="170"/>
+        <!-- Tall tower -->
+        <rect x="605" y="180" width="40" height="270"/>
+        <polygon points="615,180 625,150 635,180"/>
+        <rect x="655" y="270" width="50" height="180"/>
+        <rect x="715" y="240" width="45" height="210"/>
+        <rect x="770" y="290" width="55" height="160"/>
+        <rect x="835" y="260" width="40" height="190"/>
+        <rect x="885" y="300" width="50" height="150"/>
+    </g>
+
+    <!-- Window lights -->
+    <g fill="#FFD085" opacity="0.85">
+        <rect x="328" y="320" width="6" height="6"/>
+        <rect x="346" y="340" width="6" height="6"/>
+        <rect x="328" y="360" width="6" height="6"/>
+        <rect x="380" y="290" width="6" height="6"/>
+        <rect x="400" y="320" width="6" height="6"/>
+        <rect x="380" y="360" width="6" height="6"/>
+        <rect x="495" y="270" width="6" height="6"/>
+        <rect x="515" y="300" width="6" height="6"/>
+        <rect x="495" y="340" width="6" height="6"/>
+        <rect x="515" y="380" width="6" height="6"/>
+        <rect x="495" y="420" width="6" height="6"/>
+        <rect x="613" y="220" width="5" height="5"/>
+        <rect x="625" y="250" width="5" height="5"/>
+        <rect x="613" y="290" width="5" height="5"/>
+        <rect x="625" y="330" width="5" height="5"/>
+        <rect x="613" y="370" width="5" height="5"/>
+        <rect x="625" y="410" width="5" height="5"/>
+        <rect x="725" y="270" width="6" height="6"/>
+        <rect x="745" y="310" width="6" height="6"/>
+        <rect x="725" y="350" width="6" height="6"/>
+        <rect x="780" y="320" width="6" height="6"/>
+        <rect x="800" y="360" width="6" height="6"/>
+        <rect x="845" y="290" width="6" height="6"/>
+        <rect x="860" y="340" width="6" height="6"/>
+    </g>
+
+    <!-- River -->
+    <rect y="450" width="1200" height="180" fill="#0F1430"/>
+
+    <!-- River reflection of city lights -->
+    <g fill="#FFD085" opacity="0.4">
+        <rect x="380" y="480" width="3" height="10"/>
+        <rect x="495" y="475" width="3" height="14"/>
+        <rect x="615" y="470" width="3" height="20"/>
+        <rect x="725" y="478" width="3" height="12"/>
+        <rect x="800" y="482" width="3" height="10"/>
+  </g>
+
+    <!-- River reflection blur -->
+    <g fill="#5C2A8A" opacity="0.3">
+        <ellipse cx="600" cy="490" rx="500" ry="20"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFD085" font-family="-apple-system, sans-serif" font-size="14" opacity="0.8"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

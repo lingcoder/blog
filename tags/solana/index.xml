@@ -129,7 +129,8 @@
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
  &gt;EIP-2255&lt;/a&gt;: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
- &gt;EIP-2335&lt;/a&gt;: Keystore V4 密钥加密存储格式，主流以太坊钱包通用加密文件规范。&lt;/li&gt;
+ &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS 私钥加密存储；普通 EOA 钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
+ &gt;Web3 Secret Storage&lt;/a&gt;（业内俗称 Keystore V3）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
  &gt;EIP-2612&lt;/a&gt;: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
@@ -139,7 +140,7 @@
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noopener"
  &gt;EIP-4361&lt;/a&gt;: 使用以太坊地址签名认证（Sign-In With Ethereum）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-5805" target="_blank" rel="noopener"
- &gt;EIP-5805&lt;/a&gt;: 钱包安全标准。&lt;/li&gt;
+ &gt;EIP-5805&lt;/a&gt;: 投票与委托标准（治理代币的链上投票/委托接口，与钱包安全无关）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank" rel="noopener"
  &gt;EIP-6963&lt;/a&gt;: 多钱包发现和选择，提升多钱包生态用户体验。&lt;/li&gt;
 &lt;/ul&gt;
@@ -243,7 +244,7 @@
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
  &gt;EIP-2930&lt;/a&gt;: 可选访问列表&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3607" target="_blank" rel="noopener"
- &gt;EIP-3607&lt;/a&gt;: 交易重放保护&lt;/li&gt;
+ &gt;EIP-3607&lt;/a&gt;: 拒绝合约代码地址签发的交易（防止账户抽象前的地址冲突安全风险）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2535" target="_blank" rel="noopener"
  &gt;EIP-2535&lt;/a&gt;: Diamond多合约分片架构&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
@@ -262,7 +263,7 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id="33-索拉纳生态标准"&gt;&lt;a href="#33-%e7%b4%a2%e6%8b%89%e7%ba%b3%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.3 索拉纳生态标准
+&lt;h3 id="34-索拉纳生态标准"&gt;&lt;a href="#34-%e7%b4%a2%e6%8b%89%e7%ba%b3%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.4 索拉纳生态标准
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;代币与资产标准&lt;/strong&gt;&lt;/p&gt;
@@ -295,8 +296,8 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id="34-波场生态标准"&gt;&lt;a href="#34-%e6%b3%a2%e5%9c%ba%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.4 波场生态标准
-&lt;/h4&gt;&lt;ul&gt;
+&lt;h3 id="35-波场生态标准"&gt;&lt;a href="#35-%e6%b3%a2%e5%9c%ba%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.5 波场生态标准
+&lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;资产与NFT标准&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -338,15 +339,15 @@
  &gt;社区治理&lt;/a&gt;: 社区/开发者治理规则&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;安全最佳实践&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
+&lt;/ul&gt;
+&lt;h3 id="36-安全最佳实践跨生态"&gt;&lt;a href="#36-%e5%ae%89%e5%85%a8%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%e8%b7%a8%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;3.6 安全最佳实践（跨生态）
+&lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
- &gt;Ethereum Security Best Practices&lt;/a&gt;&lt;/li&gt;
+ &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;（ConsenSys，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
  &gt;Solana Security Best Practices&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://swcregistry.io/" target="_blank" rel="noopener"
+ &gt;SWC Registry&lt;/a&gt;：Smart Contract Weakness Classification（合约漏洞分类与缓解）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="4-竞品分析"&gt;&lt;a href="#4-%e7%ab%9e%e5%93%81%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;4. 竞品分析
 &lt;/h2&gt;&lt;h3 id="41-主流钱包分析"&gt;&lt;a href="#41-%e4%b8%bb%e6%b5%81%e9%92%b1%e5%8c%85%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;4.1 主流钱包分析
@@ -704,42 +705,43 @@ DeepLink&lt;/li&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h4 id="web3-开发包"&gt;&lt;a href="#web3-%e5%bc%80%e5%8f%91%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Web3 开发包
-&lt;/h4&gt;&lt;ul&gt;
+&lt;/h4&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在 Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;以太坊开发&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
+ &gt;web3dart&lt;/a&gt;: 以太坊开发核心库（事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_core_bindings" target="_blank" rel="noopener"
  &gt;wallet_core_bindings&lt;/a&gt;: Trust Wallet Core 绑定&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_v2" target="_blank" rel="noopener"
- &gt;wallet_connect_v2&lt;/a&gt;: WalletConnect v2 支持&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
- &gt;web3dart&lt;/a&gt;: 以太坊开发核心库&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;钱包集成&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WalletConnect / Reown（钱包连接）&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_modal_flutter" target="_blank" rel="noopener"
- &gt;wallet_connect_modal_flutter&lt;/a&gt;: WalletConnect 模态框&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_utils" target="_blank" rel="noopener"
- &gt;wallet_connect_utils&lt;/a&gt;: WalletConnect 工具集&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_sign" target="_blank" rel="noopener"
- &gt;wallet_connect_sign&lt;/a&gt;: WalletConnect 签名&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_uri" target="_blank" rel="noopener"
- &gt;wallet_connect_uri&lt;/a&gt;: WalletConnect URI 处理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_appkit" target="_blank" rel="noopener"
+ &gt;reown_appkit&lt;/a&gt;: Reown AppKit（dApp 端钱包连接 + UI）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_walletkit" target="_blank" rel="noopener"
+ &gt;reown_walletkit&lt;/a&gt;: Reown WalletKit（钱包端集成 WalletConnect v2）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_core" target="_blank" rel="noopener"
+ &gt;reown_core&lt;/a&gt;: Reown 协议核心&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/walletconnect_flutter_v2" target="_blank" rel="noopener"
+ &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被 reown_* 取代，新项目用 reown）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;链适配器&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana_dart" target="_blank" rel="noopener"
- &gt;solana_dart&lt;/a&gt;: Solana 开发库&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/tronweb_dart" target="_blank" rel="noopener"
- &gt;tronweb_dart&lt;/a&gt;: TRON 开发库&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/bitcoin_dart" target="_blank" rel="noopener"
- &gt;bitcoin_dart&lt;/a&gt;: Bitcoin 开发库&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_appkit" target="_blank" rel="noopener"
- &gt;reown_appkit&lt;/a&gt;: Onchain UX 平台工具包&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana" target="_blank" rel="noopener"
+ &gt;solana&lt;/a&gt; / &lt;a class="link" href="https://pub.dev/packages/solana_web3" target="_blank" rel="noopener"
+ &gt;solana_web3&lt;/a&gt;: Solana 开发库&lt;/li&gt;
+&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC + 自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
+ &gt;bip32&lt;/a&gt; + &lt;a class="link" href="https://pub.dev/packages/pointycastle" target="_blank" rel="noopener"
+ &gt;pointycastle&lt;/a&gt;），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -759,16 +761,14 @@ DeepLink&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;生物认证&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;生物认证 / 安全存储&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
- &gt;local_auth&lt;/a&gt;: 生物认证&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_biometrics_plus" target="_blank" rel="noopener"
- &gt;flutter_biometrics_plus&lt;/a&gt;: 生物识别增强版&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_auth_biometric" target="_blank" rel="noopener"
- &gt;flutter_auth_biometric&lt;/a&gt;: 生物认证工具&lt;/li&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_key_storage" target="_blank" rel="noopener"
- &gt;flutter_secure_key_storage&lt;/a&gt;: 密钥存储&lt;/li&gt;
+ &gt;local_auth&lt;/a&gt;: 生物认证（指纹 / 面容，官方包，事实标准）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
+ &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore 安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/biometric_storage" target="_blank" rel="noopener"
+ &gt;biometric_storage&lt;/a&gt;: 生物识别保护下的安全存储&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -790,12 +790,14 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;代码质量&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_analyzer" target="_blank" rel="noopener"
- &gt;flutter_analyzer&lt;/a&gt;: 代码分析&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/analyzer" target="_blank" rel="noopener"
+ &gt;analyzer&lt;/a&gt;: Dart 静态分析（官方）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/very_good_analysis" target="_blank" rel="noopener"
- &gt;very_good_analysis&lt;/a&gt;: 代码规范&lt;/li&gt;
+ &gt;very_good_analysis&lt;/a&gt;: 严格 lint 规则集&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_lints" target="_blank" rel="noopener"
- &gt;flutter_lints&lt;/a&gt;: 代码检查规则&lt;/li&gt;
+ &gt;flutter_lints&lt;/a&gt;: Flutter 官方推荐 lint 规则&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/dart_code_metrics" target="_blank" rel="noopener"
+ &gt;dart_code_metrics&lt;/a&gt;: 代码度量与高级 lint&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/coverage" target="_blank" rel="noopener"
  &gt;coverage&lt;/a&gt;: 测试覆盖率&lt;/li&gt;
 &lt;/ul&gt;
@@ -927,207 +929,137 @@ DeepLink&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id="6-术语解释"&gt;&lt;a href="#6-%e6%9c%af%e8%af%ad%e8%a7%a3%e9%87%8a" class="header-anchor"&gt;&lt;/a&gt;6. 术语解释
-&lt;/h2&gt;&lt;h3 id="61-区块链基础"&gt;&lt;a href="#61-%e5%8c%ba%e5%9d%97%e9%93%be%e5%9f%ba%e7%a1%80" class="header-anchor"&gt;&lt;/a&gt;6.1 区块链基础
-&lt;/h3&gt;&lt;h4 id="核心概念"&gt;&lt;a href="#%e6%a0%b8%e5%bf%83%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;核心概念
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;区块链技术&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;区块链 (Blockchain): 分布式账本技术，通过密码学确保数据不可篡改&lt;/li&gt;
-&lt;li&gt;共识机制 (Consensus Mechanism): 确保网络一致性的算法，如 PoW、PoS、DPoS&lt;/li&gt;
-&lt;li&gt;智能合约 (Smart Contract): 自动执行的程序代码，部署在区块链上&lt;/li&gt;
-&lt;li&gt;节点 (Node): 网络参与者，维护区块链数据和参与共识&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;密码学基础&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;非对称加密 (Asymmetric Cryptography): 使用公钥和私钥对的加密系统&lt;/li&gt;
-&lt;li&gt;哈希函数 (Hash Function): 将任意长度数据转换为固定长度输出的函数&lt;/li&gt;
-&lt;li&gt;数字签名 (Digital Signature): 使用私钥对数据进行签名，验证数据来源和完整性&lt;/li&gt;
-&lt;li&gt;零知识证明 (Zero-knowledge Proof): 证明某个陈述为真而不泄露其他信息的技术&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;网络架构&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;主网 (Mainnet): 区块链的正式运行网络&lt;/li&gt;
-&lt;li&gt;测试网 (Testnet): 用于开发和测试的网络环境&lt;/li&gt;
-&lt;li&gt;侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li&gt;
-&lt;li&gt;跨链桥 (Bridge): 连接不同区块链的协议，实现资产和数据互通&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="62-钱包与安全"&gt;&lt;a href="#62-%e9%92%b1%e5%8c%85%e4%b8%8e%e5%ae%89%e5%85%a8" class="header-anchor"&gt;&lt;/a&gt;6.2 钱包与安全
-&lt;/h3&gt;&lt;h4 id="钱包类型"&gt;&lt;a href="#%e9%92%b1%e5%8c%85%e7%b1%bb%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;钱包类型
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;按存储方式&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;热钱包 (Hot Wallet): 在线连接的钱包，方便但安全性较低&lt;/li&gt;
-&lt;li&gt;冷钱包 (Cold Wallet): 离线存储私钥的钱包，提供最高安全性&lt;/li&gt;
-&lt;li&gt;硬件钱包 (Hardware Wallet): 使用专用硬件设备存储私钥&lt;/li&gt;
-&lt;li&gt;托管钱包 (Custodial Wallet): 由第三方机构管理私钥的钱包&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;按功能特性&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;HD钱包 (Hierarchical Deterministic Wallet): 从单个种子派生多个密钥对的钱包&lt;/li&gt;
-&lt;li&gt;观察钱包 (Watch-only Wallet): 只能查看余额但不能签名的钱包&lt;/li&gt;
-&lt;li&gt;多重签名钱包 (Multi-sig Wallet): 需要多个私钥共同签名才能执行交易&lt;/li&gt;
-&lt;li&gt;智能合约钱包 (Smart Contract Wallet): 使用智能合约管理账户的钱包&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id="安全机制"&gt;&lt;a href="#%e5%ae%89%e5%85%a8%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;安全机制
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;私钥 (Private Key): 用于签名交易和证明资产所有权的密钥&lt;/li&gt;
-&lt;li&gt;公钥 (Public Key): 由私钥派生的公开密钥，用于验证签名&lt;/li&gt;
-&lt;li&gt;助记词 (Mnemonic): 人类可读的密钥备份，通常为 12-24 个单词&lt;/li&gt;
-&lt;li&gt;密钥派生路径 (Derivation Path): 从种子生成特定密钥的路径&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;安全特性&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;生物认证 (Biometric Authentication): 使用指纹、面部等生物特征进行身份验证&lt;/li&gt;
-&lt;li&gt;社交恢复 (Social Recovery): 通过可信社交关系恢复钱包访问权的机制&lt;/li&gt;
-&lt;li&gt;账户抽象 (Account Abstraction): 将账户逻辑从区块链协议中分离的设计模式&lt;/li&gt;
-&lt;li&gt;权限管理 (Permission Management): 控制不同操作所需权限的机制&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="63-交易与合约"&gt;&lt;a href="#63-%e4%ba%a4%e6%98%93%e4%b8%8e%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;6.3 交易与合约
-&lt;/h3&gt;&lt;h4 id="交易机制"&gt;&lt;a href="#%e4%ba%a4%e6%98%93%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;交易机制
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;交易类型&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;普通转账 (Transfer): 基本的代币转账交易&lt;/li&gt;
-&lt;li&gt;合约调用 (Contract Call): 调用智能合约的交易&lt;/li&gt;
-&lt;li&gt;批量交易 (Batch Transaction): 包含多个操作的交易&lt;/li&gt;
-&lt;li&gt;闪电交易 (Flash Transaction): 即时完成但可撤销的交易&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;交易属性&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;交易哈希 (Transaction Hash): 交易的唯一标识符&lt;/li&gt;
-&lt;li&gt;Gas 费用 (Gas Fee): 执行交易所需的计算资源费用&lt;/li&gt;
-&lt;li&gt;交易确认 (Transaction Confirmation): 交易被打包进区块并得到网络确认&lt;/li&gt;
-&lt;li&gt;交易状态 (Transaction Status): 交易的处理状态，如待处理、已确认、失败&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id="智能合约"&gt;&lt;a href="#%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;智能合约
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;合约类型&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;代币合约 (Token Contract): 管理代币发行和转账的合约&lt;/li&gt;
-&lt;li&gt;治理合约 (Governance Contract): 管理协议参数和升级的合约&lt;/li&gt;
-&lt;li&gt;交易合约 (Exchange Contract): 处理资产交换的合约&lt;/li&gt;
-&lt;li&gt;保险合约 (Insurance Contract): 提供风险保障的合约&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;合约特性&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;可升级性 (Upgradability): 合约代码可更新的特性&lt;/li&gt;
-&lt;li&gt;可组合性 (Composability): 合约之间可相互调用的特性&lt;/li&gt;
-&lt;li&gt;事件机制 (Event Mechanism): 合约状态变化的通知机制&lt;/li&gt;
-&lt;li&gt;访问控制 (Access Control): 控制合约功能访问权限的机制&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="64-defi-与-nft"&gt;&lt;a href="#64-defi-%e4%b8%8e-nft" class="header-anchor"&gt;&lt;/a&gt;6.4 DeFi 与 NFT
-&lt;/h3&gt;&lt;h4 id="defi-概念"&gt;&lt;a href="#defi-%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;DeFi 概念
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;基础服务&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;去中心化交易所 (DEX): 基于智能合约的资产交易平台&lt;/li&gt;
-&lt;li&gt;借贷协议 (Lending Protocol): 提供去中心化借贷服务的协议&lt;/li&gt;
-&lt;li&gt;稳定币 (Stablecoin): 价值与法定货币挂钩的加密货币&lt;/li&gt;
-&lt;li&gt;收益聚合器 (Yield Aggregator): 自动优化收益的 DeFi 协议&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;高级功能&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;闪电贷 (Flash Loan): 无需抵押的即时借贷&lt;/li&gt;
-&lt;li&gt;流动性挖矿 (Liquidity Mining): 提供流动性的奖励机制&lt;/li&gt;
-&lt;li&gt;收益耕作 (Yield Farming): 通过提供流动性获取收益&lt;/li&gt;
-&lt;li&gt;自动做市商 (AMM): 使用算法自动提供流动性的机制&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id="nft-生态"&gt;&lt;a href="#nft-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;NFT 生态
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;基础概念&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;非同质化代币 (NFT): 独特的数字资产，不可互换&lt;/li&gt;
-&lt;li&gt;元数据 (Metadata): NFT 的链下数据，包含图片、描述等&lt;/li&gt;
-&lt;li&gt;版税 (Royalty): NFT 二次销售时支付给创作者的费用&lt;/li&gt;
-&lt;li&gt;地板价 (Floor Price): NFT 集合中最低的挂单价格&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;应用场景&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;数字艺术 (Digital Art): 数字化的艺术品和收藏品&lt;/li&gt;
-&lt;li&gt;游戏资产 (Game Assets): 游戏中的虚拟物品和角色&lt;/li&gt;
-&lt;li&gt;虚拟土地 (Virtual Land): 元宇宙中的虚拟地产&lt;/li&gt;
-&lt;li&gt;身份认证 (Identity): 基于 NFT 的数字身份系统&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="65-跨链与互操作"&gt;&lt;a href="#65-%e8%b7%a8%e9%93%be%e4%b8%8e%e4%ba%92%e6%93%8d%e4%bd%9c" class="header-anchor"&gt;&lt;/a&gt;6.5 跨链与互操作
-&lt;/h3&gt;&lt;h4 id="跨链技术"&gt;&lt;a href="#%e8%b7%a8%e9%93%be%e6%8a%80%e6%9c%af" class="header-anchor"&gt;&lt;/a&gt;跨链技术
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;基础架构&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;跨链桥 (Bridge): 连接不同区块链的协议&lt;/li&gt;
-&lt;li&gt;原子交换 (Atomic Swap): 不同链上资产的安全交换&lt;/li&gt;
-&lt;li&gt;中继器 (Relayer): 在链间传递消息和数据的服务&lt;/li&gt;
-&lt;li&gt;预言机 (Oracle): 将链下数据引入区块链的服务&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;互操作标准&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;跨链消息 (Cross-chain Message): 在不同链间传递的信息&lt;/li&gt;
-&lt;li&gt;互操作性协议 (Interoperability Protocol): 如 IBC、LayerZero 等跨链协议&lt;/li&gt;
-&lt;li&gt;跨链资产 (Cross-chain Asset): 可在不同链间转移的资产&lt;/li&gt;
-&lt;li&gt;跨链身份 (Cross-chain Identity): 在不同链间保持一致的的身份系统&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4 id="扩展方案"&gt;&lt;a href="#%e6%89%a9%e5%b1%95%e6%96%b9%e6%a1%88" class="header-anchor"&gt;&lt;/a&gt;扩展方案
-&lt;/h4&gt;&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;Layer 2&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;状态通道 (State Channel): 链下处理交易，链上结算&lt;/li&gt;
-&lt;li&gt;侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li&gt;
-&lt;li&gt;等离子链 (Plasma): 基于欺诈证明的链下扩展方案&lt;/li&gt;
-&lt;li&gt;乐观卷叠 (Optimistic Rollup): 基于欺诈证明的 Layer 2 方案&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;strong&gt;分片技术&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;状态分片 (State Sharding): 将区块链状态分成多个分片&lt;/li&gt;
-&lt;li&gt;交易分片 (Transaction Sharding): 将交易分配到不同分片处理&lt;/li&gt;
-&lt;li&gt;网络分片 (Network Sharding): 将网络节点分成多个分片&lt;/li&gt;
-&lt;li&gt;分片间通信 (Cross-shard Communication): 不同分片间的数据交换&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</description></item></channel></rss>
+&lt;h2 id="6-钱包工程相关术语"&gt;&lt;a href="#6-%e9%92%b1%e5%8c%85%e5%b7%a5%e7%a8%8b%e7%9b%b8%e5%85%b3%e6%9c%af%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;6. 钱包工程相关术语
+&lt;/h2&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与 Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;h3 id="61-钱包形态"&gt;&lt;a href="#61-%e9%92%b1%e5%8c%85%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;6.1 钱包形态
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;名词&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;一句话解释&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;热钱包 / 冷钱包&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;是否在线持有私钥（在线 = 热，离线 = 冷）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;托管钱包 / 非托管钱包&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;私钥在第三方手里 vs 在用户手里&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;HD 钱包（BIP-32）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单一种子派生多账户、多链、多地址的钱包&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;多签钱包&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;需要 N 把私钥中的 M 把签名才能花费&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;智能合约钱包（AA）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;账户由合约控制，可自定义验签、社交恢复、付 gas 等&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Watch-only 钱包&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;只看余额、不签名（导入公钥/地址即可）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="62-密钥与派生"&gt;&lt;a href="#62-%e5%af%86%e9%92%a5%e4%b8%8e%e6%b4%be%e7%94%9f" class="header-anchor"&gt;&lt;/a&gt;6.2 密钥与派生
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;名词&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;一句话解释&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;私钥 / 公钥&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;椭圆曲线密钥对，公钥派生地址、私钥用于签名&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;助记词（BIP-39）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;12/24 个单词组成的可读种子，能恢复整个 HD 钱包&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;派生路径（BIP-44）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;m/44'/60'/0'/0/0&lt;/code&gt; 这样的 HD 派生层级，每条链有自己 coin type&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Keystore（V3）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Web3 Secret Storage——加密保存私钥的 JSON 文件&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;硬件钱包接入&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Ledger / Trezor 通过 USB / BLE 暴露签名接口，私钥永不离开设备&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="63-签名与连接"&gt;&lt;a href="#63-%e7%ad%be%e5%90%8d%e4%b8%8e%e8%bf%9e%e6%8e%a5" class="header-anchor"&gt;&lt;/a&gt;6.3 签名与连接
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;名词&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;一句话解释&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;EIP-191&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;以太坊原始签名格式（&lt;code&gt;personal_sign&lt;/code&gt;）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;EIP-712&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;结构化数据签名，钱包能给用户展示可读的待签内容&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;EIP-1271&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;合约钱包的签名验证标准（合约自己说&amp;quot;这签名我认&amp;quot;）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Sign-In With Ethereum（EIP-4361）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;用钱包签名做去中心化登录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;WalletConnect / Reown&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;dApp 与钱包之间的跨设备通信协议&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;EIP-1193&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;dApp 向钱包要 provider 的统一接口&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="64-移动端工程关注"&gt;&lt;a href="#64-%e7%a7%bb%e5%8a%a8%e7%ab%af%e5%b7%a5%e7%a8%8b%e5%85%b3%e6%b3%a8" class="header-anchor"&gt;&lt;/a&gt;6.4 移动端工程关注
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;名词&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;一句话解释&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Secure Enclave / Keystore&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;iOS / Android 平台级安全芯片，存私钥的最佳归宿&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;生物识别&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;指纹 / 面容触发签名，私钥不直接暴露给应用层&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;深链接（Deep Link）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;dApp ↔ 钱包跳转，处理&amp;quot;扫码 → 唤起钱包 → 签完返回&amp;quot;的链路&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Push 通知&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;WalletConnect 离线时通过 Push 唤醒钱包接收新签名请求&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;</description></item></channel></rss>

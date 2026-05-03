@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE5EC"/>
+          <stop offset="0.5" stop-color="#FFC2D5"/>
+          <stop offset="1" stop-color="#F593B8"/>
+    </linearGradient>
+      <radialGradient id="petalCloud" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFD9E5" stop-opacity="0.85"/>
+          <stop offset="1" stop-color="#FFD9E5" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Distant mountain (Mt Fuji style) -->
+    <path d="M 350 350 L 600 130 L 850 350 Z" fill="#9C7BA8" opacity="0.65"/>
+    <!-- Snow cap -->
+    <path d="M 540 195 L 600 130 L 660 195 L 640 215 L 620 200 L 600 220 L 580 200 L 560 215 Z" fill="#FFFFFF"
+          opacity="0.95"/>
+
+    <!-- Background petal puffs -->
+    <circle cx="180" cy="280" r="180" fill="url(#petalCloud)"/>
+    <circle cx="1020" cy="240" r="160" fill="url(#petalCloud)"/>
+
+    <!-- Cherry blossom tree silhouette -->
+    <g>
+        <!-- trunk -->
+        <path d="M 180 540 L 175 420 L 165 350 M 180 540 L 195 430 L 215 360"
+              stroke="#5C3A2E" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- Cherry blossoms (clouds of pink) -->
+        <circle cx="170" cy="330" r="50" fill="#FFB8D0"/>
+        <circle cx="220" cy="340" r="55" fill="#FF9CC0"/>
+        <circle cx="170" cy="370" r="45" fill="#FFC2D5"/>
+        <circle cx="125" cy="340" r="40" fill="#FFB8D0"/>
+        <circle cx="200" cy="300" r="40" fill="#FFD9E5"/>
+        <circle cx="150" cy="300" r="35" fill="#FFC2D5"/>
+    </g>
+
+    <!-- Second tree right -->
+    <g>
+        <path d="M 1000 540 L 998 440 L 990 380 M 1000 540 L 1010 440 L 1025 390"
+              stroke="#5C3A2E" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="990" cy="370" r="38" fill="#FFB8D0"/>
+        <circle cx="1025" cy="380" r="42" fill="#FFC2D5"/>
+        <circle cx="1000" cy="345" r="35" fill="#FFD9E5"/>
+        <circle cx="1050" cy="360" r="32" fill="#FFB8D0"/>
+    </g>
+
+    <!-- Falling petals -->
+    <g fill="#FF8FB5">
+        <circle cx="380" cy="160" r="3"/>
+        <circle cx="450" cy="220" r="2.5"/>
+        <circle cx="520" cy="280" r="3"/>
+        <circle cx="640" cy="240" r="2.5"/>
+        <circle cx="720" cy="190" r="3"/>
+        <circle cx="800" cy="280" r="2.5"/>
+        <circle cx="880" cy="200" r="3"/>
+        <circle cx="350" cy="300" r="2"/>
+        <circle cx="600" cy="350" r="2.5"/>
+        <circle cx="780" cy="370" r="2"/>
+  </g>
+
+    <!-- Ground -->
+    <path d="M 0 540 Q 600 520 1200 545 L 1200 630 L 0 630 Z" fill="#A8748A"/>
+    <path d="M 0 580 Q 600 565 1200 585 L 1200 630 L 0 630 Z" fill="#7C4F60"/>
+
+    <text x="60" y="608" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

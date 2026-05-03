@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 08 Nov 2024 10:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务之间，到底应如何传递用户信息</title><link>https://www.lingcoder.com/p/how-to-pass-user-context-between-microservices/</link><pubDate>Fri, 08 Nov 2024 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/how-to-pass-user-context-between-microservices/</guid><description>&lt;h2 id="一个所有人都遇到过的场景"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e6%89%80%e6%9c%89%e4%ba%ba%e9%83%bd%e9%81%87%e5%88%b0%e8%bf%87%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;一个所有人都遇到过的场景
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>微服务 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</link><description>Recent content in 微服务 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 08 Nov 2024 10:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>微服务之间，到底应如何传递用户信息</title><link>https://www.lingcoder.com/p/how-to-pass-user-context-between-microservices/</link><pubDate>Fri, 08 Nov 2024 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/how-to-pass-user-context-between-microservices/</guid><description>&lt;img src="https://www.lingcoder.com/p/how-to-pass-user-context-between-microservices/cover.svg" alt="Featured image of post 微服务之间，到底应如何传递用户信息" /&gt;&lt;h2 id="一个所有人都遇到过的场景"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e6%89%80%e6%9c%89%e4%ba%ba%e9%83%bd%e9%81%87%e5%88%b0%e8%bf%87%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;一个所有人都遇到过的场景
 &lt;/h2&gt;&lt;p&gt;设想一个最常见的下单链路：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -465,4 +465,668 @@
 &lt;li&gt;&lt;strong&gt;异步场景（线程池、MQ）单独处理上下文复制&lt;/strong&gt;，否则一定会丢。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;规模到了，再考虑用 Service Mesh 把这件事彻底下沉&lt;/strong&gt;。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;把这条链条闭环建好，未来无论加多少个服务、加多少种身份字段，业务代码都不用动。这才是&amp;quot;基础设施服务于业务&amp;quot;应有的样子。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;把这条链条闭环建好，未来无论加多少个服务、加多少种身份字段，业务代码都不用动。这才是&amp;quot;基础设施服务于业务&amp;quot;应有的样子。&lt;/p&gt;</description></item><item><title>Spring Cloud 微服务之间如何避免循环依赖</title><link>https://www.lingcoder.com/p/spring-cloud-avoid-circular-dependency/</link><pubDate>Thu, 11 Apr 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-cloud-avoid-circular-dependency/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-cloud-avoid-circular-dependency/cover.svg" alt="Featured image of post Spring Cloud 微服务之间如何避免循环依赖" /&gt;&lt;h2 id="一个隐性而致命的问题"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e9%9a%90%e6%80%a7%e8%80%8c%e8%87%b4%e5%91%bd%e7%9a%84%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一个隐性而致命的问题
+&lt;/h2&gt;&lt;p&gt;微服务团队成长到一定规模后，&lt;strong&gt;几乎都会遇到服务之间的循环依赖&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;订单服务 → 用户服务 → 订单服务
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;朴素的解决思路：&amp;ldquo;只是调用关系而已，能跑就行&amp;rdquo;——但这种循环会带来一系列问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;启动顺序混乱&lt;/strong&gt;：A 启动时要连 B 的健康检查，B 启动时要连 A 的——谁先启动？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;故障爆炸式扩散&lt;/strong&gt;：A 挂 → B 挂 → A 挂——单点故障变成集群故障&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;测试灾难&lt;/strong&gt;：要起 A 必须先起 B、起 B 必须先起 A&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;架构腐化&lt;/strong&gt;：循环让&amp;quot;职责边界&amp;quot;完全消失——任何修改都要全链条考虑&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;死锁/雪崩风险&lt;/strong&gt;：链路超时、回调嵌套、连接池耗尽&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重构寸步难行&lt;/strong&gt;：想拆分服务时所有循环都拦着&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;循环依赖&lt;strong&gt;不是技术问题，是架构问题&lt;/strong&gt;。本文从识别、分析、解决三个层面讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一循环依赖的几种典型形态"&gt;&lt;a href="#%e4%b8%80%e5%be%aa%e7%8e%af%e4%be%9d%e8%b5%96%e7%9a%84%e5%87%a0%e7%a7%8d%e5%85%b8%e5%9e%8b%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;一、循环依赖的几种典型形态
+&lt;/h2&gt;&lt;h3 id="1-直接循环a--b"&gt;&lt;a href="#1-%e7%9b%b4%e6%8e%a5%e5%be%aa%e7%8e%afa--b" class="header-anchor"&gt;&lt;/a&gt;1. 直接循环（A ↔ B）
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[订单服务] --&gt;|查用户信息| B[用户服务]
+ B --&gt;|查用户最近订单| A&lt;/pre&gt;&lt;p&gt;最常见的——双方都要对方的数据。&lt;/p&gt;
+&lt;h3 id="2-间接循环a--b--c--a"&gt;&lt;a href="#2-%e9%97%b4%e6%8e%a5%e5%be%aa%e7%8e%afa--b--c--a" class="header-anchor"&gt;&lt;/a&gt;2. 间接循环（A → B → C → A）
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[订单服务] --&gt; B[支付服务]
+ B --&gt; C[风控服务]
+ C --&gt; A&lt;/pre&gt;&lt;p&gt;链路一长就难发现——往往是新增功能时引入的。&lt;/p&gt;
+&lt;h3 id="3-通过事件的软循环"&gt;&lt;a href="#3-%e9%80%9a%e8%bf%87%e4%ba%8b%e4%bb%b6%e7%9a%84%e8%bd%af%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;3. 通过事件的&amp;quot;软循环&amp;quot;
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[订单] --&gt;|OrderCreated 事件| MQ
+ MQ --&gt; B[积分服务]
+ B --&gt;|RPC 查订单状态| A&lt;/pre&gt;&lt;p&gt;虽然是异步，但&lt;strong&gt;积分服务回头查订单服务&lt;/strong&gt;——本质上还是循环。&lt;/p&gt;
+&lt;h3 id="4-启动期循环"&gt;&lt;a href="#4-%e5%90%af%e5%8a%a8%e6%9c%9f%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;4. 启动期循环
+&lt;/h3&gt;&lt;p&gt;A 启动时要从 B 拉某个全局配置，B 启动时也要从 A 拉某个配置——启动期死锁。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二为什么循环依赖会出现"&gt;&lt;a href="#%e4%ba%8c%e4%b8%ba%e4%bb%80%e4%b9%88%e5%be%aa%e7%8e%af%e4%be%9d%e8%b5%96%e4%bc%9a%e5%87%ba%e7%8e%b0" class="header-anchor"&gt;&lt;/a&gt;二、为什么循环依赖会出现
+&lt;/h2&gt;&lt;p&gt;业务视角看是&amp;quot;一不小心引入&amp;quot;——但本质原因通常是：&lt;/p&gt;
+&lt;h3 id="1-实体边界没分清"&gt;&lt;a href="#1-%e5%ae%9e%e4%bd%93%e8%be%b9%e7%95%8c%e6%b2%a1%e5%88%86%e6%b8%85" class="header-anchor"&gt;&lt;/a&gt;1. 实体边界没分清
+&lt;/h3&gt;&lt;p&gt;订单和用户都是核心实体——从用户视角&amp;quot;查我的订单&amp;quot;、从订单视角&amp;quot;查谁下的单&amp;quot;——&lt;strong&gt;两个视角看起来都合理，于是双向都建了 RPC&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-共享数据没有归属"&gt;&lt;a href="#2-%e5%85%b1%e4%ba%ab%e6%95%b0%e6%8d%ae%e6%b2%a1%e6%9c%89%e5%bd%92%e5%b1%9e" class="header-anchor"&gt;&lt;/a&gt;2. 共享数据没有归属
+&lt;/h3&gt;&lt;p&gt;&amp;ldquo;用户最近一笔订单&amp;rdquo;——这个数据&lt;strong&gt;算用户属性还是订单属性&lt;/strong&gt;？没人 say 清楚归谁，最后就两边都查。&lt;/p&gt;
+&lt;h3 id="3-微服务过细"&gt;&lt;a href="#3-%e5%be%ae%e6%9c%8d%e5%8a%a1%e8%bf%87%e7%bb%86" class="header-anchor"&gt;&lt;/a&gt;3. 微服务过细
+&lt;/h3&gt;&lt;p&gt;把&amp;quot;用户登录&amp;quot;和&amp;quot;用户资料&amp;quot;拆成两个服务——结果它们成天互相调用。&lt;strong&gt;过度拆分是循环的温床&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="4-业务驱动反向调用"&gt;&lt;a href="#4-%e4%b8%9a%e5%8a%a1%e9%a9%b1%e5%8a%a8%e5%8f%8d%e5%90%91%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;4. 业务驱动反向调用
+&lt;/h3&gt;&lt;p&gt;最常见的——&amp;ldquo;产品要订单详情页面也展示用户头像&amp;rdquo;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;订单服务（主）→ 用户服务 ✓ 正常依赖
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;下一个版本，&amp;ldquo;用户主页要展示最近订单&amp;rdquo;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户服务（主）→ 订单服务 ❌ 反向依赖来了
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业务一推动就改，没人检查依赖图——&lt;strong&gt;循环就此诞生&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三识别怎么发现循环"&gt;&lt;a href="#%e4%b8%89%e8%af%86%e5%88%ab%e6%80%8e%e4%b9%88%e5%8f%91%e7%8e%b0%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;三、识别：怎么发现循环
+&lt;/h2&gt;&lt;h3 id="1-静态扫描"&gt;&lt;a href="#1-%e9%9d%99%e6%80%81%e6%89%ab%e6%8f%8f" class="header-anchor"&gt;&lt;/a&gt;1. 静态扫描
+&lt;/h3&gt;&lt;p&gt;整理所有服务间的 OpenFeign / RestTemplate 调用：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;grep -r &lt;span class="s2"&gt;&amp;#34;@FeignClient&amp;#34;&lt;/span&gt; --include&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;*.java&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;输出每个服务依赖哪些服务，画个有向图——用 Graphviz 或简单的脚本。&lt;/p&gt;
+&lt;h3 id="2-链路追踪"&gt;&lt;a href="#2-%e9%93%be%e8%b7%af%e8%bf%bd%e8%b8%aa" class="header-anchor"&gt;&lt;/a&gt;2. 链路追踪
+&lt;/h3&gt;&lt;p&gt;SkyWalking / Zipkin / Jaeger 在生产里聚合调用拓扑——&lt;strong&gt;自动看到 A 调 B、B 调 A&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-服务注册中心"&gt;&lt;a href="#3-%e6%9c%8d%e5%8a%a1%e6%b3%a8%e5%86%8c%e4%b8%ad%e5%bf%83" class="header-anchor"&gt;&lt;/a&gt;3. 服务注册中心
+&lt;/h3&gt;&lt;p&gt;Nacos / Consul 看每个服务的调用方列表——能看到反向依赖。&lt;/p&gt;
+&lt;h3 id="4-在-ci-加检查"&gt;&lt;a href="#4-%e5%9c%a8-ci-%e5%8a%a0%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;4. 在 CI 加检查
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 每次 PR 检查依赖图，新增反向调用直接 fail&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;Check service dependencies&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;./scripts/check-deps.sh&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;把检查变成机制——比每次 review 时人工排查靠谱。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四解决方案"&gt;&lt;a href="#%e5%9b%9b%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88" class="header-anchor"&gt;&lt;/a&gt;四、解决方案
+&lt;/h2&gt;&lt;h3 id="方案-1合并服务最直接"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-1%e5%90%88%e5%b9%b6%e6%9c%8d%e5%8a%a1%e6%9c%80%e7%9b%b4%e6%8e%a5" class="header-anchor"&gt;&lt;/a&gt;方案 1：合并服务（最直接）
+&lt;/h3&gt;&lt;p&gt;如果 A 和 B 长期互相调用——&lt;strong&gt;它们可能就该是一个服务&lt;/strong&gt;。微服务不是越细越好——业务边界不清的两个服务合并回去是合理的。&lt;/p&gt;
+&lt;p&gt;判断标准：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数据强一致需求&lt;/li&gt;
+&lt;li&gt;改动通常一起来&lt;/li&gt;
+&lt;li&gt;链路上 80% 都是双向调用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="方案-2抽出共享层"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-2%e6%8a%bd%e5%87%ba%e5%85%b1%e4%ba%ab%e5%b1%82" class="header-anchor"&gt;&lt;/a&gt;方案 2：抽出共享层
+&lt;/h3&gt;&lt;p&gt;A 和 B 都依赖某段共享逻辑/数据——抽到 C：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;重构前：A ↔ B
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;重构后：A → C ← B
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;例如&amp;quot;用户基础信息&amp;quot;抽到 &lt;code&gt;user-base&lt;/code&gt; 服务——A 和 B 都查 C，互不依赖。&lt;/p&gt;
+&lt;h3 id="方案-3事件驱动--数据冗余"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-3%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8--%e6%95%b0%e6%8d%ae%e5%86%97%e4%bd%99" class="header-anchor"&gt;&lt;/a&gt;方案 3：事件驱动 + 数据冗余
+&lt;/h3&gt;&lt;p&gt;最优雅但工程量大——&lt;strong&gt;A 改了数据后发事件，B 订阅事件维护自己一份冗余&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A --&gt;|UserUpdated 事件| MQ
+ MQ --&gt; B[B 维护用户冗余表]
+ User --&gt; B
+ B -.无需调 A.-&gt; B&lt;/pre&gt;&lt;p&gt;B 不再实时调 A 取数据——读自己的本地冗余。代价是数据有微小延迟，但&lt;strong&gt;循环彻底消除&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="方案-4依赖反转"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-4%e4%be%9d%e8%b5%96%e5%8f%8d%e8%bd%ac" class="header-anchor"&gt;&lt;/a&gt;方案 4：依赖反转
+&lt;/h3&gt;&lt;p&gt;A 调 B 是为了&amp;quot;通知 B 一件事&amp;quot;——改成 B 主动监听：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;重构前：A → B（通知 B 用户状态变化）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;重构后：A 发事件 → B 订阅
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;依赖方向倒过来——A 不再依赖 B。&lt;/p&gt;
+&lt;h3 id="方案-5api-gateway--bff-聚合"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-5api-gateway--bff-%e8%81%9a%e5%90%88" class="header-anchor"&gt;&lt;/a&gt;方案 5：API Gateway / BFF 聚合
+&lt;/h3&gt;&lt;p&gt;页面需要 A + B 的数据——不应该让 B 调 A，&lt;strong&gt;应该让 BFF（Backend For Frontend）调 A 和 B 聚合&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ Frontend --&gt; BFF
+ BFF --&gt; A
+ BFF --&gt; B&lt;/pre&gt;&lt;p&gt;A 和 B 的依赖被 BFF 拆开——它们之间不再相互依赖。&lt;/p&gt;
+&lt;h3 id="方案-6批量查询代替单次"&gt;&lt;a href="#%e6%96%b9%e6%a1%88-6%e6%89%b9%e9%87%8f%e6%9f%a5%e8%af%a2%e4%bb%a3%e6%9b%bf%e5%8d%95%e6%ac%a1" class="header-anchor"&gt;&lt;/a&gt;方案 6：批量查询代替单次
+&lt;/h3&gt;&lt;p&gt;如果 B 调 A 是为了&amp;quot;批量查 1000 个用户的订单&amp;quot;——&lt;strong&gt;让 A 提供批量接口&lt;/strong&gt;，B 拿到 ID 列表后批量请求一次：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;之前：B 循环 1000 次调 A
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;之后：B 一次性发 1000 个 ID 给 A
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;调用次数大幅降低 → 即使保留依赖，影响也小。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五典型场景的具体解法"&gt;&lt;a href="#%e4%ba%94%e5%85%b8%e5%9e%8b%e5%9c%ba%e6%99%af%e7%9a%84%e5%85%b7%e4%bd%93%e8%a7%a3%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;五、典型场景的具体解法
+&lt;/h2&gt;&lt;h3 id="场景-1订单展示要用户头像用户主页要展示订单数"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-1%e8%ae%a2%e5%8d%95%e5%b1%95%e7%a4%ba%e8%a6%81%e7%94%a8%e6%88%b7%e5%a4%b4%e5%83%8f%e7%94%a8%e6%88%b7%e4%b8%bb%e9%a1%b5%e8%a6%81%e5%b1%95%e7%a4%ba%e8%ae%a2%e5%8d%95%e6%95%b0" class="header-anchor"&gt;&lt;/a&gt;场景 1：订单展示要用户头像，用户主页要展示订单数
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;重构前&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;重构后&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;订单服务 ↔ 用户服务（互相调用）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;BFF 聚合：BFF → 订单服务、BFF → 用户服务&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;订单服务里&lt;strong&gt;冗余存 user_name + avatar_url&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="场景-2积分服务通过事件加积分但要查订单金额"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-2%e7%a7%af%e5%88%86%e6%9c%8d%e5%8a%a1%e9%80%9a%e8%bf%87%e4%ba%8b%e4%bb%b6%e5%8a%a0%e7%a7%af%e5%88%86%e4%bd%86%e8%a6%81%e6%9f%a5%e8%ae%a2%e5%8d%95%e9%87%91%e9%a2%9d" class="header-anchor"&gt;&lt;/a&gt;场景 2：积分服务通过事件加积分，但要查订单金额
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;重构前&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;重构后&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;订单 → 发事件 → 积分 → RPC 查订单&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;订单发事件时&lt;strong&gt;事件载荷里就带金额&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="场景-3风控决策要查多个上下文"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-3%e9%a3%8e%e6%8e%a7%e5%86%b3%e7%ad%96%e8%a6%81%e6%9f%a5%e5%a4%9a%e4%b8%aa%e4%b8%8a%e4%b8%8b%e6%96%87" class="header-anchor"&gt;&lt;/a&gt;场景 3：风控决策要查多个上下文
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;重构前&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;重构后&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;风控服务 ↔ 订单 ↔ 用户 ↔ 风控&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;调用方&lt;strong&gt;主动把上下文打包传给风控&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="六架构层面的纪律"&gt;&lt;a href="#%e5%85%ad%e6%9e%b6%e6%9e%84%e5%b1%82%e9%9d%a2%e7%9a%84%e7%ba%aa%e5%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、架构层面的纪律
+&lt;/h2&gt;&lt;h3 id="1-严格的上下游层级"&gt;&lt;a href="#1-%e4%b8%a5%e6%a0%bc%e7%9a%84%e4%b8%8a%e4%b8%8b%e6%b8%b8%e5%b1%82%e7%ba%a7" class="header-anchor"&gt;&lt;/a&gt;1. 严格的&amp;quot;上下游&amp;quot;层级
+&lt;/h3&gt;&lt;p&gt;把服务分层——&lt;strong&gt;只允许上层调下层，下层永不调上层&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ BFF[BFF / API 层]
+ BFF --&gt; Domain[业务领域服务]
+ Domain --&gt; Foundation[基础服务&lt;br/&gt;用户/账户/支付]
+ Foundation --&gt; Infra[基础设施&lt;br/&gt;消息/存储/索引]&lt;/pre&gt;&lt;p&gt;任何&amp;quot;下层调上层&amp;quot;PR 直接 reject。&lt;/p&gt;
+&lt;h3 id="2-共享数据归属唯一"&gt;&lt;a href="#2-%e5%85%b1%e4%ba%ab%e6%95%b0%e6%8d%ae%e5%bd%92%e5%b1%9e%e5%94%af%e4%b8%80" class="header-anchor"&gt;&lt;/a&gt;2. 共享数据归属唯一
+&lt;/h3&gt;&lt;p&gt;每个数据的&amp;quot;主人&amp;quot;只有一个服务——&lt;strong&gt;其他服务要用，要么调主人，要么订阅事件维护冗余&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-增量加-pr-时强制依赖检查"&gt;&lt;a href="#3-%e5%a2%9e%e9%87%8f%e5%8a%a0-pr-%e6%97%b6%e5%bc%ba%e5%88%b6%e4%be%9d%e8%b5%96%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;3. 增量加 PR 时强制依赖检查
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# 检查是否引入新的 cross-tier 依赖&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;Check architecture&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;archunit-test&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;ArchUnit 这种工具能在测试里强制架构规则——&lt;strong&gt;机制保证大于人为约束&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="4-定期审视依赖图"&gt;&lt;a href="#4-%e5%ae%9a%e6%9c%9f%e5%ae%a1%e8%a7%86%e4%be%9d%e8%b5%96%e5%9b%be" class="header-anchor"&gt;&lt;/a&gt;4. 定期审视依赖图
+&lt;/h3&gt;&lt;p&gt;每个迭代结束 review 一次依赖图——发现&amp;quot;上次没有的反向依赖&amp;quot;立刻处理。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七spring-cloud-特有的注意点"&gt;&lt;a href="#%e4%b8%83spring-cloud-%e7%89%b9%e6%9c%89%e7%9a%84%e6%b3%a8%e6%84%8f%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;七、Spring Cloud 特有的注意点
+&lt;/h2&gt;&lt;h3 id="1-openfeign-自调本服务的隐患"&gt;&lt;a href="#1-openfeign-%e8%87%aa%e8%b0%83%e6%9c%ac%e6%9c%8d%e5%8a%a1%e7%9a%84%e9%9a%90%e6%82%a3" class="header-anchor"&gt;&lt;/a&gt;1. OpenFeign 自调本服务的隐患
+&lt;/h3&gt;&lt;p&gt;服务内部代码注入指向&amp;quot;本服务名&amp;quot;的 FeignClient：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@FeignClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;user-service&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 用户服务里&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Service&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;UserService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Autowired&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 指向本服务&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这种用法&lt;strong&gt;不会立刻报错&lt;/strong&gt;——Feign 通过注册中心负载均衡转发，请求会落到本服务的某个实例（可能是自己也可能是同名其他实例）。但它是个反模式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;普通自调虽不立刻失败，但会绕一跳网络、多一段 trace、丢失本地事务上下文&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;若调用链最终回到调用方所在的同一个接口&lt;/strong&gt;（A 通过 LB 调到 A 自己，又走相同方法），就会形成无限递归 → 栈溢出 / 连接池耗尽&lt;/li&gt;
+&lt;li&gt;调用链路在 trace 里突然多一段，排查困难&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：本服务的内部能力直接走 Bean 调用，&lt;strong&gt;不要通过 FeignClient 绕一圈&lt;/strong&gt;。要复用接口契约可以把 Client 接口和 Controller 实现拆出 SPI 模块共享。&lt;/p&gt;
+&lt;h3 id="2-eureka--nacos-服务发现的循环"&gt;&lt;a href="#2-eureka--nacos-%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;2. Eureka / Nacos 服务发现的循环
+&lt;/h3&gt;&lt;p&gt;A 启动时连不上 B，B 启动时连不上 A——&lt;strong&gt;注册中心会等到双方都活着才允许调用&lt;/strong&gt;。但如果配置了&amp;quot;启动期健康检查&amp;quot;，就会双方互等。&lt;/p&gt;
+&lt;p&gt;解决：启动期检查只用基础设施（DB、Redis），不要互相检查。&lt;/p&gt;
+&lt;h3 id="3-配置中心的循环"&gt;&lt;a href="#3-%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;3. 配置中心的循环
+&lt;/h3&gt;&lt;p&gt;A 服务启动时要从配置中心拉 B 的地址——但配置中心要先注册到 A 才能正常工作？这种设计是错的。&lt;strong&gt;配置中心应该是最底层无依赖的服务&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八一份循环依赖治理清单"&gt;&lt;a href="#%e5%85%ab%e4%b8%80%e4%bb%bd%e5%be%aa%e7%8e%af%e4%be%9d%e8%b5%96%e6%b2%bb%e7%90%86%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、一份&amp;quot;循环依赖&amp;quot;治理清单
+&lt;/h2&gt;&lt;p&gt;发现循环后按这个流程处理：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;明确循环类型&lt;/strong&gt;——直接 / 间接 / 软 / 启动期&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;画出当前依赖图&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;判断业务边界&lt;/strong&gt;——是不是该合并服务？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如果不合并&lt;/strong&gt;——选方案：抽共享层 / 事件 + 冗余 / 依赖反转 / BFF&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;设计冗余数据的同步机制&lt;/strong&gt;——保证最终一致&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;测试覆盖&lt;/strong&gt;——确保循环消除后业务不退化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加 ArchUnit 检查防止回退&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="九一些反例"&gt;&lt;a href="#%e4%b9%9d%e4%b8%80%e4%ba%9b%e5%8f%8d%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;九、一些反例
+&lt;/h2&gt;&lt;h3 id="反例-1为了性能双向冗余"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-1%e4%b8%ba%e4%ba%86%e6%80%a7%e8%83%bd%e5%8f%8c%e5%90%91%e5%86%97%e4%bd%99" class="header-anchor"&gt;&lt;/a&gt;反例 1：为了&amp;quot;性能&amp;quot;双向冗余
+&lt;/h3&gt;&lt;p&gt;A 存 B 的数据、B 存 A 的数据——&lt;strong&gt;两边都要同步对方的变化&lt;/strong&gt;。最终变成&amp;quot;两个真相&amp;quot;——数据不一致。&lt;strong&gt;冗余应该单向&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="反例-2用-mq-假装解耦"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-2%e7%94%a8-mq-%e5%81%87%e8%a3%85%e8%a7%a3%e8%80%a6" class="header-anchor"&gt;&lt;/a&gt;反例 2：用 MQ 假装解耦
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;A → MQ → B
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;B → MQ → A
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;虽然走 MQ 不直接调用，但本质还是循环——&lt;strong&gt;只是把同步等待换成异步等待&lt;/strong&gt;。问题没解决。&lt;/p&gt;
+&lt;h3 id="反例-3用注释承认循环"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-3%e7%94%a8%e6%b3%a8%e9%87%8a%e6%89%bf%e8%ae%a4%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;反例 3：用注释&amp;quot;承认循环&amp;quot;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// TODO: 这里是循环依赖，暂时无法避免&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Autowired&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;写注释承认问题等于不解决——技术债越堆越多。&lt;strong&gt;循环依赖必须当作 P0 bug 处理&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;服务间循环依赖不是『可以容忍的小毛病』——它是架构腐化的早期信号，会慢慢腐蚀整个系统。发现一个解决一个。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程纪律：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;服务分层，禁止上下层逆向调&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据归属唯一，跨域用事件 + 冗余&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;共享逻辑下沉到独立服务&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;页面聚合走 BFF&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CI 自动检查，不靠人工&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;循环依赖出现立刻处理，不容忍&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把这套做对，微服务才能真正&amp;quot;独立、可演进、可扩展&amp;quot;——而不是变成&amp;quot;分布式单体&amp;quot;。&lt;/p&gt;</description></item><item><title>微服务通信用 OpenFeign 还是 Dubbo</title><link>https://www.lingcoder.com/p/openfeign-vs-dubbo/</link><pubDate>Mon, 19 Jul 2021 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openfeign-vs-dubbo/</guid><description>&lt;img src="https://www.lingcoder.com/p/openfeign-vs-dubbo/cover.svg" alt="Featured image of post 微服务通信用 OpenFeign 还是 Dubbo" /&gt;&lt;h2 id="一句话先把问题摆出来"&gt;&lt;a href="#%e4%b8%80%e5%8f%a5%e8%af%9d%e5%85%88%e6%8a%8a%e9%97%ae%e9%a2%98%e6%91%86%e5%87%ba%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;一句话先把问题摆出来
+&lt;/h2&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;服务之间应该用 HTTP 还是 RPC 通信？&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;这是任何一个 Java 微服务团队都绕不过去的选择。社区里两套生态各有铁粉：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Spring Cloud + OpenFeign&lt;/strong&gt;：基于 HTTP/REST，整套 Spring 全家桶最自然的延伸&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Apache Dubbo&lt;/strong&gt;：阿里开源的 RPC 框架，国内大厂的事实标准&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;新人选型时常常陷入一个误区——&lt;strong&gt;纠结于&amp;quot;谁性能好&amp;quot;&lt;/strong&gt;。但只看 QPS 这件事会让你错过更重要的因素：协议哲学、生态契合度、运维成本、组织能力。&lt;/p&gt;
+&lt;p&gt;本文把这两套方案的差异、各自优劣、以及不同场景下的选型建议讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="协议层http-与-rpc-的本质差异"&gt;&lt;a href="#%e5%8d%8f%e8%ae%ae%e5%b1%82http-%e4%b8%8e-rpc-%e7%9a%84%e6%9c%ac%e8%b4%a8%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;协议层：HTTP 与 RPC 的本质差异
+&lt;/h2&gt;&lt;h3 id="openfeignhttp-客户端的声明式"&gt;&lt;a href="#openfeignhttp-%e5%ae%a2%e6%88%b7%e7%ab%af%e7%9a%84%e5%a3%b0%e6%98%8e%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;OpenFeign：HTTP 客户端的&amp;quot;声明式&amp;quot;
+&lt;/h3&gt;&lt;p&gt;Feign 的本质是&lt;strong&gt;对 HTTP 客户端的封装&lt;/strong&gt;。你定义一个接口，加几个注解，Feign 用动态代理把方法调用翻译成 HTTP 请求：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@FeignClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;order-service&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;OrderClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@GetMapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/orders/{id}&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@PathVariable&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@PostMapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/orders&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@RequestBody&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderCreateDTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dto&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;调用方写起来像调本地方法：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1001L&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;但底层走的是标准 HTTP——序列化通常是 JSON，传输是文本，每次请求都有完整的 HTTP 头开销。&lt;strong&gt;所以 Feign 的本质就是一个&amp;quot;会的协议&amp;quot;被打包成&amp;quot;省心的姿势&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="dubbo原生-rpc"&gt;&lt;a href="#dubbo%e5%8e%9f%e7%94%9f-rpc" class="header-anchor"&gt;&lt;/a&gt;Dubbo：原生 RPC
+&lt;/h3&gt;&lt;p&gt;Dubbo 是为 RPC 而生的。客户端和服务端都是 Java，&lt;strong&gt;直接通过自定义的二进制协议（Dubbo 协议、Triple 协议等）传输 Java 对象&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 服务端&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@DubboService&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;OrderServiceImpl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;implements&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Override&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 调用端&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@DubboReference&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;OrderService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderService&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1001L&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意——&lt;strong&gt;两端共享同一个接口&lt;/strong&gt;（Java interface），通过注册中心拉到地址后建立长连接。没有 URL，没有 HTTP 头，序列化默认是 Hessian 或 Kryo（紧凑二进制）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="性能差距到底差多少"&gt;&lt;a href="#%e6%80%a7%e8%83%bd%e5%b7%ae%e8%b7%9d%e5%88%b0%e5%ba%95%e5%b7%ae%e5%a4%9a%e5%b0%91" class="header-anchor"&gt;&lt;/a&gt;性能差距：到底差多少
+&lt;/h2&gt;&lt;p&gt;实测数据（同机房、千兆内网、相同业务复杂度）：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;指标&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;OpenFeign + Spring Cloud&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Dubbo（默认 dubbo 协议）&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;单次 RTT&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5-15 ms&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1-3 ms&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;序列化大小&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;JSON，相对大&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Hessian/Kryo，2-5 倍小&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;单连接 QPS&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;数千&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;数万&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;CPU 序列化开销&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;较高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;较低&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Dubbo 在性能上确实有显著优势&lt;/strong&gt;——但请注意三点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;上述差距在&amp;quot;调用频率高、链路深&amp;quot;时才显著放大；多数业务一次接口调用 50-100ms，5ms 和 1ms 的差距完全淹没在业务里&lt;/li&gt;
+&lt;li&gt;Feign 改用 HTTP/2 + Protobuf 就能逼近 RPC 性能（Spring 6 / Spring Cloud 2022+ 支持）&lt;/li&gt;
+&lt;li&gt;性能问题大多在数据库、外部 API、缓存上，&lt;strong&gt;通信协议很少是瓶颈&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;不要用『性能』作为选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="生态契合度谁配谁更顺手"&gt;&lt;a href="#%e7%94%9f%e6%80%81%e5%a5%91%e5%90%88%e5%ba%a6%e8%b0%81%e9%85%8d%e8%b0%81%e6%9b%b4%e9%a1%ba%e6%89%8b" class="header-anchor"&gt;&lt;/a&gt;生态契合度：谁配谁更顺手
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;维度&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Spring Cloud + Feign&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Dubbo&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;注册中心&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Eureka / Nacos / Consul&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Zookeeper / Nacos&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;配置中心&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Spring Cloud Config / Nacos&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Apollo / Nacos&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;网关&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Spring Cloud Gateway&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;通常前置 Nginx + 业务网关&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;熔断&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Resilience4j / Sentinel&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Sentinel（原生集成）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;链路追踪&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Sleuth + Zipkin&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Skywalking / 自建 Filter&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;服务治理&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;基础&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;强（路由、灰度、限流、调度都内置）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;跨语言&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;天然 ✓（HTTP）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;△（Triple 协议支持，gRPC 互通）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;调试工具&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Postman / curl 直接打&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Telnet / Dubbo Admin&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Spring Cloud 的强项是&lt;strong&gt;全家桶生态完整&lt;/strong&gt;，Feign 只是其中一环；Dubbo 的强项是&lt;strong&gt;服务治理特性原生且强大&lt;/strong&gt;——做到 Spring Cloud 同等治理能力，需要拼接一堆组件。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="跨语言被低估的因素"&gt;&lt;a href="#%e8%b7%a8%e8%af%ad%e8%a8%80%e8%a2%ab%e4%bd%8e%e4%bc%b0%e7%9a%84%e5%9b%a0%e7%b4%a0" class="header-anchor"&gt;&lt;/a&gt;跨语言：被低估的因素
+&lt;/h2&gt;&lt;p&gt;这是很多团队选型时&lt;strong&gt;最被低估的因素&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Feign 走 HTTP/REST&lt;/strong&gt;：只要对方能发 HTTP 请求，谁都能调。Python、Go、Node 团队对接你的服务零门槛&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dubbo 默认是 Java-only&lt;/strong&gt;：跨语言要切到 Triple 协议（基于 gRPC），配置和工具链都比 HTTP 复杂&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你的组织是&lt;strong&gt;多语言团队&lt;/strong&gt;——前端 Node、数据团队 Python、运营内部系统是 PHP——选 Feign 几乎没有疑问。强行用 Dubbo 让其他语言对接，会成为长期摩擦。&lt;/p&gt;
+&lt;p&gt;如果你的组织&lt;strong&gt;清一色 Java&lt;/strong&gt;，跨语言不是问题，那 Dubbo 的劣势就消失了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="调试与可观测性"&gt;&lt;a href="#%e8%b0%83%e8%af%95%e4%b8%8e%e5%8f%af%e8%a7%82%e6%b5%8b%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;调试与可观测性
+&lt;/h2&gt;&lt;h3 id="feign-优势"&gt;&lt;a href="#feign-%e4%bc%98%e5%8a%bf" class="header-anchor"&gt;&lt;/a&gt;Feign 优势
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;HTTP 接口能直接用 Postman / curl 调试&lt;/li&gt;
+&lt;li&gt;浏览器开发工具能看请求响应&lt;/li&gt;
+&lt;li&gt;Nginx / 网关日志能直接读&lt;/li&gt;
+&lt;li&gt;Tcpdump / Wireshark 抓包能看明文&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="dubbo-劣势"&gt;&lt;a href="#dubbo-%e5%8a%a3%e5%8a%bf" class="header-anchor"&gt;&lt;/a&gt;Dubbo 劣势
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;二进制协议要专用工具（Dubbo Admin、Telnet 命令）&lt;/li&gt;
+&lt;li&gt;Mock 和压测要起 Java 客户端&lt;/li&gt;
+&lt;li&gt;排查 &amp;ldquo;客户端发了什么&amp;rdquo; 比 HTTP 麻烦得多&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Feign 接口随时打：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl http://order-service/orders/1001
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Dubbo 类似的事要用 telnet：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;telnet 192.168.1.10 &lt;span class="m"&gt;20880&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ls com.xx.OrderService
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;invoke com.xx.OrderService.getById&lt;span class="o"&gt;(&lt;/span&gt;1001&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;可观测性是长期运维的核心痛点——&lt;strong&gt;调试方便程度对开发体验的影响远超 5ms 的性能差距&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="学习曲线与团队上手成本"&gt;&lt;a href="#%e5%ad%a6%e4%b9%a0%e6%9b%b2%e7%ba%bf%e4%b8%8e%e5%9b%a2%e9%98%9f%e4%b8%8a%e6%89%8b%e6%88%90%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;学习曲线与团队上手成本
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;因素&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Feign&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Dubbo&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;新人上手&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;几乎零门槛（懂 HTTP 即可）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中等（注解 + 注册中心 + 协议）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;大团队培训&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;简单&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中等&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;调试体验&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;优&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;扩展定制&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;需懂 OkHttp / RestTemplate&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;需懂 Filter / Invoker SPI&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;新人入职第一周能用的是 Feign，三周后才能驾驭 Dubbo——团队规模一大，这个差距会成倍放大。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="服务治理深度dubbo-的硬实力"&gt;&lt;a href="#%e6%9c%8d%e5%8a%a1%e6%b2%bb%e7%90%86%e6%b7%b1%e5%ba%a6dubbo-%e7%9a%84%e7%a1%ac%e5%ae%9e%e5%8a%9b" class="header-anchor"&gt;&lt;/a&gt;服务治理深度：Dubbo 的硬实力
+&lt;/h2&gt;&lt;p&gt;如果说性能是 Dubbo 被高估的优势，那&lt;strong&gt;服务治理&lt;/strong&gt;才是它真正的护城河。&lt;/p&gt;
+&lt;p&gt;Dubbo 原生支持的能力清单（Spring Cloud 多数都要拼装实现）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多版本并行&lt;/strong&gt;：&lt;code&gt;@DubboReference(version = &amp;quot;1.0.0&amp;quot;)&lt;/code&gt; 直接路由到指定版本服务&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;基于条件的路由规则&lt;/strong&gt;：根据 Header / 参数 / 客户端 IP 路由到不同实例（灰度发布利器）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;应用级 / 接口级粒度的治理&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;管理后台 Dubbo Admin&lt;/strong&gt; 可视化调整路由、权重、限流，无需改代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;服务分组&lt;/strong&gt;：环境/业务隔离&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些在 Spring Cloud 体系里要靠 Gateway + 自定义 Filter + Sentinel + Service Mesh 拼出来——能做，但维护成本高。&lt;/p&gt;
+&lt;p&gt;如果你做的是&lt;strong&gt;复杂的内部多团队协作系统&lt;/strong&gt;（金融、电商核心链路），Dubbo 的治理能力会显著省心。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="选型决策树"&gt;&lt;a href="#%e9%80%89%e5%9e%8b%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;选型决策树
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([选 Feign 还是 Dubbo?])
+ Multi{多语言团队?}
+ Start --&gt; Multi
+ Multi --&gt;|是| Feign1[Feign / REST]
+ Multi --&gt;|否，纯 Java| Scale{服务规模?}
+ Scale --&gt;|小型，&lt; 20 服务| Feign2[Feign / REST]
+ Scale --&gt;|中大型| Gov{是否需要复杂治理?&lt;br/&gt;多版本/灰度/路由}
+ Gov --&gt;|不需要| Feign3[Feign 也够用]
+ Gov --&gt;|需要| Perf{对单次 RPC 性能敏感?}
+ Perf --&gt;|敏感| Dubbo1[Dubbo]
+ Perf --&gt;|不敏感| Choice[基于团队熟悉度选]&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id="一些被反复争论的话题"&gt;&lt;a href="#%e4%b8%80%e4%ba%9b%e8%a2%ab%e5%8f%8d%e5%a4%8d%e4%ba%89%e8%ae%ba%e7%9a%84%e8%af%9d%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一些被反复争论的话题
+&lt;/h2&gt;&lt;h3 id="争论-1spring-cloud-已经够强dubbo-没必要"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-1spring-cloud-%e5%b7%b2%e7%bb%8f%e5%a4%9f%e5%bc%badubbo-%e6%b2%a1%e5%bf%85%e8%a6%81" class="header-anchor"&gt;&lt;/a&gt;争论 1：Spring Cloud 已经够强，Dubbo 没必要
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——如果你的业务复杂度还没碰到治理瓶颈，Spring Cloud 完全够。但有些治理特性（多版本、规则路由）原生 Spring Cloud 真的拼不出 Dubbo 那么顺手。&lt;/p&gt;
+&lt;h3 id="争论-2dubbo-把简单事情复杂化"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-2dubbo-%e6%8a%8a%e7%ae%80%e5%8d%95%e4%ba%8b%e6%83%85%e5%a4%8d%e6%9d%82%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;争论 2：Dubbo 把简单事情复杂化
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——Dubbo 的概念多（Provider/Consumer/Registry/Monitor，加上 Filter/Invoker/Cluster），新人确实一脸懵；但一旦上手，业务代码就和 Feign 一样简洁。&lt;/p&gt;
+&lt;h3 id="争论-3现在该用-grpc"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-3%e7%8e%b0%e5%9c%a8%e8%af%a5%e7%94%a8-grpc" class="header-anchor"&gt;&lt;/a&gt;争论 3：现在该用 gRPC
+&lt;/h3&gt;&lt;p&gt;gRPC 是个好选择，性能接近 Dubbo，跨语言天然支持。&lt;strong&gt;但生态在 Java 圈子相对薄弱&lt;/strong&gt;——和 Spring 集成、注册中心选型、可观测性都要自己组装。Triple 协议（Dubbo 3）就是兼容 gRPC 的，意图是把&amp;quot;跨语言 + Dubbo 治理&amp;quot;一并拿下。&lt;/p&gt;
+&lt;h3 id="争论-4直接用-service-mesh"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-4%e7%9b%b4%e6%8e%a5%e7%94%a8-service-mesh" class="header-anchor"&gt;&lt;/a&gt;争论 4：直接用 Service Mesh
+&lt;/h3&gt;&lt;p&gt;Mesh 把通信和治理下沉到 Sidecar，应用层只用最朴素的 HTTP/gRPC。&lt;strong&gt;理论上是终极方案&lt;/strong&gt;，但运维 K8s + Istio 的复杂度让多数中小团队望而却步。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="实战建议"&gt;&lt;a href="#%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;实战建议
+&lt;/h2&gt;&lt;p&gt;我自己在团队里推的一份简版规则：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;新启动的中小项目&lt;/strong&gt;：直接 Spring Cloud + Feign。生态完整、上手快、调试方便，性能问题先不要担心&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;已有 Spring Cloud 体系的成熟团队&lt;/strong&gt;：继续用 Feign，需要更高性能时&lt;strong&gt;点对点改 gRPC&lt;/strong&gt;，不要整体迁 Dubbo&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大量内部 Java 服务、纯 Java 技术栈、强治理需求&lt;/strong&gt;：Dubbo（或 Dubbo 3）。多版本、灰度路由这些原生能力会省心&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;有跨语言需求&lt;/strong&gt;：Feign / gRPC，不要 Dubbo（除非用 Triple）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;绝不要&amp;quot;大力出奇迹&amp;quot;全家桶迁移&lt;/strong&gt;：从 Spring Cloud 全部迁到 Dubbo 是高成本低收益的事，&lt;strong&gt;点对点重构&lt;/strong&gt;才是务实做法&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 一个混合栈的例子：核心高频接口走 Dubbo，对外业务走 Feign&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@FeignClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;user-service&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 对外 / 跨语言&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@DubboReference&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;version&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;1.0.0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;InventoryService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;inventory&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 内部高频&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;混合用没什么问题，只要团队两套都熟。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;OpenFeign 让通信变简单，Dubbo 让治理变强大。多数项目应当从 Feign 开始，治理瓶颈真正出现时再选择性引入 Dubbo——而不是反过来。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;性能、生态、跨语言、调试、团队成本是五个真正影响选型的维度。&lt;strong&gt;别让&amp;quot;哪个性能好&amp;quot;这个伪问题误导你&lt;/strong&gt;——通信协议很少是系统瓶颈，能让团队走得远的选择，永远是简单、可调试、生态完整的那一个。&lt;/p&gt;</description></item></channel></rss>

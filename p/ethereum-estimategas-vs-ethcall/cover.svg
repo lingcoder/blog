@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5DAEDF"/>
+          <stop offset="1" stop-color="#C8E0F0"/>
+      </linearGradient>
+      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3FAACC"/>
+          <stop offset="1" stop-color="#1F5A7C"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="280" fill="url(#sky)"/>
+
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.85">
+        <ellipse cx="220" cy="100" rx="100" ry="12"/>
+        <ellipse cx="240" cy="94" rx="70" ry="8"/>
+        <ellipse cx="900" cy="80" rx="120" ry="14"/>
+        <ellipse cx="920" cy="74" rx="80" ry="10"/>
+        <ellipse cx="1080" cy="160" rx="80" ry="11"/>
+    </g>
+
+    <!-- Snow mountain (back) -->
+    <path d="M 0 280 L 180 90 L 350 200 L 520 80 L 700 190 L 880 100 L 1080 200 L 1200 170 L 1200 290 L 0 290 Z"
+          fill="#FFFFFF" opacity="0.95"/>
+    <!-- Mountain shadows -->
+    <g fill="#A8B5C8" opacity="0.6">
+        <polygon points="180,90 230,200 130,200"/>
+        <polygon points="520,80 570,200 470,200"/>
+        <polygon points="880,100 925,200 835,200"/>
+  </g>
+
+    <!-- Mid mountain -->
+    <path d="M 0 280 L 130 180 L 280 250 L 460 160 L 640 240 L 820 180 L 1000 240 L 1170 200 L 1200 230 L 1200 290 L 0 290 Z"
+          fill="#7B95AA"/>
+    <g fill="#FFFFFF">
+        <path d="M 130 180 L 165 230 L 95 230 Z"/>
+        <path d="M 460 160 L 500 215 L 420 215 Z"/>
+        <path d="M 820 180 L 855 230 L 785 230 Z"/>
+    </g>
+
+    <!-- Tree-line on near shore -->
+    <g fill="#1F3A28">
+        <polygon points="50,310 35,255 65,255 45,225 75,225 50,195"/>
+        <polygon points="120,315 105,260 135,260 115,230 145,230 120,200"/>
+        <polygon points="195,310 180,255 210,255 190,225 220,225 195,195"/>
+        <polygon points="985,315 970,260 1000,260 980,230 1010,230 985,200"/>
+        <polygon points="1060,310 1045,255 1075,255 1055,225 1085,225 1060,195"/>
+        <polygon points="1135,315 1120,260 1150,260 1130,230 1160,230 1135,200"/>
+  </g>
+
+    <!-- Lake -->
+    <rect y="290" width="1200" height="340" fill="url(#lake)"/>
+
+    <!-- Mountain reflection -->
+    <g transform="translate(0,580) scale(1,-1)" opacity="0.55">
+        <path d="M 0 280 L 180 90 L 350 200 L 520 80 L 700 190 L 880 100 L 1080 200 L 1200 170 L 1200 290 L 0 290 Z"
+              fill="#FFFFFF"/>
+  </g>
+
+    <!-- Shore rocks -->
+    <g fill="#1F2A30">
+        <ellipse cx="200" cy="615" rx="200" ry="14"/>
+        <ellipse cx="1000" cy="615" rx="200" ry="14"/>
+    </g>
+
+    <!-- Subtle ripples -->
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5">
+        <path d="M 200 460 q 30 -4 60 0 t 60 0"/>
+        <path d="M 600 480 q 40 -5 80 0 t 80 0"/>
+        <path d="M 800 530 q 30 -4 60 0 t 60 0"/>
+        <path d="M 300 580 q 50 -6 100 0 t 100 0"/>
+    </g>
+
+    <text x="60" y="608" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

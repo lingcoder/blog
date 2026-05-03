@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE5C8"/>
+          <stop offset="1" stop-color="#F5C896"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Distant mountains -->
+    <path d="M 0 320 L 200 230 L 400 290 L 600 220 L 800 280 L 1000 210 L 1200 270 L 1200 380 L 0 380 Z"
+          fill="#A8946E" opacity="0.65"/>
+
+    <!-- Big maple tree center -->
+    <g transform="translate(600,440)">
+        <!-- Trunk -->
+        <path d="M -10 200 L -10 0 Q -25 -40 -10 -80 M 10 200 L 10 0 Q 25 -40 10 -80" stroke="#5C2D14" stroke-width="22"
+              fill="none" stroke-linecap="round"/>
+        <!-- Branches -->
+        <path d="M 0 -50 Q -50 -100 -90 -140" stroke="#5C2D14" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M 0 -50 Q 50 -110 110 -130" stroke="#5C2D14" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <path d="M 0 -100 Q -40 -160 -80 -200" stroke="#5C2D14" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M 0 -100 Q 50 -170 90 -210" stroke="#5C2D14" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <!-- Foliage clouds -->
+        <ellipse cx="-90" cy="-150" rx="60" ry="50" fill="#D8401C"/>
+        <ellipse cx="-50" cy="-180" rx="50" ry="42" fill="#FF6B2E"/>
+        <ellipse cx="0" cy="-200" rx="65" ry="55" fill="#FFA438"/>
+        <ellipse cx="55" cy="-180" rx="55" ry="48" fill="#D8401C"/>
+        <ellipse cx="100" cy="-150" rx="58" ry="48" fill="#FF6B2E"/>
+        <ellipse cx="-110" cy="-100" rx="40" ry="35" fill="#FF7C30"/>
+        <ellipse cx="120" cy="-100" rx="42" ry="36" fill="#FF7C30"/>
+        <ellipse cx="-30" cy="-130" rx="40" ry="35" fill="#FFA438"/>
+        <ellipse cx="35" cy="-140" rx="42" ry="36" fill="#FF6B2E"/>
+  </g>
+
+    <!-- Smaller trees behind/beside -->
+    <g>
+        <ellipse cx="200" cy="380" rx="60" ry="48" fill="#FF6B2E"/>
+        <ellipse cx="180" cy="370" rx="42" ry="38" fill="#FFA438"/>
+        <rect x="195" y="380" width="10" height="50" fill="#5C2D14"/>
+
+        <ellipse cx="350" cy="400" rx="55" ry="45" fill="#D8401C"/>
+        <ellipse cx="330" cy="385" rx="40" ry="34" fill="#FFA438"/>
+        <rect x="345" y="400" width="9" height="40" fill="#5C2D14"/>
+
+        <ellipse cx="950" cy="395" rx="55" ry="45" fill="#FF7C30"/>
+        <ellipse cx="930" cy="380" rx="40" ry="34" fill="#FFA438"/>
+        <rect x="945" y="395" width="9" height="40" fill="#5C2D14"/>
+
+        <ellipse cx="1080" cy="380" rx="60" ry="48" fill="#D8401C"/>
+        <ellipse cx="1060" cy="365" rx="42" ry="36" fill="#FF6B2E"/>
+        <rect x="1075" y="380" width="10" height="50" fill="#5C2D14"/>
+  </g>
+
+    <!-- Ground -->
+    <rect y="500" width="1200" height="130" fill="#7C4F2C"/>
+
+    <!-- Fallen leaves scatter -->
+    <g>
+        <ellipse cx="50" cy="540" rx="6" ry="4" fill="#D8401C"/>
+        <ellipse cx="120" cy="555" rx="5" ry="3" fill="#FFA438"/>
+        <ellipse cx="200" cy="545" rx="6" ry="4" fill="#FF6B2E"/>
+        <ellipse cx="280" cy="560" rx="5" ry="3" fill="#D8401C"/>
+        <ellipse cx="360" cy="540" rx="6" ry="4" fill="#FFA438"/>
+        <ellipse cx="430" cy="555" rx="5" ry="3" fill="#FF6B2E"/>
+        <ellipse cx="490" cy="545" rx="6" ry="4" fill="#D8401C"/>
+        <ellipse cx="710" cy="555" rx="5" ry="3" fill="#FFA438"/>
+        <ellipse cx="780" cy="540" rx="6" ry="4" fill="#FF6B2E"/>
+        <ellipse cx="850" cy="555" rx="5" ry="3" fill="#D8401C"/>
+        <ellipse cx="920" cy="545" rx="6" ry="4" fill="#FFA438"/>
+        <ellipse cx="1000" cy="560" rx="5" ry="3" fill="#FF6B2E"/>
+        <ellipse cx="1080" cy="540" rx="6" ry="4" fill="#D8401C"/>
+        <ellipse cx="1150" cy="555" rx="5" ry="3" fill="#FFA438"/>
+  </g>
+
+    <text x="60" y="610" fill="#5C2D14" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

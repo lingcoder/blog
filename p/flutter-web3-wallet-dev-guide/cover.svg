@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB570"/>
+      <stop offset="0.5" stop-color="#FFD8B0"/>
+      <stop offset="1" stop-color="#A0E0E8"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5CCDD8"/>
+      <stop offset="1" stop-color="#1F6878"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="320" fill="url(#sky)"/>
+
+  <!-- Sun -->
+  <circle cx="600" cy="180" r="55" fill="#FFE0A0" opacity="0.95"/>
+  <circle cx="600" cy="180" r="120" fill="#FFE0A0" opacity="0.2"/>
+
+  <!-- Distant island -->
+  <path d="M 100 290 Q 200 240 300 270 Q 400 250 480 290 Z" fill="#3D6878" opacity="0.6"/>
+  <path d="M 800 300 Q 900 260 1000 290 Q 1100 270 1180 300 Z" fill="#3D6878" opacity="0.55"/>
+
+  <!-- Lagoon water -->
+  <rect y="320" width="1200" height="200" fill="url(#water)"/>
+
+  <!-- Water reflection of sun -->
+  <ellipse cx="600" cy="350" rx="60" ry="6" fill="#FFE0A0" opacity="0.7"/>
+  <ellipse cx="600" cy="380" rx="80" ry="4" fill="#FFE0A0" opacity="0.45"/>
+  <ellipse cx="600" cy="410" rx="100" ry="3" fill="#FFE0A0" opacity="0.3"/>
+
+  <!-- Wave caps -->
+  <g fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.5">
+    <path d="M 100 380 q 30 -5 60 0 t 60 0"/>
+    <path d="M 850 390 q 30 -5 60 0 t 60 0"/>
+    <path d="M 200 440 q 50 -7 100 0 t 100 0"/>
+    <path d="M 800 450 q 50 -7 100 0 t 100 0"/>
+    <path d="M 100 490 q 50 -7 100 0 t 100 0"/>
+  </g>
+
+  <!-- Sandy beach -->
+  <path d="M 0 520 Q 400 500 800 510 Q 1000 505 1200 515 L 1200 630 L 0 630 Z" fill="#F8DCA8"/>
+  <path d="M 0 570 Q 400 555 800 565 Q 1000 560 1200 570 L 1200 630 L 0 630 Z" fill="#E8C088"/>
+
+  <!-- Palm trees -->
+  <g transform="translate(180,520)">
+    <path d="M 0 0 Q -5 -80 8 -160 Q 10 -180 15 -180 Q 12 -100 5 0 Z" fill="#5C3820"/>
+    <g fill="#3D6840">
+      <path d="M 12 -180 Q -30 -200 -70 -180 Q -60 -195 -10 -188 Z"/>
+      <path d="M 12 -180 Q 50 -210 90 -190 Q 60 -200 15 -185 Z"/>
+      <path d="M 12 -180 Q -20 -230 -50 -240 Q -10 -210 10 -190 Z"/>
+      <path d="M 12 -180 Q 40 -230 70 -240 Q 30 -210 15 -190 Z"/>
+      <path d="M 12 -180 Q -10 -250 5 -270 Q 5 -230 14 -200 Z"/>
+    </g>
+    <g fill="#7C5018">
+      <circle cx="0" cy="-170" r="5"/>
+      <circle cx="-8" cy="-175" r="4"/>
+      <circle cx="6" cy="-178" r="4"/>
+    </g>
+  </g>
+  <g transform="translate(1020,540)">
+    <path d="M 0 0 Q -3 -70 5 -140 Q 8 -160 12 -160 Q 8 -90 3 0 Z" fill="#5C3820"/>
+    <g fill="#3D6840">
+      <path d="M 8 -160 Q -30 -180 -65 -160 Q -50 -175 -8 -168 Z"/>
+      <path d="M 8 -160 Q 45 -185 80 -170 Q 50 -180 10 -165 Z"/>
+      <path d="M 8 -160 Q -15 -210 -40 -220 Q -5 -190 6 -170 Z"/>
+      <path d="M 8 -160 Q 35 -210 65 -220 Q 25 -190 10 -170 Z"/>
+    </g>
+  </g>
+
+  <!-- Beach starfish -->
+  <g transform="translate(450,590)" fill="#E08858">
+    <polygon points="0,-10 3,-3 10,-3 4,2 6,10 0,5 -6,10 -4,2 -10,-3 -3,-3"/>
+  </g>
+
+  <!-- Birds -->
+  <g fill="none" stroke="#3D2818" stroke-width="2" stroke-linecap="round">
+    <path d="M 350 130 q 6 -7 12 0 q 6 -7 12 0"/>
+    <path d="M 800 110 q 5 -6 10 0 q 5 -6 10 0"/>
+    <path d="M 850 140 q 5 -6 10 0 q 5 -6 10 0"/>
+  </g>
+
+  <text x="60" y="615" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85" letter-spacing="2">lingcoder.com</text>
+</svg>

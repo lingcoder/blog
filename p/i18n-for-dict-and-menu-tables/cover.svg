@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3D5878"/>
+          <stop offset="1" stop-color="#A8C0D0"/>
+      </linearGradient>
+      <linearGradient id="peak" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFFFFF"/>
+          <stop offset="0.4" stop-color="#D8DCE8"/>
+          <stop offset="1" stop-color="#5C7088"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="450" fill="url(#sky)"/>
+
+    <!-- Distant peaks -->
+    <path d="M 0 380 L 100 250 L 200 290 L 320 220 L 400 270 L 520 200 L 640 260 L 780 180 L 900 240 L 1040 200 L 1140 250 L 1200 220 L 1200 400 L 0 400 Z"
+          fill="url(#peak)" opacity="0.85"/>
+
+    <!-- Snow detail on peaks -->
+    <g fill="#FFFFFF" opacity="0.85">
+        <polygon points="320,220 330,260 310,260"/>
+        <polygon points="520,200 532,250 508,250"/>
+        <polygon points="780,180 793,235 767,235"/>
+        <polygon points="1040,200 1052,245 1028,245"/>
+  </g>
+
+    <!-- Foreground hill -->
+    <path d="M 0 400 Q 200 350 400 380 Q 600 340 800 370 Q 1000 340 1200 370 L 1200 470 L 0 470 Z" fill="#5C7860"
+          opacity="0.85"/>
+    <path d="M 0 460 Q 300 430 600 450 Q 900 430 1200 460 L 1200 540 L 0 540 Z" fill="#3D5828"/>
+
+    <!-- Prayer flag string -->
+    <line x1="100" y1="300" x2="500" y2="380" stroke="#5C3820" stroke-width="2"/>
+    <g font-family="sans-serif">
+        <g transform="translate(150,322)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#E03048"/>
+        </g>
+        <g transform="translate(195,330)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#FFD040"/>
+        </g>
+        <g transform="translate(240,338)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#3D8848"/>
+        </g>
+        <g transform="translate(285,346)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#E03048"/>
+        </g>
+        <g transform="translate(330,354)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#FFFFFF"/>
+        </g>
+        <g transform="translate(375,362)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#3D78C0"/>
+        </g>
+        <g transform="translate(420,370)">
+            <polygon points="0,0 30,5 30,40 0,38" fill="#FFD040"/>
+        </g>
+    </g>
+
+    <!-- Stupa silhouette -->
+    <g transform="translate(900,440)" fill="#F8F4E8">
+        <rect x="-28" y="-10" width="56" height="10"/>
+        <ellipse cx="0" cy="-30" rx="22" ry="22"/>
+        <rect x="-6" y="-50" width="12" height="20"/>
+        <polygon points="-10,-50 0,-72 10,-50"/>
+        <circle cx="0" cy="-78" r="3" fill="#FFD040"/>
+    </g>
+
+    <!-- Prayer flags on stupa string 2 -->
+    <line x1="900" y1="380" x2="1100" y2="320" stroke="#5C3820" stroke-width="2"/>
+    <g>
+        <g transform="translate(920,395)">
+            <polygon points="0,0 22,2 22,30 0,28" fill="#FFD040"/>
+        </g>
+        <g transform="translate(960,389)">
+            <polygon points="0,0 22,2 22,30 0,28" fill="#E03048"/>
+        </g>
+        <g transform="translate(1000,383)">
+            <polygon points="0,0 22,2 22,30 0,28" fill="#3D8848"/>
+        </g>
+        <g transform="translate(1040,377)">
+            <polygon points="0,0 22,2 22,30 0,28" fill="#FFFFFF"/>
+        </g>
+    </g>
+
+    <!-- Prayer wheels / stones in foreground -->
+    <g fill="#7C5838" opacity="0.85">
+        <ellipse cx="200" cy="560" rx="22" ry="6"/>
+        <ellipse cx="280" cy="580" rx="26" ry="7"/>
+        <ellipse cx="360" cy="595" rx="22" ry="6"/>
+        <ellipse cx="700" cy="570" rx="26" ry="7"/>
+        <ellipse cx="800" cy="590" rx="22" ry="6"/>
+    </g>
+
+    <!-- Grass tufts -->
+    <g fill="#3D5818">
+        <path d="M 100 540 L 100 525 M 105 540 L 108 528 M 110 540 L 113 532"/>
+        <path d="M 500 555 L 500 540 M 505 555 L 508 543" stroke="#3D5818" stroke-width="2"/>
+        <path d="M 1000 555 L 1000 540" stroke="#3D5818" stroke-width="2"/>
+  </g>
+
+    <text x="60" y="615" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

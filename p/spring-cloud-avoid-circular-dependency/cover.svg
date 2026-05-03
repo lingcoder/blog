@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1A0A28"/>
+          <stop offset="0.5" stop-color="#7C2D40"/>
+          <stop offset="1" stop-color="#FFB57A"/>
+      </linearGradient>
+      <linearGradient id="volcano" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3D1F1A"/>
+          <stop offset="1" stop-color="#1A0F08"/>
+    </linearGradient>
+      <linearGradient id="lava" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE5A0"/>
+          <stop offset="0.4" stop-color="#FF7C30"/>
+          <stop offset="1" stop-color="#D8401C"/>
+      </linearGradient>
+  </defs>
+
+    <rect width="1200" height="450" fill="url(#sky)"/>
+
+    <g fill="#FFFFFF">
+        <circle cx="100" cy="50" r="1.4" opacity="0.85"/>
+        <circle cx="220" cy="80" r="1" opacity="0.6"/>
+        <circle cx="380" cy="60" r="1.3" opacity="0.8"/>
+        <circle cx="540" cy="100" r="1" opacity="0.55"/>
+        <circle cx="700" cy="70" r="1.2" opacity="0.7"/>
+        <circle cx="900" cy="120" r="1" opacity="0.55"/>
+        <circle cx="1100" cy="80" r="1.3" opacity="0.75"/>
+    </g>
+
+    <path d="M 100 450 L 220 280 L 280 280 L 400 450 Z" fill="#3D1F1A" opacity="0.7"/>
+
+    <path d="M 400 450 L 580 180 L 660 180 L 880 450 Z" fill="url(#volcano)"/>
+
+    <ellipse cx="620" cy="200" rx="50" ry="14" fill="url(#lava)"/>
+
+    <path d="M 600 195 Q 580 230 590 280 Q 595 320 580 380 L 540 450 L 590 450 L 605 380 Q 615 330 620 280 L 620 220 Z"
+          fill="url(#lava)"/>
+
+    <path d="M 640 195 Q 660 235 650 290 Q 645 340 660 410 L 700 450 L 660 450 L 645 400 Q 635 340 632 290 L 638 220 Z"
+          fill="url(#lava)"/>
+
+    <g fill="#5C3A2A" opacity="0.55">
+        <ellipse cx="620" cy="170" rx="35" ry="20"/>
+        <ellipse cx="640" cy="130" rx="55" ry="30"/>
+        <ellipse cx="600" cy="80" rx="80" ry="40"/>
+        <ellipse cx="640" cy="40" rx="100" ry="35"/>
+    </g>
+    <g fill="#3D2014" opacity="0.45">
+        <ellipse cx="660" cy="150" rx="35" ry="22"/>
+        <ellipse cx="600" cy="110" rx="50" ry="28"/>
+        <ellipse cx="660" cy="60" rx="70" ry="32"/>
+    </g>
+
+    <ellipse cx="620" cy="200" rx="160" ry="50" fill="#FFE5A0" opacity="0.35"/>
+
+    <rect y="450" width="1200" height="180" fill="#1A0A28"/>
+
+    <g fill="#FF7C30" opacity="0.55">
+        <ellipse cx="620" cy="490" rx="40" ry="3"/>
+        <ellipse cx="620" cy="510" rx="32" ry="2.5"/>
+        <ellipse cx="620" cy="530" rx="24" ry="2"/>
+        <ellipse cx="620" cy="555" rx="18" ry="1.5"/>
+  </g>
+
+    <g transform="translate(0,900) scale(1,-1)" opacity="0.4">
+        <path d="M 400 450 L 580 180 L 660 180 L 880 450 Z" fill="#3D1F1A"/>
+  </g>
+
+    <g fill="none" stroke="#FF7C30" stroke-opacity="0.25" stroke-width="1.5">
+        <path d="M 200 555 q 30 -3 60 0 t 60 0"/>
+        <path d="M 900 570 q 30 -3 60 0 t 60 0"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFE5A0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.75"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ERC-1155 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/erc-1155/</link><description>Recent content in ERC-1155 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 23 Jun 2022 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/erc-1155/index.xml" rel="self" type="application/rss+xml"/><item><title>NFT 标准选型与场景实践</title><link>https://www.lingcoder.com/p/nft-standards-comparison/</link><pubDate>Thu, 23 Jun 2022 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/nft-standards-comparison/</guid><description>&lt;img src="https://www.lingcoder.com/p/nft-standards-comparison/cover.svg" alt="Featured image of post NFT 标准选型与场景实践" /&gt;&lt;h2 id="两个标准都叫nft但它们解决的问题不同"&gt;&lt;a href="#%e4%b8%a4%e4%b8%aa%e6%a0%87%e5%87%86%e9%83%bd%e5%8f%abnft%e4%bd%86%e5%ae%83%e4%bb%ac%e8%a7%a3%e5%86%b3%e7%9a%84%e9%97%ae%e9%a2%98%e4%b8%8d%e5%90%8c" class="header-anchor"&gt;&lt;/a&gt;两个标准都叫&amp;quot;NFT&amp;quot;，但它们解决的问题不同
+&lt;/h2&gt;&lt;p&gt;新人接触 NFT 时常被这两个标准的并存搞晕：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ERC-721&lt;/strong&gt;：CryptoPunks、Bored Ape、CryptoKitties 都是这个标准&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ERC-1155&lt;/strong&gt;：Decentraland 道具、Enjin 卡牌、OpenSea 创作工具&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;它们都是 NFT，但&lt;strong&gt;底层模型完全不同&lt;/strong&gt;：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;ERC-721 一个合约&lt;strong&gt;管理一系列独一无二的 token&lt;/strong&gt;，每个 tokenId 唯一。&lt;/p&gt;
+&lt;p&gt;ERC-1155 一个合约&lt;strong&gt;管理多种 token&lt;/strong&gt;，&lt;strong&gt;每种 token 可以有多个&lt;/strong&gt;——既可以是 NFT，也可以是 SemiFungible，甚至 Fungible。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;理解这两个标准的边界，决定了你写 NFT 项目时该选哪个、为什么选。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一erc-721经典的单一-nft"&gt;&lt;a href="#%e4%b8%80erc-721%e7%bb%8f%e5%85%b8%e7%9a%84%e5%8d%95%e4%b8%80-nft" class="header-anchor"&gt;&lt;/a&gt;一、ERC-721：经典的&amp;quot;单一 NFT&amp;quot;
+&lt;/h2&gt;&lt;p&gt;ERC-721 由 Dieter Shirley、William Entriken 等人于 2018 年提出（EIP-721）。核心理念——&lt;strong&gt;每个 token 唯一&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;IERC721&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;ownerOf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;balanceOf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;transferFrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;approve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ... 其他
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;每个 tokenId 对应&lt;strong&gt;一个独一无二的资产&lt;/strong&gt;。一只 BAYC 猴子、一张 CryptoKitty——对应一个 tokenId。&lt;/p&gt;
+&lt;h3 id="数据结构"&gt;&lt;a href="#%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;数据结构
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;_owners&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// tokenId → owner
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;_balances&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// owner → 持有数量
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="典型操作"&gt;&lt;a href="#%e5%85%b8%e5%9e%8b%e6%93%8d%e4%bd%9c" class="header-anchor"&gt;&lt;/a&gt;典型操作
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 铸造一个 token
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_owners&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_balances&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 转账
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_owners&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;newOwner&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_balances&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_balances&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="erc-721-的特性"&gt;&lt;a href="#erc-721-%e7%9a%84%e7%89%b9%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;ERC-721 的特性
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;每个 tokenId 唯一&lt;/strong&gt;——一个 owner，不存在&amp;quot;持有多少&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每个 token 一段元数据&lt;/strong&gt;——通过 &lt;code&gt;tokenURI(tokenId)&lt;/code&gt; 取&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量操作要循环 N 次&lt;/strong&gt;——转 100 个 NFT 要 100 次 &lt;code&gt;transferFrom&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="二erc-1155多代币--半同质"&gt;&lt;a href="#%e4%ba%8cerc-1155%e5%a4%9a%e4%bb%a3%e5%b8%81--%e5%8d%8a%e5%90%8c%e8%b4%a8" class="header-anchor"&gt;&lt;/a&gt;二、ERC-1155：多代币 + 半同质
+&lt;/h2&gt;&lt;p&gt;ERC-1155 由 Enjin 团队 2018 年提出（EIP-1155），针对 ERC-721 的几个痛点：&lt;/p&gt;
+&lt;h3 id="痛点-1游戏里有大量同种道具"&gt;&lt;a href="#%e7%97%9b%e7%82%b9-1%e6%b8%b8%e6%88%8f%e9%87%8c%e6%9c%89%e5%a4%a7%e9%87%8f%e5%90%8c%e7%a7%8d%e9%81%93%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;痛点 1：游戏里有大量同种道具
+&lt;/h3&gt;&lt;p&gt;ERC-721 模型下，&amp;ldquo;100 把同样的剑&amp;quot;要 100 个不同 tokenId、100 次铸造、100 次转账——&lt;strong&gt;Gas 成本爆炸&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="痛点-2合约碎片化"&gt;&lt;a href="#%e7%97%9b%e7%82%b9-2%e5%90%88%e7%ba%a6%e7%a2%8e%e7%89%87%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;痛点 2：合约碎片化
+&lt;/h3&gt;&lt;p&gt;每个游戏出一种 NFT 都要部署一个新合约——以太坊上充斥着 1 万个仅区分一个游戏内物品的合约。&lt;/p&gt;
+&lt;h3 id="痛点-3不能批量"&gt;&lt;a href="#%e7%97%9b%e7%82%b9-3%e4%b8%8d%e8%83%bd%e6%89%b9%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;痛点 3：不能批量
+&lt;/h3&gt;&lt;p&gt;ERC-721 没有 &lt;code&gt;safeBatchTransferFrom&lt;/code&gt;——电商场景里&amp;quot;一键购买 5 件商品&amp;quot;做不到。&lt;/p&gt;
+&lt;h3 id="erc-1155-的解法"&gt;&lt;a href="#erc-1155-%e7%9a%84%e8%a7%a3%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;ERC-1155 的解法
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;一个合约管理多种 id，每种 id 可以有多份&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;IERC1155&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;balanceOf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;account&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;balanceOfBatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;accounts&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;safeTransferFrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;safeBatchTransferFrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="n"&gt;amounts&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意 &lt;code&gt;balanceOf&lt;/code&gt; 多了 &lt;code&gt;(account, id)&lt;/code&gt;——&lt;strong&gt;同一个 id 可以有多份&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="数据结构-1"&gt;&lt;a href="#%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84-1" class="header-anchor"&gt;&lt;/a&gt;数据结构
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;_balances&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// _balances[tokenId][owner] = 持有数量
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="三能力对比表"&gt;&lt;a href="#%e4%b8%89%e8%83%bd%e5%8a%9b%e5%af%b9%e6%af%94%e8%a1%a8" class="header-anchor"&gt;&lt;/a&gt;三、能力对比表
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;ERC-721&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;ERC-1155&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;token 模型&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;每 id 唯一&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;每 id 可有多份&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适合 NFT&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓ （amount = 1 等于 NFT）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适合 Fungible&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;批量转账&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗（要循环）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓ &lt;code&gt;safeBatchTransferFrom&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;批量查询余额&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓ &lt;code&gt;balanceOfBatch&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Gas（批量场景）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;显著更低&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;metadata&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;tokenURI(id)&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;uri(id)（可用 {id} 占位符）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;approve 粒度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单 token&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;全合约（setApprovalForAll）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;钱包/工具支持&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;几乎全部&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;主流支持，部分老钱包不支持&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适用场景&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;头像、艺术、收藏品&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;游戏道具、批量、组合资产&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="四gas-成本erc-1155-的杀手级优势"&gt;&lt;a href="#%e5%9b%9bgas-%e6%88%90%e6%9c%acerc-1155-%e7%9a%84%e6%9d%80%e6%89%8b%e7%ba%a7%e4%bc%98%e5%8a%bf" class="header-anchor"&gt;&lt;/a&gt;四、Gas 成本：ERC-1155 的杀手级优势
+&lt;/h2&gt;&lt;p&gt;铸造 100 个相同道具：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ERC-721
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;player&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nextTokenId&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 100 次 SSTORE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ERC-1155
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;player&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ITEM_SWORD&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 1 次 SSTORE（balance = 100）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;实测对比（铸造 100 件相同道具）：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;方案&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Gas 消耗&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;ERC-721&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;~3,500,000&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;ERC-1155&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;~80,000&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;差距 40 倍。批量转账的差距类似。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;这是为什么链游、批量市场几乎都选 ERC-1155&lt;/strong&gt;——同等业务，Gas 成本压到几十分之一。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五适用场景"&gt;&lt;a href="#%e4%ba%94%e9%80%82%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;五、适用场景
+&lt;/h2&gt;&lt;h3 id="选-erc-721-的场景"&gt;&lt;a href="#%e9%80%89-erc-721-%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;选 ERC-721 的场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;每个 token 独一无二&lt;/strong&gt;：头像、PFP、艺术品、稀有收藏&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每个 token 元数据完全不同&lt;/strong&gt;：CryptoPunks 每个都不一样&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;品牌效应&lt;/strong&gt;：BAYC、Doodles 这种&amp;quot;个体认知度&amp;quot;项目——单合约、单 tokenId&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="选-erc-1155-的场景"&gt;&lt;a href="#%e9%80%89-erc-1155-%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;选 ERC-1155 的场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;游戏道具&lt;/strong&gt;：剑、药水、卡牌——同种物品多份&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;门票 / 凭证&lt;/strong&gt;：演唱会门票每张相同但要发几千份&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量操作&lt;/strong&gt;：电商商品、物流凭证&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;混合资产&lt;/strong&gt;：一个合约里既有可堆叠物品，又有独一无二的稀有 NFT&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;组合金融产品&lt;/strong&gt;：一个合约里管理 N 种衍生品&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="一些灰色地带"&gt;&lt;a href="#%e4%b8%80%e4%ba%9b%e7%81%b0%e8%89%b2%e5%9c%b0%e5%b8%a6" class="header-anchor"&gt;&lt;/a&gt;一些灰色地带
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;限量版艺术品&lt;/strong&gt;（一种艺术 100 个相同复制品）：ERC-1155 更合适&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;演唱会门票（每张序列号不同）&lt;/strong&gt;：ERC-721 更合适&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Loot 这种链上随机生成&lt;/strong&gt;：ERC-721 元数据 on-chain 更合适&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;判断关键&lt;/strong&gt;：&amp;ldquo;这种 token 会有多份吗？&amp;quot;——会就 ERC-1155，不会就 ERC-721。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六metadata-的差异"&gt;&lt;a href="#%e5%85%admetadata-%e7%9a%84%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;六、metadata 的差异
+&lt;/h2&gt;&lt;h3 id="erc-721-的-tokenuri"&gt;&lt;a href="#erc-721-%e7%9a%84-tokenuri" class="header-anchor"&gt;&lt;/a&gt;ERC-721 的 tokenURI
+&lt;/h3&gt;&lt;p&gt;每个 tokenId 一个 URI：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;tokenURI&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;encodePacked&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;baseURI&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;toString&lt;/span&gt;&lt;span class="p"&gt;()));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;返回的 JSON：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;BAYC #4521&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;description&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;...&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;image&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;ipfs://Qm.../4521.png&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;attributes&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[{&lt;/span&gt;&lt;span class="nt"&gt;&amp;#34;trait_type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Background&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;&amp;#34;value&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Gold&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;}]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="erc-1155-的-uri"&gt;&lt;a href="#erc-1155-%e7%9a%84-uri" class="header-anchor"&gt;&lt;/a&gt;ERC-1155 的 uri
+&lt;/h3&gt;&lt;p&gt;支持 &lt;code&gt;{id}&lt;/code&gt; 占位符：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;uri&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;https://example.com/api/{id}.json&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;客户端拿到后用 64 位 hex（补全 &lt;code&gt;0x&lt;/code&gt; 前缀）替换 &lt;code&gt;{id}&lt;/code&gt;——这样&lt;strong&gt;一个 URI 模板能服务所有 id&lt;/strong&gt;，省心。&lt;/p&gt;
+&lt;p&gt;但实际上很多 ERC-1155 项目仍然给每个 id 单独配 URI——尤其是游戏道具，每种道具一段元数据。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七approve-模型差异"&gt;&lt;a href="#%e4%b8%83approve-%e6%a8%a1%e5%9e%8b%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;七、approve 模型差异
+&lt;/h2&gt;&lt;h3 id="erc-721"&gt;&lt;a href="#erc-721" class="header-anchor"&gt;&lt;/a&gt;ERC-721
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;approve(to, tokenId)&lt;/code&gt;：授权某地址转某个 token&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setApprovalForAll(operator, true)&lt;/code&gt;：授权某地址操作所有 token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="erc-1155"&gt;&lt;a href="#erc-1155" class="header-anchor"&gt;&lt;/a&gt;ERC-1155
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;没有单 token approve&lt;/strong&gt;——只能 &lt;code&gt;setApprovalForAll&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;这意味着用户必须信任整个 operator（如交易市场）能动他全部 1155 资产&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这是 ERC-1155 在用户安全侧的劣势——授权范围更大、撤销更重要。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八写一个-erc-1155-合约"&gt;&lt;a href="#%e5%85%ab%e5%86%99%e4%b8%80%e4%b8%aa-erc-1155-%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;八、写一个 ERC-1155 合约
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin 提供了一行能用的实现：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts/token/ERC1155/ERC1155.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts/access/Ownable.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;GameItems&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;ERC1155&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Ownable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;constant&lt;/span&gt; &lt;span class="n"&gt;SWORD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;constant&lt;/span&gt; &lt;span class="n"&gt;SHIELD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;constant&lt;/span&gt; &lt;span class="n"&gt;POTION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="k"&gt;constant&lt;/span&gt; &lt;span class="n"&gt;LEGENDARY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="n"&gt;ERC1155&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://example.com/api/{id}.json&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SWORD&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;SHIELD&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;200&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;POTION&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;LEGENDARY&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 唯一稀有 NFT
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="n"&gt;onlyOwner&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;mintBatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt; &lt;span class="n"&gt;amounts&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="n"&gt;onlyOwner&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_mintBatch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amounts&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意 &lt;code&gt;LEGENDARY&lt;/code&gt; 的 amount = 1——&lt;strong&gt;这相当于在同一个合约里用 ERC-1155 表达 NFT&lt;/strong&gt;。这是 ERC-1155 的灵活性。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九踩坑提醒"&gt;&lt;a href="#%e4%b9%9d%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;九、踩坑提醒
+&lt;/h2&gt;&lt;h3 id="1-safetransferfrom-接收方要实现钩子"&gt;&lt;a href="#1-safetransferfrom-%e6%8e%a5%e6%94%b6%e6%96%b9%e8%a6%81%e5%ae%9e%e7%8e%b0%e9%92%a9%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;1. &lt;code&gt;safeTransferFrom&lt;/code&gt; 接收方要实现钩子
+&lt;/h3&gt;&lt;p&gt;如果接收方是合约，必须实现 &lt;code&gt;onERC721Received&lt;/code&gt; / &lt;code&gt;onERC1155Received&lt;/code&gt;，否则转账 revert。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;onERC1155Received&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="n"&gt;calldata&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;pure&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bytes4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;onERC1155Received&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;selector&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-erc-1155-的-transfer-必须带-amount"&gt;&lt;a href="#2-erc-1155-%e7%9a%84-transfer-%e5%bf%85%e9%a1%bb%e5%b8%a6-amount" class="header-anchor"&gt;&lt;/a&gt;2. ERC-1155 的 transfer 必须带 amount
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ERC-721 的语法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;transferFrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokenId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ERC-1155 的语法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;safeTransferFrom&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;NFT 性质的 token 永远 amount = 1。&lt;/p&gt;
+&lt;h3 id="3-metadata-占位符兼容"&gt;&lt;a href="#3-metadata-%e5%8d%a0%e4%bd%8d%e7%ac%a6%e5%85%bc%e5%ae%b9" class="header-anchor"&gt;&lt;/a&gt;3. metadata 占位符兼容
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;{id}&lt;/code&gt; 占位符是 ERC-1155 标准里规定的——&lt;strong&gt;实际平台支持参差不齐&lt;/strong&gt;。OpenSea / 区块链浏览器多数支持，但小钱包可能不识别——保险起见每个 id 单独配 URI。&lt;/p&gt;
+&lt;h3 id="4-不要混用模型"&gt;&lt;a href="#4-%e4%b8%8d%e8%a6%81%e6%b7%b7%e7%94%a8%e6%a8%a1%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;4. 不要混用模型
+&lt;/h3&gt;&lt;p&gt;同一个项目里&lt;strong&gt;要么用 ERC-721 要么用 ERC-1155&lt;/strong&gt;，不要在一个集合里两种都发。买家会困惑：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;为什么这个 NFT 在我的钱包里看不到？&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;为什么我数量是 5 但只能转 1？&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="5-老钱包可能不支持-erc-1155"&gt;&lt;a href="#5-%e8%80%81%e9%92%b1%e5%8c%85%e5%8f%af%e8%83%bd%e4%b8%8d%e6%94%af%e6%8c%81-erc-1155" class="header-anchor"&gt;&lt;/a&gt;5. 老钱包可能不支持 ERC-1155
+&lt;/h3&gt;&lt;p&gt;Trust Wallet、imToken 较新版本支持，但 5 年前的老钱包可能识别不出 1155——目标用户群里要有市场调研。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十其他相关标准"&gt;&lt;a href="#%e5%8d%81%e5%85%b6%e4%bb%96%e7%9b%b8%e5%85%b3%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;十、其他相关标准
+&lt;/h2&gt;&lt;p&gt;NFT 生态的相关标准还有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ERC-2981&lt;/strong&gt;：版税标准——让 NFT 在二级市场卖出时自动扣版税给原作者&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;EIP-2535&lt;/strong&gt;：Diamond 合约标准——超大合约的模块化升级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ERC-4907&lt;/strong&gt;：可租赁 NFT&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ERC-721A&lt;/strong&gt;：Azuki 优化的批量铸造 ERC-721（Gas 比标准 721 低很多）&lt;/li&gt;
+&lt;/ul&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;🔥 ERC-721A 在某种程度上是对 ERC-1155 的&amp;quot;反击&amp;rdquo;——保留 ERC-721 的语义但优化批量铸造 Gas，是大量 PFP 项目的选择。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;ERC-721 表达『每个唯一』，ERC-1155 表达『多种 + 多份』。一个合约一个项目就用 721；多类型批量场景必上 1155。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程选型：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;PFP / 艺术 / 收藏&lt;/strong&gt; → ERC-721（或 ERC-721A）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;游戏 / 批量 / 多种&lt;/strong&gt; → ERC-1155&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;混合需求&lt;/strong&gt; → ERC-1155（amount=1 表 NFT，amount&amp;gt;1 表数量）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二级市场版税&lt;/strong&gt; → 配 ERC-2981&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;NFT 生态还在演进，理解这些标准的边界比追新更重要——&lt;strong&gt;搞清&amp;quot;业务场景该用哪个&amp;rdquo;&lt;/strong&gt;，远比&amp;quot;哪个最先进&amp;quot;实用。&lt;/p&gt;</description></item></channel></rss>

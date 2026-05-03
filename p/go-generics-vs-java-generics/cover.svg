@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7C90B0"/>
+          <stop offset="1" stop-color="#D8E0EC"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Soft snowy sun -->
+    <circle cx="900" cy="180" r="50" fill="#F8F0E0" opacity="0.85"/>
+    <circle cx="900" cy="180" r="100" fill="#F8F0E0" opacity="0.2"/>
+
+    <!-- Falling snow -->
+    <g fill="#FFFFFF">
+        <circle cx="60" cy="80" r="2" opacity="0.85"/>
+        <circle cx="180" cy="120" r="2.5" opacity="0.9"/>
+        <circle cx="280" cy="60" r="2" opacity="0.85"/>
+        <circle cx="380" cy="160" r="2.5" opacity="0.9"/>
+        <circle cx="480" cy="80" r="2" opacity="0.85"/>
+        <circle cx="600" cy="140" r="2.5" opacity="0.9"/>
+        <circle cx="700" cy="60" r="2" opacity="0.85"/>
+        <circle cx="820" cy="160" r="2.5" opacity="0.9"/>
+        <circle cx="1020" cy="100" r="2" opacity="0.85"/>
+        <circle cx="1140" cy="140" r="2.5" opacity="0.9"/>
+        <circle cx="120" cy="240" r="2" opacity="0.7"/>
+        <circle cx="320" cy="280" r="2.5" opacity="0.75"/>
+        <circle cx="500" cy="240" r="2" opacity="0.7"/>
+        <circle cx="700" cy="290" r="2.5" opacity="0.75"/>
+        <circle cx="900" cy="260" r="2" opacity="0.7"/>
+        <circle cx="1100" cy="280" r="2.5" opacity="0.75"/>
+    </g>
+
+    <!-- Distant snowy mountain -->
+    <path d="M 0 380 L 200 220 L 320 280 L 480 200 L 640 270 L 800 220 L 960 290 L 1100 240 L 1200 280 L 1200 400 L 0 400 Z"
+          fill="#9CACBC" opacity="0.75"/>
+    <g fill="#FFFFFF" opacity="0.85">
+        <polygon points="200,220 220,260 180,260"/>
+        <polygon points="480,200 502,250 460,250"/>
+        <polygon points="800,220 820,260 780,260"/>
+    </g>
+
+    <!-- Snow ground -->
+    <path d="M 0 400 Q 600 380 1200 410 L 1200 630 L 0 630 Z" fill="#F0F4F8"/>
+    <path d="M 0 480 Q 600 460 1200 490 L 1200 630 L 0 630 Z" fill="#D8E0EE"/>
+
+    <!-- Snowy pine forest -->
+    <g>
+        <g transform="translate(80,460)">
+            <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
+            <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
+        </g>
+        <g transform="translate(180,490)">
+            <polygon points="0,0 -28,-70 28,-70 0,-110 -22,-70 22,-70 0,-110" fill="#1F4028"/>
+            <polygon points="0,0 -28,-70 28,-70" fill="#FFFFFF" opacity="0.75"/>
+    </g>
+        <g transform="translate(280,460)">
+            <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
+            <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
+        </g>
+        <g transform="translate(380,490)">
+            <polygon points="0,0 -28,-70 28,-70 0,-110 -22,-70 22,-70 0,-110" fill="#1F4028"/>
+            <polygon points="0,0 -28,-70 28,-70" fill="#FFFFFF" opacity="0.75"/>
+        </g>
+        <g transform="translate(480,470)">
+            <polygon points="0,0 -25,-62 25,-62 0,-100 -20,-62 20,-62 0,-100" fill="#1F4028"/>
+            <polygon points="0,0 -25,-62 25,-62" fill="#FFFFFF" opacity="0.72"/>
+        </g>
+        <g transform="translate(750,470)">
+            <polygon points="0,0 -25,-62 25,-62 0,-100 -20,-62 20,-62 0,-100" fill="#1F4028"/>
+            <polygon points="0,0 -25,-62 25,-62" fill="#FFFFFF" opacity="0.72"/>
+        </g>
+        <g transform="translate(850,490)">
+            <polygon points="0,0 -28,-70 28,-70 0,-110 -22,-70 22,-70 0,-110" fill="#1F4028"/>
+            <polygon points="0,0 -28,-70 28,-70" fill="#FFFFFF" opacity="0.75"/>
+        </g>
+        <g transform="translate(960,460)">
+            <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
+            <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
+        </g>
+        <g transform="translate(1060,490)">
+            <polygon points="0,0 -28,-70 28,-70 0,-110 -22,-70 22,-70 0,-110" fill="#1F4028"/>
+            <polygon points="0,0 -28,-70 28,-70" fill="#FFFFFF" opacity="0.75"/>
+        </g>
+        <g transform="translate(1150,460)">
+            <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
+            <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
+        </g>
+  </g>
+
+    <!-- Foreground big snowy pine -->
+    <g transform="translate(600,560)">
+        <polygon points="0,0 -55,-130 55,-130 0,-200 -45,-130 45,-130 0,-200" fill="#0F2818"/>
+        <polygon points="0,0 -55,-130 55,-130" fill="#FFFFFF" opacity="0.7"/>
+        <!-- Snow caps -->
+        <ellipse cx="0" cy="-200" rx="8" ry="3" fill="#FFFFFF"/>
+    </g>
+
+    <text x="60" y="615" fill="#3A5070" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

@@ -1,0 +1,397 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="JUnit 5 不只是『JUnit 4 的升级』，它是为现代 Java 重新设计的测试框架。一篇带你过完所有常用与进阶用法"><title>JUnit 4 到 JUnit 5：Java 测试框架的迁移与实战</title><link rel=canonical href=https://www.lingcoder.com/p/junit4-to-junit5-migration/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="JUnit 4 到 JUnit 5：Java 测试框架的迁移与实战"><meta property='og:description' content="JUnit 5 不只是『JUnit 4 的升级』，它是为现代 Java 重新设计的测试框架。一篇带你过完所有常用与进阶用法"><meta property='og:url' content='https://www.lingcoder.com/p/junit4-to-junit5-migration/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='JUnit5'><meta property='article:tag' content='单元测试'><meta property='article:tag' content='Mockito'><meta property='article:tag' content='Spring Boot'><meta property='article:tag' content='Java'><meta property='article:published_time' content='2020-09-14T15:30:00+08:00'><meta property='article:modified_time' content='2020-09-14T15:30:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/junit4-to-junit5-migration/cover.svg'><meta name=twitter:title content="JUnit 4 到 JUnit 5：Java 测试框架的迁移与实战"><meta name=twitter:description content="JUnit 5 不只是『JUnit 4 的升级』，它是为现代 Java 重新设计的测试框架。一篇带你过完所有常用与进阶用法"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/junit4-to-junit5-migration/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#为什么要从-junit-4-升级到-junit-5>为什么要从 JUnit 4 升级到 JUnit 5</a></li><li><a href=#一最小可运行例子>一、最小可运行例子</a></li><li><a href=#二生命周期注解>二、生命周期注解</a></li><li><a href=#三断言丰富又优雅>三、断言：丰富又优雅</a></li><li><a href=#四参数化测试junit-5-的杀手锏>四、参数化测试：JUnit 5 的杀手锏</a><ol><li><a href=#1-valuesource-单参数>1. <code>@ValueSource</code> 单参数</a></li><li><a href=#2-csvsource-多参数>2. <code>@CsvSource</code> 多参数</a></li><li><a href=#3-csvfilesource-从-csv-文件读>3. <code>@CsvFileSource</code> 从 CSV 文件读</a></li><li><a href=#4-methodsource-复杂数据>4. <code>@MethodSource</code> 复杂数据</a></li><li><a href=#5-enumsource-遍历枚举>5. <code>@EnumSource</code> 遍历枚举</a></li></ol></li><li><a href=#五嵌套测试让用例分组更优雅>五、嵌套测试：让用例分组更优雅</a></li><li><a href=#六条件执行根据环境跳过>六、条件执行：根据环境跳过</a></li><li><a href=#七扩展模型替代-junit-4-的-rule>七、扩展模型：替代 JUnit 4 的 Rule</a></li><li><a href=#八spring-boot-测试整合>八、Spring Boot 测试整合</a></li><li><a href=#九junit-4-兼容渐进式迁移>九、JUnit 4 兼容：渐进式迁移</a></li><li><a href=#十踩坑提醒>十、踩坑提醒</a></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/junit4-to-junit5-migration/><img alt="Featured image of post JUnit 4 到 JUnit 5：Java 测试框架的迁移与实战" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/junit4-to-junit5-migration/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/java/ style=background-color:#2a9d8f;color:#fff>Java</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/junit4-to-junit5-migration/>JUnit 4 到 JUnit 5：Java 测试框架的迁移与实战</a></h2><h3 class=article-subtitle>JUnit 5 不只是『JUnit 4 的升级』，它是为现代 Java 重新设计的测试框架。一篇带你过完所有常用与进阶用法</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2020-09-14T15:30:00+08:00>2020-09-14</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#为什么要从-junit-4-升级到-junit-5>为什么要从 JUnit 4 升级到 JUnit 5</a></li><li><a href=#一最小可运行例子>一、最小可运行例子</a></li><li><a href=#二生命周期注解>二、生命周期注解</a></li><li><a href=#三断言丰富又优雅>三、断言：丰富又优雅</a></li><li><a href=#四参数化测试junit-5-的杀手锏>四、参数化测试：JUnit 5 的杀手锏</a><ol><li><a href=#1-valuesource-单参数>1. <code>@ValueSource</code> 单参数</a></li><li><a href=#2-csvsource-多参数>2. <code>@CsvSource</code> 多参数</a></li><li><a href=#3-csvfilesource-从-csv-文件读>3. <code>@CsvFileSource</code> 从 CSV 文件读</a></li><li><a href=#4-methodsource-复杂数据>4. <code>@MethodSource</code> 复杂数据</a></li><li><a href=#5-enumsource-遍历枚举>5. <code>@EnumSource</code> 遍历枚举</a></li></ol></li><li><a href=#五嵌套测试让用例分组更优雅>五、嵌套测试：让用例分组更优雅</a></li><li><a href=#六条件执行根据环境跳过>六、条件执行：根据环境跳过</a></li><li><a href=#七扩展模型替代-junit-4-的-rule>七、扩展模型：替代 JUnit 4 的 Rule</a></li><li><a href=#八spring-boot-测试整合>八、Spring Boot 测试整合</a></li><li><a href=#九junit-4-兼容渐进式迁移>九、JUnit 4 兼容：渐进式迁移</a></li><li><a href=#十踩坑提醒>十、踩坑提醒</a></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=为什么要从-junit-4-升级到-junit-5><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bb%8e-junit-4-%e5%8d%87%e7%ba%a7%e5%88%b0-junit-5 class=header-anchor></a>为什么要从 JUnit 4 升级到 JUnit 5</h2><p>很多团队的 pom.xml 里至今还躺着 <code>junit:junit:4.x</code>。<strong>JUnit 4 已经停止主线维护多年</strong>，但因为足够"够用"，迟迟没人动。</p><p>升级到 JUnit 5 不是为了赶时髦，而是它解决了 JUnit 4 时代积攒的几个核心痛点：</p><ul><li><strong>架构臃肿</strong>：JUnit 4 把整个框架塞在一个 jar 里，运行器（Runner）和扩展点（Rule）冲突，不能叠加</li><li><strong>没有原生参数化测试</strong>：要靠 <code>Parameterized</code> Runner，写法别扭</li><li><strong>嵌套测试丑陋</strong>：要用 <code>@RunWith(Enclosed.class)</code></li><li><strong>断言能力弱</strong>：复合断言、异常断言要靠第三方库</li><li><strong>不支持 Java 8+ Lambda</strong>：很多优雅写法用不上</li></ul><p>JUnit 5 推倒重来，拆成三个模块：</p><pre class=mermaid style=visibility:hidden>flowchart LR
+    Platform["JUnit Platform<br>(运行平台)"]
+    Jupiter["JUnit Jupiter<br>(JUnit 5 编程模型)"]
+    Vintage["JUnit Vintage<br>(兼容跑 JUnit 3/4)"]
+
+    Platform --> Jupiter
+    Platform --> Vintage</pre><ul><li><strong>Platform</strong>：测试引擎的标准接口，IDE/Maven/Gradle 都对它编程</li><li><strong>Jupiter</strong>：你写的 <code>@Test</code> 用的就是它</li><li><strong>Vintage</strong>：让 JUnit 4 测试在 Platform 上继续跑，平滑迁移</li></ul><p>下面我们用一个个能跑的例子，把 JUnit 5 的常用与进阶用法过一遍。</p><hr><h2 id=一最小可运行例子><a href=#%e4%b8%80%e6%9c%80%e5%b0%8f%e5%8f%af%e8%bf%90%e8%a1%8c%e4%be%8b%e5%ad%90 class=header-anchor></a>一、最小可运行例子</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.junit.jupiter<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>junit-jupiter<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>5.10.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;scope&gt;</span>test<span class=nt>&lt;/scope&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=nn>org.junit.jupiter.api.Test</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kn>import static</span><span class=w> </span><span class=nn>org.junit.jupiter.api.Assertions.*</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>CalculatorTest</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>add_should_return_sum</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Calculator</span><span class=w> </span><span class=n>c</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>Calculator</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>5</span><span class=p>,</span><span class=w> </span><span class=n>c</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>2</span><span class=p>,</span><span class=w> </span><span class=n>3</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>注意——<strong>类和方法都不再需要 <code>public</code></strong>，包私有就够了，因为 JUnit 5 用反射访问。这是个微小但很贴心的改进。</p><hr><h2 id=二生命周期注解><a href=#%e4%ba%8c%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e6%b3%a8%e8%a7%a3 class=header-anchor></a>二、生命周期注解</h2><p>JUnit 4 → JUnit 5 注解对照：</p><div class=table-wrapper><table><thead><tr><th style=text-align:left>JUnit 4</th><th style=text-align:left>JUnit 5</th></tr></thead><tbody><tr><td style=text-align:left><code>@Before</code></td><td style=text-align:left><code>@BeforeEach</code></td></tr><tr><td style=text-align:left><code>@After</code></td><td style=text-align:left><code>@AfterEach</code></td></tr><tr><td style=text-align:left><code>@BeforeClass</code></td><td style=text-align:left><code>@BeforeAll</code></td></tr><tr><td style=text-align:left><code>@AfterClass</code></td><td style=text-align:left><code>@AfterAll</code></td></tr><tr><td style=text-align:left><code>@Ignore</code></td><td style=text-align:left><code>@Disabled</code></td></tr></tbody></table></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>class</span> <span class=nc>LifecycleTest</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@BeforeAll</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>static</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>beforeAll</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* 整个测试类前执行一次 */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@BeforeEach</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>beforeEach</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* 每个 @Test 前执行 */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>test1</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* ... */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@AfterEach</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>afterEach</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* 每个 @Test 后执行 */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@AfterAll</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>static</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>afterAll</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* 整个测试类后执行一次 */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>@BeforeAll/@AfterAll</code> 默认必须 <code>static</code>。如果不想写 <code>static</code>，把测试类加上 <code>@TestInstance(Lifecycle.PER_CLASS)</code>，整个类用一个实例，方法就不必 <code>static</code> 了——但要注意此时测试方法之间会共享实例字段。</p><hr><h2 id=三断言丰富又优雅><a href=#%e4%b8%89%e6%96%ad%e8%a8%80%e4%b8%b0%e5%af%8c%e5%8f%88%e4%bc%98%e9%9b%85 class=header-anchor></a>三、断言：丰富又优雅</h2><p>JUnit 5 的 <code>Assertions</code> 是终于"现代化"了：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>richAssertions</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>User</span><span class=w> </span><span class=n>u</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>userService</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=n>1L</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 基础</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertNotNull</span><span class=p>(</span><span class=n>u</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=s>&#34;张三&#34;</span><span class=p>,</span><span class=w> </span><span class=n>u</span><span class=p>.</span><span class=na>getName</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 带 message（lambda 形式，断言失败前才计算字符串）</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>20</span><span class=p>,</span><span class=w> </span><span class=n>u</span><span class=p>.</span><span class=na>getAge</span><span class=p>(),</span><span class=w> </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=s>&#34;用户 &#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>u</span><span class=p>.</span><span class=na>getId</span><span class=p>()</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34; 年龄异常&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 一次性断言多个条件，全部都要执行</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertAll</span><span class=p>(</span><span class=s>&#34;user properties&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>assertEquals</span><span class=p>(</span><span class=s>&#34;张三&#34;</span><span class=p>,</span><span class=w> </span><span class=n>u</span><span class=p>.</span><span class=na>getName</span><span class=p>()),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>20</span><span class=p>,</span><span class=w> </span><span class=n>u</span><span class=p>.</span><span class=na>getAge</span><span class=p>()),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>assertTrue</span><span class=p>(</span><span class=n>u</span><span class=p>.</span><span class=na>getEmail</span><span class=p>().</span><span class=na>endsWith</span><span class=p>(</span><span class=s>&#34;@example.com&#34;</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 异常断言</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>Exception</span><span class=w> </span><span class=n>ex</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>assertThrows</span><span class=p>(</span><span class=n>IllegalArgumentException</span><span class=p>.</span><span class=na>class</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>userService</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=o>-</span><span class=n>1L</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=s>&#34;id must be positive&#34;</span><span class=p>,</span><span class=w> </span><span class=n>ex</span><span class=p>.</span><span class=na>getMessage</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 不抛异常断言</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertDoesNotThrow</span><span class=p>(()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>userService</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=n>1L</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 超时断言（同步）</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertTimeout</span><span class=p>(</span><span class=n>Duration</span><span class=p>.</span><span class=na>ofMillis</span><span class=p>(</span><span class=n>500</span><span class=p>),</span><span class=w> </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>userService</span><span class=p>.</span><span class=na>heavyTask</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c1>// 超时断言（一旦超时立刻终止任务）</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertTimeoutPreemptively</span><span class=p>(</span><span class=n>Duration</span><span class=p>.</span><span class=na>ofMillis</span><span class=p>(</span><span class=n>500</span><span class=p>),</span><span class=w> </span><span class=p>()</span><span class=w> </span><span class=o>-&gt;</span><span class=w> </span><span class=n>userService</span><span class=p>.</span><span class=na>heavyTask</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><h2 id=四参数化测试junit-5-的杀手锏><a href=#%e5%9b%9b%e5%8f%82%e6%95%b0%e5%8c%96%e6%b5%8b%e8%af%95junit-5-%e7%9a%84%e6%9d%80%e6%89%8b%e9%94%8f class=header-anchor></a>四、参数化测试：JUnit 5 的杀手锏</h2><p>参数化测试是 JUnit 5 最值得单独学的特性。一个测试方法，多套输入，<strong>输出是多个独立测试用例</strong>——失败时 IDE 里能看到每个用例的结果。</p><p>需要额外依赖：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.junit.jupiter<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>junit-jupiter-params<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>5.10.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;scope&gt;</span>test<span class=nt>&lt;/scope&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=1-valuesource-单参数><a href=#1-valuesource-%e5%8d%95%e5%8f%82%e6%95%b0 class=header-anchor></a>1. <code>@ValueSource</code> 单参数</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ParameterizedTest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@ValueSource</span><span class=p>(</span><span class=n>strings</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=s>&#34;   &#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;\t&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;\n&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>blank_strings_should_be_blank</span><span class=p>(</span><span class=n>String</span><span class=w> </span><span class=n>input</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertTrue</span><span class=p>(</span><span class=n>StringUtils</span><span class=p>.</span><span class=na>isBlank</span><span class=p>(</span><span class=n>input</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=2-csvsource-多参数><a href=#2-csvsource-%e5%a4%9a%e5%8f%82%e6%95%b0 class=header-anchor></a>2. <code>@CsvSource</code> 多参数</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ParameterizedTest</span><span class=p>(</span><span class=n>name</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;[{index}] {0} + {1} = {2}&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@CsvSource</span><span class=p>({</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;1, 1, 2&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;2, 3, 5&#34;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;10, 20, 30&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>add</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=n>b</span><span class=p>,</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=n>expected</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>expected</span><span class=p>,</span><span class=w> </span><span class=n>calculator</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>a</span><span class=p>,</span><span class=w> </span><span class=n>b</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>name</code> 属性让每个用例在 IDE 里有清晰的标签，强烈推荐。</p><h3 id=3-csvfilesource-从-csv-文件读><a href=#3-csvfilesource-%e4%bb%8e-csv-%e6%96%87%e4%bb%b6%e8%af%bb class=header-anchor></a>3. <code>@CsvFileSource</code> 从 CSV 文件读</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ParameterizedTest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@CsvFileSource</span><span class=p>(</span><span class=n>resources</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;/test-cases.csv&#34;</span><span class=p>,</span><span class=w> </span><span class=n>numLinesToSkip</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>1</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>fromCsv</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=n>b</span><span class=p>,</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=n>expected</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>expected</span><span class=p>,</span><span class=w> </span><span class=n>calculator</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>a</span><span class=p>,</span><span class=w> </span><span class=n>b</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>适合和测试人员协作——他们维护 CSV，开发不动代码。</p><h3 id=4-methodsource-复杂数据><a href=#4-methodsource-%e5%a4%8d%e6%9d%82%e6%95%b0%e6%8d%ae class=header-anchor></a>4. <code>@MethodSource</code> 复杂数据</h3><p>参数复杂时用方法源：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ParameterizedTest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@MethodSource</span><span class=p>(</span><span class=s>&#34;userTestData&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>create</span><span class=p>(</span><span class=n>UserDTO</span><span class=w> </span><span class=n>input</span><span class=p>,</span><span class=w> </span><span class=kt>boolean</span><span class=w> </span><span class=n>expectedValid</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertEquals</span><span class=p>(</span><span class=n>expectedValid</span><span class=p>,</span><span class=w> </span><span class=n>userValidator</span><span class=p>.</span><span class=na>isValid</span><span class=p>(</span><span class=n>input</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>static</span><span class=w> </span><span class=n>Stream</span><span class=o>&lt;</span><span class=n>Arguments</span><span class=o>&gt;</span><span class=w> </span><span class=nf>userTestData</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>Stream</span><span class=p>.</span><span class=na>of</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Arguments</span><span class=p>.</span><span class=na>of</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>UserDTO</span><span class=p>(</span><span class=s>&#34;张三&#34;</span><span class=p>,</span><span class=w> </span><span class=n>20</span><span class=p>),</span><span class=w> </span><span class=kc>true</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Arguments</span><span class=p>.</span><span class=na>of</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>UserDTO</span><span class=p>(</span><span class=s>&#34;&#34;</span><span class=p>,</span><span class=w> </span><span class=n>20</span><span class=p>),</span><span class=w> </span><span class=kc>false</span><span class=p>),</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Arguments</span><span class=p>.</span><span class=na>of</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>UserDTO</span><span class=p>(</span><span class=s>&#34;李四&#34;</span><span class=p>,</span><span class=w> </span><span class=o>-</span><span class=n>1</span><span class=p>),</span><span class=w> </span><span class=kc>false</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=5-enumsource-遍历枚举><a href=#5-enumsource-%e9%81%8d%e5%8e%86%e6%9e%9a%e4%b8%be class=header-anchor></a>5. <code>@EnumSource</code> 遍历枚举</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ParameterizedTest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@EnumSource</span><span class=p>(</span><span class=n>value</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>OrderStatus</span><span class=p>.</span><span class=na>class</span><span class=p>,</span><span class=w> </span><span class=n>mode</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>Mode</span><span class=p>.</span><span class=na>EXCLUDE</span><span class=p>,</span><span class=w> </span><span class=n>names</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>{</span><span class=s>&#34;DELETED&#34;</span><span class=p>})</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>allActiveStatusesShouldDisplayCorrectly</span><span class=p>(</span><span class=n>OrderStatus</span><span class=w> </span><span class=n>s</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>assertNotNull</span><span class=p>(</span><span class=n>s</span><span class=p>.</span><span class=na>getDisplayName</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><h2 id=五嵌套测试让用例分组更优雅><a href=#%e4%ba%94%e5%b5%8c%e5%a5%97%e6%b5%8b%e8%af%95%e8%ae%a9%e7%94%a8%e4%be%8b%e5%88%86%e7%bb%84%e6%9b%b4%e4%bc%98%e9%9b%85 class=header-anchor></a>五、嵌套测试：让用例分组更优雅</h2><p><code>@Nested</code> 让测试类按场景分层，IDE 里看上去就是一棵树：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>class</span> <span class=nc>UserServiceTest</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Nested</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@DisplayName</span><span class=p>(</span><span class=s>&#34;当用户已存在时&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>class</span> <span class=nc>WhenUserExists</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nd>@BeforeEach</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>setup</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=cm>/* 准备已存在用户 */</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nd>@Test</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>getById_returns_user</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nd>@Test</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>update_should_succeed</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Nested</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@DisplayName</span><span class=p>(</span><span class=s>&#34;当用户不存在时&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>class</span> <span class=nc>WhenUserNotFound</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nd>@Test</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>getById_returns_null</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nd>@Test</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>update_should_throw</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>@DisplayName</code> 把测试名换成中文/句子式描述，<strong>让测试报告读起来像需求文档</strong>。</p><hr><h2 id=六条件执行根据环境跳过><a href=#%e5%85%ad%e6%9d%a1%e4%bb%b6%e6%89%a7%e8%a1%8c%e6%a0%b9%e6%8d%ae%e7%8e%af%e5%a2%83%e8%b7%b3%e8%bf%87 class=header-anchor></a>六、条件执行：根据环境跳过</h2><p>JUnit 5 提供了一组 <code>@EnabledOn*</code> / <code>@DisabledOn*</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@EnabledOnOs</span><span class=p>(</span><span class=n>OS</span><span class=p>.</span><span class=na>LINUX</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>only_on_linux</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@EnabledIfSystemProperty</span><span class=p>(</span><span class=n>named</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;env&#34;</span><span class=p>,</span><span class=w> </span><span class=n>matches</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;ci&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>only_on_ci</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@DisabledIfEnvironmentVariable</span><span class=p>(</span><span class=n>named</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;SKIP_HEAVY&#34;</span><span class=p>,</span><span class=w> </span><span class=n>matches</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=s>&#34;true&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>void</span><span class=w> </span><span class=nf>heavy_test</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=p>...</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>比 <code>@Ignore</code> 灵活得多。</p><hr><h2 id=七扩展模型替代-junit-4-的-rule><a href=#%e4%b8%83%e6%89%a9%e5%b1%95%e6%a8%a1%e5%9e%8b%e6%9b%bf%e4%bb%a3-junit-4-%e7%9a%84-rule class=header-anchor></a>七、扩展模型：替代 JUnit 4 的 Rule</h2><p>JUnit 4 的 <code>@Rule</code> 不能多个叠加、不能跨类复用。JUnit 5 用统一的 <code>Extension</code> 模型替代：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ExtendWith</span><span class=p>(</span><span class=n>MockitoExtension</span><span class=p>.</span><span class=na>class</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>UserServiceTest</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Mock</span><span class=w> </span><span class=n>UserRepository</span><span class=w> </span><span class=n>repo</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@InjectMocks</span><span class=w> </span><span class=n>UserService</span><span class=w> </span><span class=n>service</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>getById_returns_user</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>when</span><span class=p>(</span><span class=n>repo</span><span class=p>.</span><span class=na>findById</span><span class=p>(</span><span class=n>1L</span><span class=p>)).</span><span class=na>thenReturn</span><span class=p>(</span><span class=n>Optional</span><span class=p>.</span><span class=na>of</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>User</span><span class=p>()));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>assertNotNull</span><span class=p>(</span><span class=n>service</span><span class=p>.</span><span class=na>getById</span><span class=p>(</span><span class=n>1L</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><code>@ExtendWith</code> 可以叠加多个，也可以在方法级生效，灵活性远超 <code>@Rule</code>。</p><p>自定义 Extension 实现各种生命周期接口（<code>BeforeEachCallback</code>、<code>AfterEachCallback</code>、<code>ParameterResolver</code> 等），可以做到"在每个测试方法前自动初始化数据"、&ldquo;自动清理数据库&rdquo;、&ldquo;自动注入参数"等。</p><hr><h2 id=八spring-boot-测试整合><a href=#%e5%85%abspring-boot-%e6%b5%8b%e8%af%95%e6%95%b4%e5%90%88 class=header-anchor></a>八、Spring Boot 测试整合</h2><p>Spring Boot 2.2+ 默认就用 JUnit 5。不需要任何额外配置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@SpringBootTest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@AutoConfigureMockMvc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>class</span> <span class=nc>UserControllerIT</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Autowired</span><span class=w> </span><span class=n>MockMvc</span><span class=w> </span><span class=n>mvc</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@MockBean</span><span class=w> </span><span class=n>UserService</span><span class=w> </span><span class=n>service</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kt>void</span><span class=w> </span><span class=nf>getUser_should_return_200</span><span class=p>()</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>Exception</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>when</span><span class=p>(</span><span class=n>service</span><span class=p>.</span><span class=na>get</span><span class=p>(</span><span class=n>1L</span><span class=p>)).</span><span class=na>thenReturn</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>User</span><span class=p>(</span><span class=n>1L</span><span class=p>,</span><span class=w> </span><span class=s>&#34;张三&#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>mvc</span><span class=p>.</span><span class=na>perform</span><span class=p>(</span><span class=n>get</span><span class=p>(</span><span class=s>&#34;/users/1&#34;</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>           </span><span class=p>.</span><span class=na>andExpect</span><span class=p>(</span><span class=n>status</span><span class=p>().</span><span class=na>isOk</span><span class=p>())</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>           </span><span class=p>.</span><span class=na>andExpect</span><span class=p>(</span><span class=n>jsonPath</span><span class=p>(</span><span class=s>&#34;$.name&#34;</span><span class=p>).</span><span class=na>value</span><span class=p>(</span><span class=s>&#34;张三&#34;</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>值得一提的几个 Spring Boot 测试切片注解（瘦身的 <code>@SpringBootTest</code>）：</p><div class=table-wrapper><table><thead><tr><th style=text-align:left>注解</th><th style=text-align:left>用途</th></tr></thead><tbody><tr><td style=text-align:left><code>@WebMvcTest</code></td><td style=text-align:left>只加载 Controller 层</td></tr><tr><td style=text-align:left><code>@DataJpaTest</code></td><td style=text-align:left>只加载 JPA 仓库</td></tr><tr><td style=text-align:left><code>@JsonTest</code></td><td style=text-align:left>只测试 JSON 序列化</td></tr><tr><td style=text-align:left><code>@DataRedisTest</code></td><td style=text-align:left>只加载 Redis 相关 Bean</td></tr><tr><td style=text-align:left><code>@RestClientTest</code></td><td style=text-align:left>测试 RestTemplate / FeignClient</td></tr></tbody></table></div><p>切片测试启动快得多，单测就用切片，集成测试再用 <code>@SpringBootTest</code>。</p><hr><h2 id=九junit-4-兼容渐进式迁移><a href=#%e4%b9%9djunit-4-%e5%85%bc%e5%ae%b9%e6%b8%90%e8%bf%9b%e5%bc%8f%e8%bf%81%e7%a7%bb class=header-anchor></a>九、JUnit 4 兼容：渐进式迁移</h2><p>老项目里两套测试可以共存——保留 <code>junit:junit</code> 作为 Vintage 引擎，新增测试用 Jupiter：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>org.junit.vintage<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>junit-vintage-engine<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>5.10.0<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;scope&gt;</span>test<span class=nt>&lt;/scope&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>迁移建议：</p><ol><li>先把 BUILD 配置好，让两套都能跑</li><li>新写的测试一律 Jupiter</li><li>改老代码时顺手把对应测试迁移过去</li><li>一两个迭代后，老测试全部迁完，移除 vintage 依赖</li></ol><hr><h2 id=十踩坑提醒><a href=#%e5%8d%81%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92 class=header-anchor></a>十、踩坑提醒</h2><ol><li><strong><code>@BeforeAll/@AfterAll</code> 默认要 <code>static</code></strong>——除非用 <code>@TestInstance(PER_CLASS)</code></li><li><strong><code>@Test</code> 不要再带 <code>expected = Xxx.class</code></strong>——JUnit 5 没有这个属性，用 <code>assertThrows</code></li><li><strong>包还是 <code>org.junit.jupiter.api</code></strong>——别混用 <code>org.junit.*</code></li><li><strong>Maven Surefire 要 ≥ 2.22</strong>，否则跑不起来 Jupiter 测试</li><li><strong>参数化测试单独依赖 <code>junit-jupiter-params</code></strong></li><li><strong><code>@SpringBootTest</code> 不要乱用</strong>——它会启动整个上下文，单测应该用切片</li></ol><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>JUnit 5 不是"JUnit 4 的小升级&rdquo;，是<strong>为 Lambda、模块化、现代 Java 重新设计的测试框架</strong>。</p><p>把这一篇压一句：</p><blockquote><p><strong>写新测试用 Jupiter，老测试靠 Vintage 兼容，慢慢迁；高频场景吃透 <code>assertAll</code> / 参数化 / <code>@Nested</code>，这三个特性能把单测写得像文档。</strong></p></blockquote><p>测试本身不是负担，写得好的测试是<strong>最准确的需求说明书</strong>。JUnit 5 给了你写出这种文档的工具，能不能用好是另一回事。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/junit5/>JUnit5</a>
+<a href=/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/>单元测试</a>
+<a href=/tags/mockito/>Mockito</a>
+<a href=/tags/spring-boot/>Spring Boot</a>
+<a href=/tags/java/>Java</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/spring-boot-config-loading-mechanism/><div class=article-image><img alt="Featured image of post Spring Boot 配置加载机制详解" loading=lazy src=/p/spring-boot-config-loading-mechanism/cover.svg></div><div class=article-details><h2 class=article-title>Spring Boot 配置加载机制详解</h2></div></a></article><article class=has-image><a href=/p/environment-post-processor-system-config/><div class=article-image><img alt="Featured image of post Spring Boot 中被低估的扩展点——EnvironmentPostProcessor" loading=lazy src=/p/environment-post-processor-system-config/cover.svg></div><div class=article-details><h2 class=article-title>Spring Boot 中被低估的扩展点——EnvironmentPostProcessor</h2></div></a></article><article class=has-image><a href=/p/java-version-evolution-and-trend/><div class=article-image><img alt="Featured image of post 从 Lambda 到虚拟线程——Java 关键特性演进" loading=lazy src=/p/java-version-evolution-and-trend/cover.svg></div><div class=article-details><h2 class=article-title>从 Lambda 到虚拟线程——Java 关键特性演进</h2></div></a></article><article class=has-image><a href=/p/java-mapstruct-conversion-guide/><div class=article-image><img alt="Featured image of post Java MapStruct 实战：替你写完所有 BO/DTO/VO 转换" loading=lazy src=/p/java-mapstruct-conversion-guide/cover.svg></div><div class=article-details><h2 class=article-title>Java MapStruct 实战：替你写完所有 BO/DTO/VO 转换</h2></div></a></article><article class=has-image><a href=/p/easyexcel-export-org-tree/><div class=article-image><img alt="Featured image of post 用 EasyExcel 导出复杂组织机构树到 Excel" loading=lazy src=/p/easyexcel-export-org-tree/cover.svg></div><div class=article-details><h2 class=article-title>用 EasyExcel 导出复杂组织机构树到 Excel</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script><div class=mermaid-modal id=mermaid-modal><div class=mermaid-modal-header><div class=mermaid-modal-controls><button data-zoom=-1>− Zoom Out</button>
+<button data-zoom=0>Reset (100%)</button>
+<button data-zoom=1>+ Zoom In</button>
+<button data-zoom=fit>Fit to Screen</button></div><button class=mermaid-modal-close id=mermaid-modal-close>✕ Close (Esc)</button></div><div class=mermaid-modal-body id=mermaid-modal-body><div class=mermaid-modal-content id=mermaid-modal-content></div></div></div><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script type=module>
+import { initMermaidPage } from '\/ts\/mermaid.js';
+initMermaidPage({"darkTheme":"dark","darkThemeVariables":{},"htmlLabels":true,"lightTheme":"default","lightThemeVariables":{},"look":"classic","securityLevel":"strict","transparentBackground":false});
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

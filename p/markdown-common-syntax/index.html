@@ -1,0 +1,388 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="从基础标题、列表、链接，到表格、代码块、Mermaid 图、脚注、警告框——一篇可直接收藏的 Markdown 全面参考"><title>Markdown 常见语法整理</title><link rel=canonical href=https://www.lingcoder.com/p/markdown-common-syntax/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="Markdown 常见语法整理"><meta property='og:description' content="从基础标题、列表、链接，到表格、代码块、Mermaid 图、脚注、警告框——一篇可直接收藏的 Markdown 全面参考"><meta property='og:url' content='https://www.lingcoder.com/p/markdown-common-syntax/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Markdown'><meta property='article:tag' content='写作'><meta property='article:tag' content='博客'><meta property='article:tag' content='技术写作'><meta property='article:published_time' content='2023-04-18T15:00:00+08:00'><meta property='article:modified_time' content='2023-04-18T15:00:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/markdown-common-syntax/cover.svg'><meta name=twitter:title content="Markdown 常见语法整理"><meta name=twitter:description content="从基础标题、列表、链接，到表格、代码块、Mermaid 图、脚注、警告框——一篇可直接收藏的 Markdown 全面参考"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/markdown-common-syntax/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#为什么写一篇-markdown-语法-demo>为什么写一篇 Markdown 语法 Demo</a></li><li><a href=#一标题>一、标题</a></li><li><a href=#二行内格式>二、行内格式</a></li><li><a href=#三段落与换行>三、段落与换行</a></li><li><a href=#四列表>四、列表</a><ol><li><a href=#无序列表>无序列表</a></li><li><a href=#有序列表>有序列表</a></li><li><a href=#任务列表gfm>任务列表（GFM）</a></li></ol></li><li><a href=#五链接与图片>五、链接与图片</a></li><li><a href=#六引用块>六、引用块</a></li><li><a href=#七代码块>七、代码块</a></li><li><a href=#八表格>八、表格</a></li><li><a href=#九分隔线>九、分隔线</a></li><li><a href=#十转义字符>十、转义字符</a></li><li><a href=#十一mermaid-图hugo-stack-主题支持>十一、Mermaid 图（Hugo Stack 主题支持）</a><ol><li><a href=#时序图示例>时序图示例</a></li><li><a href=#类图示例>类图示例</a></li><li><a href=#甘特图示例>甘特图示例</a></li></ol></li><li><a href=#十二katex-数学公式需-math-true>十二、KaTeX 数学公式（需 <code>math: true</code>）</a></li><li><a href=#十三html-嵌入默认禁用>十三、HTML 嵌入（默认禁用）</a></li><li><a href=#十四shortcodeshugo-特有>十四、Shortcodes（Hugo 特有）</a></li><li><a href=#十五其他扩展语法>十五、其他扩展语法</a><ol><li><a href=#上标--下标>上标 / 下标</a></li><li><a href=#脚注>脚注</a></li><li><a href=#任务列表再提一次>任务列表（再提一次）</a></li><li><a href=#表格对齐与多行>表格对齐与多行</a></li></ol></li><li><a href=#十六写作时的几条小建议>十六、写作时的几条小建议</a><ol><li><a href=#1-段首不要直接进代码块>1. 段首不要直接进代码块</a></li><li><a href=#lint-工具>Lint 工具</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/markdown-common-syntax/><img alt="Featured image of post Markdown 常见语法整理" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/markdown-common-syntax/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/devops/ style=background-color:#34495e;color:#fff>DevOps</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/markdown-common-syntax/>Markdown 常见语法整理</a></h2><h3 class=article-subtitle>从基础标题、列表、链接，到表格、代码块、Mermaid 图、脚注、警告框——一篇可直接收藏的 Markdown 全面参考</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2023-04-18T15:00:00+08:00>2023-04-18</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#为什么写一篇-markdown-语法-demo>为什么写一篇 Markdown 语法 Demo</a></li><li><a href=#一标题>一、标题</a></li><li><a href=#二行内格式>二、行内格式</a></li><li><a href=#三段落与换行>三、段落与换行</a></li><li><a href=#四列表>四、列表</a><ol><li><a href=#无序列表>无序列表</a></li><li><a href=#有序列表>有序列表</a></li><li><a href=#任务列表gfm>任务列表（GFM）</a></li></ol></li><li><a href=#五链接与图片>五、链接与图片</a></li><li><a href=#六引用块>六、引用块</a></li><li><a href=#七代码块>七、代码块</a></li><li><a href=#八表格>八、表格</a></li><li><a href=#九分隔线>九、分隔线</a></li><li><a href=#十转义字符>十、转义字符</a></li><li><a href=#十一mermaid-图hugo-stack-主题支持>十一、Mermaid 图（Hugo Stack 主题支持）</a><ol><li><a href=#时序图示例>时序图示例</a></li><li><a href=#类图示例>类图示例</a></li><li><a href=#甘特图示例>甘特图示例</a></li></ol></li><li><a href=#十二katex-数学公式需-math-true>十二、KaTeX 数学公式（需 <code>math: true</code>）</a></li><li><a href=#十三html-嵌入默认禁用>十三、HTML 嵌入（默认禁用）</a></li><li><a href=#十四shortcodeshugo-特有>十四、Shortcodes（Hugo 特有）</a></li><li><a href=#十五其他扩展语法>十五、其他扩展语法</a><ol><li><a href=#上标--下标>上标 / 下标</a></li><li><a href=#脚注>脚注</a></li><li><a href=#任务列表再提一次>任务列表（再提一次）</a></li><li><a href=#表格对齐与多行>表格对齐与多行</a></li></ol></li><li><a href=#十六写作时的几条小建议>十六、写作时的几条小建议</a><ol><li><a href=#1-段首不要直接进代码块>1. 段首不要直接进代码块</a></li><li><a href=#lint-工具>Lint 工具</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=为什么写一篇-markdown-语法-demo><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%86%99%e4%b8%80%e7%af%87-markdown-%e8%af%ad%e6%b3%95-demo class=header-anchor></a>为什么写一篇 Markdown 语法 Demo</h2><p>Markdown 这东西看着简单，写多了你会发现：</p><ul><li>不同博客平台、不同文档系统、甚至同一个工具的不同版本，<strong>支持的语法和扩展不一致</strong></li><li>表格的对齐符号有人记不住</li><li>链接、图片、脚注的语法长得像但顺序不一样</li><li>代码块的语言标识不写就没高亮</li><li>Mermaid、KaTeX、警告框这些"扩展语法"很多人不知道</li></ul><p>这篇是给我自己——也给所有用 Markdown 写技术博客的人——一份能<strong>直接收藏的速查 + Demo</strong>。每一节都给出实际渲染效果，复制即用。</p><blockquote><p>本博客基于 Hugo + hugo-theme-stack，使用 Goldmark 作为 Markdown 渲染器。后文出现的"Hugo/Stack 主题特有"指的就是这套环境。</p></blockquote><hr><h2 id=一标题><a href=#%e4%b8%80%e6%a0%87%e9%a2%98 class=header-anchor></a>一、标题</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=gh># H1 标题
+</span></span></span><span class=line><span class=cl><span class=gu>## H2 标题
+</span></span></span><span class=line><span class=cl><span class=gu>### H3 标题
+</span></span></span><span class=line><span class=cl><span class=gu>#### H4 标题
+</span></span></span><span class=line><span class=cl><span class=gu>##### H5 标题
+</span></span></span><span class=line><span class=cl><span class=gu>###### H6 标题
+</span></span></span></code></pre></td></tr></table></div></div><p>实战建议：</p><ul><li><strong>博客文章不要写 <code>#</code></strong>——文章标题在 front matter 里已经有 <code>title</code>，正文从 <code>##</code> 开始</li><li><strong>层级不要超过 4 级</strong>——太深的层级阅读和导航都变差</li><li>标题前后留空行，避免渲染粘连</li></ul><hr><h2 id=二行内格式><a href=#%e4%ba%8c%e8%a1%8c%e5%86%85%e6%a0%bc%e5%bc%8f class=header-anchor></a>二、行内格式</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>**粗体**       <span class=ge>*斜体*</span>       <span class=gd>~~删除线~~</span>       <span class=sb>`行内代码`</span>
+</span></span><span class=line><span class=cl>[<span class=nt>链接</span>](<span class=na>https://example.com</span>)
+</span></span><span class=line><span class=cl><span class=gs>**_组合效果_**</span>
+</span></span></code></pre></td></tr></table></div></div><p>渲染：<strong>粗体</strong>、<em>斜体</em>、<del>删除线</del>、<code>行内代码</code>、<a class=link href=https://example.com target=_blank rel=noopener>链接</a>。</p><p>实战建议：</p><ul><li><strong>粗体优于斜体</strong>——中文里斜体可读性差</li><li>行内代码用反引号——<code>API</code>、<code>UserService</code>、<code>createTime</code> 这些标识符都该用</li><li>不要滥用粗体——一段里超过 3 处加粗等于没加粗</li></ul><hr><h2 id=三段落与换行><a href=#%e4%b8%89%e6%ae%b5%e8%90%bd%e4%b8%8e%e6%8d%a2%e8%a1%8c class=header-anchor></a>三、段落与换行</h2><p>Markdown 用<strong>空行分段</strong>，单个换行不是分段：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>这是第一段。
+</span></span><span class=line><span class=cl>这一行虽然换行了，但还在第一段。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>这是第二段。
+</span></span></code></pre></td></tr></table></div></div><p>如果真要在一段内强制换行（不分段），用<strong>两个空格 + 换行</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>第一行末尾两个空格  
+</span></span><span class=line><span class=cl>第二行
+</span></span></code></pre></td></tr></table></div></div><p>或者用 <code>&lt;br></code> 也行，但能不用就不用。</p><hr><h2 id=四列表><a href=#%e5%9b%9b%e5%88%97%e8%a1%a8 class=header-anchor></a>四、列表</h2><h3 id=无序列表><a href=#%e6%97%a0%e5%ba%8f%e5%88%97%e8%a1%a8 class=header-anchor></a>无序列表</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=k>-</span> 项目一
+</span></span><span class=line><span class=cl><span class=k>-</span> 项目二
+</span></span><span class=line><span class=cl>  <span class=k>-</span> 嵌套项目
+</span></span><span class=line><span class=cl>  <span class=k>-</span> 又一个嵌套
+</span></span><span class=line><span class=cl><span class=k>-</span> 项目三
+</span></span></code></pre></td></tr></table></div></div><h3 id=有序列表><a href=#%e6%9c%89%e5%ba%8f%e5%88%97%e8%a1%a8 class=header-anchor></a>有序列表</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=k>1.</span> 第一步
+</span></span><span class=line><span class=cl><span class=k>2.</span> 第二步
+</span></span><span class=line><span class=cl><span class=k>3.</span> 第三步
+</span></span></code></pre></td></tr></table></div></div><h3 id=任务列表gfm><a href=#%e4%bb%bb%e5%8a%a1%e5%88%97%e8%a1%a8gfm class=header-anchor></a>任务列表（GFM）</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=k>- [x]</span> 完成需求评审
+</span></span><span class=line><span class=cl><span class=k>- [x]</span> 写代码
+</span></span><span class=line><span class=cl><span class=k>- [ ]</span> 写单元测试
+</span></span><span class=line><span class=cl><span class=k>- [ ]</span> 写文档
+</span></span></code></pre></td></tr></table></div></div><p>渲染：</p><ul><li><input checked disabled type=checkbox> 完成需求评审</li><li><input checked disabled type=checkbox> 写代码</li><li><input disabled type=checkbox> 写单元测试</li><li><input disabled type=checkbox> 写文档</li></ul><hr><h2 id=五链接与图片><a href=#%e4%ba%94%e9%93%be%e6%8e%a5%e4%b8%8e%e5%9b%be%e7%89%87 class=header-anchor></a>五、链接与图片</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>[<span class=nt>GitHub</span>](<span class=na>https://github.com</span>)
+</span></span><span class=line><span class=cl>[<span class=nt>带 title</span>](<span class=na>https://github.com &#34;悬浮提示&#34;</span>)
+</span></span><span class=line><span class=cl>[<span class=nt>相对链接</span>](<span class=na>../another-post/</span>)
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>![<span class=nt>图片描述</span>](<span class=na>path/to/image.png</span>)
+</span></span><span class=line><span class=cl>![<span class=nt>图片带 title</span>](<span class=na>path/to/image.png &#34;图片悬浮文字&#34;</span>)
+</span></span></code></pre></td></tr></table></div></div><p>实战建议：</p><ul><li><strong>图片描述（alt）一定要写</strong>——SEO + 无障碍 + 加载失败时显示</li><li><strong>优先用相对路径</strong>——博客域名换了不会失效</li><li><strong>大图用 Hugo 的 image processing</strong>：<code><figure><img src=cover.png></figure></code>shortcode</li></ul><hr><h2 id=六引用块><a href=#%e5%85%ad%e5%bc%95%e7%94%a8%e5%9d%97 class=header-anchor></a>六、引用块</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=k>&gt; </span><span class=ge>这是引用的第一行。
+</span></span></span><span class=line><span class=cl><span class=k>&gt; </span><span class=ge>这是引用的第二行。
+</span></span></span><span class=line><span class=cl><span class=k>&gt;
+</span></span></span><span class=line><span class=cl><span class=ge>&gt; &gt; 嵌套引用。
+</span></span></span><span class=line><span class=cl><span class=k>
+</span></span></span><span class=line><span class=cl><span class=k>&gt; </span><span class=ge>**加粗的引用**——可以包含其他格式。
+</span></span></span></code></pre></td></tr></table></div></div><p>渲染：</p><blockquote><p>这是引用的第一行。
+这是引用的第二行。</p><blockquote><p>嵌套引用。</p></blockquote></blockquote><p>引用最常用的场景是：</p><ul><li>标记别人的话（&ldquo;鲁迅说……"）</li><li>强调结论</li><li>给小贴士/重要提示加个视觉标签</li></ul><hr><h2 id=七代码块><a href=#%e4%b8%83%e4%bb%a3%e7%a0%81%e5%9d%97 class=header-anchor></a>七、代码块</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>\`\`\`java
+</span></span><span class=line><span class=cl>public class Hello {
+</span></span><span class=line><span class=cl>    public static void main(String[] args) {
+</span></span><span class=line><span class=cl>        System.out.println(&#34;Hello, world!&#34;);
+</span></span><span class=line><span class=cl>    }
+</span></span><span class=line><span class=cl>}
+</span></span><span class=line><span class=cl>\`\`\`
+</span></span></code></pre></td></tr></table></div></div><p>渲染：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>Hello</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kd>static</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>main</span><span class=p>(</span><span class=n>String</span><span class=o>[]</span><span class=w> </span><span class=n>args</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>System</span><span class=p>.</span><span class=na>out</span><span class=p>.</span><span class=na>println</span><span class=p>(</span><span class=s>&#34;Hello, world!&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>实战建议：</p><ul><li><strong>永远写语言标识</strong>——<code>java</code>、<code>python</code>、<code>bash</code>、<code>yaml</code>、<code>json</code>、<code>sql</code>，否则没语法高亮</li><li><strong>不要在代码块里写废话注释</strong>——读者要的是能跑的代码</li><li><strong>复制按钮</strong>：本博客主题渲染时自带，无需额外标记</li></ul><hr><h2 id=八表格><a href=#%e5%85%ab%e8%a1%a8%e6%a0%bc class=header-anchor></a>八、表格</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>| 列 1   | 列 2   | 列 3   |
+</span></span><span class=line><span class=cl>| :----- | :----: | -----: |
+</span></span><span class=line><span class=cl>| 左对齐 | 居中   | 右对齐 |
+</span></span><span class=line><span class=cl>| 内容 A | 内容 B | 内容 C |
+</span></span></code></pre></td></tr></table></div></div><p>渲染：</p><div class=table-wrapper><table><thead><tr><th style=text-align:left>列 1</th><th style=text-align:center>列 2</th><th style=text-align:right>列 3</th></tr></thead><tbody><tr><td style=text-align:left>左对齐</td><td style=text-align:center>居中</td><td style=text-align:right>右对齐</td></tr><tr><td style=text-align:left>内容 A</td><td style=text-align:center>内容 B</td><td style=text-align:right>内容 C</td></tr></tbody></table></div><p>对齐规则：</p><ul><li><code>:---</code>：左对齐</li><li><code>:---:</code>：居中</li><li><code>---:</code>：右对齐</li><li><code>---</code>：默认（左）</li></ul><hr><h2 id=九分隔线><a href=#%e4%b9%9d%e5%88%86%e9%9a%94%e7%ba%bf class=header-anchor></a>九、分隔线</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>---
+</span></span></code></pre></td></tr></table></div></div><p>或者：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>***
+</span></span><span class=line><span class=cl>___
+</span></span></code></pre></td></tr></table></div></div><p>效果都一样：</p><hr><hr><h2 id=十转义字符><a href=#%e5%8d%81%e8%bd%ac%e4%b9%89%e5%ad%97%e7%ac%a6 class=header-anchor></a>十、转义字符</h2><p>要在文中显示 Markdown 的特殊字符，用 <code>\</code> 转义：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>\* 这不是斜体
+</span></span><span class=line><span class=cl>\` 这不是代码
+</span></span><span class=line><span class=cl>\[ 这不是链接
+</span></span><span class=line><span class=cl>\# 这不是标题
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=十一mermaid-图hugo-stack-主题支持><a href=#%e5%8d%81%e4%b8%80mermaid-%e5%9b%behugo-stack-%e4%b8%bb%e9%a2%98%e6%94%af%e6%8c%81 class=header-anchor></a>十一、Mermaid 图（Hugo Stack 主题支持）</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=s>```mermaid
+</span></span></span><span class=line><span class=cl>flowchart LR
+</span></span><span class=line><span class=cl>    A[开始] --&gt; B{判断}
+</span></span><span class=line><span class=cl>    B --&gt;|是| C[执行]
+</span></span><span class=line><span class=cl>    B --&gt;|否| D[跳过]
+</span></span><span class=line><span class=cl>    C --&gt; E[结束]
+</span></span><span class=line><span class=cl>    D --&gt; E
+</span></span><span class=line><span class=cl><span class=s>```</span>
+</span></span></code></pre></td></tr></table></div></div><p>渲染：</p><pre class=mermaid style=visibility:hidden>flowchart LR
+    A[开始] --> B{判断}
+    B -->|是| C[执行]
+    B -->|否| D[跳过]
+    C --> E[结束]
+    D --> E</pre><p>Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 <code>flowchart</code>、<code>sequenceDiagram</code>、<code>classDiagram</code> 三种。</p><h3 id=时序图示例><a href=#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b class=header-anchor></a>时序图示例</h3><pre class=mermaid style=visibility:hidden>sequenceDiagram
+    Client->>Server: HTTP 请求
+    Server->>DB: 查询
+    DB-->>Server: 结果
+    Server-->>Client: HTTP 响应</pre><h3 id=类图示例><a href=#%e7%b1%bb%e5%9b%be%e7%a4%ba%e4%be%8b class=header-anchor></a>类图示例</h3><pre class=mermaid style=visibility:hidden>classDiagram
+    class Animal {
+        +String name
+        +eat()
+    }
+    class Dog {
+        +bark()
+    }
+    Animal <|-- Dog</pre><h3 id=甘特图示例><a href=#%e7%94%98%e7%89%b9%e5%9b%be%e7%a4%ba%e4%be%8b class=header-anchor></a>甘特图示例</h3><p>项目排期、迭代计划用甘特图表达最直观：</p><pre class=mermaid style=visibility:hidden>gantt
+    dateFormat  YYYY-MM-DD
+    title 项目排期
+
+    section 需求阶段
+    需求评审      :done,    a1, 2023-04-01, 5d
+    原型设计      :done,    a2, after a1, 4d
+
+    section 开发阶段
+    后端 API      :active,  b1, 2023-04-12, 10d
+    前端页面      :         b2, after a2, 8d
+
+    section 测试 & 发布
+    联调测试      :         c1, after b1, 5d
+    上线          :crit,    c2, after c1, 1d</pre><hr><h2 id=十二katex-数学公式需-math-true><a href=#%e5%8d%81%e4%ba%8ckatex-%e6%95%b0%e5%ad%a6%e5%85%ac%e5%bc%8f%e9%9c%80-math-true class=header-anchor></a>十二、KaTeX 数学公式（需 <code>math: true</code>）</h2><p>文章 front matter 里设置 <code>math: true</code>，就能写 LaTeX 公式：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>行内：$E = mc^2$
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>块级：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$$
+</span></span><span class=line><span class=cl>\int_{a}^{b} f(x)\,dx = F(b) - F(a)
+</span></span><span class=line><span class=cl>$$
+</span></span></code></pre></td></tr></table></div></div><p>渲染需要主题加载 KaTeX——本主题原生支持。<strong>不需要数学的文章不要打开 <code>math</code></strong>，加载 KaTeX 会拖慢页面。</p><hr><h2 id=十三html-嵌入默认禁用><a href=#%e5%8d%81%e4%b8%89html-%e5%b5%8c%e5%85%a5%e9%bb%98%e8%ae%a4%e7%a6%81%e7%94%a8 class=header-anchor></a>十三、HTML 嵌入（默认禁用）</h2><p>很多 Markdown 工具默认允许在 Markdown 里写 HTML：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>details</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>summary</span><span class=p>&gt;</span>点击展开<span class=p>&lt;/</span><span class=nt>summary</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>这里是隐藏内容。
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>details</span><span class=p>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>但 <strong>Hugo 的 Goldmark 默认 <code>unsafe = false</code></strong>——HTML 会被静默丢弃。如果业务需要嵌入 HTML：</p><ul><li>改 <code>markup.toml</code> 把 <code>unsafe = true</code>（小心 XSS）</li><li>用 Hugo Shortcode（推荐）</li></ul><hr><h2 id=十四shortcodeshugo-特有><a href=#%e5%8d%81%e5%9b%9bshortcodeshugo-%e7%89%b9%e6%9c%89 class=header-anchor></a>十四、Shortcodes（Hugo 特有）</h2><p>Hugo 提供了 shortcode 机制——比 HTML 安全，比 Markdown 强大。Hugo 内置了若干常用 shortcode：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>{{&lt; figure src=&#34;cover.png&#34; caption=&#34;封面图&#34; &gt;}}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>{{&lt; youtube id=&#34;VIDEO_ID&#34; &gt;}}
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>{{&lt; gist USERNAME GIST_ID &gt;}}
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>上面代码块里的 <code>{{&lt; ... >}}</code> 是 Hugo 在文档中展示 shortcode 不被解析的转义写法——实际使用时去掉里面的 <code>/* */</code>。</p></blockquote><p>各主题也常自带专属 shortcode，比如折叠块、提示框、画廊等——具体可见自家主题文档。</p><hr><h2 id=十五其他扩展语法><a href=#%e5%8d%81%e4%ba%94%e5%85%b6%e4%bb%96%e6%89%a9%e5%b1%95%e8%af%ad%e6%b3%95 class=header-anchor></a>十五、其他扩展语法</h2><p>下面这几个不属于 CommonMark 核心，但 Hugo Goldmark + 主流博客引擎多数支持。</p><h3 id=上标--下标><a href=#%e4%b8%8a%e6%a0%87--%e4%b8%8b%e6%a0%87 class=header-anchor></a>上标 / 下标</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>面积 = 长 × 宽，公式记作 S = a^2^
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>化学式：H~2~O，CO~2~
+</span></span></code></pre></td></tr></table></div></div><p>需要在 <code>markup.toml</code> 的 <code>[markup.goldmark.extensions]</code> 下打开 <code>superscript</code> / <code>subscript</code> 扩展。</p><h3 id=脚注><a href=#%e8%84%9a%e6%b3%a8 class=header-anchor></a>脚注</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl>正文里挂一个脚注[^1]，再补一个[^note]。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>[^1]: 这是脚注内容，会出现在文章最末。
+</span></span><span class=line><span class=cl>[^note]: 命名脚注也可以。
+</span></span></code></pre></td></tr></table></div></div><p>渲染时上标会变成可点击的链接，跳到文末的脚注列表——<strong>适合放参考文献、补充说明</strong>。</p><h3 id=任务列表再提一次><a href=#%e4%bb%bb%e5%8a%a1%e5%88%97%e8%a1%a8%e5%86%8d%e6%8f%90%e4%b8%80%e6%ac%a1 class=header-anchor></a>任务列表（再提一次）</h3><p>很多 Markdown 教程把任务列表算扩展——但 GFM 已经标准化，所有现代渲染器都支持，前文已展示。</p><h3 id=表格对齐与多行><a href=#%e8%a1%a8%e6%a0%bc%e5%af%b9%e9%bd%90%e4%b8%8e%e5%a4%9a%e8%a1%8c class=header-anchor></a>表格对齐与多行</h3><p>复杂表格需要对齐符号 + 每个单元格不要换行——<code>|</code> 必须在同一行。需要单元格内换行用 <code>&lt;br></code>（要求 <code>unsafe = true</code> 或主题支持）。</p><hr><h2 id=十六写作时的几条小建议><a href=#%e5%8d%81%e5%85%ad%e5%86%99%e4%bd%9c%e6%97%b6%e7%9a%84%e5%87%a0%e6%9d%a1%e5%b0%8f%e5%bb%ba%e8%ae%ae class=header-anchor></a>十六、写作时的几条小建议</h2><h3 id=1-段首不要直接进代码块><a href=#1-%e6%ae%b5%e9%a6%96%e4%b8%8d%e8%a6%81%e7%9b%b4%e6%8e%a5%e8%bf%9b%e4%bb%a3%e7%a0%81%e5%9d%97 class=header-anchor></a>1. 段首不要直接进代码块</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-markdown data-lang=markdown><span class=line><span class=cl><span class=gu>## 标题
+</span></span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>```java
+</span></span><span class=line><span class=cl>// 反面教材：紧贴标题就是代码
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>正确写法是：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>```markdown
+</span></span><span class=line><span class=cl>## 标题
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>下面是核心代码：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>```java
+</span></span><span class=line><span class=cl>// 代码
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>读者需要&#34;前置上下文&#34;才知道这段代码要看什么。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 2. 列表里包含代码块要缩进
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>```markdown
+</span></span><span class=line><span class=cl>1. 第一步：
+</span></span><span class=line><span class=cl>   ```bash
+</span></span><span class=line><span class=cl>   git clone xxx
+</span></span></code></pre></td></tr></table></div></div><ol start=2><li>第二步：<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>cd</span> xxx
+</span></span></code></pre></td></tr></table></div></div></li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>否则代码块会&#34;破&#34;出列表。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 3. 中英文之间留空格
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>虽然 Markdown 不强制，但中英文之间留空格能显著提高可读性：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>| 写法                    | 效果       |
+</span></span><span class=line><span class=cl>| :---------------------- | :--------- |
+</span></span><span class=line><span class=cl>| 用Spring Boot开发       | 别扭       |
+</span></span><span class=line><span class=cl>| 用 Spring Boot 开发     | 顺眼       |
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>也可以用 [autocorrect](https://github.com/huacnlee/autocorrect) 这种工具自动加空格。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 4. 引用图床要慎重
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>直接 `![](https://外部图床/xxx.png)` 看着方便，但：
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>- 图床可能挂掉，文章变残
+</span></span><span class=line><span class=cl>- 防盗链
+</span></span><span class=line><span class=cl>- 加载速度
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>**博客图片最好用相对路径放在 page bundle 里**，由 Hugo 处理。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>## 十七、调试技巧
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 看一篇博客的渲染源码
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>浏览器右键&#34;查看页面源代码&#34;——看一下 HTML 是怎么生成的。Hugo 的 Goldmark 有很多细节（自动加 ID、表格滚动包装、代码块复制按钮）都体现在 HTML 上。
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>### 本地预览
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>```bash
+</span></span><span class=line><span class=cl>hugo server -D
+</span></span></code></pre></td></tr></table></div></div><p>实时看渲染效果，比每次 push 上线快得多。</p><h3 id=lint-工具><a href=#lint-%e5%b7%a5%e5%85%b7 class=header-anchor></a>Lint 工具</h3><p><a class=link href=https://github.com/DavidAnson/markdownlint target=_blank rel=noopener>markdownlint</a> 可以检查格式——空行、标题层级、列表缩进——保持风格一致。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback 的（Mermaid、KaTeX 都行）。</strong></p></blockquote><p>留几条作为"硬性规范&rdquo;：</p><ol><li><strong>代码块永远标语言</strong></li><li><strong>图片永远写 alt 描述</strong></li><li><strong>中英文之间留空格</strong></li><li><strong>标题层级不超过 4 级</strong></li><li><strong>任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢</strong></li></ol><p>最后——<strong>Markdown 不是设计文档语言，是写作语言</strong>。它的所有特性都为"专注内容"服务。当你开始想"这个怎么用 Markdown 表达"，先问一下"这个真的需要表达吗"。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/markdown/>Markdown</a>
+<a href=/tags/%E5%86%99%E4%BD%9C/>写作</a>
+<a href=/tags/%E5%8D%9A%E5%AE%A2/>博客</a>
+<a href=/tags/%E6%8A%80%E6%9C%AF%E5%86%99%E4%BD%9C/>技术写作</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/publish-go-module-to-pkg-go-dev/><div class=article-image><img alt="Featured image of post 如何把 Go 模块文档发布到 pkg.go.dev" loading=lazy src=/p/publish-go-module-to-pkg-go-dev/cover.svg></div><div class=article-details><h2 class=article-title>如何把 Go 模块文档发布到 pkg.go.dev</h2></div></a></article><article class=has-image><a href=/p/makefile-for-modern-projects/><div class=article-image><img alt="Featured image of post Makefile 在现代项目的价值与实践" loading=lazy src=/p/makefile-for-modern-projects/cover.svg></div><div class=article-details><h2 class=article-title>Makefile 在现代项目的价值与实践</h2></div></a></article><article class=has-image><a href=/p/git-and-github-summary/><div class=article-image><img alt="Featured image of post Git和GitHub使用总结" height=150 loading=lazy src=/p/git-and-github-summary/cover_hu_6a988a678ab34e82.jpg srcset="/p/git-and-github-summary/cover_hu_6a988a678ab34e82.jpg 1x, /p/git-and-github-summary/cover_hu_4340de9f563a0e45.jpg 2x" width=250></div><div class=article-details style="background:linear-gradient(0deg,#42320480 0%,#e6e6e5C0 100%)"><h2 class=article-title>Git和GitHub使用总结</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script><div class=mermaid-modal id=mermaid-modal><div class=mermaid-modal-header><div class=mermaid-modal-controls><button data-zoom=-1>− Zoom Out</button>
+<button data-zoom=0>Reset (100%)</button>
+<button data-zoom=1>+ Zoom In</button>
+<button data-zoom=fit>Fit to Screen</button></div><button class=mermaid-modal-close id=mermaid-modal-close>✕ Close (Esc)</button></div><div class=mermaid-modal-body id=mermaid-modal-body><div class=mermaid-modal-content id=mermaid-modal-content></div></div></div><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script type=module>
+import { initMermaidPage } from '\/ts\/mermaid.js';
+initMermaidPage({"darkTheme":"dark","darkThemeVariables":{},"htmlLabels":true,"lightTheme":"default","lightThemeVariables":{},"look":"classic","securityLevel":"strict","transparentBackground":false});
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

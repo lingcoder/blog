@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>登录设计 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E7%99%BB%E5%BD%95%E8%AE%BE%E8%AE%A1/</link><description>Recent content in 登录设计 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 21 Feb 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E7%99%BB%E5%BD%95%E8%AE%BE%E8%AE%A1/index.xml" rel="self" type="application/rss+xml"/><item><title>扫码登录的完整设计</title><link>https://www.lingcoder.com/p/qr-code-login-flow/</link><pubDate>Fri, 21 Feb 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/qr-code-login-flow/</guid><description>&lt;img src="https://www.lingcoder.com/p/qr-code-login-flow/cover.svg" alt="Featured image of post 扫码登录的完整设计" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;PC 浏览器扫手机端二维码自动登录——12306、知乎、京东、网易邮箱、微信网页版……这种交互在国内已经是标配。&lt;/p&gt;
+&lt;p&gt;它看着简单——但背后是一套涉及前端轮询、后端状态机、长连接、安全控制的&lt;strong&gt;完整设计&lt;/strong&gt;。&lt;strong&gt;新人接这块时常常忽略关键细节&lt;/strong&gt;，做出来要么不安全、要么体验差。&lt;/p&gt;
+&lt;p&gt;本文从协议、状态机、API 设计、安全考虑几个层面把扫码登录讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一整体流程"&gt;&lt;a href="#%e4%b8%80%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b" class="header-anchor"&gt;&lt;/a&gt;一、整体流程
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ participant Browser as PC 浏览器
+ participant Server as 后端
+ participant Phone as 手机 App
+
+ Browser-&gt;&gt;Server: GET /qr/create
+ Server-&gt;&gt;Server: 生成 sceneId + 二维码
+ Server--&gt;&gt;Browser: { sceneId, qrUrl, expiresIn }
+ Browser-&gt;&gt;Browser: 展示二维码
+ Browser-&gt;&gt;Server: 长轮询 / SSE 等待状态
+ Phone-&gt;&gt;Phone: 扫描二维码
+ Phone-&gt;&gt;Server: POST /qr/scan { sceneId, token }
+ Server-&gt;&gt;Server: 标记 sceneId 为 SCANNED
+ Server--&gt;&gt;Browser: SCANNED（手机已扫，等确认）
+ Phone-&gt;&gt;Server: POST /qr/confirm { sceneId, token }
+ Server-&gt;&gt;Server: 标记 sceneId 为 CONFIRMED + 颁发 PC 端 token
+ Server--&gt;&gt;Browser: CONFIRMED + token
+ Browser-&gt;&gt;Browser: 设置 cookie/storage 跳转登录页&lt;/pre&gt;&lt;p&gt;四个核心环节：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;PC 请求二维码&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手机扫描&lt;/strong&gt;（标记 sceneId 状态变化）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手机确认登录&lt;/strong&gt;（颁发 PC 端 token）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PC 拿到 token 完成登录&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="二状态机"&gt;&lt;a href="#%e4%ba%8c%e7%8a%b6%e6%80%81%e6%9c%ba" class="header-anchor"&gt;&lt;/a&gt;二、状态机
+&lt;/h2&gt;&lt;p&gt;&lt;code&gt;sceneId&lt;/code&gt; 是整个流程的核心标识——它在后端经历几个状态：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;stateDiagram-v2
+ [*] --&gt; PENDING: 创建二维码
+ PENDING --&gt; SCANNED: 手机扫描
+ SCANNED --&gt; CONFIRMED: 手机确认
+ SCANNED --&gt; CANCELLED: 手机取消
+ PENDING --&gt; EXPIRED: 超时
+ SCANNED --&gt; EXPIRED: 超时
+ CONFIRMED --&gt; [*]: PC 拿到 token
+ CANCELLED --&gt; [*]
+ EXPIRED --&gt; [*]&lt;/pre&gt;&lt;p&gt;为什么&amp;quot;扫描&amp;quot;和&amp;quot;确认&amp;quot;要分两步？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;手机扫到的是任意二维码&lt;/strong&gt;，不一定是登录用的——必须显式确认才算同意登录&lt;/li&gt;
+&lt;li&gt;防止&amp;quot;路边贴的恶意二维码骗你扫&amp;quot;——扫描后用户能看到&amp;quot;是否登录到 xxx 网站&amp;quot;的确认页&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;存储用 Redis 自然——key 是 sceneId，value 是 status + 关联数据，TTL 5 分钟。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三api-设计"&gt;&lt;a href="#%e4%b8%89api-%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;三、API 设计
+&lt;/h2&gt;&lt;h3 id="1-创建二维码"&gt;&lt;a href="#1-%e5%88%9b%e5%bb%ba%e4%ba%8c%e7%bb%b4%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;1. 创建二维码
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;qr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Response&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;qrPayload&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expireSeconds&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;qrPayload&lt;/code&gt; 是二维码内容——通常包含：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;https://your-app.com/qrlogin?scene=&amp;lt;sceneId&amp;gt;&amp;amp;t=&amp;lt;timestamp&amp;gt;&amp;amp;sign=&amp;lt;signature&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;带签名防止伪造——后端校验签名才允许处理。&lt;/p&gt;
+&lt;h3 id="2-pc-端轮询订阅状态"&gt;&lt;a href="#2-pc-%e7%ab%af%e8%bd%ae%e8%af%a2%e8%ae%a2%e9%98%85%e7%8a%b6%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;2. PC 端轮询/订阅状态
+&lt;/h3&gt;&lt;h4 id="方式-a长轮询"&gt;&lt;a href="#%e6%96%b9%e5%bc%8f-a%e9%95%bf%e8%bd%ae%e8%af%a2" class="header-anchor"&gt;&lt;/a&gt;方式 A：长轮询
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;GET /api/qr/wait?sceneId=xxx&amp;amp;from=PENDING
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;（后端阻塞，直到状态变化或 30 秒超时返回）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;PC 端循环调用，每次带上&amp;quot;我现在知道的状态&amp;quot;——后端只在状态变化时返回。&lt;/p&gt;
+&lt;h4 id="方式-bsse推荐"&gt;&lt;a href="#%e6%96%b9%e5%bc%8f-bsse%e6%8e%a8%e8%8d%90" class="header-anchor"&gt;&lt;/a&gt;方式 B：SSE（推荐）
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;GET /api/qr/stream?sceneId=xxx
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Accept: text/event-stream
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event: status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data: {&amp;#34;status&amp;#34;: &amp;#34;PENDING&amp;#34;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event: status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data: {&amp;#34;status&amp;#34;: &amp;#34;SCANNED&amp;#34;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;event: status
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;data: {&amp;#34;status&amp;#34;: &amp;#34;CONFIRMED&amp;#34;, &amp;#34;token&amp;#34;: &amp;#34;...&amp;#34;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;SSE 比长轮询省连接、省服务端线程，&lt;strong&gt;强烈推荐&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id="方式-cwebsocket"&gt;&lt;a href="#%e6%96%b9%e5%bc%8f-cwebsocket" class="header-anchor"&gt;&lt;/a&gt;方式 C：WebSocket
+&lt;/h4&gt;&lt;p&gt;适合&amp;quot;长连接 + 双向通信&amp;quot;场景——但&lt;strong&gt;做扫码登录是杀鸡用牛刀&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-手机扫描"&gt;&lt;a href="#3-%e6%89%8b%e6%9c%ba%e6%89%ab%e6%8f%8f" class="header-anchor"&gt;&lt;/a&gt;3. 手机扫描
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;POST /api/qr/scan
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Body: { sceneId }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Headers: Authorization: Bearer &amp;lt;user_token&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;手机已登录用户扫码后，App 调这个接口——后端把 sceneId 标记 SCANNED，&lt;strong&gt;记录是哪个 user 扫的&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;返回内容包括&amp;quot;PC 端要登录哪个账号&amp;quot;信息，让 App 显示二次确认页面：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;是否使用账号 zhangsan@example.com 登录到 PC 端？
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[确认] [取消]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="4-手机确认"&gt;&lt;a href="#4-%e6%89%8b%e6%9c%ba%e7%a1%ae%e8%ae%a4" class="header-anchor"&gt;&lt;/a&gt;4. 手机确认
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;POST /api/qr/confirm
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Body: { sceneId }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;后端：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;校验 sceneId 状态是 SCANNED&lt;/li&gt;
+&lt;li&gt;校验当前 user 和扫描时的 user 一致&lt;/li&gt;
+&lt;li&gt;颁发 PC 端 token&lt;/li&gt;
+&lt;li&gt;把 sceneId 状态改为 CONFIRMED + 关联 token&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;PC 端的 SSE 收到 CONFIRMED 状态 + token，完成登录。&lt;/p&gt;
+&lt;h3 id="5-手机取消"&gt;&lt;a href="#5-%e6%89%8b%e6%9c%ba%e5%8f%96%e6%b6%88" class="header-anchor"&gt;&lt;/a&gt;5. 手机取消
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;POST /api/qr/cancel
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Body: { sceneId }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;把 sceneId 状态改为 CANCELLED——PC 端收到通知后展示&amp;quot;已取消&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四安全考虑"&gt;&lt;a href="#%e5%9b%9b%e5%ae%89%e5%85%a8%e8%80%83%e8%99%91" class="header-anchor"&gt;&lt;/a&gt;四、安全考虑
+&lt;/h2&gt;&lt;p&gt;扫码登录是登录入口——&lt;strong&gt;安全比体验更重要&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="1-sceneid-必须不可猜"&gt;&lt;a href="#1-sceneid-%e5%bf%85%e9%a1%bb%e4%b8%8d%e5%8f%af%e7%8c%9c" class="header-anchor"&gt;&lt;/a&gt;1. sceneId 必须不可猜
+&lt;/h3&gt;&lt;p&gt;用 UUID v4 或 nanoid——&lt;strong&gt;不要用自增 ID&lt;/strong&gt;。攻击者枚举 sceneId 可能尝试劫持别人的登录会话。&lt;/p&gt;
+&lt;h3 id="2-二维码-url-带签名"&gt;&lt;a href="#2-%e4%ba%8c%e7%bb%b4%e7%a0%81-url-%e5%b8%a6%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;2. 二维码 URL 带签名
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;https://app.com/qrlogin?scene=xxx&amp;amp;t=1700000000&amp;amp;sign=hmac(secret, scene+t)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;App 扫码后&lt;strong&gt;先校验签名&lt;/strong&gt;——拒绝伪造的二维码。&lt;/p&gt;
+&lt;h3 id="3-pc-端和手机要校验会话一致性"&gt;&lt;a href="#3-pc-%e7%ab%af%e5%92%8c%e6%89%8b%e6%9c%ba%e8%a6%81%e6%a0%a1%e9%aa%8c%e4%bc%9a%e8%af%9d%e4%b8%80%e8%87%b4%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;3. PC 端和手机要校验&amp;quot;会话一致性&amp;quot;
+&lt;/h3&gt;&lt;p&gt;PC 端轮询时&lt;strong&gt;带一个浏览器随机 token&lt;/strong&gt;——手机确认时如果发现 token 不一致，说明可能被中间人劫持。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;PC&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;qr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;Browser生成&lt;/span&gt; &lt;span class="n"&gt;browserNonce&lt;/span&gt; &lt;span class="err"&gt;存&lt;/span&gt; &lt;span class="n"&gt;cookie&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;qrPayload&lt;/span&gt; &lt;span class="err"&gt;中包含&lt;/span&gt; &lt;span class="n"&gt;browserNonce&lt;/span&gt; &lt;span class="err"&gt;的&lt;/span&gt; &lt;span class="nb"&gt;hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Phone&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="err"&gt;扫码后&lt;/span&gt; &lt;span class="n"&gt;POST&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;qr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;scan&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;后端记录&lt;/span&gt; &lt;span class="n"&gt;nonce&lt;/span&gt; &lt;span class="nb"&gt;hash&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;PC&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;GET&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;qr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;带上&lt;/span&gt; &lt;span class="n"&gt;browserNonce&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;后端校验&lt;/span&gt; &lt;span class="n"&gt;nonce&lt;/span&gt; &lt;span class="nb"&gt;hash&lt;/span&gt; &lt;span class="err"&gt;一致才返回&lt;/span&gt; &lt;span class="n"&gt;token&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="4-二维码必须短时间过期"&gt;&lt;a href="#4-%e4%ba%8c%e7%bb%b4%e7%a0%81%e5%bf%85%e9%a1%bb%e7%9f%ad%e6%97%b6%e9%97%b4%e8%bf%87%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;4. 二维码必须短时间过期
+&lt;/h3&gt;&lt;p&gt;5 分钟内不被扫描就 EXPIRED——&lt;strong&gt;避免有人贴在公共场所&amp;quot;骗扫&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="5-已扫描状态也要超时"&gt;&lt;a href="#5-%e5%b7%b2%e6%89%ab%e6%8f%8f%e7%8a%b6%e6%80%81%e4%b9%9f%e8%a6%81%e8%b6%85%e6%97%b6" class="header-anchor"&gt;&lt;/a&gt;5. 已扫描状态也要超时
+&lt;/h3&gt;&lt;p&gt;SCANNED 状态如果 1 分钟内没确认 → EXPIRED——&lt;strong&gt;避免&amp;quot;用户扫了但没确认就走了，攻击者后续接管&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="6-手机端必须已登录"&gt;&lt;a href="#6-%e6%89%8b%e6%9c%ba%e7%ab%af%e5%bf%85%e9%a1%bb%e5%b7%b2%e7%99%bb%e5%bd%95" class="header-anchor"&gt;&lt;/a&gt;6. 手机端必须已登录
+&lt;/h3&gt;&lt;p&gt;扫描接口要求用户已登录——&lt;strong&gt;不允许游客状态扫码&lt;/strong&gt;。否则任何人扫了都能&amp;quot;以游客身份登录 PC 端&amp;quot;，毫无意义。&lt;/p&gt;
+&lt;h3 id="7-防-csrf"&gt;&lt;a href="#7-%e9%98%b2-csrf" class="header-anchor"&gt;&lt;/a&gt;7. 防 CSRF
+&lt;/h3&gt;&lt;p&gt;PC 端的 sceneId 是会话级的——一个 sceneId 只能绑定一个浏览器 session。换浏览器轮询同一个 sceneId 应该被拒绝。&lt;/p&gt;
+&lt;h3 id="8-异地登录提醒"&gt;&lt;a href="#8-%e5%bc%82%e5%9c%b0%e7%99%bb%e5%bd%95%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;8. 异地登录提醒
+&lt;/h3&gt;&lt;p&gt;PC 端登录成功后&lt;strong&gt;发送邮件/短信通知用户&lt;/strong&gt;——异地登录是常见的&amp;quot;安全感&amp;quot;配置。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五ux-上的几个细节"&gt;&lt;a href="#%e4%ba%94ux-%e4%b8%8a%e7%9a%84%e5%87%a0%e4%b8%aa%e7%bb%86%e8%8a%82" class="header-anchor"&gt;&lt;/a&gt;五、UX 上的几个细节
+&lt;/h2&gt;&lt;h3 id="1-扫描后的状态展示"&gt;&lt;a href="#1-%e6%89%ab%e6%8f%8f%e5%90%8e%e7%9a%84%e7%8a%b6%e6%80%81%e5%b1%95%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;1. 扫描后的状态展示
+&lt;/h3&gt;&lt;p&gt;UX 不要只显示&amp;quot;等待扫描&amp;quot;和&amp;quot;登录成功&amp;quot;——&lt;strong&gt;SCANNED 状态要专门展示&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[二维码图] [二维码灰色 + 中央对勾] [跳转中...]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;请扫码登录 扫描成功，请在手机上确认 登录成功
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;让用户知道&amp;quot;手机端在做什么&amp;quot;，不会以为系统卡住。&lt;/p&gt;
+&lt;h3 id="2-二维码刷新"&gt;&lt;a href="#2-%e4%ba%8c%e7%bb%b4%e7%a0%81%e5%88%b7%e6%96%b0" class="header-anchor"&gt;&lt;/a&gt;2. 二维码刷新
+&lt;/h3&gt;&lt;p&gt;5 分钟过期后&lt;strong&gt;自动刷新&lt;/strong&gt;——而不是显示&amp;quot;过期请重新打开&amp;quot;。&lt;/p&gt;
+&lt;h3 id="3-手机和-pc-一定不能在同一浏览器"&gt;&lt;a href="#3-%e6%89%8b%e6%9c%ba%e5%92%8c-pc-%e4%b8%80%e5%ae%9a%e4%b8%8d%e8%83%bd%e5%9c%a8%e5%90%8c%e4%b8%80%e6%b5%8f%e8%a7%88%e5%99%a8" class="header-anchor"&gt;&lt;/a&gt;3. 手机和 PC 一定不能在同一浏览器
+&lt;/h3&gt;&lt;p&gt;PC 浏览器扫描 PC 浏览器二维码——必须拒绝。手机端 App 才有资格扫——通过 User-Agent 简单判断。&lt;/p&gt;
+&lt;h3 id="4-取消的反馈"&gt;&lt;a href="#4-%e5%8f%96%e6%b6%88%e7%9a%84%e5%8f%8d%e9%a6%88" class="header-anchor"&gt;&lt;/a&gt;4. 取消的反馈
+&lt;/h3&gt;&lt;p&gt;用户在手机上&amp;quot;取消&amp;quot;后——PC 应该立刻看到&amp;quot;已取消&amp;quot;，并提供&amp;quot;重新生成二维码&amp;quot;按钮。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六技术实现要点"&gt;&lt;a href="#%e5%85%ad%e6%8a%80%e6%9c%af%e5%ae%9e%e7%8e%b0%e8%a6%81%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;六、技术实现要点
+&lt;/h2&gt;&lt;h3 id="1-sse-比长轮询好"&gt;&lt;a href="#1-sse-%e6%af%94%e9%95%bf%e8%bd%ae%e8%af%a2%e5%a5%bd" class="header-anchor"&gt;&lt;/a&gt;1. SSE 比长轮询好
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;evt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;EventSource&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sb"&gt;`/api/qr/stream?sceneId=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;sceneId&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;addEventListener&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;status&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;e&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;CONFIRMED&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;localStorage&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;setItem&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;token&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;token&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;location&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;href&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/dashboard&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;close&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;onerror&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 重连
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;记得在 nginx 配置 &lt;code&gt;proxy_buffering off&lt;/code&gt;，否则消息要等 buffer 满才推送。&lt;/p&gt;
+&lt;h3 id="2-后端用-redis-维护状态"&gt;&lt;a href="#2-%e5%90%8e%e7%ab%af%e7%94%a8-redis-%e7%bb%b4%e6%8a%a4%e7%8a%b6%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;2. 后端用 Redis 维护状态
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UUID&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;randomUUID&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;SceneState&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SceneState&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;PENDING&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;currentTimeMillis&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;redis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;qr:&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;300&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toJSONString&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;状态变更用 Lua 脚本保证原子性：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-lua" data-lang="lua"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;local&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;KEYS&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;local&lt;/span&gt; &lt;span class="n"&gt;expectStatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ARGV&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;local&lt;/span&gt; &lt;span class="n"&gt;newStatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ARGV&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;local&lt;/span&gt; &lt;span class="n"&gt;current&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;redis.call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;if&lt;/span&gt; &lt;span class="n"&gt;current&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt; &lt;span class="kr"&gt;then&lt;/span&gt; &lt;span class="kr"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="kr"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;local&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cjson.decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;current&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;if&lt;/span&gt; &lt;span class="n"&gt;state.status&lt;/span&gt; &lt;span class="o"&gt;~=&lt;/span&gt; &lt;span class="n"&gt;expectStatus&lt;/span&gt; &lt;span class="kr"&gt;then&lt;/span&gt; &lt;span class="kr"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="kr"&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;state.status&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;newStatus&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;redis.call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;SETEX&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;300&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;cjson.encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-跨进程通信"&gt;&lt;a href="#3-%e8%b7%a8%e8%bf%9b%e7%a8%8b%e9%80%9a%e4%bf%a1" class="header-anchor"&gt;&lt;/a&gt;3. 跨进程通信
+&lt;/h3&gt;&lt;p&gt;后端可能多实例——手机端命中实例 A，PC 端命中实例 B。&lt;strong&gt;状态变更需要广播&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;简单：后端只读 Redis 状态——所有实例数据一致&lt;/li&gt;
+&lt;li&gt;进阶：用 Redis Pub/Sub 主动推送实例 B 触发 SSE&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="4-二维码生成"&gt;&lt;a href="#4-%e4%ba%8c%e7%bb%b4%e7%a0%81%e7%94%9f%e6%88%90" class="header-anchor"&gt;&lt;/a&gt;4. 二维码生成
+&lt;/h3&gt;&lt;p&gt;后端不一定要生成图片——返回&lt;strong&gt;二维码内容字符串&lt;/strong&gt;，前端用 qrcode.js 渲染：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;QRCode&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;qrcode&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;QRCode&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;toCanvas&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;canvasEl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;qrPayload&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;省了后端 PNG 编码、节省带宽。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七移动-app-端的实现要点"&gt;&lt;a href="#%e4%b8%83%e7%a7%bb%e5%8a%a8-app-%e7%ab%af%e7%9a%84%e5%ae%9e%e7%8e%b0%e8%a6%81%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;七、移动 App 端的实现要点
+&lt;/h2&gt;&lt;h3 id="1-调用系统相机扫码"&gt;&lt;a href="#1-%e8%b0%83%e7%94%a8%e7%b3%bb%e7%bb%9f%e7%9b%b8%e6%9c%ba%e6%89%ab%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;1. 调用系统相机扫码
+&lt;/h3&gt;&lt;p&gt;iOS / Android 都有原生 API——读取二维码内容。&lt;/p&gt;
+&lt;h3 id="2-内容解析"&gt;&lt;a href="#2-%e5%86%85%e5%ae%b9%e8%a7%a3%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;2. 内容解析
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-js" data-lang="js"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 二维码内容
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;https&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//app.com/qrlogin?scene=abc&amp;amp;t=...&amp;amp;sign=...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// App 端：
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nx"&gt;校验是不是自家域名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nx"&gt;校验签名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nx"&gt;校验时间&lt;/span&gt;&lt;span class="err"&gt;（&lt;/span&gt;&lt;span class="nx"&gt;防重放&lt;/span&gt;&lt;span class="err"&gt;）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="nx"&gt;调用&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;qr&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="nx"&gt;scan&lt;/span&gt; &lt;span class="nx"&gt;接口&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果二维码不是自家——&lt;strong&gt;不要打开浏览器跳转 URL&lt;/strong&gt;，那等于把扫码结果给到不可信的网站。&lt;/p&gt;
+&lt;h3 id="3-显示确认页面"&gt;&lt;a href="#3-%e6%98%be%e7%a4%ba%e7%a1%ae%e8%ae%a4%e9%a1%b5%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;3. 显示确认页面
+&lt;/h3&gt;&lt;p&gt;不要扫描后直接跳过——&lt;strong&gt;展示明确的&amp;quot;是否登录到 PC？&amp;ldquo;对话框&lt;/strong&gt;，用户主动点确认才下一步。&lt;/p&gt;
+&lt;h3 id="4-异常处理"&gt;&lt;a href="#4-%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;4. 异常处理
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;网络断开 → 提示重试&lt;/li&gt;
+&lt;li&gt;二维码过期 → 提示用户刷新 PC 端&lt;/li&gt;
+&lt;li&gt;重复扫描 → 提示&amp;quot;该二维码已被扫描&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="八扩展场景"&gt;&lt;a href="#%e5%85%ab%e6%89%a9%e5%b1%95%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;八、扩展场景
+&lt;/h2&gt;&lt;h3 id="1-关注公众号即登录微信"&gt;&lt;a href="#1-%e5%85%b3%e6%b3%a8%e5%85%ac%e4%bc%97%e5%8f%b7%e5%8d%b3%e7%99%bb%e5%bd%95%e5%be%ae%e4%bf%a1" class="header-anchor"&gt;&lt;/a&gt;1. 关注公众号即登录（微信）
+&lt;/h3&gt;&lt;p&gt;二维码生成时带上&amp;quot;场景值&amp;quot;——用户扫码并关注公众号后，公众号收到事件回调——&lt;strong&gt;等同于&amp;quot;扫描+确认&amp;quot;一次完成&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;适合&amp;quot;既要登录又要涨粉&amp;quot;的场景。&lt;/p&gt;
+&lt;h3 id="2-跨端会话同步"&gt;&lt;a href="#2-%e8%b7%a8%e7%ab%af%e4%bc%9a%e8%af%9d%e5%90%8c%e6%ad%a5" class="header-anchor"&gt;&lt;/a&gt;2. 跨端会话同步
+&lt;/h3&gt;&lt;p&gt;PC 扫码登录后，&lt;strong&gt;手机端是不是也算&amp;quot;已登录&amp;quot;？&lt;/strong&gt; 通常是——扫码本身就证明了用户身份。&lt;/p&gt;
+&lt;h3 id="3-桌面客户端扫码"&gt;&lt;a href="#3-%e6%a1%8c%e9%9d%a2%e5%ae%a2%e6%88%b7%e7%ab%af%e6%89%ab%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;3. 桌面客户端扫码
+&lt;/h3&gt;&lt;p&gt;很多桌面 App（如 Microsoft Teams、Slack）也支持二维码登录——逻辑和 Web 完全相同。&lt;/p&gt;
+&lt;h3 id="4-离线扫码"&gt;&lt;a href="#4-%e7%a6%bb%e7%ba%bf%e6%89%ab%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;4. 离线扫码
+&lt;/h3&gt;&lt;p&gt;部分场景下手机断网时扫描——可以&lt;strong&gt;先在本地校验签名 + 缓存意图&lt;/strong&gt;，联网后再上报后端。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;扫码登录的核心是『二维码 + sceneId + 状态机 + 双端协同』——看似 5 分钟能写完，做对要考虑安全、体验、跨实例同步十几个点。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;状态机：PENDING → SCANNED → CONFIRMED&lt;/strong&gt;——不要跳过 SCANNED&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二维码 URL 带签名&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PC 端用 SSE 等状态变化&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手机端必须已登录 + 显式确认&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;sceneId UUID + 短期 TTL&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨实例用 Redis 共享状态&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;掌握这套，你做的&amp;quot;扫码登录&amp;quot;在体验和安全上能直接对标主流产品。&lt;/p&gt;</description></item></channel></rss>

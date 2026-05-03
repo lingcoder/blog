@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>零知识证明 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E9%9B%B6%E7%9F%A5%E8%AF%86%E8%AF%81%E6%98%8E/</link><description>Recent content in 零知识证明 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 08 Feb 2023 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E9%9B%B6%E7%9F%A5%E8%AF%86%E8%AF%81%E6%98%8E/index.xml" rel="self" type="application/rss+xml"/><item><title>零知识证明入门——从直觉例子到 zk-Rollup</title><link>https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/</link><pubDate>Wed, 08 Feb 2023 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/</guid><description>&lt;img src="https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/cover.svg" alt="Featured image of post 零知识证明入门——从直觉例子到 zk-Rollup" /&gt;&lt;h2 id="让-zkp-变得直观的一个例子"&gt;&lt;a href="#%e8%ae%a9-zkp-%e5%8f%98%e5%be%97%e7%9b%b4%e8%a7%82%e7%9a%84%e4%b8%80%e4%b8%aa%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;让 ZKP 变得直观的一个例子
+&lt;/h2&gt;&lt;p&gt;零知识证明（Zero-Knowledge Proof，ZKP）听起来像是数学教授的玄学。但它要解决的问题，可以用一个生活化的场景描述：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;小明给小红打电话：&amp;ldquo;我有这个保险柜的密码。&amp;rdquo; 小红怎么验证小明真的知道，又不想小明把密码告诉她？&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;朴素方案：小明把密码报给小红——但泄漏了密码。&lt;/p&gt;
+&lt;p&gt;零知识证明的方案：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;小红把保险柜搬到一个房间里，柜子里放一张写着随机字符串的纸&lt;/li&gt;
+&lt;li&gt;小明进房间打开柜子，把纸上的字符串记下，再锁上柜子出来&lt;/li&gt;
+&lt;li&gt;小明把字符串报给小红——&lt;strong&gt;他能报出来，证明他确实开过柜子，但他没说密码&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这就是 ZKP 的本质：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;证明者（Prover）向验证者（Verifier）证明『某件事是真的』，过程中不泄漏任何额外信息。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;本文从直觉到实战，把零知识证明、zk-SNARK、zk-Rollup 讲清楚——&lt;strong&gt;不需要数学基础&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一零知识证明的三个性质"&gt;&lt;a href="#%e4%b8%80%e9%9b%b6%e7%9f%a5%e8%af%86%e8%af%81%e6%98%8e%e7%9a%84%e4%b8%89%e4%b8%aa%e6%80%a7%e8%b4%a8" class="header-anchor"&gt;&lt;/a&gt;一、零知识证明的三个性质
+&lt;/h2&gt;&lt;p&gt;正式定义里 ZKP 必须满足三个性质：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;完备性（Completeness）&lt;/strong&gt;：如果命题为真，诚实的证明者一定能让诚实的验证者相信&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可靠性（Soundness）&lt;/strong&gt;：如果命题为假，作恶的证明者&lt;strong&gt;几乎无法&lt;/strong&gt;让验证者相信（概率忽略不计）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零知识性（Zero-Knowledge）&lt;/strong&gt;：验证过程不泄漏除&amp;quot;命题为真&amp;quot;以外的任何信息&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;第三点是最关键、最反直觉的——&lt;strong&gt;证明的过程绝对不能让验证者知道任何具体内容&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二最经典的例子ali-baba-洞穴"&gt;&lt;a href="#%e4%ba%8c%e6%9c%80%e7%bb%8f%e5%85%b8%e7%9a%84%e4%be%8b%e5%ad%90ali-baba-%e6%b4%9e%e7%a9%b4" class="header-anchor"&gt;&lt;/a&gt;二、最经典的例子：Ali Baba 洞穴
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; 洞口
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; [岔路口]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; / \
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; A B
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; \ /
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; [魔法门 - 需要密语]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;小明（Prover）声称知道魔法门的密语。小红（Verifier）想验证。&lt;/p&gt;
+&lt;h3 id="验证流程"&gt;&lt;a href="#%e9%aa%8c%e8%af%81%e6%b5%81%e7%a8%8b" class="header-anchor"&gt;&lt;/a&gt;验证流程
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;小红站在洞口外，&lt;strong&gt;不能看见岔路口&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;小明随机走 A 或 B 路径&lt;/li&gt;
+&lt;li&gt;小红走到岔路口，喊&amp;quot;从 A 出来&amp;quot;或&amp;quot;从 B 出来&amp;quot;&lt;/li&gt;
+&lt;li&gt;小明按要求出来&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重复上述流程 N 次&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="为什么这是-zkp"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e6%98%af-zkp" class="header-anchor"&gt;&lt;/a&gt;为什么这是 ZKP
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;完备性&lt;/strong&gt;：小明真的知道密语 → 100% 能按要求出来&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可靠性&lt;/strong&gt;：小明不知道 → 每次只有 50% 几率猜对，&lt;strong&gt;重复 30 次后猜对的概率是 (1/2)³⁰ ≈ 十亿分之一&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零知识性&lt;/strong&gt;：小红观察整个过程，只看到&amp;quot;小明能按要求出现&amp;quot;——&lt;strong&gt;没学到密语&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个洞穴比喻出自 Quisquater、Guillou、Berson 1990 年发表的 &lt;em&gt;How to Explain Zero-Knowledge Protocols to Your Children&lt;/em&gt;
+（CRYPTO &amp;lsquo;89 论文集）。零知识证明本身的正式定义则更早——由 Goldwasser、Micali、Rackoff 在 1985 年的《The Knowledge Complexity
+of Interactive Proof-Systems》里给出。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三互动式-vs-非互动式"&gt;&lt;a href="#%e4%b8%89%e4%ba%92%e5%8a%a8%e5%bc%8f-vs-%e9%9d%9e%e4%ba%92%e5%8a%a8%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;三、互动式 vs 非互动式
+&lt;/h2&gt;&lt;p&gt;上面的洞穴例子是&lt;strong&gt;互动式&lt;/strong&gt;——验证需要双方反复来回。互动式 ZKP 有几个限制：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;验证者必须在线&lt;/li&gt;
+&lt;li&gt;不能给第三方公开验证&lt;/li&gt;
+&lt;li&gt;不适合区块链场景&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;非互动式零知识证明（NIZK）&lt;/strong&gt; 解决这些——&lt;strong&gt;Prover 一次性产出一个证明，任何人拿到都能验证&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Prover: ----proof----&amp;gt; Verifier
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; (独立验证，无需 Prover)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，&lt;strong&gt;用 hash 的不可预测性替代真实的随机交互&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;NIZK 是区块链应用 ZKP 的基础。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四zk-snark高效的-nizk"&gt;&lt;a href="#%e5%9b%9bzk-snark%e9%ab%98%e6%95%88%e7%9a%84-nizk" class="header-anchor"&gt;&lt;/a&gt;四、zk-SNARK：高效的 NIZK
+&lt;/h2&gt;&lt;p&gt;ZKP 在理论上几十年前就有了，但&lt;strong&gt;实际能用&lt;/strong&gt;是从 zk-SNARK 开始。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;zk-SNARK&lt;/strong&gt; = &lt;strong&gt;Z&lt;/strong&gt;ero-&lt;strong&gt;K&lt;/strong&gt;nowledge &lt;strong&gt;S&lt;/strong&gt;uccinct &lt;strong&gt;N&lt;/strong&gt;on-interactive &lt;strong&gt;AR&lt;/strong&gt;gument of &lt;strong&gt;K&lt;/strong&gt;nowledge&lt;/p&gt;
+&lt;p&gt;逐字解读：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Zero-Knowledge&lt;/strong&gt;：零知识&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Succinct&lt;/strong&gt;：证明体积&lt;strong&gt;很小&lt;/strong&gt;（几百字节）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Non-interactive&lt;/strong&gt;：非互动&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Argument of Knowledge&lt;/strong&gt;：能&amp;quot;证明知道某个秘密&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;它的实战意义&lt;/strong&gt;——你能把任何复杂计算（如&amp;quot;这笔交易合法&amp;quot;）压缩成几百字节的证明，验证只要毫秒级。&lt;/p&gt;
+&lt;h3 id="zcash第一个商用案例"&gt;&lt;a href="#zcash%e7%ac%ac%e4%b8%80%e4%b8%aa%e5%95%86%e7%94%a8%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;Zcash：第一个商用案例
+&lt;/h3&gt;&lt;p&gt;Zcash（2016）是第一个用 zk-SNARK 做&amp;quot;完全隐私交易&amp;quot;的区块链——&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;链上看到的是加密的发送方、接收方、金额&lt;/li&gt;
+&lt;li&gt;但每笔交易都附一个 SNARK 证明，&lt;strong&gt;证明这笔交易合法&lt;/strong&gt;（没双花、有足够余额、签名正确）&lt;/li&gt;
+&lt;li&gt;验证者验证 SNARK，无需知道任何细节&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;链上数据完全隐私——但合法性能被任何节点验证。&lt;strong&gt;这是 ZKP 的工程巅峰应用之一&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五zkp-在以太坊zk-rollup"&gt;&lt;a href="#%e4%ba%94zkp-%e5%9c%a8%e4%bb%a5%e5%a4%aa%e5%9d%8azk-rollup" class="header-anchor"&gt;&lt;/a&gt;五、ZKP 在以太坊：zk-Rollup
+&lt;/h2&gt;&lt;p&gt;以太坊主网 TPS 低、Gas 贵——这是公链扩容的核心问题。Layer2 是主流方向，&lt;strong&gt;zk-Rollup&lt;/strong&gt; 是其中最被看好的一种。&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TB
+ L2[(L2: 处理上千笔 tx)] --&gt; Proof[生成 zk-SNARK&lt;br/&gt;证明所有 tx 合法]
+ Proof --&gt; L1[L1 主网&lt;br/&gt;验证证明 + 更新状态根]&lt;/pre&gt;&lt;p&gt;zk-Rollup 的工作流：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Sequencer&lt;/strong&gt; 在 L2 收集大量交易（数千笔）&lt;/li&gt;
+&lt;li&gt;在 L2 执行所有交易，得到新状态&lt;/li&gt;
+&lt;li&gt;生成一个 SNARK 证明——&lt;strong&gt;&amp;ldquo;我执行的所有交易都合法，新状态由旧状态正确得出&amp;rdquo;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;把证明 + 新状态根提交到 L1&lt;/li&gt;
+&lt;li&gt;L1 验证 SNARK——验证通过则更新状态&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="为什么-zk-rollup-比-optimistic-rollup-强"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-zk-rollup-%e6%af%94-optimistic-rollup-%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;为什么 zk-Rollup 比 Optimistic Rollup 强
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;维度&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Optimistic Rollup&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;zk-Rollup&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;安全模型&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;假设没有作弊，挑战期内可证伪&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;数学证明，每次都验证&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;提款延迟&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;7 天（挑战期）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;即时&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;验证成本&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;仅作弊时验证&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;每次都验证&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;证明生成成本&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;低（不需要）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;高（需要 zk 电路）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适合 EVM&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;容易&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;难（zkEVM 是新课题）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;zk-Rollup 的劣势是『证明生成成本高 + EVM 兼容难&amp;rsquo;&lt;/strong&gt;——但生态正在快速进化（zkSync、StarkNet、Linea、Scroll 都是 zk 系 L2）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六zkp-还能用来做什么"&gt;&lt;a href="#%e5%85%adzkp-%e8%bf%98%e8%83%bd%e7%94%a8%e6%9d%a5%e5%81%9a%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;六、ZKP 还能用来做什么
+&lt;/h2&gt;&lt;p&gt;ZKP 的应用远不止隐私交易和扩容：&lt;/p&gt;
+&lt;h3 id="1-隐私身份认证"&gt;&lt;a href="#1-%e9%9a%90%e7%a7%81%e8%ba%ab%e4%bb%bd%e8%ae%a4%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;1. 隐私身份认证
+&lt;/h3&gt;&lt;p&gt;证明&amp;quot;我已成年&amp;quot;——不告诉对方具体年龄。
+证明&amp;quot;我是某机构员工&amp;quot;——不告诉对方公司全部员工列表。&lt;/p&gt;
+&lt;h3 id="2-私有投票"&gt;&lt;a href="#2-%e7%a7%81%e6%9c%89%e6%8a%95%e7%a5%a8" class="header-anchor"&gt;&lt;/a&gt;2. 私有投票
+&lt;/h3&gt;&lt;p&gt;证明&amp;quot;我投了一票&amp;quot;——不告诉投了谁、不让人知道我是谁。&lt;/p&gt;
+&lt;h3 id="3-数据隐私查询"&gt;&lt;a href="#3-%e6%95%b0%e6%8d%ae%e9%9a%90%e7%a7%81%e6%9f%a5%e8%af%a2" class="header-anchor"&gt;&lt;/a&gt;3. 数据隐私查询
+&lt;/h3&gt;&lt;p&gt;证明&amp;quot;我的某项数据满足条件 X&amp;quot;——不暴露数据。&lt;/p&gt;
+&lt;h3 id="4-zkml机器学习"&gt;&lt;a href="#4-zkml%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" class="header-anchor"&gt;&lt;/a&gt;4. zkML（机器学习）
+&lt;/h3&gt;&lt;p&gt;证明&amp;quot;模型 M 在输入 X 上得到了输出 Y&amp;quot;——不暴露模型权重或输入。&lt;/p&gt;
+&lt;h3 id="5-zk-bridge--zk-light-client"&gt;&lt;a href="#5-zk-bridge--zk-light-client" class="header-anchor"&gt;&lt;/a&gt;5. zk Bridge / zk Light Client
+&lt;/h3&gt;&lt;p&gt;跨链桥用 ZKP 证明源链状态——避免传统跨链桥的多签信任假设。&lt;/p&gt;
+&lt;h3 id="6-zk-email--zk-login"&gt;&lt;a href="#6-zk-email--zk-login" class="header-anchor"&gt;&lt;/a&gt;6. zk Email / zk Login
+&lt;/h3&gt;&lt;p&gt;证明&amp;quot;我有这个邮箱的访问权&amp;quot;——不暴露邮箱内容。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七零知识证明的证和建电路"&gt;&lt;a href="#%e4%b8%83%e9%9b%b6%e7%9f%a5%e8%af%86%e8%af%81%e6%98%8e%e7%9a%84%e8%af%81%e5%92%8c%e5%bb%ba%e7%94%b5%e8%b7%af" class="header-anchor"&gt;&lt;/a&gt;七、零知识证明的&amp;quot;证&amp;quot;和&amp;quot;建电路&amp;quot;
+&lt;/h2&gt;&lt;p&gt;工程上做 ZKP 不是写一段普通代码——而是&lt;strong&gt;把要证明的命题翻译成『算术电路』&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;要证：x² + y² &amp;lt; 100
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;↓ 翻译
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;电路：(x*x) + (y*y) - 100 &amp;lt; 0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;↓ 用 zk DSL 写
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ZKP 框架编译电路 + 生成证明
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;主流框架：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;框架&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;特点&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Circom&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;DSL 写电路，配 snarkjs 生成证明&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Halo2&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Rust 写电路，无需 trusted setup&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Cairo&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;StarkNet 用，专为 STARK 设计&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Noir&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Aztec 出品，类 Rust 语法&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Risc Zero&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;通用 zkVM，能跑任意 Rust 代码&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;SP1&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;通用 zkVM，类似 Risc Zero&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="一个-circom-例子"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa-circom-%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;一个 Circom 例子
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;template&lt;/span&gt; &lt;span class="n"&gt;IsAdult&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;signal&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;signal&lt;/span&gt; &lt;span class="n"&gt;input&lt;/span&gt; &lt;span class="n"&gt;minAge&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;signal&lt;/span&gt; &lt;span class="n"&gt;output&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;component&lt;/span&gt; &lt;span class="n"&gt;lt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;LessThan&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;lt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;==&lt;/span&gt; &lt;span class="n"&gt;minAge&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;lt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="ow"&gt;in&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;==&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ok&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;==&lt;/span&gt; &lt;span class="n"&gt;lt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;写一段电路、编译出 wasm 和 r1cs 文件、用 snarkjs 给&amp;quot;输入&amp;quot;生成证明、上链验证。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八zkp-的代价和限制"&gt;&lt;a href="#%e5%85%abzkp-%e7%9a%84%e4%bb%a3%e4%bb%b7%e5%92%8c%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;八、ZKP 的代价和限制
+&lt;/h2&gt;&lt;p&gt;ZKP 听起来万能，但代价不小：&lt;/p&gt;
+&lt;h3 id="1-证明生成慢"&gt;&lt;a href="#1-%e8%af%81%e6%98%8e%e7%94%9f%e6%88%90%e6%85%a2" class="header-anchor"&gt;&lt;/a&gt;1. 证明生成慢
+&lt;/h3&gt;&lt;p&gt;复杂电路可能要几分钟到几小时才能生成一个证明——&lt;strong&gt;证明者侧的算力消耗大&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-证明体积小但验证仍要-gas"&gt;&lt;a href="#2-%e8%af%81%e6%98%8e%e4%bd%93%e7%a7%af%e5%b0%8f%e4%bd%86%e9%aa%8c%e8%af%81%e4%bb%8d%e8%a6%81-gas" class="header-anchor"&gt;&lt;/a&gt;2. 证明体积小，但验证仍要 Gas
+&lt;/h3&gt;&lt;p&gt;zk-SNARK 验证大约 200-500K gas——比传统验证贵，但比 Optimistic Rollup 的&amp;quot;挑战 + 仲裁&amp;quot;安全得多。&lt;/p&gt;
+&lt;h3 id="3-trusted-setup-风险"&gt;&lt;a href="#3-trusted-setup-%e9%a3%8e%e9%99%a9" class="header-anchor"&gt;&lt;/a&gt;3. Trusted Setup 风险
+&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
+&lt;h3 id="4-电路开发门槛高"&gt;&lt;a href="#4-%e7%94%b5%e8%b7%af%e5%bc%80%e5%8f%91%e9%97%a8%e6%a7%9b%e9%ab%98" class="header-anchor"&gt;&lt;/a&gt;4. 电路开发门槛高
+&lt;/h3&gt;&lt;p&gt;写电路是一种新范式——和写普通代码差别很大。&lt;strong&gt;需要的 bug 排查能力、性能调优能力都不同&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="5-工具链还在演进"&gt;&lt;a href="#5-%e5%b7%a5%e5%85%b7%e9%93%be%e8%bf%98%e5%9c%a8%e6%bc%94%e8%bf%9b" class="header-anchor"&gt;&lt;/a&gt;5. 工具链还在演进
+&lt;/h3&gt;&lt;p&gt;调试器、IDE、profiler 工具都在快速发展中——但远不如传统编程成熟。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九zk-snark-vs-zk-stark"&gt;&lt;a href="#%e4%b9%9dzk-snark-vs-zk-stark" class="header-anchor"&gt;&lt;/a&gt;九、ZK-SNARK vs ZK-STARK
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;SNARK&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;STARK&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;证明大小&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;小（KB 级）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中（数十 KB 到 MB）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;验证速度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;快&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;证明生成&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;快&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Trusted Setup&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;多数需要&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;不需要&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;抗量子&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓（基于 hash）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;用例&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Zcash、zkSync v2、Linea&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;StarkNet、Polygon Miden&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;工程上：SNARK 适合&amp;quot;证明 + 验证&amp;quot;链上场景（小证明、低 Gas），STARK 适合&amp;quot;高吞吐 + 强抗量子&amp;quot;场景。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十了解了-zkp对工程意味着什么"&gt;&lt;a href="#%e5%8d%81%e4%ba%86%e8%a7%a3%e4%ba%86-zkp%e5%af%b9%e5%b7%a5%e7%a8%8b%e6%84%8f%e5%91%b3%e7%9d%80%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;十、了解了 ZKP，对工程意味着什么
+&lt;/h2&gt;&lt;p&gt;作为应用开发者，你&lt;strong&gt;未必需要写电路&lt;/strong&gt;——但你需要：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;理解 ZKP 的能力边界&lt;/strong&gt;——什么场景能用 ZKP，什么场景不能&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;知道 zk 系 L2 的取舍&lt;/strong&gt;——zkSync / StarkNet / Linea 在什么场景胜过 Optimistic Rollup&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;理解隐私 / 合规的新可能&lt;/strong&gt;——ZKP 让&amp;quot;既符合监管又保护用户隐私&amp;quot;在技术上可行&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;理解 ZKP 的工程价值不在于&amp;quot;会用 Circom&amp;quot;，&lt;strong&gt;而在于在产品设计时知道 ZKP 是一项可选武器&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;零知识证明让你能『证明你知道某件事，但不暴露具体内容』——把『可验证』和『隐私』这对看似矛盾的需求统一起来。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程视角：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SNARK 是当下主流&lt;/strong&gt;，但 STARK / Halo2 在崛起&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zk-Rollup 是以太坊扩容的长期答案&lt;/strong&gt;——但目前生态还在追赶 Optimistic&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私身份、隐私投票、zkML 是未来 5 年最有想象力的方向&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;学 ZKP 不是必须会写电路&lt;/strong&gt;——理解它的能力边界，知道何时使用，已经是巨大进步&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;零知识证明在 2010 年是数学家玩具，2020 年是 Web3 工程的核心武器。&lt;strong&gt;它正在重塑互联网中『可验证』和『隐私』的边界&lt;/strong&gt;——值得每个工程师入门了解一次。&lt;/p&gt;</description></item></channel></rss>

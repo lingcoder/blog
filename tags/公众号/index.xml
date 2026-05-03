@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>公众号 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/</link><description>Recent content in 公众号 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 15 Nov 2020 16:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/index.xml" rel="self" type="application/rss+xml"/><item><title>微信扫码登录三种方案对比：开放平台、公众号、扫码即登录</title><link>https://www.lingcoder.com/p/wechat-qr-login-flows/</link><pubDate>Sun, 15 Nov 2020 16:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/wechat-qr-login-flows/</guid><description>&lt;img src="https://www.lingcoder.com/p/wechat-qr-login-flows/cover.svg" alt="Featured image of post 微信扫码登录三种方案对比：开放平台、公众号、扫码即登录" /&gt;&lt;h2 id="用户体验决定一切"&gt;&lt;a href="#%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c%e5%86%b3%e5%ae%9a%e4%b8%80%e5%88%87" class="header-anchor"&gt;&lt;/a&gt;用户体验决定一切
+&lt;/h2&gt;&lt;p&gt;国内 Web 应用的登录方式里，&lt;strong&gt;微信扫码已经是事实标准&lt;/strong&gt;——比手机号验证码更顺、不用记密码、用户基本人手都有微信。&lt;/p&gt;
+&lt;p&gt;但&amp;quot;微信扫码登录&amp;quot;实际上有&lt;strong&gt;好几种不同的方案&lt;/strong&gt;，对应不同的用户体验和接入条件。新人接这块时常常分不清：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有的网站扫码后跳到微信&amp;quot;授权&amp;quot;页面再回来登录&lt;/li&gt;
+&lt;li&gt;有的网站扫码就完事了，不需要二次确认&lt;/li&gt;
+&lt;li&gt;有的扫码是公众号场景，扫完关注还能登录&lt;/li&gt;
+&lt;li&gt;有的是&amp;quot;网站二维码 + 用手机微信扫&amp;quot; → 登录 PC 端&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每种背后用的是完全不同的微信能力。本文把三种主流姿势梳理清楚——&lt;strong&gt;微信开放平台 OAuth、公众号 OAuth、关注公众号即登录&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一微信家族里的应用类型"&gt;&lt;a href="#%e4%b8%80%e5%be%ae%e4%bf%a1%e5%ae%b6%e6%97%8f%e9%87%8c%e7%9a%84%e5%ba%94%e7%94%a8%e7%b1%bb%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;一、微信家族里的&amp;quot;应用类型&amp;quot;
+&lt;/h2&gt;&lt;p&gt;要选对登录方案，先要搞清微信家的几类账号：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;账号类型&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;适用场景&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;微信开放平台应用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;网站、App 接入&amp;quot;使用微信登录&amp;quot;按钮&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;公众号（订阅号）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;内容推送&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;公众号（服务号）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;业务对接、可以做 OAuth 登录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;微信小程序&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;小程序生态&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;企业微信应用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;企业内部&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;我们要讲的扫码登录只涉及前两个——&lt;strong&gt;开放平台&lt;/strong&gt;和&lt;strong&gt;服务号&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二方案-a微信开放平台-oauthpc-网站扫码"&gt;&lt;a href="#%e4%ba%8c%e6%96%b9%e6%a1%88-a%e5%be%ae%e4%bf%a1%e5%bc%80%e6%94%be%e5%b9%b3%e5%8f%b0-oauthpc-%e7%bd%91%e7%ab%99%e6%89%ab%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;二、方案 A：微信开放平台 OAuth（PC 网站扫码）
+&lt;/h2&gt;&lt;p&gt;最经典的&amp;quot;网页扫码登录&amp;quot;——你在 PC 端访问 12306 / 知乎 / 京东 PC 端，点&amp;quot;微信登录&amp;quot;，弹出二维码，手机微信扫一扫确认即可登录。&lt;/p&gt;
+&lt;h3 id="流程"&gt;&lt;a href="#%e6%b5%81%e7%a8%8b" class="header-anchor"&gt;&lt;/a&gt;流程
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Browser-&gt;&gt;WebSite: 访问登录页
+ WebSite-&gt;&gt;WeChatOpen: redirect 二维码授权 URL
+ WeChatOpen--&gt;&gt;Browser: 显示二维码
+ Browser--&gt;&gt;Phone: 用户用手机微信扫
+ Phone-&gt;&gt;WeChatOpen: 扫码 + 确认
+ WeChatOpen-&gt;&gt;WebSite: redirect with code
+ WebSite-&gt;&gt;WeChatOpen: 用 code 换 access_token + openid
+ WeChatOpen-&gt;&gt;WebSite: 返回 token 和用户信息
+ WebSite--&gt;&gt;Browser: 登录成功，set session&lt;/pre&gt;&lt;h3 id="接入步骤"&gt;&lt;a href="#%e6%8e%a5%e5%85%a5%e6%ad%a5%e9%aa%a4" class="header-anchor"&gt;&lt;/a&gt;接入步骤
+&lt;/h3&gt;&lt;h4 id="1-在微信开放平台注册网站应用"&gt;&lt;a href="#1-%e5%9c%a8%e5%be%ae%e4%bf%a1%e5%bc%80%e6%94%be%e5%b9%b3%e5%8f%b0%e6%b3%a8%e5%86%8c%e7%bd%91%e7%ab%99%e5%ba%94%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;1. 在微信开放平台注册&amp;quot;网站应用&amp;quot;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;登录 &lt;a class="link" href="https://open.weixin.qq.com" target="_blank" rel="noopener"
+ &gt;open.weixin.qq.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;创建网站应用，提交资质（要企业认证）&lt;/li&gt;
+&lt;li&gt;拿到 &lt;code&gt;AppID&lt;/code&gt; 和 &lt;code&gt;AppSecret&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="2-前端跳转授权链接"&gt;&lt;a href="#2-%e5%89%8d%e7%ab%af%e8%b7%b3%e8%bd%ac%e6%8e%88%e6%9d%83%e9%93%be%e6%8e%a5" class="header-anchor"&gt;&lt;/a&gt;2. 前端跳转授权链接
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sb"&gt;`https://open.weixin.qq.com/connect/qrconnect`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="sb"&gt;`?appid=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;APP_ID&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="sb"&gt;`&amp;amp;redirect_uri=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nb"&gt;encodeURIComponent&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;CALLBACK&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="sb"&gt;`&amp;amp;response_type=code`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="sb"&gt;`&amp;amp;scope=snsapi_login`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="sb"&gt;`&amp;amp;state=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;randomState&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;location&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;href&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;state&lt;/code&gt; 是 CSRF 防御——后端要校验回调时的 state 与前端发出的一致。&lt;/p&gt;
+&lt;h4 id="3-后端用-code-换-access_token"&gt;&lt;a href="#3-%e5%90%8e%e7%ab%af%e7%94%a8-code-%e6%8d%a2-access_token" class="header-anchor"&gt;&lt;/a&gt;3. 后端用 code 换 access_token
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@GetMapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/auth/wechat/callback&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;callback&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@RequestParam&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@RequestParam&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 校验 state（防 CSRF）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;stateService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;consume&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;throw&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;BusinessException&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;invalid state&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 换 access_token&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://api.weixin.qq.com/sns/oauth2/access_token&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;?appid=&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;APP_ID&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;amp;secret=&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;APP_SECRET&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;amp;code=&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;code&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;amp;grant_type=authorization_code&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;restTemplate&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getForObject&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// resp 里有 access_token, openid, unionid&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 拉用户信息&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;bindOrCreate&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;openid&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;unionid&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 颁发自己的会话 token&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;redirect:&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;frontUrl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;?token=&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jwtService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;issue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="关键点openid-vs-unionid"&gt;&lt;a href="#%e5%85%b3%e9%94%ae%e7%82%b9openid-vs-unionid" class="header-anchor"&gt;&lt;/a&gt;关键点：openid vs unionid
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;openid&lt;/strong&gt;：用户在&lt;strong&gt;这一个&lt;/strong&gt;应用里的唯一标识——同一用户在你的 A 应用和 B 应用 openid 不同&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;unionid&lt;/strong&gt;：用户在&lt;strong&gt;整个开发者账号&lt;/strong&gt;下的唯一标识——同一开发者下所有应用共享&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;生产里通常&lt;strong&gt;以 unionid 作为主用户标识&lt;/strong&gt;——避免&amp;quot;同一个微信用户在 PC 端和小程序里看起来是两个账号&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三方案-b公众号-oauth关注后授权登录"&gt;&lt;a href="#%e4%b8%89%e6%96%b9%e6%a1%88-b%e5%85%ac%e4%bc%97%e5%8f%b7-oauth%e5%85%b3%e6%b3%a8%e5%90%8e%e6%8e%88%e6%9d%83%e7%99%bb%e5%bd%95" class="header-anchor"&gt;&lt;/a&gt;三、方案 B：公众号 OAuth（关注后授权登录）
+&lt;/h2&gt;&lt;p&gt;很多 H5 应用通过公众号入口登录——比如某些电商小程序的 H5 版本、某些活动落地页。&lt;/p&gt;
+&lt;h3 id="流程-1"&gt;&lt;a href="#%e6%b5%81%e7%a8%8b-1" class="header-anchor"&gt;&lt;/a&gt;流程
+&lt;/h3&gt;&lt;p&gt;用户在微信内打开你的网页 → 微信检测到是 H5 → 触发 OAuth → 不需要扫码（已是微信内）→ 用户授权 → 返回业务页面已登录。&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ User-&gt;&gt;WeChat: 打开 H5 链接
+ WeChat-&gt;&gt;WebSite: 加载 H5
+ WebSite-&gt;&gt;OAuth: 跳到 OAuth 授权
+ Note over OAuth: scope=snsapi_base 静默授权&lt;br/&gt;scope=snsapi_userinfo 弹页面授权
+ OAuth-&gt;&gt;WebSite: 回调 with code
+ WebSite-&gt;&gt;WeChat API: code → openid (+ userinfo)
+ WebSite-&gt;&gt;User: 登录完成&lt;/pre&gt;&lt;h3 id="snsapi_base-vs-snsapi_userinfo"&gt;&lt;a href="#snsapi_base-vs-snsapi_userinfo" class="header-anchor"&gt;&lt;/a&gt;snsapi_base vs snsapi_userinfo
+&lt;/h3&gt;&lt;p&gt;公众号 OAuth 有两种 scope，差异很大：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;snsapi_base&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;snsapi_userinfo&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;用户感知&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;无（静默）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;有授权页面&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;拿到信息&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;只有 openid&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;openid + 昵称 + 头像 + 城市等&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适用场景&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;后台关联用户&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;显示头像/昵称&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;优先用 snsapi_base&lt;/strong&gt;——拿到 openid 后查自己业务库即可，多数场景够用。&lt;strong&gt;只有真要展示用户头像昵称时才用 snsapi_userinfo&lt;/strong&gt;——它会弹一个授权页打断流程。&lt;/p&gt;
+&lt;h3 id="接入要求"&gt;&lt;a href="#%e6%8e%a5%e5%85%a5%e8%a6%81%e6%b1%82" class="header-anchor"&gt;&lt;/a&gt;接入要求
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;服务号&lt;/strong&gt;（订阅号没有 OAuth 接口）&lt;/li&gt;
+&lt;li&gt;已认证（年费 300）&lt;/li&gt;
+&lt;li&gt;在公众号后台配置&amp;quot;网页授权域名&amp;quot;——只能在配置的域名下使用 OAuth&lt;/li&gt;
+&lt;li&gt;必须放一个微信验证文本到域名根目录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="四方案-c关注公众号即登录带场景值二维码"&gt;&lt;a href="#%e5%9b%9b%e6%96%b9%e6%a1%88-c%e5%85%b3%e6%b3%a8%e5%85%ac%e4%bc%97%e5%8f%b7%e5%8d%b3%e7%99%bb%e5%bd%95%e5%b8%a6%e5%9c%ba%e6%99%af%e5%80%bc%e4%ba%8c%e7%bb%b4%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;四、方案 C：关注公众号即登录（带场景值二维码）
+&lt;/h2&gt;&lt;p&gt;这是最巧妙的一种——&lt;strong&gt;用户扫了带场景值的临时二维码、关注公众号后，公众号收到事件，后端推送登录态给前端&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;业务侧体验是：&amp;ldquo;用户扫码并关注 → PC 端自动登录&amp;rdquo;——&lt;strong&gt;比 OAuth 少一次跳转&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="整体架构"&gt;&lt;a href="#%e6%95%b4%e4%bd%93%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;整体架构
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Browser-&gt;&gt;Backend: 请求登录二维码
+ Backend-&gt;&gt;WeChat: 生成临时二维码（带 sceneId）
+ WeChat--&gt;&gt;Backend: 返回 ticket
+ Backend--&gt;&gt;Browser: 二维码图片
+ Browser-&gt;&gt;Browser: 长轮询 / SSE 等待登录
+ Phone-&gt;&gt;WeChat: 用户扫码
+ WeChat-&gt;&gt;Backend: 推送"扫码事件"&lt;br/&gt;(包含 sceneId + openid)
+ Backend-&gt;&gt;Backend: sceneId 与会话关联，缓存 openid
+ Browser-&gt;&gt;Backend: 轮询查询 sceneId 状态
+ Backend-&gt;&gt;Browser: 返回登录信息&lt;/pre&gt;&lt;h3 id="实现要点"&gt;&lt;a href="#%e5%ae%9e%e7%8e%b0%e8%a6%81%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;实现要点
+&lt;/h3&gt;&lt;h4 id="1-生成带-sceneid-的二维码"&gt;&lt;a href="#1-%e7%94%9f%e6%88%90%e5%b8%a6-sceneid-%e7%9a%84%e4%ba%8c%e7%bb%b4%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;1. 生成带 sceneId 的二维码
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 生成临时 sceneId（需要去重 + 过期）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;generateUniqueSceneId&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sceneStore&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;put&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SceneState&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SceneStatus&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;PENDING&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;5&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;60&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 调微信接口生成 ticket&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;expire_seconds&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;300&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;action_name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;QR_STR_SCENE&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;action_info&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;scene&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;of&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;scene_str&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ticket&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;callWeChatApi&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/cgi-bin/qrcode/create&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 返回前端：用 ticket 拼二维码 URL&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;qrUrl&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ticket&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="2-接收微信推送"&gt;&lt;a href="#2-%e6%8e%a5%e6%94%b6%e5%be%ae%e4%bf%a1%e6%8e%a8%e9%80%81" class="header-anchor"&gt;&lt;/a&gt;2. 接收微信推送
+&lt;/h4&gt;&lt;p&gt;公众号后台配置消息推送 URL，收到事件 callback：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@PostMapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/wechat/callback&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;onMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@RequestBody&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;xml&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WechatEvent&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;parseXml&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xml&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;subscribe&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getEvent&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 关注&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;||&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;SCAN&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getEvent&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 已关注扫描&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getEventKey&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;openid&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getFromUserName&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 把扫码用户绑定到 sceneId&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;sceneStore&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sceneId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SceneState&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SceneStatus&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SCANNED&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;openid&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 给用户回个欢迎语&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;buildReplyXml&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;openid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;登录成功！&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;success&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="3-前端轮询或-sse"&gt;&lt;a href="#3-%e5%89%8d%e7%ab%af%e8%bd%ae%e8%af%a2%e6%88%96-sse" class="header-anchor"&gt;&lt;/a&gt;3. 前端轮询或 SSE
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;interval&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;setInterval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kr"&gt;async&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kr"&gt;await&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sb"&gt;`/auth/scan/check?sceneId=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nx"&gt;sceneId&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kr"&gt;await&lt;/span&gt; &lt;span class="nx"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;json&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;===&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SCANNED&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;localStorage&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;setItem&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;token&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;token&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;location&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;href&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/dashboard&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nx"&gt;clearInterval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;interval&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="mi"&gt;1500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;更优雅的姿势用 SSE 替代轮询——服务端扫码后主动推送。&lt;/p&gt;
+&lt;h3 id="这套方案的限制"&gt;&lt;a href="#%e8%bf%99%e5%a5%97%e6%96%b9%e6%a1%88%e7%9a%84%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;这套方案的限制
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;要服务号&lt;/strong&gt;，订阅号不行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;subscribe&lt;/code&gt; 事件只在关注时触发&lt;/strong&gt;——已关注用户扫码触发的是 &lt;code&gt;SCAN&lt;/code&gt;，业务要分两种处理&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;临时二维码 5 分钟过期&lt;/strong&gt;——前端要管理超时&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;场景值长度限制&lt;/strong&gt;——临时二维码 scene_str 最多 64 字符&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="五三种方案对比"&gt;&lt;a href="#%e4%ba%94%e4%b8%89%e7%a7%8d%e6%96%b9%e6%a1%88%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;五、三种方案对比
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;开放平台 OAuth&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;公众号 OAuth&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;公众号扫码即登录&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适用场景&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;PC 网站&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;H5（微信内打开）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;PC 网站（关注公众号）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;资质&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;开放平台账号 + 企业&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;服务号 + 认证&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;服务号 + 认证&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;用户体验&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;扫码 → 授权确认 → 登录&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;自动跳转（snsapi_base 无感）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;扫码 → 关注 → 登录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;是否需关注&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;否&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;否&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;是&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;跳转步骤&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;多&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;一次&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;无（PC 端不跳）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;适合做营销&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;否&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;是&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;是（强行涨粉）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="六实战建议"&gt;&lt;a href="#%e5%85%ad%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;六、实战建议
+&lt;/h2&gt;&lt;h3 id="选型"&gt;&lt;a href="#%e9%80%89%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;选型
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([场景?])
+ Start --&gt; A{PC 网站登录?}
+ A --&gt;|是| B{要不要涨粉?}
+ B --&gt;|不要| O1[开放平台 OAuth]
+ B --&gt;|要涨粉| C[公众号扫码即登录]
+ A --&gt;|否，H5 微信内| O2[公众号 OAuth]&lt;/pre&gt;&lt;h3 id="共性踩坑"&gt;&lt;a href="#%e5%85%b1%e6%80%a7%e8%b8%a9%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;共性踩坑
+&lt;/h3&gt;&lt;h4 id="1-多账号体系"&gt;&lt;a href="#1-%e5%a4%9a%e8%b4%a6%e5%8f%b7%e4%bd%93%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;1. 多账号体系
+&lt;/h4&gt;&lt;p&gt;用户可能从 H5 / PC / 小程序多个端登录——&lt;strong&gt;用 unionid 统一身份&lt;/strong&gt;，否则会有重复账号。&lt;/p&gt;
+&lt;h4 id="2-appsecret-必须保密"&gt;&lt;a href="#2-appsecret-%e5%bf%85%e9%a1%bb%e4%bf%9d%e5%af%86" class="header-anchor"&gt;&lt;/a&gt;2. AppSecret 必须保密
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;永远不能暴露给前端&lt;/strong&gt;——只在服务端用。前端拿到 code 后调自己后端，由后端去换 access_token。&lt;/p&gt;
+&lt;h4 id="3-频率限制"&gt;&lt;a href="#3-%e9%a2%91%e7%8e%87%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 频率限制
+&lt;/h4&gt;&lt;p&gt;微信 API 有调用频率限制（每天 N 次、每分钟 M 次），超额会被拒。生产要做：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;access_token 缓存（2 小时有效，重复调用会被踢掉旧 token）&lt;/li&gt;
+&lt;li&gt;API 调用打日志，超频告警&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="4-二维码缓存"&gt;&lt;a href="#4-%e4%ba%8c%e7%bb%b4%e7%a0%81%e7%bc%93%e5%ad%98" class="header-anchor"&gt;&lt;/a&gt;4. 二维码缓存
+&lt;/h4&gt;&lt;p&gt;每次生成新二维码都要调微信 API——&lt;strong&gt;前端每次刷新页面都生成新的会撞限制&lt;/strong&gt;。建议给二维码加 1-2 分钟的客户端缓存。&lt;/p&gt;
+&lt;h4 id="5-异常处理"&gt;&lt;a href="#5-%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;5. 异常处理
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;用户在授权页面&amp;quot;取消&amp;quot;——回调还是会被调用，参数有差异&lt;/li&gt;
+&lt;li&gt;code 重复使用——只能用一次&lt;/li&gt;
+&lt;li&gt;access_token 过期——要刷新&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="6-测试环境验证"&gt;&lt;a href="#6-%e6%b5%8b%e8%af%95%e7%8e%af%e5%a2%83%e9%aa%8c%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;6. 测试环境验证
+&lt;/h4&gt;&lt;p&gt;微信不能跨域名调试——要么把测试环境配成独立公众号，要么用内网穿透。生产前一定在真实公众号下测过完整流程。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七一些前沿姿势"&gt;&lt;a href="#%e4%b8%83%e4%b8%80%e4%ba%9b%e5%89%8d%e6%b2%bf%e5%a7%bf%e5%8a%bf" class="header-anchor"&gt;&lt;/a&gt;七、一些前沿姿势
+&lt;/h2&gt;&lt;h3 id="微信小程序登录"&gt;&lt;a href="#%e5%be%ae%e4%bf%a1%e5%b0%8f%e7%a8%8b%e5%ba%8f%e7%99%bb%e5%bd%95" class="header-anchor"&gt;&lt;/a&gt;微信小程序登录
+&lt;/h3&gt;&lt;p&gt;如果你的业务要跨小程序 + H5 + PC 共享用户体系：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;小程序：&lt;code&gt;wx.login()&lt;/code&gt; + &lt;code&gt;code2Session&lt;/code&gt; 拿 openid + unionid&lt;/li&gt;
+&lt;li&gt;H5：snsapi_base&lt;/li&gt;
+&lt;li&gt;PC：开放平台 OAuth&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;用 unionid 一统身份&lt;/strong&gt;——前提是这些应用都挂在同一个开放平台账号下，否则 unionid 不互通。&lt;/p&gt;
+&lt;h3 id="跨端会话同步"&gt;&lt;a href="#%e8%b7%a8%e7%ab%af%e4%bc%9a%e8%af%9d%e5%90%8c%e6%ad%a5" class="header-anchor"&gt;&lt;/a&gt;跨端会话同步
+&lt;/h3&gt;&lt;p&gt;PC 扫码登录后，移动端怎么也保持同步？通常是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PC 拿到 token 后调一个&amp;quot;标记 unionid 已登录&amp;quot;接口&lt;/li&gt;
+&lt;li&gt;App / H5 启动时检查 unionid 是否处于&amp;quot;已登录&amp;quot;状态——是就静默登录&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这是 12306 / 京东这类多端应用的常用做法。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;PC 网站用开放平台 OAuth；H5 微信内用公众号 OAuth；想顺带涨粉用『关注公众号即登录』。三者底层协议都是微信生态，但接入门槛、体验、营销价值差别很大。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程上记住几条：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;AppSecret 永远在服务端&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用 unionid 统一身份&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;access_token 缓存 + 频率告警&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;state 防 CSRF&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二维码加客户端缓存避免刷限额&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把这套吃透，国内 Web 应用的&amp;quot;登录&amp;quot;问题基本就解决了。&lt;/p&gt;</description></item></channel></rss>

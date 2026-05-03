@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>安全 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%AE%89%E5%85%A8/</link><description>Recent content in 安全 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 17 Mar 2022 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml"/><item><title>智能合约的四种调用方式：Call / CallCode / DelegateCall / StaticCall</title><link>https://www.lingcoder.com/p/solidity-call-callcode-delegatecall-staticcall/</link><pubDate>Thu, 17 Mar 2022 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/solidity-call-callcode-delegatecall-staticcall/</guid><description>&lt;img src="https://www.lingcoder.com/p/solidity-call-callcode-delegatecall-staticcall/cover.svg" alt="Featured image of post 智能合约的四种调用方式：Call / CallCode / DelegateCall / StaticCall" /&gt;&lt;h2 id="一段看似平平无奇的代码行为完全不同"&gt;&lt;a href="#%e4%b8%80%e6%ae%b5%e7%9c%8b%e4%bc%bc%e5%b9%b3%e5%b9%b3%e6%97%a0%e5%a5%87%e7%9a%84%e4%bb%a3%e7%a0%81%e8%a1%8c%e4%b8%ba%e5%ae%8c%e5%85%a8%e4%b8%8d%e5%90%8c" class="header-anchor"&gt;&lt;/a&gt;一段看似平平无奇的代码，行为完全不同
+&lt;/h2&gt;&lt;p&gt;四个看起来很像的调用：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// call
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;callcode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// callcode（已弃用）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;delegatecall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// delegatecall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;staticcall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;它们都是&amp;quot;调另一个合约&amp;quot;——但&lt;strong&gt;存储上下文、msg.sender、能否改状态完全不同&lt;/strong&gt;。用错任何一个轻则无效，重则被攻击者利用整个协议归零。&lt;/p&gt;
+&lt;p&gt;本文把这四种调用的差异系统讲清楚，并配代码例子说明各自用法和风险。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一四者本质对比"&gt;&lt;a href="#%e4%b8%80%e5%9b%9b%e8%80%85%e6%9c%ac%e8%b4%a8%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;一、四者本质对比
+&lt;/h2&gt;&lt;p&gt;EVM 中合约调用的&amp;quot;上下文&amp;quot;由三个核心要素组成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;代码（Code）&lt;/strong&gt;：要执行哪段字节码？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储（Storage）&lt;/strong&gt;：读写哪个合约的存储？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;msg.sender&lt;/code&gt; / &lt;code&gt;msg.value&lt;/code&gt;&lt;/strong&gt;：调用者身份是谁？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;四种调用对这三个要素的处理：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;执行的代码&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;操作的存储&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;msg.sender&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;msg.value&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;能否改状态&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;call&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;caller&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;可传值&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;callcode&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;caller&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;caller&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;可传值&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;delegatecall&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;caller&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;原发起者&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;原 value&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;staticcall&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;target&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;caller&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;不可传值&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;✗ 只读&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;callcode&lt;/code&gt; 已经被官方标记为 deprecated（功能被 delegatecall 替代），实战中几乎不用。重点是 &lt;strong&gt;call / delegatecall / staticcall&lt;/strong&gt; 三种。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二call最朴素的远程调用"&gt;&lt;a href="#%e4%ba%8ccall%e6%9c%80%e6%9c%b4%e7%b4%a0%e7%9a%84%e8%bf%9c%e7%a8%8b%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;二、call：最朴素的&amp;quot;远程调用&amp;quot;
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;Caller&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;callTarget&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;payable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;call&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="p"&gt;}(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;encodeWithSignature&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;doSomething(uint256)&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;call failed&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;call&lt;/code&gt; 的语义是——&lt;strong&gt;让对方合约执行对方的代码、操作对方的存储&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行 &lt;code&gt;target&lt;/code&gt; 的代码&lt;/li&gt;
+&lt;li&gt;改 &lt;code&gt;target&lt;/code&gt; 的存储&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;target&lt;/code&gt; 看来，&lt;code&gt;msg.sender = Caller&lt;/code&gt; 这个调用方&lt;/li&gt;
+&lt;li&gt;可以转账（&lt;code&gt;{value: x}&lt;/code&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这就是一次&amp;quot;标准的合约间调用&amp;quot;。&lt;/p&gt;
+&lt;h3 id="典型场景"&gt;&lt;a href="#%e5%85%b8%e5%9e%8b%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;典型场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;转账给一个普通地址&lt;/strong&gt;：&lt;code&gt;recipient.call{value: amount}(&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;调用未知接口&lt;/strong&gt;：当目标合约接口不固定时（如 ERC-721 的 &lt;code&gt;onERC721Received&lt;/code&gt; 钩子），用 call&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="注意点"&gt;&lt;a href="#%e6%b3%a8%e6%84%8f%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;注意点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;call 失败不会自动 revert&lt;/strong&gt; ——返回 &lt;code&gt;bool ok&lt;/code&gt;，要自己 require&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重入风险&lt;/strong&gt;：call 触发外部代码执行，可能再调回来——经典 The DAO 漏洞就是这个&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三delegatecall用别人的代码操作自己的存储"&gt;&lt;a href="#%e4%b8%89delegatecall%e7%94%a8%e5%88%ab%e4%ba%ba%e7%9a%84%e4%bb%a3%e7%a0%81%e6%93%8d%e4%bd%9c%e8%87%aa%e5%b7%b1%e7%9a%84%e5%ad%98%e5%82%a8" class="header-anchor"&gt;&lt;/a&gt;三、delegatecall：用别人的代码、操作自己的存储
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;Proxy&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;implementation&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;fallback&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;payable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;impl&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;implementation&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;assembly&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;calldatacopy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;calldatasize&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="ow"&gt;let&lt;/span&gt; &lt;span class="nv"&gt;result&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nf"&gt;delegatecall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nf"&gt;gas&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;impl&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;calldatasize&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;returndatacopy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;returndatasize&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nf"&gt;switch&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nf"&gt;revert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;returndatasize&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;default&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nf"&gt;return&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nf"&gt;returndatasize&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;delegatecall&lt;/code&gt; 的语义是——&lt;strong&gt;借用对方的字节码逻辑，但操作的是自己的存储和上下文&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行 &lt;code&gt;target&lt;/code&gt; 的代码&lt;/li&gt;
+&lt;li&gt;改 &lt;strong&gt;caller&lt;/strong&gt; 的存储（不是 target 的！）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msg.sender&lt;/code&gt; 是&lt;strong&gt;原始调用者&lt;/strong&gt;（不是 caller）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;msg.value&lt;/code&gt; 也是原始的&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="典型场景代理升级模式"&gt;&lt;a href="#%e5%85%b8%e5%9e%8b%e5%9c%ba%e6%99%af%e4%bb%a3%e7%90%86%e5%8d%87%e7%ba%a7%e6%a8%a1%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;典型场景：代理升级模式
+&lt;/h3&gt;&lt;p&gt;可升级合约（OpenZeppelin Proxy / UUPS）的根基就是 delegatecall：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ User --&gt; Proxy
+ Proxy -- delegatecall --&gt; Logic
+ Proxy -.存储在.-&gt; Storage&lt;/pre&gt;&lt;p&gt;Proxy 把所有调用 delegatecall 给 Logic 合约——Logic 操作的存储是 Proxy 的，所以&lt;strong&gt;升级 Logic 不影响数据&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="致命陷阱存储槽冲突"&gt;&lt;a href="#%e8%87%b4%e5%91%bd%e9%99%b7%e9%98%b1%e5%ad%98%e5%82%a8%e6%a7%bd%e5%86%b2%e7%aa%81" class="header-anchor"&gt;&lt;/a&gt;致命陷阱：存储槽冲突
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;delegatecall&lt;/code&gt; 操作 caller 的存储，&lt;strong&gt;但用的是 target 的存储槽布局&lt;/strong&gt;——两边布局必须严格对齐。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;LogicV1&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// slot 0
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;counter&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// slot 1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;LogicV2&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;counter&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// slot 0 ← 和 V1 的 owner 撞了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;owner&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// slot 1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;升级到 V2 后，原来 owner 槽存的地址被当作 counter 解读——&lt;strong&gt;协议直接报废&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="致命陷阱二误用-delegatecall-给陌生地址"&gt;&lt;a href="#%e8%87%b4%e5%91%bd%e9%99%b7%e9%98%b1%e4%ba%8c%e8%af%af%e7%94%a8-delegatecall-%e7%bb%99%e9%99%8c%e7%94%9f%e5%9c%b0%e5%9d%80" class="header-anchor"&gt;&lt;/a&gt;致命陷阱二：误用 delegatecall 给陌生地址
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="n"&gt;calldata&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="n"&gt;onlyOwner&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;delegatecall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 极度危险
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果攻击者诱导 owner 调用此函数指向恶意 target，&lt;strong&gt;target 的代码可以任意改 caller 的存储&lt;/strong&gt;——包括把 owner 改成攻击者地址。&lt;/p&gt;
+&lt;p&gt;历史上的 Parity Wallet 漏洞、Audius 攻击等，都是 delegatecall 滥用导致的灾难。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;delegatecall 必须只指向你自己控制的、白名单内的合约。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="四staticcall只读调用"&gt;&lt;a href="#%e5%9b%9bstaticcall%e5%8f%aa%e8%af%bb%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;四、staticcall：只读调用
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;readSomething&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;staticcall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;encodeWithSignature&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;getValue()&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;staticcall failed&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;staticcall&lt;/code&gt; 是 EIP-214 引入——和 call 几乎一样，但&lt;strong&gt;强制只读&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;执行 target 的代码&lt;/li&gt;
+&lt;li&gt;改 target 的存储——不行，只读&lt;/li&gt;
+&lt;li&gt;不能转账&lt;/li&gt;
+&lt;li&gt;target 内部任何 SSTORE / LOG / CREATE 都会让调用 revert&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="典型场景-1"&gt;&lt;a href="#%e5%85%b8%e5%9e%8b%e5%9c%ba%e6%99%af-1" class="header-anchor"&gt;&lt;/a&gt;典型场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;view&lt;/code&gt; / &lt;code&gt;pure&lt;/code&gt; 函数的调用&lt;/strong&gt;——Solidity 编译器会自动用 staticcall&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;集成第三方合约的查询&lt;/strong&gt;：你想查别人合约状态但不信任它会改你状态——staticcall 强制只读&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;getPriceFromOracle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IOracle&lt;/span&gt; &lt;span class="n"&gt;oracle&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;view&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 编译器自动选 staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;oracle&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;price&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="为什么重要"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%87%8d%e8%a6%81" class="header-anchor"&gt;&lt;/a&gt;为什么重要
+&lt;/h3&gt;&lt;p&gt;没有 staticcall 之前，要&amp;quot;安全地查询别人的合约&amp;quot;非常麻烦——对方合约可能在 view 函数里偷偷改状态（虽然不该）。staticcall &lt;strong&gt;从 EVM 层面强制只读&lt;/strong&gt;——这是一个安全保障。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五callcode已弃用"&gt;&lt;a href="#%e4%ba%94callcode%e5%b7%b2%e5%bc%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;五、callcode：已弃用
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;callcode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 已 deprecated
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;callcode 是 delegatecall 的早期版本，&lt;strong&gt;唯一区别是 msg.sender 不会保留为原始调用者&lt;/strong&gt;——这通常是个 bug 而不是 feature。所以 Solidity 0.5.0 之后 callcode 被禁用，全部用 delegatecall。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;新代码里永远不要写 callcode&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六四种调用的决策树"&gt;&lt;a href="#%e5%85%ad%e5%9b%9b%e7%a7%8d%e8%b0%83%e7%94%a8%e7%9a%84%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;六、四种调用的&amp;quot;决策树&amp;quot;
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([要调用另一个合约?])
+ Start --&gt; S{需要写状态?}
+ S --&gt;|不需要，只查询| Static[staticcall]
+ S --&gt;|需要写| Self{改的是自己的存储 or 对方的?}
+ Self --&gt;|对方的存储 - 远程调用| Call[call]
+ Self --&gt;|自己的存储 - 借代码| Trust{对方合约 100% 可信?}
+ Trust --&gt;|是| Delegate[delegatecall]
+ Trust --&gt;|否| Avoid[别 delegatecall！]&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id="七solidity-高级语法的隐式调用"&gt;&lt;a href="#%e4%b8%83solidity-%e9%ab%98%e7%ba%a7%e8%af%ad%e6%b3%95%e7%9a%84%e9%9a%90%e5%bc%8f%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;七、Solidity 高级语法的隐式调用
+&lt;/h2&gt;&lt;p&gt;直接写函数调用时，Solidity 会&lt;strong&gt;根据函数修饰符自动选择&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ITarget&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;viewFn&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ITarget&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;pureFn&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ITarget&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;normalFn&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// call
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;view&lt;/code&gt; / &lt;code&gt;pure&lt;/code&gt; → staticcall&lt;/li&gt;
+&lt;li&gt;普通函数 → call&lt;/li&gt;
+&lt;li&gt;delegatecall 永远要&lt;strong&gt;显式写&lt;/strong&gt;——没有&amp;quot;自动 delegatecall&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这是合理的——delegatecall 太危险，必须开发者明确知道自己在做什么。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八几个工程实践"&gt;&lt;a href="#%e5%85%ab%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;八、几个工程实践
+&lt;/h2&gt;&lt;h3 id="1-call-一律检查返回值"&gt;&lt;a href="#1-call-%e4%b8%80%e5%be%8b%e6%a3%80%e6%9f%a5%e8%bf%94%e5%9b%9e%e5%80%bc" class="header-anchor"&gt;&lt;/a&gt;1. call 一律检查返回值
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;call&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;call failed&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不检查就忽略错误，等于&amp;quot;我以为调用成功了，其实没有&amp;quot;——脏数据由此而生。&lt;/p&gt;
+&lt;h3 id="2-转账永远用-call-不要用-transfer"&gt;&lt;a href="#2-%e8%bd%ac%e8%b4%a6%e6%b0%b8%e8%bf%9c%e7%94%a8-call-%e4%b8%8d%e8%a6%81%e7%94%a8-transfer" class="header-anchor"&gt;&lt;/a&gt;2. 转账永远用 call 不要用 transfer
+&lt;/h3&gt;&lt;p&gt;老代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 现代不推荐
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;transfer&lt;/code&gt; 一直限制 2300 gas（这点从 Solidity 引入 transfer 时就如此）。真正让它频繁出问题的是 &lt;strong&gt;EIP-2929（Berlin 升级，2021-04）&lt;/strong&gt;——抬高了 SLOAD/CALL 等状态访问的 gas 成本，接收方 fallback 里很多原本能跑过的操作再也挤不进 2300 gas，导致 OOG。现代写法：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;call&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;}(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;transfer failed&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-delegatecall-配-onlyowner--白名单"&gt;&lt;a href="#3-delegatecall-%e9%85%8d-onlyowner--%e7%99%bd%e5%90%8d%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;3. delegatecall 配 onlyOwner / 白名单
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;trustedTargets&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;delegateAction&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="n"&gt;calldata&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="n"&gt;onlyOwner&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;trustedTargets&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;not trusted&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;delegatecall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;永远不要让外部参数决定 delegatecall 的目标&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="4-staticcall-保证只读"&gt;&lt;a href="#4-staticcall-%e4%bf%9d%e8%af%81%e5%8f%aa%e8%af%bb" class="header-anchor"&gt;&lt;/a&gt;4. staticcall 保证只读
+&lt;/h3&gt;&lt;p&gt;集成新协议时——只查询、不修改：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ISomeProtocol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;getInfo&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// 用 view 接口，编译器自动 staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果对方接口没声明 view 但你&lt;strong&gt;确定它只读&lt;/strong&gt;——可以手动 staticcall：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;ok&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bytes&lt;/span&gt; &lt;span class="k"&gt;memory&lt;/span&gt; &lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;staticcall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;encodeWithSignature&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;getInfo()&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果对方实际改了状态，staticcall 会让交易失败——&lt;strong&gt;EVM 层面拦截，比靠开发者自觉安全&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="5-用-openzeppelin-address-库"&gt;&lt;a href="#5-%e7%94%a8-openzeppelin-address-%e5%ba%93" class="header-anchor"&gt;&lt;/a&gt;5. 用 OpenZeppelin Address 库
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;using&lt;/span&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;functionCall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 安全的 call + revert
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;functionStaticCall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 安全的 staticcall
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;functionDelegateCall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 安全的 delegatecall（要白名单）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;OZ 的封装多了 require、revert reason 解析等——&lt;strong&gt;比裸 call 安全得多&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九几个真实案例"&gt;&lt;a href="#%e4%b9%9d%e5%87%a0%e4%b8%aa%e7%9c%9f%e5%ae%9e%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;九、几个真实案例
+&lt;/h2&gt;&lt;h3 id="案例-1parity-wallet-的-14-万-eth2017"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-1parity-wallet-%e7%9a%84-14-%e4%b8%87-eth2017" class="header-anchor"&gt;&lt;/a&gt;案例 1：Parity Wallet 的 14 万 ETH（2017）
+&lt;/h3&gt;&lt;p&gt;Parity 的多签钱包用 delegatecall 委托给一个共享 Library。攻击者发现可以&lt;strong&gt;直接调用 Library 的 init 函数把自己设成 owner&lt;/strong&gt;——再调用 kill 函数，整个 Library 自毁，所有依赖它的钱包永久无法转账。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;delegatecall 目标合约的所有 public/external 函数都要审慎设计&lt;/strong&gt;——public 入口被外部直接调用 + delegatecall 同时滥用，就是这种灾难。&lt;/p&gt;
+&lt;h3 id="案例-2audius-治理攻击2022"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-2audius-%e6%b2%bb%e7%90%86%e6%94%bb%e5%87%bb2022" class="header-anchor"&gt;&lt;/a&gt;案例 2：Audius 治理攻击（2022）
+&lt;/h3&gt;&lt;p&gt;Audius 协议合约存在 &lt;strong&gt;storage collision + initialize 未保护&lt;/strong&gt;双重 bug——存储槽布局错位让攻击者可以重新调用 &lt;code&gt;initialize&lt;/code&gt; 把自己设为治理 guardian，然后&lt;strong&gt;通过提交并自我通过的恶意治理提案&lt;/strong&gt;转走社区池里约 1860 万 AUDIO（约 600 万美元）。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;proxy 模式下，所有可升级合约的 initialize 必须加 &lt;code&gt;initializer&lt;/code&gt; 修饰符防止重复调用，并且基类与子类的 storage 布局必须严格对齐&lt;/strong&gt;——这两个 bug 任何一个不出，攻击都成立不了。&lt;/p&gt;
+&lt;h3 id="案例-3the-dao2016"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-3the-dao2016" class="header-anchor"&gt;&lt;/a&gt;案例 3：The DAO（2016）
+&lt;/h3&gt;&lt;p&gt;经典重入——&lt;code&gt;call&lt;/code&gt; 触发的外部调用导致重新进入合约，余额还没扣就被反复提款。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;调用外部前先改自己的状态&lt;/strong&gt;（Checks-Effects-Interactions 模式）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十调试工具"&gt;&lt;a href="#%e5%8d%81%e8%b0%83%e8%af%95%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;十、调试工具
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Foundry trace&lt;/strong&gt;：&lt;code&gt;forge test -vvvv&lt;/code&gt; 能看到每一层 call/delegatecall/staticcall 的细节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tenderly&lt;/strong&gt;：可视化交易调用链路&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Etherscan trace&lt;/strong&gt;：交易详情里的&amp;quot;Internal Txns&amp;quot;标签&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;调试 delegatecall 出现&amp;quot;为什么状态没变 / 变错&amp;quot;的问题——第一步永远是看清楚到底是 call 还是 delegatecall，存储槽对齐没。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;call 是远程调用、delegatecall 是借代码、staticcall 是强制只读、callcode 是历史。四者用错就是漏洞。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程上几条铁律：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;call 一定要 require(ok)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;delegatecall 只指向自己控制的、白名单内的合约&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;delegatecall 升级要严格保持存储布局&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查询用 staticcall 比信任 view 更安全&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;永远不要 callcode&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;转账用 &lt;code&gt;call{value:...}&lt;/code&gt; 不用 transfer&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把这四种调用的语义吃透——你看 OpenZeppelin / Aave / Uniswap 的代码就能瞬间看懂&amp;quot;为什么这里要这么写&amp;quot;。&lt;/p&gt;</description></item></channel></rss>

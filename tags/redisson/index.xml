@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Redisson on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/redisson/</link><description>Recent content in Redisson on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 22 Mar 2018 19:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/redisson/index.xml" rel="self" type="application/rss+xml"/><item><title>Redis 分布式锁演进：六个版本的取舍与陷阱</title><link>https://www.lingcoder.com/p/redis-distributed-lock-patterns/</link><pubDate>Thu, 22 Mar 2018 19:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/redis-distributed-lock-patterns/</guid><description>&lt;img src="https://www.lingcoder.com/p/redis-distributed-lock-patterns/cover.svg" alt="Featured image of post Redis 分布式锁演进：六个版本的取舍与陷阱" /&gt;&lt;h2 id="为什么需要分布式锁"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%88%86%e5%b8%83%e5%bc%8f%e9%94%81" class="header-anchor"&gt;&lt;/a&gt;为什么需要分布式锁
+&lt;/h2&gt;&lt;p&gt;单机环境下用 &lt;code&gt;synchronized&lt;/code&gt; 或 &lt;code&gt;ReentrantLock&lt;/code&gt; 就能搞定的事，一旦上了微服务、跑在多台机器上，就立刻变成另一个量级的问题。&lt;/p&gt;
+&lt;p&gt;举几个最典型的场景：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;下单扣库存&lt;/strong&gt;：同一个 SKU 在多实例同时被下单，怎么保证库存不卖超？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;定时任务防重&lt;/strong&gt;：每个微服务实例都跑了定时调度，怎么让&amp;quot;全局只有一个执行&amp;quot;？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接口幂等&lt;/strong&gt;：用户连点两次，怎么保证只处理一次？&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;资源独占&lt;/strong&gt;：同一个用户、同一个文件，同时只能由一个请求修改？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;进程内的锁帮不了你，因为它们彼此根本不知道对方存在。要在跨进程、跨机器的环境里&amp;quot;约定一个谁能进谁不能进&amp;quot;，就需要一个&lt;strong&gt;所有节点都信任的第三方&lt;/strong&gt;——Redis 是最常见的选择。&lt;/p&gt;
+&lt;p&gt;但 Redis 分布式锁这件事，看着简单，做对极难。下面我们从最朴素的写法一路演进，把每个版本里&amp;quot;看似能用其实不行&amp;quot;的坑摊开。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势一setnx--expire错误示范"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%b8%80setnx--expire%e9%94%99%e8%af%af%e7%a4%ba%e8%8c%83" class="header-anchor"&gt;&lt;/a&gt;姿势一：&lt;code&gt;SETNX&lt;/code&gt; + &lt;code&gt;EXPIRE&lt;/code&gt;（错误示范）
+&lt;/h2&gt;&lt;p&gt;刚接触分布式锁的人，最常写出来的版本是这样：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 反面教材&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;tryLock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setnx&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 只在 key 不存在时才设置&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;expire&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 设置过期时间&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;逻辑看起来很自然——抢到了就设过期时间防止死锁。但这里藏着一个&lt;strong&gt;致命缺陷&lt;/strong&gt;：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;code&gt;SETNX&lt;/code&gt; 和 &lt;code&gt;EXPIRE&lt;/code&gt; 是两条命令，不是原子操作。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;如果在 &lt;code&gt;SETNX&lt;/code&gt; 成功之后、&lt;code&gt;EXPIRE&lt;/code&gt; 之前进程崩了、网络抖了、Redis 主从切换了，那这把锁就&lt;strong&gt;永远没有过期时间&lt;/strong&gt;——所有后续请求都会被它挡住，直到运维手动删 key。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势二set-key-value-nx-ex-一条命令搞定"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%ba%8cset-key-value-nx-ex-%e4%b8%80%e6%9d%a1%e5%91%bd%e4%bb%a4%e6%90%9e%e5%ae%9a" class="header-anchor"&gt;&lt;/a&gt;姿势二：&lt;code&gt;SET key value NX EX&lt;/code&gt; 一条命令搞定
+&lt;/h2&gt;&lt;p&gt;Redis 2.6.12 之后，&lt;code&gt;SET&lt;/code&gt; 命令支持了原子的 &lt;code&gt;NX&lt;/code&gt; + &lt;code&gt;EX&lt;/code&gt; 选项，这就是真正可用的&amp;quot;上锁&amp;quot;操作：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;tryLock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;NX&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;EX&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;OK&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;equals&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;NX&lt;/code&gt; 保证只在 key 不存在时才生效，&lt;code&gt;EX&lt;/code&gt; 同时设置过期时间，整个操作是原子的，没有了&amp;quot;SETNX 后 EXPIRE 前&amp;quot;那个空窗。&lt;/p&gt;
+&lt;p&gt;但这只是把&amp;quot;上锁&amp;quot;做对了，&lt;strong&gt;&amp;ldquo;解锁&amp;quot;还藏着一个更隐蔽的坑&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势三解锁的误删别人锁问题"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%b8%89%e8%a7%a3%e9%94%81%e7%9a%84%e8%af%af%e5%88%a0%e5%88%ab%e4%ba%ba%e9%94%81%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;姿势三：解锁的&amp;quot;误删别人锁&amp;quot;问题
+&lt;/h2&gt;&lt;p&gt;一个看似无害的解锁实现：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 反面教材&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;unlock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;del&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;设想一个时序：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;时刻&lt;/th&gt;
+ &lt;th&gt;客户端 A&lt;/th&gt;
+ &lt;th&gt;客户端 B&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;t1&lt;/td&gt;
+ &lt;td&gt;加锁成功，过期时间 10s&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;t2&lt;/td&gt;
+ &lt;td&gt;业务执行卡住了 12s（GC、网络等）&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;t3&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;td&gt;锁已过期，B 加锁成功&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;t4&lt;/td&gt;
+ &lt;td&gt;A 醒来，调用 unlock 直接 DEL&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;t5&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;td&gt;B 还在执行，锁却没了&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;A 删掉了 B 的锁。后续的 C 又能进来，锁的互斥语义彻底失效。&lt;/p&gt;
+&lt;h3 id="正确做法解锁前先验证-value"&gt;&lt;a href="#%e6%ad%a3%e7%a1%ae%e5%81%9a%e6%b3%95%e8%a7%a3%e9%94%81%e5%89%8d%e5%85%88%e9%aa%8c%e8%af%81-value" class="header-anchor"&gt;&lt;/a&gt;正确做法：解锁前先验证 value
+&lt;/h3&gt;&lt;p&gt;加锁时把 value 设成一个&lt;strong&gt;唯一标识&lt;/strong&gt;（比如 UUID），解锁时验证 value 是自己的才删：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;requestId&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UUID&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;randomUUID&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;requestId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;NX&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;EX&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;10&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 解锁&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;if redis.call(&amp;#39;get&amp;#39;, KEYS[1]) == ARGV[1] then &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34; return redis.call(&amp;#39;del&amp;#39;, KEYS[1]) &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;else &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34; return 0 &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;end&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Collections&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;singletonList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Collections&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;singletonList&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;requestId&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意：&lt;strong&gt;判断 + 删除必须用 Lua 脚本保证原子性&lt;/strong&gt;。如果分两步——先 GET 再 DEL，又会回到&amp;quot;判断后 DEL 前锁过期了&amp;quot;的老问题。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势四业务执行时间不可控锁自动续期看门狗"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e5%9b%9b%e4%b8%9a%e5%8a%a1%e6%89%a7%e8%a1%8c%e6%97%b6%e9%97%b4%e4%b8%8d%e5%8f%af%e6%8e%a7%e9%94%81%e8%87%aa%e5%8a%a8%e7%bb%ad%e6%9c%9f%e7%9c%8b%e9%97%a8%e7%8b%97" class="header-anchor"&gt;&lt;/a&gt;姿势四：业务执行时间不可控——锁自动续期（看门狗）
+&lt;/h2&gt;&lt;p&gt;即便解锁做对了，&amp;ldquo;业务执行时间超过锁过期时间&amp;quot;本身就是个隐患。永远把过期时间设很长？万一这个客户端进程真的死了，锁就长时间得不到释放。&lt;/p&gt;
+&lt;p&gt;更优雅的做法是&lt;strong&gt;自动续期&lt;/strong&gt;：客户端在持有锁期间，启动一个后台线程定时把锁的过期时间往后顺。&lt;/p&gt;
+&lt;p&gt;伪代码：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 上锁成功后，启动一个守护线程&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;ScheduledExecutorService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;watchdog&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Executors&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;newSingleThreadScheduledExecutor&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;watchdog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;scheduleAtFixedRate&lt;/span&gt;&lt;span class="p"&gt;(()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 每 expireSeconds/3 触发一次续期&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;if redis.call(&amp;#39;get&amp;#39;, KEYS[1]) == ARGV[1] then &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34; return redis.call(&amp;#39;expire&amp;#39;, KEYS[1], ARGV[2]) &amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;else return 0 end&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;jedis&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;eval&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;requestId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;},&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;expireSeconds&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TimeUnit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SECONDS&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业务结束后停掉 watchdog 并解锁。&lt;/p&gt;
+&lt;p&gt;这套机制如果自己手写很容易出错，所以——&lt;strong&gt;绝大多数生产项目直接用 Redisson&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势五redisson工业级实现"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%ba%94redisson%e5%b7%a5%e4%b8%9a%e7%ba%a7%e5%ae%9e%e7%8e%b0" class="header-anchor"&gt;&lt;/a&gt;姿势五：Redisson——工业级实现
+&lt;/h2&gt;&lt;p&gt;Redisson 是 Redis 的 Java 客户端，把分布式锁封装得相当成熟，自带可重入、自动续期、公平锁、读写锁等高级特性。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;RedissonClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;redisson&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Redisson&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;RLock&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;redisson&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;order:1001&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 默认 30s 过期，看门狗每 10s 自动续期一次&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 业务逻辑&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;finally&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;unlock&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Redisson 内部干了什么：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;加锁&lt;/strong&gt;用 Lua 脚本，原子完成&amp;quot;判断 + 设置 + 续期间隔记录&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可重入&lt;/strong&gt;通过 Hash 结构记录&amp;quot;持有者 + 重入次数&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;看门狗&lt;/strong&gt;每 1/3 过期时间触发一次续期，业务不结束锁不释放&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解锁&lt;/strong&gt;也用 Lua 脚本，安全地把重入计数减一直到删除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;业务侧能做到&amp;quot;加锁就像 &lt;code&gt;synchronized&lt;/code&gt; 一样自然&amp;quot;，这正是它的价值。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;⚠️ &lt;strong&gt;看门狗的关键陷阱&lt;/strong&gt;：看门狗只在你&lt;strong&gt;不显式指定 &lt;code&gt;leaseTime&lt;/code&gt;&lt;/strong&gt; 时才会启用——也就是 &lt;code&gt;lock.lock()&lt;/code&gt; / &lt;code&gt;lock.lock(-1, ...)&lt;/code&gt; / &lt;code&gt;tryLock(waitTime, unit)&lt;/code&gt;。一旦你调用 &lt;code&gt;lock(leaseTime, unit)&lt;/code&gt; 或 &lt;code&gt;tryLock(waitTime, leaseTime, unit)&lt;/code&gt; 显式传了 &lt;code&gt;leaseTime&lt;/code&gt;，&lt;strong&gt;看门狗会被关闭&lt;/strong&gt;，锁到期后直接释放，不再续期。这是初学者最容易踩的坑——看着代码&amp;quot;用了 Redisson 应该有看门狗&amp;quot;，实际锁早就过期了。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="姿势六redlock-与红锁争议"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e5%85%adredlock-%e4%b8%8e%e7%ba%a2%e9%94%81%e4%ba%89%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;姿势六：Redlock 与&amp;quot;红锁争议&amp;quot;
+&lt;/h2&gt;&lt;p&gt;前面所有方案都建立在一个假设上——&lt;strong&gt;Redis 单机或主从是可靠的&lt;/strong&gt;。但现实中有两个隐患：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;单机 Redis 是单点，挂了所有锁都丢&lt;/li&gt;
+&lt;li&gt;Redis 主从有异步复制延迟。主刚加完锁还没复制到从，主挂了，从被选为新主，&lt;strong&gt;新主上没有这把锁&lt;/strong&gt;——新的客户端就能再加一次&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Redis 作者 antirez 为此提出了 &lt;strong&gt;Redlock 算法&lt;/strong&gt;：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;部署 N 个&lt;strong&gt;互相独立&lt;/strong&gt;的 Redis 实例（比如 5 个），客户端尝试在这 N 个实例上&lt;strong&gt;依次加锁&lt;/strong&gt;。只有在 &lt;strong&gt;大多数实例（≥ N/2 + 1）&lt;/strong&gt; 都加锁成功，且总耗时小于锁过期时间，才认为加锁成功。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Client-&gt;&gt;Redis-1: SET NX EX
+ Client-&gt;&gt;Redis-2: SET NX EX
+ Client-&gt;&gt;Redis-3: SET NX EX
+ Client-&gt;&gt;Redis-4: SET NX EX
+ Client-&gt;&gt;Redis-5: SET NX EX
+ Note over Client: 至少 3/5 成功才算获得锁
+ Note over Client: 释放时向所有节点发 DEL&lt;/pre&gt;&lt;p&gt;Redisson 也实现了 Redlock：&lt;code&gt;RedissonRedLock&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id="martin-kleppmann-的反驳"&gt;&lt;a href="#martin-kleppmann-%e7%9a%84%e5%8f%8d%e9%a9%b3" class="header-anchor"&gt;&lt;/a&gt;Martin Kleppmann 的反驳
+&lt;/h3&gt;&lt;p&gt;不过 Redlock 在学界一直有争议。著名分布式系统专家 Martin Kleppmann 写过一篇 &lt;em&gt;&amp;ldquo;How to do distributed locking&amp;rdquo;&lt;/em&gt;，指出 Redlock 在以下场景下并不安全：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;客户端 GC 暂停&lt;/strong&gt;——加锁后业务卡了几秒，锁早过期了，业务以为自己还持有锁继续操作&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;时钟漂移&lt;/strong&gt;——节点之间的系统时钟不一致，过期时间判断会失准&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
+&lt;p&gt;实际工程中，&lt;strong&gt;99% 的业务用 Redisson 单实例锁就够了&lt;/strong&gt;，性能高、用法简单；只有少数对正确性极敏感的场景才上 ZooKeeper。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="各姿势对比"&gt;&lt;a href="#%e5%90%84%e5%a7%bf%e5%8a%bf%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;各姿势对比
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;姿势&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;安全性&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;复杂度&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;推荐度&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;SETNX&lt;/code&gt; + &lt;code&gt;EXPIRE&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;低&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;别用&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;SET NX EX&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;△&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;低&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;学习用，生产不够&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;加 value 校验解锁&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;◯&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;自己造轮子的最低底线&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;加 Watchdog 续期&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;◯&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;自己造轮子的上限&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;Redisson 单实例&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;◯&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;低&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;绝大多数业务的最佳选择&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Redlock / RedissonRed&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;◯+&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;可用但有争议，慎用&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;ZooKeeper / etcd 锁&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中高&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;强一致性要求场景&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="实战中的几条建议"&gt;&lt;a href="#%e5%ae%9e%e6%88%98%e4%b8%ad%e7%9a%84%e5%87%a0%e6%9d%a1%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;实战中的几条建议
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;永远用 &lt;code&gt;tryLock&lt;/code&gt; 带超时&lt;/strong&gt;，不要 &lt;code&gt;lock()&lt;/code&gt; 死等&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加锁粒度尽量细&lt;/strong&gt;——别把整个订单创建过程锁起来，只锁库存扣减那一段&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务和锁解耦&lt;/strong&gt;——业务方法里只关心 &lt;code&gt;lock.tryLock()&lt;/code&gt; / &lt;code&gt;lock.unlock()&lt;/code&gt;，不要散落 Redis 命令&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;过期时间 ≥ 业务最长执行时间 × 2&lt;/strong&gt;，给极端情况留缓冲，再配合 watchdog&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解锁放 &lt;code&gt;finally&lt;/code&gt;&lt;/strong&gt;——别让一段异常跳过解锁&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;日志里打出 requestId&lt;/strong&gt;——锁出问题排查链路全靠它&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 生产推荐写法（依赖看门狗自动续期 → 不传 leaseTime）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;RLock&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;redisson&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getLock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;stock:&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;skuId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kt"&gt;boolean&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;locked&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 等 3 秒；获取后由看门狗每 10 秒续期一次，业务不结束锁不释放&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;locked&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;tryLock&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;TimeUnit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SECONDS&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;locked&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;throw&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;BusinessException&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;操作过于频繁，请稍后再试&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 业务逻辑&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;finally&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locked&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;isHeldByCurrentThread&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;lock&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;unlock&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;isHeldByCurrentThread()&lt;/code&gt; 这个判断很重要——避免在某些异常路径下解了不属于自己的锁。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;如果你&lt;strong&gt;确实&lt;/strong&gt;需要&amp;quot;超时强制释放&amp;quot;作为兜底（防止业务永远卡死把锁吃住），就显式传 &lt;code&gt;leaseTime&lt;/code&gt;：&lt;code&gt;lock.tryLock(3, 30, TimeUnit.SECONDS)&lt;/code&gt;。但要清楚这种写法&lt;strong&gt;没有看门狗&lt;/strong&gt;——&lt;code&gt;leaseTime&lt;/code&gt; 必须 ≥ 业务最长执行时间 × 2，否则中途锁掉的风险会回来。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;Redis 分布式锁这件事，&lt;strong&gt;入门一行代码，做对几十行细节&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;把这条演进路径压缩成一句话：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;从 SETNX 到 Redisson，每一步演进都是在堵一个『看似能用其实不行』的坑。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程上的选择反而很简单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目&lt;/strong&gt;：直接上 Redisson，别造轮子&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;极致正确性&lt;/strong&gt;：上 ZooKeeper / etcd&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;学习理解原理&lt;/strong&gt;：把上面六种姿势从头写一遍&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;理解了这些演进，下次再有人问你&amp;quot;Redis 锁怎么用&amp;quot;，你就不会只回一句 &lt;code&gt;SET NX EX&lt;/code&gt; 了——你会先反问：&amp;ldquo;你的业务能容忍偶尔失效吗？锁持有时间可控吗？需要可重入吗？&amp;rdquo;&lt;/p&gt;</description></item></channel></rss>

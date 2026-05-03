@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A8C4E0"/>
+          <stop offset="1" stop-color="#F5E0C0"/>
+      </linearGradient>
+      <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#B5C97C"/>
+          <stop offset="1" stop-color="#7C9650"/>
+      </linearGradient>
+      <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#7C9650"/>
+          <stop offset="1" stop-color="#4A6E32"/>
+      </linearGradient>
+      <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5C7E40"/>
+          <stop offset="1" stop-color="#2E4A1F"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="350" fill="url(#sky)"/>
+
+    <!-- Soft cloud -->
+    <g fill="#FFFFFF" opacity="0.75">
+        <ellipse cx="200" cy="120" rx="120" ry="14"/>
+        <ellipse cx="220" cy="115" rx="80" ry="10"/>
+        <ellipse cx="900" cy="90" rx="100" ry="12"/>
+        <ellipse cx="920" cy="84" rx="70" ry="9"/>
+    </g>
+
+    <!-- Sun -->
+    <circle cx="900" cy="200" r="55" fill="#FFE5B0" opacity="0.85"/>
+
+    <!-- Distant rolling hill -->
+    <path d="M 0 350 Q 200 280 400 320 T 800 300 T 1200 340 L 1200 400 L 0 400 Z"
+          fill="url(#hill1)"/>
+
+    <!-- Mid hill -->
+    <path d="M 0 400 Q 250 340 500 380 T 950 360 T 1200 400 L 1200 470 L 0 470 Z"
+          fill="url(#hill2)"/>
+
+    <!-- Front hill -->
+    <path d="M 0 470 Q 300 400 600 460 T 1200 440 L 1200 630 L 0 630 Z"
+          fill="url(#hill3)"/>
+
+    <!-- Cypress trees Tuscany style -->
+    <g fill="#2A4020">
+        <ellipse cx="200" cy="430" rx="8" ry="40"/>
+        <ellipse cx="225" cy="435" rx="7" ry="36"/>
+        <ellipse cx="248" cy="430" rx="8" ry="42"/>
+        <ellipse cx="270" cy="435" rx="7" ry="38"/>
+    </g>
+
+    <!-- Single big oak tree centerpiece -->
+    <g transform="translate(800,460)">
+        <ellipse cx="0" cy="-30" rx="80" ry="60" fill="#3A5A2A"/>
+        <ellipse cx="-20" cy="-50" rx="55" ry="45" fill="#4A6E35"/>
+        <ellipse cx="25" cy="-40" rx="60" ry="48" fill="#3A5A2A"/>
+        <rect x="-6" y="-15" width="12" height="40" fill="#5C3A1F"/>
+    </g>
+
+    <!-- Path winding -->
+    <path d="M 0 580 Q 200 540 400 570 Q 600 600 800 555 Q 1000 510 1200 540"
+          stroke="#D8B570" stroke-width="14" fill="none" stroke-linecap="round" opacity="0.75"/>
+
+    <!-- Small farmhouse -->
+    <g transform="translate(450,470)">
+        <rect x="0" y="0" width="50" height="35" fill="#F0DCB0"/>
+        <polygon points="0,0 25,-22 50,0" fill="#A85A30"/>
+        <rect x="20" y="15" width="10" height="20" fill="#5C3A1F"/>
+        <rect x="6" y="8" width="8" height="8" fill="#7C5A2A"/>
+        <rect x="36" y="8" width="8" height="8" fill="#7C5A2A"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

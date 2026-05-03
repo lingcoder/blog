@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3D6080"/>
+          <stop offset="0.5" stop-color="#FFB58A"/>
+          <stop offset="1" stop-color="#FFE0B0"/>
+      </linearGradient>
+      <linearGradient id="rockBack" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#D85C2C"/>
+          <stop offset="1" stop-color="#7C2814"/>
+      </linearGradient>
+      <linearGradient id="rockFront" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A84020"/>
+          <stop offset="1" stop-color="#3D1408"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Sun behind arch -->
+    <circle cx="600" cy="280" r="55" fill="#FFE5A0" opacity="0.95"/>
+    <circle cx="600" cy="280" r="180" fill="#FFE5A0" opacity="0.18"/>
+
+    <!-- Distant mesas -->
+    <path d="M 0 380 L 100 290 L 200 310 L 280 290 L 380 320 L 480 300 L 720 320 L 820 300 L 920 320 L 1020 290 L 1100 310 L 1200 300 L 1200 380 Z"
+          fill="url(#rockBack)" opacity="0.55"/>
+
+    <!-- Strata on distant mesas -->
+    <g fill="none" stroke="#5C1F08" stroke-width="1" opacity="0.5">
+        <path d="M 0 340 Q 200 332 400 340 T 800 336 T 1200 340"/>
+        <path d="M 0 360 Q 200 354 400 360 T 800 356 T 1200 360"/>
+    </g>
+
+    <!-- Big natural rock arch (foreground) -->
+    <path d="M 100 380 L 100 200 Q 130 130 220 110 L 350 110 Q 440 130 470 200 L 470 380 L 380 380 L 380 250 Q 360 200 290 200 Q 220 200 200 250 L 200 380 Z"
+          fill="url(#rockFront)"/>
+    <!-- Strata on arch -->
+    <g fill="none" stroke="#3D1408" stroke-width="1.5" opacity="0.5">
+        <path d="M 100 280 L 200 280 M 380 280 L 470 280"/>
+        <path d="M 100 320 L 200 320 M 380 320 L 470 320"/>
+    </g>
+
+    <!-- Right side cliff -->
+    <path d="M 800 380 L 800 240 L 870 200 L 950 220 L 1050 200 L 1130 240 L 1200 230 L 1200 380 Z"
+          fill="url(#rockFront)" opacity="0.92"/>
+
+    <!-- Sand desert ground -->
+    <path d="M 0 380 Q 600 360 1200 385 L 1200 540 L 0 540 Z" fill="#D8A06E"/>
+    <path d="M 0 540 Q 600 525 1200 545 L 1200 630 L 0 630 Z" fill="#A8742E"/>
+
+    <!-- Sand ripple lines -->
+    <g fill="none" stroke="#7C5018" stroke-width="1" opacity="0.45">
+        <path d="M 0 480 q 100 -8 200 0 t 200 0 t 200 0 t 200 0 t 200 0 t 200 0"/>
+        <path d="M 0 510 q 80 -6 160 0 t 160 0 t 160 0 t 160 0 t 160 0 t 160 0 t 160 0"/>
+    </g>
+
+    <!-- Cactus -->
+    <g transform="translate(600,500)" fill="#3A5C2A">
+        <path d="M 0 0 L 0 -80 Q 0 -90 8 -90 Q 16 -90 16 -80 L 16 -50 Q 16 -40 8 -40 L 0 -40"/>
+        <path d="M 16 0 L 16 -80 Q 16 -90 24 -90 Q 32 -90 32 -80 L 32 0"/>
+        <path d="M 32 -55 Q 40 -55 40 -65 L 40 -80 Q 40 -90 48 -90 Q 56 -90 56 -80 L 56 -55 Q 56 -45 48 -45 L 32 -45"/>
+  </g>
+
+    <!-- Tumbleweed -->
+    <g fill="#7C5018" opacity="0.7">
+        <circle cx="900" cy="535" r="14"/>
+        <circle cx="895" cy="530" r="3" fill="#5C3A14"/>
+        <circle cx="905" cy="540" r="3" fill="#5C3A14"/>
+  </g>
+
+    <text x="60" y="610" fill="#FFE5A0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

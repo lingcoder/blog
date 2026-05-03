@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1A0F26"/>
+      <stop offset="1" stop-color="#0A0614"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#9b59b6" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 多语言代码片段堆叠 -->
+  <g font-family="monospace" font-size="13">
+    <g transform="translate(150,170)">
+      <rect width="220" height="40" rx="6" fill="#FF8B23" fill-opacity="0.18" stroke="#FF8B23"/>
+      <text x="110" y="26" text-anchor="middle" fill="#FFB87A">public class App {}</text>
+    </g>
+    <g transform="translate(400,140)">
+      <rect width="220" height="40" rx="6" fill="#00ADD8" fill-opacity="0.18" stroke="#00ADD8"/>
+      <text x="110" y="26" text-anchor="middle" fill="#80DEEA">func main() {}</text>
+    </g>
+    <g transform="translate(650,170)">
+      <rect width="220" height="40" rx="6" fill="#ce422b" fill-opacity="0.18" stroke="#ce422b"/>
+      <text x="110" y="26" text-anchor="middle" fill="#FFB89A">fn main() {}</text>
+    </g>
+    <g transform="translate(900,200)">
+      <rect width="200" height="40" rx="6" fill="#3776ab" fill-opacity="0.18" stroke="#3776ab"/>
+      <text x="100" y="26" text-anchor="middle" fill="#9CC9E8">def main():</text>
+    </g>
+
+    <g transform="translate(150,260)">
+      <rect width="220" height="40" rx="6" fill="#000080" fill-opacity="0.25" stroke="#7B61FF"/>
+      <text x="110" y="26" text-anchor="middle" fill="#B5A6FF">function main() end</text>
+    </g>
+    <g transform="translate(400,290)">
+      <rect width="220" height="40" rx="6" fill="#26A69A" fill-opacity="0.18" stroke="#26A69A"/>
+      <text x="110" y="26" text-anchor="middle" fill="#80CBC4">int main(void) {}</text>
+    </g>
+    <g transform="translate(650,260)">
+      <rect width="220" height="40" rx="6" fill="#FFB300" fill-opacity="0.18" stroke="#FFB300"/>
+      <text x="110" y="26" text-anchor="middle" fill="#FFD54F">defmodule App do</text>
+    </g>
+    <g transform="translate(900,290)">
+      <rect width="200" height="40" rx="6" fill="#FF6B6B" fill-opacity="0.18" stroke="#FF6B6B"/>
+      <text x="100" y="26" text-anchor="middle" fill="#FFB4B4">puts "hi"</text>
+    </g>
+
+    <g transform="translate(280,360)">
+      <rect width="220" height="40" rx="6" fill="#9b59b6" fill-opacity="0.25" stroke="#9b59b6" stroke-width="2.5"/>
+      <text x="110" y="26" text-anchor="middle" fill="#D7B7E5">type Box[T any]</text>
+    </g>
+    <g transform="translate(530,390)">
+      <rect width="220" height="40" rx="6" fill="#9b59b6" fill-opacity="0.25" stroke="#9b59b6" stroke-width="2.5"/>
+      <text x="110" y="26" text-anchor="middle" fill="#D7B7E5">List&lt;T extends ...&gt;</text>
+    </g>
+    <g transform="translate(780,360)">
+      <rect width="220" height="40" rx="6" fill="#9b59b6" fill-opacity="0.25" stroke="#9b59b6" stroke-width="2.5"/>
+      <text x="110" y="26" text-anchor="middle" fill="#D7B7E5">Vec&lt;T: Trait&gt;</text>
+    </g>
+  </g>
+
+  <text x="80" y="555" fill="#9b59b6" font-size="20" font-weight="700" font-family="-apple-system, sans-serif">编程语言</text>
+  <text x="80" y="582" fill="#D7B7E5" font-size="13" font-family="-apple-system, sans-serif" letter-spacing="3">LANGUAGES · COMPARISONS · DESIGN</text>
+</svg>

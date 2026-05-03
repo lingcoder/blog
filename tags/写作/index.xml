@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>写作 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%86%99%E4%BD%9C/</link><description>Recent content in 写作 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 18 Apr 2023 15:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%86%99%E4%BD%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>Markdown 常见语法整理</title><link>https://www.lingcoder.com/p/markdown-common-syntax/</link><pubDate>Tue, 18 Apr 2023 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/markdown-common-syntax/</guid><description>&lt;img src="https://www.lingcoder.com/p/markdown-common-syntax/cover.svg" alt="Featured image of post Markdown 常见语法整理" /&gt;&lt;h2 id="为什么写一篇-markdown-语法-demo"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%86%99%e4%b8%80%e7%af%87-markdown-%e8%af%ad%e6%b3%95-demo" class="header-anchor"&gt;&lt;/a&gt;为什么写一篇 Markdown 语法 Demo
+&lt;/h2&gt;&lt;p&gt;Markdown 这东西看着简单，写多了你会发现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不同博客平台、不同文档系统、甚至同一个工具的不同版本，&lt;strong&gt;支持的语法和扩展不一致&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;表格的对齐符号有人记不住&lt;/li&gt;
+&lt;li&gt;链接、图片、脚注的语法长得像但顺序不一样&lt;/li&gt;
+&lt;li&gt;代码块的语言标识不写就没高亮&lt;/li&gt;
+&lt;li&gt;Mermaid、KaTeX、警告框这些&amp;quot;扩展语法&amp;quot;很多人不知道&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这篇是给我自己——也给所有用 Markdown 写技术博客的人——一份能&lt;strong&gt;直接收藏的速查 + Demo&lt;/strong&gt;。每一节都给出实际渲染效果，复制即用。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;本博客基于 Hugo + hugo-theme-stack，使用 Goldmark 作为 Markdown 渲染器。后文出现的&amp;quot;Hugo/Stack 主题特有&amp;quot;指的就是这套环境。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="一标题"&gt;&lt;a href="#%e4%b8%80%e6%a0%87%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一、标题
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# H1 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## H2 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;### H3 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;#### H4 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;##### H5 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;###### H6 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;实战建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;博客文章不要写 &lt;code&gt;#&lt;/code&gt;&lt;/strong&gt;——文章标题在 front matter 里已经有 &lt;code&gt;title&lt;/code&gt;，正文从 &lt;code&gt;##&lt;/code&gt; 开始&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;层级不要超过 4 级&lt;/strong&gt;——太深的层级阅读和导航都变差&lt;/li&gt;
+&lt;li&gt;标题前后留空行，避免渲染粘连&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="二行内格式"&gt;&lt;a href="#%e4%ba%8c%e8%a1%8c%e5%86%85%e6%a0%bc%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;二、行内格式
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;**粗体** &lt;span class="ge"&gt;*斜体*&lt;/span&gt; &lt;span class="gd"&gt;~~删除线~~&lt;/span&gt; &lt;span class="sb"&gt;`行内代码`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[&lt;span class="nt"&gt;链接&lt;/span&gt;](&lt;span class="na"&gt;https://example.com&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gs"&gt;**_组合效果_**&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;strong&gt;粗体&lt;/strong&gt;、&lt;em&gt;斜体&lt;/em&gt;、&lt;del&gt;删除线&lt;/del&gt;、&lt;code&gt;行内代码&lt;/code&gt;、&lt;a class="link" href="https://example.com" target="_blank" rel="noopener"
+ &gt;链接&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;实战建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;粗体优于斜体&lt;/strong&gt;——中文里斜体可读性差&lt;/li&gt;
+&lt;li&gt;行内代码用反引号——&lt;code&gt;API&lt;/code&gt;、&lt;code&gt;UserService&lt;/code&gt;、&lt;code&gt;createTime&lt;/code&gt; 这些标识符都该用&lt;/li&gt;
+&lt;li&gt;不要滥用粗体——一段里超过 3 处加粗等于没加粗&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三段落与换行"&gt;&lt;a href="#%e4%b8%89%e6%ae%b5%e8%90%bd%e4%b8%8e%e6%8d%a2%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;三、段落与换行
+&lt;/h2&gt;&lt;p&gt;Markdown 用&lt;strong&gt;空行分段&lt;/strong&gt;，单个换行不是分段：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这是第一段。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这一行虽然换行了，但还在第一段。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这是第二段。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;如果真要在一段内强制换行（不分段），用&lt;strong&gt;两个空格 + 换行&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;第一行末尾两个空格 
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;第二行
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;或者用 &lt;code&gt;&amp;lt;br&amp;gt;&lt;/code&gt; 也行，但能不用就不用。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四列表"&gt;&lt;a href="#%e5%9b%9b%e5%88%97%e8%a1%a8" class="header-anchor"&gt;&lt;/a&gt;四、列表
+&lt;/h2&gt;&lt;h3 id="无序列表"&gt;&lt;a href="#%e6%97%a0%e5%ba%8f%e5%88%97%e8%a1%a8" class="header-anchor"&gt;&lt;/a&gt;无序列表
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 项目一
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 项目二
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;-&lt;/span&gt; 嵌套项目
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;-&lt;/span&gt; 又一个嵌套
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; 项目三
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="有序列表"&gt;&lt;a href="#%e6%9c%89%e5%ba%8f%e5%88%97%e8%a1%a8" class="header-anchor"&gt;&lt;/a&gt;有序列表
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;1.&lt;/span&gt; 第一步
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;2.&lt;/span&gt; 第二步
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;3.&lt;/span&gt; 第三步
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="任务列表gfm"&gt;&lt;a href="#%e4%bb%bb%e5%8a%a1%e5%88%97%e8%a1%a8gfm" class="header-anchor"&gt;&lt;/a&gt;任务列表（GFM）
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;- [x]&lt;/span&gt; 完成需求评审
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;- [x]&lt;/span&gt; 写代码
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;- [ ]&lt;/span&gt; 写单元测试
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;- [ ]&lt;/span&gt; 写文档
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input checked="" disabled="" type="checkbox"&gt; 完成需求评审&lt;/li&gt;
+&lt;li&gt;&lt;input checked="" disabled="" type="checkbox"&gt; 写代码&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 写单元测试&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 写文档&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="五链接与图片"&gt;&lt;a href="#%e4%ba%94%e9%93%be%e6%8e%a5%e4%b8%8e%e5%9b%be%e7%89%87" class="header-anchor"&gt;&lt;/a&gt;五、链接与图片
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[&lt;span class="nt"&gt;GitHub&lt;/span&gt;](&lt;span class="na"&gt;https://github.com&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[&lt;span class="nt"&gt;带 title&lt;/span&gt;](&lt;span class="na"&gt;https://github.com &amp;#34;悬浮提示&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[&lt;span class="nt"&gt;相对链接&lt;/span&gt;](&lt;span class="na"&gt;../another-post/&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;![&lt;span class="nt"&gt;图片描述&lt;/span&gt;](&lt;span class="na"&gt;path/to/image.png&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;![&lt;span class="nt"&gt;图片带 title&lt;/span&gt;](&lt;span class="na"&gt;path/to/image.png &amp;#34;图片悬浮文字&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;实战建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;图片描述（alt）一定要写&lt;/strong&gt;——SEO + 无障碍 + 加载失败时显示&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先用相对路径&lt;/strong&gt;——博客域名换了不会失效&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大图用 Hugo 的 image processing&lt;/strong&gt;：&lt;code&gt;&lt;figure&gt;&lt;img src="cover.png"&gt;
+&lt;/figure&gt;
+&lt;/code&gt; shortcode&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="六引用块"&gt;&lt;a href="#%e5%85%ad%e5%bc%95%e7%94%a8%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;六、引用块
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;&amp;gt; &lt;/span&gt;&lt;span class="ge"&gt;这是引用的第一行。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;&amp;gt; &lt;/span&gt;&lt;span class="ge"&gt;这是引用的第二行。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="ge"&gt;&amp;gt; &amp;gt; 嵌套引用。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;&amp;gt; &lt;/span&gt;&lt;span class="ge"&gt;**加粗的引用**——可以包含其他格式。
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;这是引用的第一行。
+这是引用的第二行。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;嵌套引用。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;引用最常用的场景是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;标记别人的话（&amp;ldquo;鲁迅说……&amp;quot;）&lt;/li&gt;
+&lt;li&gt;强调结论&lt;/li&gt;
+&lt;li&gt;给小贴士/重要提示加个视觉标签&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="七代码块"&gt;&lt;a href="#%e4%b8%83%e4%bb%a3%e7%a0%81%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;七、代码块
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\`\`\`java
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;public class Hello {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; public static void main(String[] args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; System.out.println(&amp;#34;Hello, world!&amp;#34;);
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\`\`\`
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Hello&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;out&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Hello, world!&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;实战建议：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;永远写语言标识&lt;/strong&gt;——&lt;code&gt;java&lt;/code&gt;、&lt;code&gt;python&lt;/code&gt;、&lt;code&gt;bash&lt;/code&gt;、&lt;code&gt;yaml&lt;/code&gt;、&lt;code&gt;json&lt;/code&gt;、&lt;code&gt;sql&lt;/code&gt;，否则没语法高亮&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不要在代码块里写废话注释&lt;/strong&gt;——读者要的是能跑的代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制按钮&lt;/strong&gt;：本博客主题渲染时自带，无需额外标记&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="八表格"&gt;&lt;a href="#%e5%85%ab%e8%a1%a8%e6%a0%bc" class="header-anchor"&gt;&lt;/a&gt;八、表格
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 列 1 | 列 2 | 列 3 |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| :----- | :----: | -----: |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 左对齐 | 居中 | 右对齐 |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 内容 A | 内容 B | 内容 C |
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;列 1&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;列 2&lt;/th&gt;
+ &lt;th style="text-align: right"&gt;列 3&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;左对齐&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;居中&lt;/td&gt;
+ &lt;td style="text-align: right"&gt;右对齐&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;内容 A&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;内容 B&lt;/td&gt;
+ &lt;td style="text-align: right"&gt;内容 C&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;对齐规则：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;:---&lt;/code&gt;：左对齐&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;:---:&lt;/code&gt;：居中&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;---:&lt;/code&gt;：右对齐&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;---&lt;/code&gt;：默认（左）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="九分隔线"&gt;&lt;a href="#%e4%b9%9d%e5%88%86%e9%9a%94%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;九、分隔线
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;或者：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;***
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;___
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;效果都一样：&lt;/p&gt;
+&lt;hr&gt;
+&lt;hr&gt;
+&lt;h2 id="十转义字符"&gt;&lt;a href="#%e5%8d%81%e8%bd%ac%e4%b9%89%e5%ad%97%e7%ac%a6" class="header-anchor"&gt;&lt;/a&gt;十、转义字符
+&lt;/h2&gt;&lt;p&gt;要在文中显示 Markdown 的特殊字符，用 &lt;code&gt;\&lt;/code&gt; 转义：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\* 这不是斜体
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\` 这不是代码
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\[ 这不是链接
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\# 这不是标题
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="十一mermaid-图hugo-stack-主题支持"&gt;&lt;a href="#%e5%8d%81%e4%b8%80mermaid-%e5%9b%behugo-stack-%e4%b8%bb%e9%a2%98%e6%94%af%e6%8c%81" class="header-anchor"&gt;&lt;/a&gt;十一、Mermaid 图（Hugo Stack 主题支持）
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt;```mermaid
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;flowchart LR
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; A[开始] --&amp;gt; B{判断}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; B --&amp;gt;|是| C[执行]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; B --&amp;gt;|否| D[跳过]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; C --&amp;gt; E[结束]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; D --&amp;gt; E
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt;```&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[开始] --&gt; B{判断}
+ B --&gt;|是| C[执行]
+ B --&gt;|否| D[跳过]
+ C --&gt; E[结束]
+ D --&gt; E&lt;/pre&gt;&lt;p&gt;Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 &lt;code&gt;flowchart&lt;/code&gt;、&lt;code&gt;sequenceDiagram&lt;/code&gt;、&lt;code&gt;classDiagram&lt;/code&gt; 三种。&lt;/p&gt;
+&lt;h3 id="时序图示例"&gt;&lt;a href="#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;时序图示例
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Client-&gt;&gt;Server: HTTP 请求
+ Server-&gt;&gt;DB: 查询
+ DB--&gt;&gt;Server: 结果
+ Server--&gt;&gt;Client: HTTP 响应&lt;/pre&gt;&lt;h3 id="类图示例"&gt;&lt;a href="#%e7%b1%bb%e5%9b%be%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;类图示例
+&lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;classDiagram
+ class Animal {
+ +String name
+ +eat()
+ }
+ class Dog {
+ +bark()
+ }
+ Animal &lt;|-- Dog&lt;/pre&gt;&lt;h3 id="甘特图示例"&gt;&lt;a href="#%e7%94%98%e7%89%b9%e5%9b%be%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;甘特图示例
+&lt;/h3&gt;&lt;p&gt;项目排期、迭代计划用甘特图表达最直观：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;gantt
+ dateFormat YYYY-MM-DD
+ title 项目排期
+
+ section 需求阶段
+ 需求评审 :done, a1, 2023-04-01, 5d
+ 原型设计 :done, a2, after a1, 4d
+
+ section 开发阶段
+ 后端 API :active, b1, 2023-04-12, 10d
+ 前端页面 : b2, after a2, 8d
+
+ section 测试 &amp; 发布
+ 联调测试 : c1, after b1, 5d
+ 上线 :crit, c2, after c1, 1d&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id="十二katex-数学公式需-math-true"&gt;&lt;a href="#%e5%8d%81%e4%ba%8ckatex-%e6%95%b0%e5%ad%a6%e5%85%ac%e5%bc%8f%e9%9c%80-math-true" class="header-anchor"&gt;&lt;/a&gt;十二、KaTeX 数学公式（需 &lt;code&gt;math: true&lt;/code&gt;）
+&lt;/h2&gt;&lt;p&gt;文章 front matter 里设置 &lt;code&gt;math: true&lt;/code&gt;，就能写 LaTeX 公式：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;行内：$E = mc^2$
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;块级：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$$
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;\int_{a}^{b} f(x)\,dx = F(b) - F(a)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;$$
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染需要主题加载 KaTeX——本主题原生支持。&lt;strong&gt;不需要数学的文章不要打开 &lt;code&gt;math&lt;/code&gt;&lt;/strong&gt;，加载 KaTeX 会拖慢页面。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十三html-嵌入默认禁用"&gt;&lt;a href="#%e5%8d%81%e4%b8%89html-%e5%b5%8c%e5%85%a5%e9%bb%98%e8%ae%a4%e7%a6%81%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;十三、HTML 嵌入（默认禁用）
+&lt;/h2&gt;&lt;p&gt;很多 Markdown 工具默认允许在 Markdown 里写 HTML：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-html" data-lang="html"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;details&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;点击展开&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;这里是隐藏内容。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;details&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;但 &lt;strong&gt;Hugo 的 Goldmark 默认 &lt;code&gt;unsafe = false&lt;/code&gt;&lt;/strong&gt;——HTML 会被静默丢弃。如果业务需要嵌入 HTML：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;改 &lt;code&gt;markup.toml&lt;/code&gt; 把 &lt;code&gt;unsafe = true&lt;/code&gt;（小心 XSS）&lt;/li&gt;
+&lt;li&gt;用 Hugo Shortcode（推荐）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十四shortcodeshugo-特有"&gt;&lt;a href="#%e5%8d%81%e5%9b%9bshortcodeshugo-%e7%89%b9%e6%9c%89" class="header-anchor"&gt;&lt;/a&gt;十四、Shortcodes（Hugo 特有）
+&lt;/h2&gt;&lt;p&gt;Hugo 提供了 shortcode 机制——比 HTML 安全，比 Markdown 强大。Hugo 内置了若干常用 shortcode：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;{{&amp;lt; figure src=&amp;#34;cover.png&amp;#34; caption=&amp;#34;封面图&amp;#34; &amp;gt;}}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;{{&amp;lt; youtube id=&amp;#34;VIDEO_ID&amp;#34; &amp;gt;}}
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;{{&amp;lt; gist USERNAME GIST_ID &amp;gt;}}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;上面代码块里的 &lt;code&gt;{{&amp;lt; ... &amp;gt;}}&lt;/code&gt; 是 Hugo 在文档中展示 shortcode 不被解析的转义写法——实际使用时去掉里面的 &lt;code&gt;/* */&lt;/code&gt;。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;各主题也常自带专属 shortcode，比如折叠块、提示框、画廊等——具体可见自家主题文档。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十五其他扩展语法"&gt;&lt;a href="#%e5%8d%81%e4%ba%94%e5%85%b6%e4%bb%96%e6%89%a9%e5%b1%95%e8%af%ad%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;十五、其他扩展语法
+&lt;/h2&gt;&lt;p&gt;下面这几个不属于 CommonMark 核心，但 Hugo Goldmark + 主流博客引擎多数支持。&lt;/p&gt;
+&lt;h3 id="上标--下标"&gt;&lt;a href="#%e4%b8%8a%e6%a0%87--%e4%b8%8b%e6%a0%87" class="header-anchor"&gt;&lt;/a&gt;上标 / 下标
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;面积 = 长 × 宽，公式记作 S = a^2^
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;化学式：H~2~O，CO~2~
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;需要在 &lt;code&gt;markup.toml&lt;/code&gt; 的 &lt;code&gt;[markup.goldmark.extensions]&lt;/code&gt; 下打开 &lt;code&gt;superscript&lt;/code&gt; / &lt;code&gt;subscript&lt;/code&gt; 扩展。&lt;/p&gt;
+&lt;h3 id="脚注"&gt;&lt;a href="#%e8%84%9a%e6%b3%a8" class="header-anchor"&gt;&lt;/a&gt;脚注
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;正文里挂一个脚注[^1]，再补一个[^note]。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[^1]: 这是脚注内容，会出现在文章最末。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[^note]: 命名脚注也可以。
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;渲染时上标会变成可点击的链接，跳到文末的脚注列表——&lt;strong&gt;适合放参考文献、补充说明&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="任务列表再提一次"&gt;&lt;a href="#%e4%bb%bb%e5%8a%a1%e5%88%97%e8%a1%a8%e5%86%8d%e6%8f%90%e4%b8%80%e6%ac%a1" class="header-anchor"&gt;&lt;/a&gt;任务列表（再提一次）
+&lt;/h3&gt;&lt;p&gt;很多 Markdown 教程把任务列表算扩展——但 GFM 已经标准化，所有现代渲染器都支持，前文已展示。&lt;/p&gt;
+&lt;h3 id="表格对齐与多行"&gt;&lt;a href="#%e8%a1%a8%e6%a0%bc%e5%af%b9%e9%bd%90%e4%b8%8e%e5%a4%9a%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;表格对齐与多行
+&lt;/h3&gt;&lt;p&gt;复杂表格需要对齐符号 + 每个单元格不要换行——&lt;code&gt;|&lt;/code&gt; 必须在同一行。需要单元格内换行用 &lt;code&gt;&amp;lt;br&amp;gt;&lt;/code&gt;（要求 &lt;code&gt;unsafe = true&lt;/code&gt; 或主题支持）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十六写作时的几条小建议"&gt;&lt;a href="#%e5%8d%81%e5%85%ad%e5%86%99%e4%bd%9c%e6%97%b6%e7%9a%84%e5%87%a0%e6%9d%a1%e5%b0%8f%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;十六、写作时的几条小建议
+&lt;/h2&gt;&lt;h3 id="1-段首不要直接进代码块"&gt;&lt;a href="#1-%e6%ae%b5%e9%a6%96%e4%b8%8d%e8%a6%81%e7%9b%b4%e6%8e%a5%e8%bf%9b%e4%bb%a3%e7%a0%81%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;1. 段首不要直接进代码块
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 标题
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;```java
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;// 反面教材：紧贴标题就是代码
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;正确写法是：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;```markdown
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;## 标题
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;下面是核心代码：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;```java
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;// 代码
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;读者需要&amp;#34;前置上下文&amp;#34;才知道这段代码要看什么。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;### 2. 列表里包含代码块要缩进
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;```markdown
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1. 第一步：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ```bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; git clone xxx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol start="2"&gt;
+&lt;li&gt;第二步：
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; xxx
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;span class="lnt"&gt;28
+&lt;/span&gt;&lt;span class="lnt"&gt;29
+&lt;/span&gt;&lt;span class="lnt"&gt;30
+&lt;/span&gt;&lt;span class="lnt"&gt;31
+&lt;/span&gt;&lt;span class="lnt"&gt;32
+&lt;/span&gt;&lt;span class="lnt"&gt;33
+&lt;/span&gt;&lt;span class="lnt"&gt;34
+&lt;/span&gt;&lt;span class="lnt"&gt;35
+&lt;/span&gt;&lt;span class="lnt"&gt;36
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;否则代码块会&amp;#34;破&amp;#34;出列表。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;### 3. 中英文之间留空格
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;虽然 Markdown 不强制，但中英文之间留空格能显著提高可读性：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 写法 | 效果 |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| :---------------------- | :--------- |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 用Spring Boot开发 | 别扭 |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;| 用 Spring Boot 开发 | 顺眼 |
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;也可以用 [autocorrect](https://github.com/huacnlee/autocorrect) 这种工具自动加空格。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;### 4. 引用图床要慎重
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;直接 `![](https://外部图床/xxx.png)` 看着方便，但：
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- 图床可能挂掉，文章变残
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- 防盗链
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;- 加载速度
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;**博客图片最好用相对路径放在 page bundle 里**，由 Hugo 处理。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;---
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;## 十七、调试技巧
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;### 看一篇博客的渲染源码
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;浏览器右键&amp;#34;查看页面源代码&amp;#34;——看一下 HTML 是怎么生成的。Hugo 的 Goldmark 有很多细节（自动加 ID、表格滚动包装、代码块复制按钮）都体现在 HTML 上。
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;### 本地预览
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;```bash
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hugo server -D
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;实时看渲染效果，比每次 push 上线快得多。&lt;/p&gt;
+&lt;h3 id="lint-工具"&gt;&lt;a href="#lint-%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;Lint 工具
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://github.com/DavidAnson/markdownlint" target="_blank" rel="noopener"
+ &gt;markdownlint&lt;/a&gt; 可以检查格式——空行、标题层级、列表缩进——保持风格一致。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback 的（Mermaid、KaTeX 都行）。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;留几条作为&amp;quot;硬性规范&amp;rdquo;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;代码块永远标语言&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;图片永远写 alt 描述&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中英文之间留空格&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标题层级不超过 4 级&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;最后——&lt;strong&gt;Markdown 不是设计文档语言，是写作语言&lt;/strong&gt;。它的所有特性都为&amp;quot;专注内容&amp;quot;服务。当你开始想&amp;quot;这个怎么用 Markdown 表达&amp;quot;，先问一下&amp;quot;这个真的需要表达吗&amp;quot;。&lt;/p&gt;</description></item></channel></rss>

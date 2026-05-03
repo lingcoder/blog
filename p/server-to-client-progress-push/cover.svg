@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#A0CCDD"/>
+          <stop offset="1" stop-color="#E5F0F2"/>
+      </linearGradient>
+      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3D6E80"/>
+          <stop offset="1" stop-color="#1A3A48"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="320" fill="url(#sky)"/>
+
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.85">
+        <ellipse cx="200" cy="100" rx="100" ry="14"/>
+        <ellipse cx="220" cy="95" rx="70" ry="10"/>
+        <ellipse cx="800" cy="80" rx="110" ry="14"/>
+        <ellipse cx="820" cy="74" rx="80" ry="10"/>
+        <ellipse cx="1050" cy="140" rx="80" ry="12"/>
+  </g>
+
+    <!-- Distant mountains -->
+    <path d="M 0 320 L 200 130 L 380 240 L 580 110 L 800 220 L 1000 100 L 1200 200 L 1200 320 Z"
+          fill="#7B95AA" opacity="0.85"/>
+    <!-- Snow caps -->
+    <g fill="#FFFFFF">
+        <path d="M 200 130 L 250 200 L 150 200 Z"/>
+        <path d="M 580 110 L 630 180 L 530 180 Z"/>
+        <path d="M 1000 100 L 1050 170 L 950 170 Z"/>
+  </g>
+
+    <!-- Closer mountains -->
+    <path d="M 0 320 L 130 220 L 320 290 L 500 200 L 700 280 L 900 220 L 1100 290 L 1200 270 L 1200 320 Z"
+          fill="#3D5A6E"/>
+    <g fill="#FFFFFF" opacity="0.75">
+        <path d="M 130 220 L 165 270 L 95 270 Z"/>
+        <path d="M 500 200 L 540 250 L 460 250 Z"/>
+        <path d="M 900 220 L 935 270 L 865 270 Z"/>
+    </g>
+
+    <!-- Lake -->
+    <rect y="320" width="1200" height="310" fill="url(#lake)"/>
+
+    <!-- Mountain reflection -->
+    <g transform="translate(0,640) scale(1,-1)" opacity="0.55">
+        <path d="M 0 320 L 200 130 L 380 240 L 580 110 L 800 220 L 1000 100 L 1200 200 L 1200 320 Z"
+              fill="#7B95AA"/>
+        <g fill="#FFFFFF">
+            <path d="M 200 130 L 250 200 L 150 200 Z"/>
+            <path d="M 580 110 L 630 180 L 530 180 Z"/>
+            <path d="M 1000 100 L 1050 170 L 950 170 Z"/>
+        </g>
+  </g>
+
+    <!-- Subtle ripples -->
+    <g fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5">
+        <path d="M 300 450 q 40 -4 80 0 t 80 0 t 80 0"/>
+        <path d="M 600 490 q 40 -4 80 0 t 80 0"/>
+        <path d="M 200 550 q 50 -5 100 0 t 100 0"/>
+        <path d="M 800 540 q 50 -5 100 0 t 100 0"/>
+    </g>
+
+    <!-- Foreground rocks at lake edge -->
+    <g fill="#1F2A33">
+        <ellipse cx="100" cy="555" rx="70" ry="10"/>
+        <ellipse cx="1100" cy="565" rx="80" ry="12"/>
+    </g>
+
+    <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="galaxySky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0A0228"/>
+          <stop offset="0.5" stop-color="#2E1A5C"/>
+          <stop offset="1" stop-color="#5C2D7A"/>
+    </linearGradient>
+      <radialGradient id="milkyWay" cx="0.5" cy="0.3" r="0.6">
+          <stop offset="0" stop-color="#FFE5D8" stop-opacity="0.45"/>
+          <stop offset="1" stop-color="#FFE5D8" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#galaxySky)"/>
+
+    <!-- Milky Way band -->
+    <path d="M -100 50 Q 400 200 700 350 Q 1000 500 1300 600"
+          stroke="url(#milkyWay)" stroke-width="220" fill="none" opacity="0.85"/>
+
+    <!-- Stars (many) -->
+    <g fill="#FFFFFF">
+        <circle cx="60" cy="40" r="1.6" opacity="0.95"/>
+        <circle cx="140" cy="80" r="1" opacity="0.7"/>
+        <circle cx="220" cy="50" r="1.4" opacity="0.9"/>
+        <circle cx="300" cy="120" r="1" opacity="0.6"/>
+        <circle cx="380" cy="60" r="1.7" opacity="0.95"/>
+        <circle cx="460" cy="140" r="1.2" opacity="0.75"/>
+        <circle cx="540" cy="80" r="1.5" opacity="0.9"/>
+        <circle cx="620" cy="160" r="1" opacity="0.6"/>
+        <circle cx="700" cy="100" r="1.3" opacity="0.8"/>
+        <circle cx="780" cy="180" r="1.4" opacity="0.85"/>
+        <circle cx="860" cy="120" r="1" opacity="0.65"/>
+        <circle cx="940" cy="60" r="1.6" opacity="0.95"/>
+        <circle cx="1020" cy="140" r="1.2" opacity="0.75"/>
+        <circle cx="1100" cy="80" r="1.4" opacity="0.85"/>
+        <circle cx="1180" cy="180" r="1" opacity="0.6"/>
+        <circle cx="100" cy="220" r="1.3" opacity="0.8"/>
+        <circle cx="280" cy="240" r="1" opacity="0.55"/>
+        <circle cx="500" cy="260" r="1.5" opacity="0.9"/>
+        <circle cx="700" cy="220" r="1.2" opacity="0.7"/>
+        <circle cx="900" cy="280" r="1.4" opacity="0.85"/>
+        <circle cx="1100" cy="240" r="1" opacity="0.6"/>
+        <!-- Small stars in milky way -->
+        <circle cx="450" cy="180" r="0.9" opacity="0.65"/>
+        <circle cx="550" cy="220" r="0.8" opacity="0.6"/>
+        <circle cx="650" cy="280" r="1" opacity="0.7"/>
+        <circle cx="750" cy="320" r="0.9" opacity="0.65"/>
+        <circle cx="850" cy="380" r="1" opacity="0.7"/>
+        <circle cx="950" cy="440" r="0.8" opacity="0.55"/>
+    </g>
+
+    <!-- Shooting star -->
+    <line x1="200" y1="80" x2="280" y2="120" stroke="#FFFFFF" stroke-width="1.5" opacity="0.85"/>
+    <circle cx="280" cy="120" r="2.5" fill="#FFFFFF"/>
+
+    <!-- Canyon walls -->
+    <path d="M 0 460 L 50 380 L 130 360 L 200 400 L 280 380 L 340 410 L 400 450 L 0 450 Z"
+          fill="#5C2D14" opacity="0.85"/>
+    <path d="M 1200 460 L 1150 380 L 1080 360 L 1000 400 L 920 380 L 860 410 L 800 450 L 1200 450 Z"
+          fill="#5C2D14" opacity="0.85"/>
+
+    <!-- Canyon floor -->
+    <path d="M 0 460 Q 600 480 1200 460 L 1200 630 L 0 630 Z" fill="#2A1408"/>
+
+    <!-- Person silhouette gazing -->
+    <g fill="#0A0204">
+        <ellipse cx="600" cy="510" rx="10" ry="14"/>
+        <rect x="595" y="520" width="10" height="40"/>
+        <rect x="592" y="555" width="6" height="35"/>
+        <rect x="602" y="555" width="6" height="35"/>
+        <rect x="585" y="525" width="6" height="22"/>
+        <rect x="609" y="525" width="6" height="22"/>
+  </g>
+
+    <!-- Campfire -->
+    <g>
+        <ellipse cx="650" cy="595" rx="20" ry="6" fill="#FFD085" opacity="0.7"/>
+        <polygon points="650,560 644,590 656,590" fill="#FF7C30"/>
+        <polygon points="650,565 645,590 655,590" fill="#FFE5A0"/>
+  </g>
+
+    <!-- Foreground rocks -->
+    <g fill="#150804">
+        <ellipse cx="100" cy="615" rx="80" ry="12"/>
+        <ellipse cx="1100" cy="615" rx="80" ry="12"/>
+  </g>
+
+    <text x="60" y="612" fill="#FFE5D8" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1B3A5C"/>
+          <stop offset="0.45" stop-color="#5A8FA8"/>
+          <stop offset="1" stop-color="#A8C8D8"/>
+    </linearGradient>
+      <radialGradient id="mistGlow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/>
+          <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+      </radialGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Sun glow through mist -->
+    <circle cx="850" cy="220" r="200" fill="url(#mistGlow)"/>
+    <circle cx="850" cy="220" r="48" fill="#FFFFFF" opacity="0.85"/>
+
+    <!-- Distant mountain veil -->
+    <path d="M 0 380 L 200 280 L 360 340 L 540 260 L 740 320 L 920 250 L 1100 320 L 1200 290 L 1200 630 L 0 630 Z"
+          fill="#88AABB" opacity="0.55"/>
+
+    <!-- Misty band -->
+    <rect y="350" width="1200" height="80" fill="#FFFFFF" opacity="0.18"/>
+
+    <!-- Pines middle layer -->
+    <g fill="#3D5C66" opacity="0.85">
+        <polygon points="100,440 80,380 120,380 95,340 125,340 100,300"/>
+        <polygon points="160,460 138,400 180,400 152,360 184,360 160,320"/>
+        <polygon points="220,445 200,385 240,385 215,345 245,345 220,305"/>
+        <polygon points="290,455 268,395 312,395 285,355 317,355 290,315"/>
+        <polygon points="370,440 350,380 390,380 365,340 395,340 370,300"/>
+        <polygon points="450,460 430,400 470,400 445,360 475,360 450,320"/>
+        <polygon points="530,445 510,385 550,385 525,345 555,345 530,305"/>
+        <polygon points="610,455 590,395 630,395 605,355 635,355 610,315"/>
+        <polygon points="690,440 670,380 710,380 685,340 715,340 690,300"/>
+        <polygon points="780,460 760,400 800,400 775,360 805,360 780,320"/>
+        <polygon points="870,445 850,385 890,385 865,345 895,345 870,305"/>
+        <polygon points="970,455 950,395 990,395 965,355 995,355 970,315"/>
+        <polygon points="1060,440 1040,380 1080,380 1055,340 1085,340 1060,300"/>
+        <polygon points="1140,460 1120,400 1160,400 1135,360 1165,360 1140,320"/>
+    </g>
+
+    <!-- Foreground pines darker -->
+    <g fill="#1F3540">
+        <polygon points="40,540 18,460 62,460 30,410 70,410 40,360"/>
+        <polygon points="110,560 88,480 132,480 100,430 140,430 110,380"/>
+        <polygon points="200,545 178,465 222,465 190,415 230,415 200,365"/>
+        <polygon points="320,560 298,475 342,475 310,425 350,425 320,375"/>
+        <polygon points="440,545 418,465 462,465 430,415 470,415 440,365"/>
+        <polygon points="580,560 558,475 602,475 570,425 610,425 580,375"/>
+        <polygon points="720,545 698,465 742,465 710,415 750,415 720,365"/>
+        <polygon points="860,560 838,475 882,475 850,425 890,425 860,375"/>
+        <polygon points="1000,545 978,465 1022,465 990,415 1030,415 1000,365"/>
+        <polygon points="1130,560 1108,475 1152,475 1120,425 1160,425 1130,375"/>
+    </g>
+
+    <!-- Floor -->
+    <path d="M 0 540 Q 600 510 1200 545 L 1200 630 L 0 630 Z" fill="#102026"/>
+
+    <text x="60" y="608" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

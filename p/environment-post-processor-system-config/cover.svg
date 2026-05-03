@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#E0DCC8"/>
+          <stop offset="0.5" stop-color="#C8C0AC"/>
+          <stop offset="1" stop-color="#9CA08C"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Far tree silhouettes (very faded) -->
+    <g fill="#9CA08C" opacity="0.5">
+        <ellipse cx="100" cy="320" rx="28" ry="60"/>
+        <ellipse cx="200" cy="310" rx="32" ry="70"/>
+        <ellipse cx="320" cy="320" rx="28" ry="62"/>
+        <ellipse cx="450" cy="315" rx="32" ry="68"/>
+        <ellipse cx="600" cy="320" rx="30" ry="65"/>
+        <ellipse cx="750" cy="315" rx="32" ry="68"/>
+        <ellipse cx="880" cy="320" rx="28" ry="62"/>
+        <ellipse cx="1000" cy="310" rx="32" ry="72"/>
+        <ellipse cx="1120" cy="320" rx="28" ry="65"/>
+    </g>
+
+    <!-- Mid tree layer (more visible) -->
+    <g fill="#5C6450" opacity="0.7">
+        <ellipse cx="50" cy="380" rx="35" ry="100"/>
+        <rect x="46" y="380" width="8" height="100"/>
+        <ellipse cx="180" cy="370" rx="40" ry="120"/>
+        <rect x="175" y="370" width="10" height="120"/>
+        <ellipse cx="320" cy="380" rx="36" ry="110"/>
+        <rect x="316" y="380" width="8" height="110"/>
+        <ellipse cx="480" cy="375" rx="42" ry="115"/>
+        <rect x="476" y="375" width="9" height="115"/>
+        <ellipse cx="640" cy="380" rx="38" ry="105"/>
+        <rect x="636" y="380" width="8" height="105"/>
+        <ellipse cx="800" cy="375" rx="40" ry="110"/>
+        <rect x="796" y="375" width="9" height="110"/>
+        <ellipse cx="960" cy="380" rx="36" ry="115"/>
+        <rect x="956" y="380" width="8" height="115"/>
+        <ellipse cx="1120" cy="370" rx="42" ry="120"/>
+        <rect x="1115" y="370" width="10" height="120"/>
+    </g>
+
+    <!-- Mist layer 1 -->
+    <ellipse cx="600" cy="450" rx="700" ry="70" fill="#FFFFFF" opacity="0.5"/>
+    <!-- Mist layer 2 -->
+    <ellipse cx="600" cy="500" rx="650" ry="50" fill="#E0E0DC" opacity="0.5"/>
+
+    <!-- Front trees, full visibility -->
+    <g fill="#1F2A20">
+        <ellipse cx="120" cy="450" rx="50" ry="170"/>
+        <rect x="115" y="450" width="10" height="170"/>
+        <ellipse cx="280" cy="440" rx="55" ry="180"/>
+        <rect x="275" y="440" width="11" height="180"/>
+        <ellipse cx="430" cy="450" rx="50" ry="175"/>
+        <rect x="425" y="450" width="10" height="175"/>
+        <ellipse cx="580" cy="440" rx="55" ry="190"/>
+        <rect x="574" y="440" width="12" height="190"/>
+        <ellipse cx="740" cy="445" rx="52" ry="180"/>
+        <rect x="735" y="445" width="10" height="180"/>
+        <ellipse cx="900" cy="450" rx="50" ry="175"/>
+        <rect x="895" y="450" width="10" height="175"/>
+        <ellipse cx="1060" cy="440" rx="55" ry="190"/>
+        <rect x="1054" y="440" width="12" height="190"/>
+    </g>
+
+    <!-- Floor mist -->
+    <rect y="555" width="1200" height="75" fill="#1F2A20"/>
+    <ellipse cx="600" cy="565" rx="700" ry="20" fill="#FFFFFF" opacity="0.4"/>
+
+    <!-- A few floating leaves/specks -->
+    <g fill="#5C6450" opacity="0.45">
+        <circle cx="200" cy="220" r="2"/>
+        <circle cx="380" cy="280" r="2"/>
+        <circle cx="540" cy="200" r="2.5"/>
+        <circle cx="700" cy="270" r="2"/>
+        <circle cx="860" cy="240" r="2.5"/>
+        <circle cx="1000" cy="290" r="2"/>
+    </g>
+
+    <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

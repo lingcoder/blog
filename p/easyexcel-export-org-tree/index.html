@@ -1,0 +1,453 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="层级 + 合并单元格 + 嵌套 + 大数据量——把组织机构树导成 Excel 是个综合考题，本文给出 EasyExcel 的工程化解法"><title>用 EasyExcel 导出复杂组织机构树到 Excel</title><link rel=canonical href=https://www.lingcoder.com/p/easyexcel-export-org-tree/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="用 EasyExcel 导出复杂组织机构树到 Excel"><meta property='og:description' content="层级 + 合并单元格 + 嵌套 + 大数据量——把组织机构树导成 Excel 是个综合考题，本文给出 EasyExcel 的工程化解法"><meta property='og:url' content='https://www.lingcoder.com/p/easyexcel-export-org-tree/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='EasyExcel'><meta property='article:tag' content='阿里'><meta property='article:tag' content='Excel 导出'><meta property='article:tag' content='树形结构'><meta property='article:tag' content='Java'><meta property='article:published_time' content='2022-09-02T15:30:00+08:00'><meta property='article:modified_time' content='2022-09-02T15:30:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/easyexcel-export-org-tree/cover.svg'><meta name=twitter:title content="用 EasyExcel 导出复杂组织机构树到 Excel"><meta name=twitter:description content="层级 + 合并单元格 + 嵌套 + 大数据量——把组织机构树导成 Excel 是个综合考题，本文给出 EasyExcel 的工程化解法"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/easyexcel-export-org-tree/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#一个让人头大的需求>一个让人头大的需求</a></li><li><a href=#一easyexcel-的核心优势>一、EasyExcel 的核心优势</a></li><li><a href=#二最小可用-demo>二、最小可用 Demo</a></li><li><a href=#三把组织树展平成行>三、把组织树展平成行</a><ol><li><a href=#树结构>树结构</a></li><li><a href=#dfs-展平>DFS 展平</a></li></ol></li><li><a href=#四单元格合并组织树的核心>四、单元格合并：组织树的核心</a><ol><li><a href=#思路写完后再合并>思路：写完后再合并</a></li></ol></li><li><a href=#五样式表头加粗--居中--边框>五、样式：表头加粗 + 居中 + 边框</a></li><li><a href=#六列宽自适应>六、列宽自适应</a></li><li><a href=#七web-接口下载>七、Web 接口下载</a></li><li><a href=#八大数据量场景>八、大数据量场景</a><ol><li><a href=#1-用流式写>1. 用流式写</a></li><li><a href=#2-多-sheet>2. 多 Sheet</a></li><li><a href=#3-合并单元格的内存瓶颈>3. 合并单元格的内存瓶颈</a></li><li><a href=#4-异步导出>4. 异步导出</a></li></ol></li><li><a href=#九踩坑提醒>九、踩坑提醒</a><ol><li><a href=#1-模板模式-vs-bean-模式>1. 模板模式 vs Bean 模式</a></li><li><a href=#2-poi-版本冲突>2. POI 版本冲突</a></li><li><a href=#3-中文表头乱码>3. 中文表头乱码</a></li><li><a href=#4-日期格式>4. 日期格式</a></li><li><a href=#5-数字精度>5. 数字精度</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/easyexcel-export-org-tree/><img alt="Featured image of post 用 EasyExcel 导出复杂组织机构树到 Excel" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/easyexcel-export-org-tree/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/java/ style=background-color:#2a9d8f;color:#fff>Java</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/easyexcel-export-org-tree/>用 EasyExcel 导出复杂组织机构树到 Excel</a></h2><h3 class=article-subtitle>层级 + 合并单元格 + 嵌套 + 大数据量——把组织机构树导成 Excel 是个综合考题，本文给出 EasyExcel 的工程化解法</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2022-09-02T15:30:00+08:00>2022-09-02</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#一个让人头大的需求>一个让人头大的需求</a></li><li><a href=#一easyexcel-的核心优势>一、EasyExcel 的核心优势</a></li><li><a href=#二最小可用-demo>二、最小可用 Demo</a></li><li><a href=#三把组织树展平成行>三、把组织树展平成行</a><ol><li><a href=#树结构>树结构</a></li><li><a href=#dfs-展平>DFS 展平</a></li></ol></li><li><a href=#四单元格合并组织树的核心>四、单元格合并：组织树的核心</a><ol><li><a href=#思路写完后再合并>思路：写完后再合并</a></li></ol></li><li><a href=#五样式表头加粗--居中--边框>五、样式：表头加粗 + 居中 + 边框</a></li><li><a href=#六列宽自适应>六、列宽自适应</a></li><li><a href=#七web-接口下载>七、Web 接口下载</a></li><li><a href=#八大数据量场景>八、大数据量场景</a><ol><li><a href=#1-用流式写>1. 用流式写</a></li><li><a href=#2-多-sheet>2. 多 Sheet</a></li><li><a href=#3-合并单元格的内存瓶颈>3. 合并单元格的内存瓶颈</a></li><li><a href=#4-异步导出>4. 异步导出</a></li></ol></li><li><a href=#九踩坑提醒>九、踩坑提醒</a><ol><li><a href=#1-模板模式-vs-bean-模式>1. 模板模式 vs Bean 模式</a></li><li><a href=#2-poi-版本冲突>2. POI 版本冲突</a></li><li><a href=#3-中文表头乱码>3. 中文表头乱码</a></li><li><a href=#4-日期格式>4. 日期格式</a></li><li><a href=#5-数字精度>5. 数字精度</a></li></ol></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=一个让人头大的需求><a href=#%e4%b8%80%e4%b8%aa%e8%ae%a9%e4%ba%ba%e5%a4%b4%e5%a4%a7%e7%9a%84%e9%9c%80%e6%b1%82 class=header-anchor></a>一个让人头大的需求</h2><p>业务方：&ldquo;把公司全部部门、员工、汇报关系导出到 Excel&rdquo;。打开他们用的 Word 模板：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>+--------------+--------+--------+----------+--------+
+</span></span><span class=line><span class=cl>| 一级部门     | 二级   | 三级   | 员工姓名 | 工号   |
+</span></span><span class=line><span class=cl>+--------------+--------+--------+----------+--------+
+</span></span><span class=line><span class=cl>|              |        | 一组   | 张三     | 001    |
+</span></span><span class=line><span class=cl>|              |        |        | 李四     | 002    |
+</span></span><span class=line><span class=cl>|              | 研发部 +--------+----------+--------+
+</span></span><span class=line><span class=cl>|              |        | 二组   | 王五     | 003    |
+</span></span><span class=line><span class=cl>| 技术中心     +--------+--------+----------+--------+
+</span></span><span class=line><span class=cl>|              |        |        | 赵六     | 004    |
+</span></span><span class=line><span class=cl>|              | 测试部 |        | 钱七     | 005    |
+</span></span><span class=line><span class=cl>+--------------+--------+--------+----------+--------+
+</span></span><span class=line><span class=cl>|              |        |        | ...      | ...    |
+</span></span><span class=line><span class=cl>+--------------+--------+--------+----------+--------+
+</span></span></code></pre></td></tr></table></div></div><p>需求关键词：</p><ul><li><strong>层级关系</strong>：部门可能 1-5 层</li><li><strong>单元格合并</strong>：同部门跨多行合并</li><li><strong>数据量大</strong>：上千员工</li><li><strong>样式要求</strong>：表头加粗、边框、分组色</li><li><strong>导出快</strong>：用户等 30 秒会投诉</li></ul><p><code>POI</code> 拿来撸是噩梦——内存爆炸 + 写起来痛苦。<strong>EasyExcel 是这件事的事实标准答案</strong>——它把内存占用压到极致，API 也清爽很多。</p><p>本文用一个完整实例讲清楚 EasyExcel 导出树形结构 + 合并单元格的姿势。</p><hr><h2 id=一easyexcel-的核心优势><a href=#%e4%b8%80easyexcel-%e7%9a%84%e6%a0%b8%e5%bf%83%e4%bc%98%e5%8a%bf class=header-anchor></a>一、EasyExcel 的核心优势</h2><div class=table-wrapper><table><thead><tr><th style=text-align:left></th><th style=text-align:left>Apache POI</th><th style=text-align:left>EasyExcel</th></tr></thead><tbody><tr><td style=text-align:left>内存占用</td><td style=text-align:left>一次性加载全部</td><td style=text-align:left><strong>流式写</strong>，几 MB 搞定</td></tr><tr><td style=text-align:left>编码体验</td><td style=text-align:left>大量 setCellValue</td><td style=text-align:left>注解 + Java Bean</td></tr><tr><td style=text-align:left>大数据量</td><td style=text-align:left>容易 OOM</td><td style=text-align:left>70 万行无压力</td></tr><tr><td style=text-align:left>学习曲线</td><td style=text-align:left>陡</td><td style=text-align:left>平</td></tr><tr><td style=text-align:left>复杂样式</td><td style=text-align:left>灵活</td><td style=text-align:left>灵活</td></tr></tbody></table></div><p>EasyExcel 由阿里开源，本质是 <strong>POI 上加一层流式封装</strong>——背后还是 POI，但内存模型彻底改了。</p><hr><h2 id=二最小可用-demo><a href=#%e4%ba%8c%e6%9c%80%e5%b0%8f%e5%8f%af%e7%94%a8-demo class=header-anchor></a>二、最小可用 Demo</h2><p>引入：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-xml data-lang=xml><span class=line><span class=cl><span class=nt>&lt;dependency&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;groupId&gt;</span>com.alibaba<span class=nt>&lt;/groupId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;artifactId&gt;</span>easyexcel<span class=nt>&lt;/artifactId&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&lt;version&gt;</span>3.3.2<span class=nt>&lt;/version&gt;</span>
+</span></span><span class=line><span class=cl><span class=nt>&lt;/dependency&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>定义实体：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>EmployeeRow</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;一级部门&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>dept1</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;二级部门&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>dept2</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;三级部门&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>dept3</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;员工姓名&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>name</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;工号&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>empNo</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>写出：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>rows</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>buildRows</span><span class=p>(</span><span class=n>orgTree</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=s>&#34;org.xlsx&#34;</span><span class=p>,</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>.</span><span class=na>class</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>sheet</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>doWrite</span><span class=p>(</span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>四行代码，搞定基础导出。</p><hr><h2 id=三把组织树展平成行><a href=#%e4%b8%89%e6%8a%8a%e7%bb%84%e7%bb%87%e6%a0%91%e5%b1%95%e5%b9%b3%e6%88%90%e8%a1%8c class=header-anchor></a>三、把组织树展平成行</h2><p>业务里组织通常是个树——要导出必须展开成扁平的行集合。</p><h3 id=树结构><a href=#%e6%a0%91%e7%bb%93%e6%9e%84 class=header-anchor></a>树结构</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@Data</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>OrgNode</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>Long</span><span class=w> </span><span class=n>id</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>String</span><span class=w> </span><span class=n>name</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>OrgNode</span><span class=o>&gt;</span><span class=w> </span><span class=n>children</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>Employee</span><span class=o>&gt;</span><span class=w> </span><span class=n>employees</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=dfs-展平><a href=#dfs-%e5%b1%95%e5%b9%b3 class=header-anchor></a>DFS 展平</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=nf>flatten</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>OrgNode</span><span class=o>&gt;</span><span class=w> </span><span class=n>roots</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>rows</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ArrayList</span><span class=o>&lt;&gt;</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>OrgNode</span><span class=w> </span><span class=n>root</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>roots</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>traverse</span><span class=p>(</span><span class=n>root</span><span class=p>,</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>ArrayDeque</span><span class=o>&lt;&gt;</span><span class=p>(),</span><span class=w> </span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>rows</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>traverse</span><span class=p>(</span><span class=n>OrgNode</span><span class=w> </span><span class=n>node</span><span class=p>,</span><span class=w> </span><span class=n>Deque</span><span class=o>&lt;</span><span class=n>String</span><span class=o>&gt;</span><span class=w> </span><span class=n>path</span><span class=p>,</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>rows</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>path</span><span class=p>.</span><span class=na>push</span><span class=p>(</span><span class=n>node</span><span class=p>.</span><span class=na>getName</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>node</span><span class=p>.</span><span class=na>getChildren</span><span class=p>()</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=o>!</span><span class=n>node</span><span class=p>.</span><span class=na>getChildren</span><span class=p>().</span><span class=na>isEmpty</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>OrgNode</span><span class=w> </span><span class=n>child</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>node</span><span class=p>.</span><span class=na>getChildren</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>traverse</span><span class=p>(</span><span class=n>child</span><span class=p>,</span><span class=w> </span><span class=n>path</span><span class=p>,</span><span class=w> </span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>node</span><span class=p>.</span><span class=na>getEmployees</span><span class=p>()</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=n>Employee</span><span class=w> </span><span class=n>e</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>node</span><span class=p>.</span><span class=na>getEmployees</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>EmployeeRow</span><span class=w> </span><span class=n>row</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// 把 path 从根到叶填到 dept1/2/3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>String</span><span class=o>[]</span><span class=w> </span><span class=n>depts</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>path</span><span class=p>.</span><span class=na>descendingIterator</span><span class=p>().</span><span class=na>hasNext</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=o>?</span><span class=w> </span><span class=n>toArray</span><span class=p>(</span><span class=n>path</span><span class=p>.</span><span class=na>descendingIterator</span><span class=p>())</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>String</span><span class=o>[</span><span class=n>0</span><span class=o>]</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>row</span><span class=p>.</span><span class=na>setDept1</span><span class=p>(</span><span class=n>depts</span><span class=p>.</span><span class=na>length</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>0</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>depts</span><span class=o>[</span><span class=n>0</span><span class=o>]</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=s>&#34;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>row</span><span class=p>.</span><span class=na>setDept2</span><span class=p>(</span><span class=n>depts</span><span class=p>.</span><span class=na>length</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>1</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>depts</span><span class=o>[</span><span class=n>1</span><span class=o>]</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=s>&#34;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>row</span><span class=p>.</span><span class=na>setDept3</span><span class=p>(</span><span class=n>depts</span><span class=p>.</span><span class=na>length</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>2</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>depts</span><span class=o>[</span><span class=n>2</span><span class=o>]</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=s>&#34;&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>row</span><span class=p>.</span><span class=na>setName</span><span class=p>(</span><span class=n>e</span><span class=p>.</span><span class=na>getName</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>row</span><span class=p>.</span><span class=na>setEmpNo</span><span class=p>(</span><span class=n>e</span><span class=p>.</span><span class=na>getEmpNo</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>rows</span><span class=p>.</span><span class=na>add</span><span class=p>(</span><span class=n>row</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>path</span><span class=p>.</span><span class=na>pop</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>这一步<strong>得到了 Excel 的扁平行数据</strong>——树形被打平、每个员工对应一行。</p><hr><h2 id=四单元格合并组织树的核心><a href=#%e5%9b%9b%e5%8d%95%e5%85%83%e6%a0%bc%e5%90%88%e5%b9%b6%e7%bb%84%e7%bb%87%e6%a0%91%e7%9a%84%e6%a0%b8%e5%bf%83 class=header-anchor></a>四、单元格合并：组织树的核心</h2><p>光打平还不够——同部门下多个员工，部门列应该合并。<strong>这是组织树导 Excel 最核心的需求</strong>。</p><h3 id=思路写完后再合并><a href=#%e6%80%9d%e8%b7%af%e5%86%99%e5%ae%8c%e5%90%8e%e5%86%8d%e5%90%88%e5%b9%b6 class=header-anchor></a>思路：写完后再合并</h3><p>EasyExcel 写时按行流式输出，<strong>不能在写入时直接判断"和上一行合并"</strong>。最稳妥的做法是：</p><ol><li>先按扁平行写完</li><li>再用 POI 的 <code>addMergedRegion</code> 合并同列连续相同值</li></ol><p>EasyExcel 提供了 <code>WriteHandler</code> 让你介入流程：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>TreeMergeHandler</span><span class=w> </span><span class=kd>extends</span><span class=w> </span><span class=n>AbstractMergeStrategy</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=kd>final</span><span class=w> </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>data</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=nf>TreeMergeHandler</span><span class=p>(</span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>data</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=k>this</span><span class=p>.</span><span class=na>data</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>data</span><span class=p>;</span><span class=w> </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>protected</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>merge</span><span class=p>(</span><span class=n>Sheet</span><span class=w> </span><span class=n>sheet</span><span class=p>,</span><span class=w> </span><span class=n>Cell</span><span class=w> </span><span class=n>cell</span><span class=p>,</span><span class=w> </span><span class=n>Head</span><span class=w> </span><span class=n>head</span><span class=p>,</span><span class=w> </span><span class=n>Integer</span><span class=w> </span><span class=n>relativeRowIndex</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c1>// 处理 dept1, dept2, dept3 三列</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>relativeRowIndex</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=kc>null</span><span class=w> </span><span class=o>||</span><span class=w> </span><span class=n>relativeRowIndex</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=n>0</span><span class=p>)</span><span class=w> </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>colIdx</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getColumnIndex</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>colIdx</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>2</span><span class=p>)</span><span class=w> </span><span class=k>return</span><span class=p>;</span><span class=w>   </span><span class=c1>// 后两列不合并（员工姓名/工号列）</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>absoluteRow</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getRowIndex</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>String</span><span class=w> </span><span class=n>prevValue</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>sheet</span><span class=p>.</span><span class=na>getRow</span><span class=p>(</span><span class=n>absoluteRow</span><span class=w> </span><span class=o>-</span><span class=w> </span><span class=n>1</span><span class=p>).</span><span class=na>getCell</span><span class=p>(</span><span class=n>colIdx</span><span class=p>).</span><span class=na>getStringCellValue</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>String</span><span class=w> </span><span class=n>currValue</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getStringCellValue</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>Objects</span><span class=p>.</span><span class=na>equals</span><span class=p>(</span><span class=n>prevValue</span><span class=p>,</span><span class=w> </span><span class=n>currValue</span><span class=p>))</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// 找到现有 region 并扩展，或新建</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>sheet</span><span class=p>.</span><span class=na>getNumMergedRegions</span><span class=p>()</span><span class=w> </span><span class=o>-</span><span class=w> </span><span class=n>1</span><span class=p>;</span><span class=w> </span><span class=n>i</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w> </span><span class=n>i</span><span class=o>--</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=n>CellRangeAddress</span><span class=w> </span><span class=n>region</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>sheet</span><span class=p>.</span><span class=na>getMergedRegion</span><span class=p>(</span><span class=n>i</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>region</span><span class=p>.</span><span class=na>getFirstColumn</span><span class=p>()</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=n>colIdx</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                        </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=n>region</span><span class=p>.</span><span class=na>getLastRow</span><span class=p>()</span><span class=w> </span><span class=o>==</span><span class=w> </span><span class=n>absoluteRow</span><span class=w> </span><span class=o>-</span><span class=w> </span><span class=n>1</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=n>sheet</span><span class=p>.</span><span class=na>removeMergedRegion</span><span class=p>(</span><span class=n>i</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=n>sheet</span><span class=p>.</span><span class=na>addMergedRegion</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>CellRangeAddress</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                            </span><span class=n>region</span><span class=p>.</span><span class=na>getFirstRow</span><span class=p>(),</span><span class=w> </span><span class=n>absoluteRow</span><span class=p>,</span><span class=w> </span><span class=n>colIdx</span><span class=p>,</span><span class=w> </span><span class=n>colIdx</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=k>return</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=c1>// 没找到，新建</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>sheet</span><span class=p>.</span><span class=na>addMergedRegion</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>CellRangeAddress</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                    </span><span class=n>absoluteRow</span><span class=w> </span><span class=o>-</span><span class=w> </span><span class=n>1</span><span class=p>,</span><span class=w> </span><span class=n>absoluteRow</span><span class=p>,</span><span class=w> </span><span class=n>colIdx</span><span class=p>,</span><span class=w> </span><span class=n>colIdx</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>注册 handler：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=s>&#34;org.xlsx&#34;</span><span class=p>,</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>.</span><span class=na>class</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>registerWriteHandler</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>TreeMergeHandler</span><span class=p>(</span><span class=n>rows</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>sheet</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>doWrite</span><span class=p>(</span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>效果——同部门跨多行的部门列被合并成一个单元格。</p><hr><h2 id=五样式表头加粗--居中--边框><a href=#%e4%ba%94%e6%a0%b7%e5%bc%8f%e8%a1%a8%e5%a4%b4%e5%8a%a0%e7%b2%97--%e5%b1%85%e4%b8%ad--%e8%be%b9%e6%a1%86 class=header-anchor></a>五、样式：表头加粗 + 居中 + 边框</h2><p>通过 <code>HorizontalCellStyleStrategy</code> 配置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>WriteCellStyle</span><span class=w> </span><span class=n>headerStyle</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>WriteCellStyle</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>headerStyle</span><span class=p>.</span><span class=na>setFillForegroundColor</span><span class=p>(</span><span class=n>IndexedColors</span><span class=p>.</span><span class=na>GREY_25_PERCENT</span><span class=p>.</span><span class=na>getIndex</span><span class=p>());</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>headerStyle</span><span class=p>.</span><span class=na>setHorizontalAlignment</span><span class=p>(</span><span class=n>HorizontalAlignment</span><span class=p>.</span><span class=na>CENTER</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>WriteFont</span><span class=w> </span><span class=n>headerFont</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>WriteFont</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>headerFont</span><span class=p>.</span><span class=na>setFontHeightInPoints</span><span class=p>((</span><span class=kt>short</span><span class=p>)</span><span class=w> </span><span class=n>12</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>headerFont</span><span class=p>.</span><span class=na>setBold</span><span class=p>(</span><span class=kc>true</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>headerStyle</span><span class=p>.</span><span class=na>setWriteFont</span><span class=p>(</span><span class=n>headerFont</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>WriteCellStyle</span><span class=w> </span><span class=n>bodyStyle</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=k>new</span><span class=w> </span><span class=n>WriteCellStyle</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setHorizontalAlignment</span><span class=p>(</span><span class=n>HorizontalAlignment</span><span class=p>.</span><span class=na>CENTER</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setVerticalAlignment</span><span class=p>(</span><span class=n>VerticalAlignment</span><span class=p>.</span><span class=na>CENTER</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setBorderTop</span><span class=p>(</span><span class=n>BorderStyle</span><span class=p>.</span><span class=na>THIN</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setBorderBottom</span><span class=p>(</span><span class=n>BorderStyle</span><span class=p>.</span><span class=na>THIN</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setBorderLeft</span><span class=p>(</span><span class=n>BorderStyle</span><span class=p>.</span><span class=na>THIN</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>bodyStyle</span><span class=p>.</span><span class=na>setBorderRight</span><span class=p>(</span><span class=n>BorderStyle</span><span class=p>.</span><span class=na>THIN</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=s>&#34;org.xlsx&#34;</span><span class=p>,</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>.</span><span class=na>class</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>registerWriteHandler</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>HorizontalCellStyleStrategy</span><span class=p>(</span><span class=n>headerStyle</span><span class=p>,</span><span class=w> </span><span class=n>bodyStyle</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>registerWriteHandler</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>TreeMergeHandler</span><span class=p>(</span><span class=n>rows</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>sheet</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>doWrite</span><span class=p>(</span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><h2 id=六列宽自适应><a href=#%e5%85%ad%e5%88%97%e5%ae%bd%e8%87%aa%e9%80%82%e5%ba%94 class=header-anchor></a>六、列宽自适应</h2><p><code>LongestMatchColumnWidthStyleStrategy</code> 让列宽根据内容长度自适应：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=p>.</span><span class=na>registerWriteHandler</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>LongestMatchColumnWidthStyleStrategy</span><span class=p>())</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>注意——它的算法是按"行最长字符串"算列宽，<strong>对中文支持不够好</strong>（一个汉字算一个字符宽，但实际显示更宽）。生产里通常自己写一个：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kd>class</span> <span class=nc>CJKColumnWidthHandler</span><span class=w> </span><span class=kd>implements</span><span class=w> </span><span class=n>CellWriteHandler</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nd>@Override</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>public</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>afterCellDispose</span><span class=p>(</span><span class=n>CellWriteHandlerContext</span><span class=w> </span><span class=n>ctx</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Cell</span><span class=w> </span><span class=n>cell</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>ctx</span><span class=p>.</span><span class=na>getCell</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>Sheet</span><span class=w> </span><span class=n>sheet</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getSheet</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>colIdx</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getColumnIndex</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>len</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>cell</span><span class=p>.</span><span class=na>getStringCellValue</span><span class=p>()</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>null</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=o>?</span><span class=w> </span><span class=n>estimateWidth</span><span class=p>(</span><span class=n>cell</span><span class=p>.</span><span class=na>getStringCellValue</span><span class=p>())</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>10</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>if</span><span class=w> </span><span class=p>(</span><span class=n>sheet</span><span class=p>.</span><span class=na>getColumnWidth</span><span class=p>(</span><span class=n>colIdx</span><span class=p>)</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>len</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>256</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>sheet</span><span class=p>.</span><span class=na>setColumnWidth</span><span class=p>(</span><span class=n>colIdx</span><span class=p>,</span><span class=w> </span><span class=n>Math</span><span class=p>.</span><span class=na>min</span><span class=p>(</span><span class=n>len</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>256</span><span class=p>,</span><span class=w> </span><span class=n>80</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=n>256</span><span class=p>));</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=kd>private</span><span class=w> </span><span class=kt>int</span><span class=w> </span><span class=nf>estimateWidth</span><span class=p>(</span><span class=n>String</span><span class=w> </span><span class=n>s</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>w</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>char</span><span class=w> </span><span class=n>c</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>s</span><span class=p>.</span><span class=na>toCharArray</span><span class=p>())</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=n>w</span><span class=w> </span><span class=o>+=</span><span class=w> </span><span class=p>(</span><span class=n>c</span><span class=w> </span><span class=o>&gt;=</span><span class=w> </span><span class=sc>&#39;一&#39;</span><span class=w> </span><span class=o>&amp;&amp;</span><span class=w> </span><span class=n>c</span><span class=w> </span><span class=o>&lt;=</span><span class=w> </span><span class=sc>&#39;龥&#39;</span><span class=p>)</span><span class=w> </span><span class=o>?</span><span class=w> </span><span class=n>2</span><span class=w> </span><span class=p>:</span><span class=w> </span><span class=n>1</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>return</span><span class=w> </span><span class=n>w</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><h2 id=七web-接口下载><a href=#%e4%b8%83web-%e6%8e%a5%e5%8f%a3%e4%b8%8b%e8%bd%bd class=header-anchor></a>七、Web 接口下载</h2><p>Spring Controller 写法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@GetMapping</span><span class=p>(</span><span class=s>&#34;/export/org&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>public</span><span class=w> </span><span class=kt>void</span><span class=w> </span><span class=nf>export</span><span class=p>(</span><span class=n>HttpServletResponse</span><span class=w> </span><span class=n>response</span><span class=p>)</span><span class=w> </span><span class=kd>throws</span><span class=w> </span><span class=n>IOException</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>response</span><span class=p>.</span><span class=na>setContentType</span><span class=p>(</span><span class=s>&#34;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>response</span><span class=p>.</span><span class=na>setCharacterEncoding</span><span class=p>(</span><span class=s>&#34;utf-8&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>String</span><span class=w> </span><span class=n>fileName</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>URLEncoder</span><span class=p>.</span><span class=na>encode</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;UTF-8&#34;</span><span class=p>).</span><span class=na>replaceAll</span><span class=p>(</span><span class=s>&#34;\\+&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;%20&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>response</span><span class=p>.</span><span class=na>setHeader</span><span class=p>(</span><span class=s>&#34;Content-disposition&#34;</span><span class=p>,</span><span class=w> </span><span class=s>&#34;attachment;filename*=utf-8&#39;&#39;&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>fileName</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=s>&#34;.xlsx&#34;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>rows</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>orgService</span><span class=p>.</span><span class=na>flattenForExport</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=n>response</span><span class=p>.</span><span class=na>getOutputStream</span><span class=p>(),</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>.</span><span class=na>class</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>registerWriteHandler</span><span class=p>(</span><span class=k>new</span><span class=w> </span><span class=n>TreeMergeHandler</span><span class=p>(</span><span class=n>rows</span><span class=p>))</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>sheet</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=p>.</span><span class=na>doWrite</span><span class=p>(</span><span class=n>rows</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>文件名编码这块要小心——中文不处理浏览器下载会乱码。<strong><code>filename*=utf-8''xxx</code> 是 RFC 5987 标准</strong>。</p><hr><h2 id=八大数据量场景><a href=#%e5%85%ab%e5%a4%a7%e6%95%b0%e6%8d%ae%e9%87%8f%e5%9c%ba%e6%99%af class=header-anchor></a>八、大数据量场景</h2><p>数据量到几万、几十万行时，几个工程要点：</p><h3 id=1-用流式写><a href=#1-%e7%94%a8%e6%b5%81%e5%bc%8f%e5%86%99 class=header-anchor></a>1. 用流式写</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>ExcelWriter</span><span class=w> </span><span class=n>writer</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=n>outputStream</span><span class=p>,</span><span class=w> </span><span class=n>EmployeeRow</span><span class=p>.</span><span class=na>class</span><span class=p>).</span><span class=na>build</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>WriteSheet</span><span class=w> </span><span class=n>sheet</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>EasyExcel</span><span class=p>.</span><span class=na>writerSheet</span><span class=p>(</span><span class=s>&#34;组织架构&#34;</span><span class=p>).</span><span class=na>build</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kt>int</span><span class=w> </span><span class=n>batchSize</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>1000</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>offset</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w> </span><span class=n>offset</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>total</span><span class=p>;</span><span class=w> </span><span class=n>offset</span><span class=w> </span><span class=o>+=</span><span class=w> </span><span class=n>batchSize</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>List</span><span class=o>&lt;</span><span class=n>EmployeeRow</span><span class=o>&gt;</span><span class=w> </span><span class=n>batch</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>orgService</span><span class=p>.</span><span class=na>getRows</span><span class=p>(</span><span class=n>offset</span><span class=p>,</span><span class=w> </span><span class=n>batchSize</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>writer</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=n>batch</span><span class=p>,</span><span class=w> </span><span class=n>sheet</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=n>writer</span><span class=p>.</span><span class=na>finish</span><span class=p>();</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>每次只加载一批，<strong>JVM 内存不会爆</strong>。</p><h3 id=2-多-sheet><a href=#2-%e5%a4%9a-sheet class=header-anchor></a>2. 多 Sheet</h3><p>单 Sheet 上限 1,048,576 行——超过要拆 Sheet：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=k>for</span><span class=w> </span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>sheetNo</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>0</span><span class=p>;</span><span class=w> </span><span class=n>sheetNo</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>sheetCount</span><span class=p>;</span><span class=w> </span><span class=n>sheetNo</span><span class=o>++</span><span class=p>)</span><span class=w> </span><span class=p>{</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>WriteSheet</span><span class=w> </span><span class=n>sheet</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>EasyExcel</span><span class=p>.</span><span class=na>writerSheet</span><span class=p>(</span><span class=n>sheetNo</span><span class=p>,</span><span class=w> </span><span class=s>&#34;Sheet&#34;</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>sheetNo</span><span class=p>).</span><span class=na>build</span><span class=p>();</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=n>writer</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=n>getRows</span><span class=p>(</span><span class=n>sheetNo</span><span class=p>),</span><span class=w> </span><span class=n>sheet</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=3-合并单元格的内存瓶颈><a href=#3-%e5%90%88%e5%b9%b6%e5%8d%95%e5%85%83%e6%a0%bc%e7%9a%84%e5%86%85%e5%ad%98%e7%93%b6%e9%a2%88 class=header-anchor></a>3. 合并单元格的内存瓶颈</h3><p>合并单元格的 <code>addMergedRegion</code> 信息是<strong>全量记录在内存里</strong>——大量合并会让导出再次膨胀。<strong>几万行 + 大量合并是 EasyExcel 也吃不消的场景</strong>——这种情况建议改用 CSV 或者拆分多 Sheet。</p><h3 id=4-异步导出><a href=#4-%e5%bc%82%e6%ad%a5%e5%af%bc%e5%87%ba class=header-anchor></a>4. 异步导出</h3><p>接口同步返回 30 秒会超时——大数据量必须异步：</p><pre class=mermaid style=visibility:hidden>flowchart LR
+    User --> API[POST /export/job]
+    API --> Job[创建任务记录]
+    API --> Queue[发到 MQ]
+    Worker[Worker] --> Queue
+    Worker --> S3[导出到 S3/OSS]
+    Worker --> Notify[推送通知/邮件]
+    User --> Status[GET /export/status]
+    Status --> S3</pre><hr><h2 id=九踩坑提醒><a href=#%e4%b9%9d%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92 class=header-anchor></a>九、踩坑提醒</h2><h3 id=1-模板模式-vs-bean-模式><a href=#1-%e6%a8%a1%e6%9d%bf%e6%a8%a1%e5%bc%8f-vs-bean-%e6%a8%a1%e5%bc%8f class=header-anchor></a>1. 模板模式 vs Bean 模式</h3><p>简单导出用 <code>@ExcelProperty</code> 注解（Bean 模式）；表头复杂、含图片、需要复用的导出用 <strong>模板模式</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=n>EasyExcel</span><span class=p>.</span><span class=na>write</span><span class=p>(</span><span class=s>&#34;out.xlsx&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>withTemplate</span><span class=p>(</span><span class=s>&#34;template.xlsx&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>sheet</span><span class=p>()</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=p>.</span><span class=na>doWrite</span><span class=p>(</span><span class=n>data</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>模板里用 <code>{name}</code> 占位符。</p><h3 id=2-poi-版本冲突><a href=#2-poi-%e7%89%88%e6%9c%ac%e5%86%b2%e7%aa%81 class=header-anchor></a>2. POI 版本冲突</h3><p>EasyExcel 自带 POI 4.x，如果项目里有其他依赖引入了 POI 3.x，<strong>冲突会让 ClassNotFound</strong>。用 <code>mvn dependency:tree</code> 检查并 exclude。</p><h3 id=3-中文表头乱码><a href=#3-%e4%b8%ad%e6%96%87%e8%a1%a8%e5%a4%b4%e4%b9%b1%e7%a0%81 class=header-anchor></a>3. 中文表头乱码</h3><p><code>@ExcelProperty("中文表头")</code> 一般没问题，但<strong>如果中文出现在动态字段</strong>（比如表头从配置读），要确保字符串编码 UTF-8。</p><h3 id=4-日期格式><a href=#4-%e6%97%a5%e6%9c%9f%e6%a0%bc%e5%bc%8f class=header-anchor></a>4. 日期格式</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;入职日期&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@DateTimeFormat</span><span class=p>(</span><span class=s>&#34;yyyy-MM-dd&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>LocalDate</span><span class=w> </span><span class=n>joinDate</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>不加 <code>@DateTimeFormat</code> 会导成 Excel 的"序列号"格式（比如 <code>44927</code>）。</p><h3 id=5-数字精度><a href=#5-%e6%95%b0%e5%ad%97%e7%b2%be%e5%ba%a6 class=header-anchor></a>5. 数字精度</h3><p>金额最好用 <code>BigDecimal</code>，并配合：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-java data-lang=java><span class=line><span class=cl><span class=nd>@ExcelProperty</span><span class=p>(</span><span class=s>&#34;金额&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nd>@NumberFormat</span><span class=p>(</span><span class=s>&#34;#,##0.00&#34;</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kd>private</span><span class=w> </span><span class=n>BigDecimal</span><span class=w> </span><span class=n>amount</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>导出复杂结构 Excel 的核心是『先扁平、再合并、再样式』——EasyExcel 把内存压到极致，写法干净，是 Java 项目里 Excel 导出的最佳选择。</strong></p></blockquote><p>工程要点：</p><ul><li><strong>业务层把树展开成扁平行</strong>——逻辑独立、便于测试</li><li><strong>单元格合并用 WriteHandler</strong>，不要业务里自己控</li><li><strong>大数据量必须流式 + 异步</strong></li><li><strong>样式用 Strategy，列宽用自定义中文 handler</strong></li><li><strong>生产代码记得设 Content-Disposition 处理中文文件名</strong></li></ul><p>把这套吃透，下次"导出报表"不再是噩梦——是个 1 小时就能搞定的标准任务。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/easyexcel/>EasyExcel</a>
+<a href=/tags/%E9%98%BF%E9%87%8C/>阿里</a>
+<a href=/tags/excel-%E5%AF%BC%E5%87%BA/>Excel 导出</a>
+<a href=/tags/%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84/>树形结构</a>
+<a href=/tags/java/>Java</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/java-version-evolution-and-trend/><div class=article-image><img alt="Featured image of post 从 Lambda 到虚拟线程——Java 关键特性演进" loading=lazy src=/p/java-version-evolution-and-trend/cover.svg></div><div class=article-details><h2 class=article-title>从 Lambda 到虚拟线程——Java 关键特性演进</h2></div></a></article><article class=has-image><a href=/p/spring-boot-config-loading-mechanism/><div class=article-image><img alt="Featured image of post Spring Boot 配置加载机制详解" loading=lazy src=/p/spring-boot-config-loading-mechanism/cover.svg></div><div class=article-details><h2 class=article-title>Spring Boot 配置加载机制详解</h2></div></a></article><article class=has-image><a href=/p/java-mapstruct-conversion-guide/><div class=article-image><img alt="Featured image of post Java MapStruct 实战：替你写完所有 BO/DTO/VO 转换" loading=lazy src=/p/java-mapstruct-conversion-guide/cover.svg></div><div class=article-details><h2 class=article-title>Java MapStruct 实战：替你写完所有 BO/DTO/VO 转换</h2></div></a></article><article class=has-image><a href=/p/environment-post-processor-system-config/><div class=article-image><img alt="Featured image of post Spring Boot 中被低估的扩展点——EnvironmentPostProcessor" loading=lazy src=/p/environment-post-processor-system-config/cover.svg></div><div class=article-details><h2 class=article-title>Spring Boot 中被低估的扩展点——EnvironmentPostProcessor</h2></div></a></article><article class=has-image><a href=/p/spring-elasticsearch-integration/><div class=article-image><img alt="Featured image of post Spring 集成 Elasticsearch 的三种姿势与选型" loading=lazy src=/p/spring-elasticsearch-integration/cover.svg></div><div class=article-details><h2 class=article-title>Spring 集成 Elasticsearch 的三种姿势与选型</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script><div class=mermaid-modal id=mermaid-modal><div class=mermaid-modal-header><div class=mermaid-modal-controls><button data-zoom=-1>− Zoom Out</button>
+<button data-zoom=0>Reset (100%)</button>
+<button data-zoom=1>+ Zoom In</button>
+<button data-zoom=fit>Fit to Screen</button></div><button class=mermaid-modal-close id=mermaid-modal-close>✕ Close (Esc)</button></div><div class=mermaid-modal-body id=mermaid-modal-body><div class=mermaid-modal-content id=mermaid-modal-content></div></div></div><script src=https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js></script><script type=module>
+import { initMermaidPage } from '\/ts\/mermaid.js';
+initMermaidPage({"darkTheme":"dark","darkThemeVariables":{},"htmlLabels":true,"lightTheme":"default","lightThemeVariables":{},"look":"classic","securityLevel":"strict","transparentBackground":false});
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

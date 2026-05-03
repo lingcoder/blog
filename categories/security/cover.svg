@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A0A0A"/>
+      <stop offset="1" stop-color="#1A0505"/>
+    </linearGradient>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#c0392b" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 盾牌 -->
+  <g transform="translate(540,160)">
+    <path d="M 60 0 L 110 25 L 100 160 L 60 220 L 20 160 L 10 25 Z" fill="#c0392b" fill-opacity="0.2" stroke="#c0392b" stroke-width="3"/>
+    <!-- 盾内锁 -->
+    <g transform="translate(60,90)" stroke="#FFB4B4" fill="none" stroke-width="3.5">
+      <rect x="-22" y="0" width="44" height="36" rx="4"/>
+      <path d="M -14 0 V -10 a 14 14 0 0 1 28 0 V 0"/>
+    </g>
+    <text x="60" y="180" text-anchor="middle" fill="#FFB4B4" font-family="monospace" font-size="11" letter-spacing="2">SECURE</text>
+  </g>
+
+  <text x="80" y="555" fill="#FCC631" font-size="20" font-weight="700" font-family="-apple-system, sans-serif">Security</text>
+  <text x="80" y="582" fill="#FFB4B4" font-size="13" font-family="-apple-system, sans-serif" letter-spacing="3">AUTH · CRYPTO · COMPLIANCE</text>
+</svg>

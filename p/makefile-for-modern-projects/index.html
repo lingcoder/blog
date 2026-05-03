@@ -1,0 +1,452 @@
+<!doctype html><html lang=zh dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Makefile 是项目的『遥控器』——常用命令一行入口，新人 5 分钟跑起来。本文讲清楚现代项目里 Makefile 的写法和实践"><title>Makefile 在现代项目的价值与实践</title><link rel=canonical href=https://www.lingcoder.com/p/makefile-for-modern-projects/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=preload as=style href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"><link rel=stylesheet href=/scss/style.min.b732095129242e2cc6d53ba659f476b7da40a2c70e1928579884e0cb48466352.css><meta property='og:title' content="Makefile 在现代项目的价值与实践"><meta property='og:description' content="Makefile 是项目的『遥控器』——常用命令一行入口，新人 5 分钟跑起来。本文讲清楚现代项目里 Makefile 的写法和实践"><meta property='og:url' content='https://www.lingcoder.com/p/makefile-for-modern-projects/'><meta property='og:site_name' content='牛哥聊技术'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Makefile'><meta property='article:tag' content='自动化'><meta property='article:tag' content='构建'><meta property='article:tag' content='DevOps'><meta property='article:published_time' content='2020-10-22T15:00:00+08:00'><meta property='article:modified_time' content='2020-10-22T15:00:00+08:00'><meta property='og:image' content='https://www.lingcoder.com/p/makefile-for-modern-projects/cover.svg'><meta name=twitter:title content="Makefile 在现代项目的价值与实践"><meta name=twitter:description content="Makefile 是项目的『遥控器』——常用命令一行入口，新人 5 分钟跑起来。本文讲清楚现代项目里 Makefile 的写法和实践"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://www.lingcoder.com/p/makefile-for-modern-projects/cover.svg'></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar.png width=400 height=400 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>📖</span></figure><div class=site-meta><h1 class=site-name><a href=/>牛哥聊技术</a></h1><h2 class=site-description>一位 IT 追梦人</h2></div></header><ol class=menu-social><li><a href=https://www.cnblogs.com/lingcoder/ title=Cnblogs rel=me><!doctype html><svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1e3 1e3" enable-background="new 0 0 1000 1000"><g><path d="M5e2 10C229.4 10 10 229.4 10 5e2s219.4 490 490 490 490-219.4 490-490C990 229.4 770.6 10 5e2 10zM228.9 810.1c-60.4.0-109.5-49-109.5-109.5.0-60.4 49-109.5 109.5-109.5s109.5 49 109.5 109.5-49 109.5-109.5 109.5zM631.4 724.4c-.5 5.5-1.2 10.9-1.9 16.2-6.9 28.9-32.5 50.6-63.5 50.6-36.5.0-66-32.7-66-69.1.0-5.6.8-11 2.1-16.1-1.7-125.5-99.5-227.6-223.2-236.3l-6.1-.7c-.3.0-.6.0-1 0-5.2-.2-10.5-.7-15.4-2.2-26.5-8.1-45.9-32.9-45.9-62.3.0-36 28.9-65.2 64.6-65.2.3.0.6.0.9.0h.1C473 341.4 632 501.6 632 698.9c0 7.4-.3 14.7-.8 22C631.3 722.1 631.4 723.2 631.4 724.4zm243.2-60.6c-10.4 43.2-24.7 99.6-71.1 99.6-54.5.0-46.2-63.2-46.2-117.7.0-8.4 1.2-16.4 3.2-24C758 434 598 250.6 413 237.7l-34.3-5.6c-40.3-7.2-106.9-3.1-106.9-47.1.0-53.8 48.1-78.3 101.5-78.3.4.0.8.1 1.3.1.1.0.1.0.2-.1 294.5 3 503.6 199.6 503.6 494.8.0 11-.5 22-1.2 32.8.1 1.7.3 3.4.3 5.2C876.7 647.6 875.7 655.7 874.6 663.8z"/></g></svg></a></li><li><a href=https://github.com/lingcoder title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><li><a href=/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>关于</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav class=toc-nav id=TableOfContents><ol><li><a href=#为什么每个项目都该有一份-makefile>为什么每个项目都该有一份 Makefile</a></li><li><a href=#一makefile-的最小可用版>一、Makefile 的最小可用版</a></li><li><a href=#二核心概念>二、核心概念</a><ol><li><a href=#1-目标target-依赖prerequisite-命令recipe>1. 目标（target）/ 依赖（prerequisite）/ 命令（recipe）</a></li><li><a href=#2-伪目标phony>2. 伪目标（.PHONY）</a></li><li><a href=#3-变量>3. 变量</a></li><li><a href=#4-条件>4. 条件</a></li></ol></li><li><a href=#三现代项目的-makefile-模板>三、现代项目的 Makefile 模板</a><ol><li><a href=#go-项目>Go 项目</a></li><li><a href=#java-spring-boot-项目>Java Spring Boot 项目</a></li><li><a href=#前端项目>前端项目</a></li></ol></li><li><a href=#四写-makefile-的工程纪律>四、写 Makefile 的工程纪律</a><ol><li><a href=#1-命令前永远是-tab>1. 命令前永远是 Tab</a></li><li><a href=#2-所有动作目标都加-phony>2. 所有动作目标都加 .PHONY</a></li><li><a href=#3-命令前加--抑制回显>3. 命令前加 @ 抑制回显</a></li><li><a href=#4-常用变量放顶部>4. 常用变量放顶部</a></li><li><a href=#5-提供-help-目标>5. 提供 help 目标</a></li><li><a href=#6-别把环境变量硬编码>6. 别把环境变量硬编码</a></li><li><a href=#7-错误处理>7. 错误处理</a></li></ol></li><li><a href=#五进阶用法>五、进阶用法</a><ol><li><a href=#1-多目录子项目>1. 多目录子项目</a></li><li><a href=#2-多平台交叉编译>2. 多平台交叉编译</a></li><li><a href=#3-依赖检查>3. 依赖检查</a></li><li><a href=#4-include-子模块>4. include 子模块</a></li></ol></li><li><a href=#六makefile-vs-脚本-vs-npm-scripts>六、Makefile vs 脚本 vs npm scripts</a></li><li><a href=#七windows-兼容>七、Windows 兼容</a></li><li><a href=#八ci-集成>八、CI 集成</a></li><li><a href=#小结>小结</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/makefile-for-modern-projects/><img alt="Featured image of post Makefile 在现代项目的价值与实践" loading=lazy sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src=/p/makefile-for-modern-projects/cover.svg></a></div><div class=article-details><header class=article-category><a href=/categories/devops/ style=background-color:#34495e;color:#fff>DevOps</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/makefile-for-modern-projects/>Makefile 在现代项目的价值与实践</a></h2><h3 class=article-subtitle>Makefile 是项目的『遥控器』——常用命令一行入口，新人 5 分钟跑起来。本文讲清楚现代项目里 Makefile 的写法和实践</h3></div><footer class=article-meta><div class=inline-meta><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2020-10-22T15:00:00+08:00>2020-10-22</time>
+<svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 6 分钟</time></div></footer></div></header><aside class=article-toc><details><summary><div class=article-toc-title><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6-6 6"/></svg>
+<span>目录</span></div></summary><nav class=toc-nav><ol><li><a href=#为什么每个项目都该有一份-makefile>为什么每个项目都该有一份 Makefile</a></li><li><a href=#一makefile-的最小可用版>一、Makefile 的最小可用版</a></li><li><a href=#二核心概念>二、核心概念</a><ol><li><a href=#1-目标target-依赖prerequisite-命令recipe>1. 目标（target）/ 依赖（prerequisite）/ 命令（recipe）</a></li><li><a href=#2-伪目标phony>2. 伪目标（.PHONY）</a></li><li><a href=#3-变量>3. 变量</a></li><li><a href=#4-条件>4. 条件</a></li></ol></li><li><a href=#三现代项目的-makefile-模板>三、现代项目的 Makefile 模板</a><ol><li><a href=#go-项目>Go 项目</a></li><li><a href=#java-spring-boot-项目>Java Spring Boot 项目</a></li><li><a href=#前端项目>前端项目</a></li></ol></li><li><a href=#四写-makefile-的工程纪律>四、写 Makefile 的工程纪律</a><ol><li><a href=#1-命令前永远是-tab>1. 命令前永远是 Tab</a></li><li><a href=#2-所有动作目标都加-phony>2. 所有动作目标都加 .PHONY</a></li><li><a href=#3-命令前加--抑制回显>3. 命令前加 @ 抑制回显</a></li><li><a href=#4-常用变量放顶部>4. 常用变量放顶部</a></li><li><a href=#5-提供-help-目标>5. 提供 help 目标</a></li><li><a href=#6-别把环境变量硬编码>6. 别把环境变量硬编码</a></li><li><a href=#7-错误处理>7. 错误处理</a></li></ol></li><li><a href=#五进阶用法>五、进阶用法</a><ol><li><a href=#1-多目录子项目>1. 多目录子项目</a></li><li><a href=#2-多平台交叉编译>2. 多平台交叉编译</a></li><li><a href=#3-依赖检查>3. 依赖检查</a></li><li><a href=#4-include-子模块>4. include 子模块</a></li></ol></li><li><a href=#六makefile-vs-脚本-vs-npm-scripts>六、Makefile vs 脚本 vs npm scripts</a></li><li><a href=#七windows-兼容>七、Windows 兼容</a></li><li><a href=#八ci-集成>八、CI 集成</a></li><li><a href=#小结>小结</a></li></ol></nav></details></aside><section class=article-content><h2 id=为什么每个项目都该有一份-makefile><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%af%8f%e4%b8%aa%e9%a1%b9%e7%9b%ae%e9%83%bd%e8%af%a5%e6%9c%89%e4%b8%80%e4%bb%bd-makefile class=header-anchor></a>为什么每个项目都该有一份 Makefile</h2><p>很多人以为 Makefile 是 C/C++ 时代的产物——其实它在 <strong>Java / Go / Python / 前端</strong> 项目里同样好用。</p><p>它的真正价值不在"编译"，而在<strong>让项目所有日常操作都有"一行命令入口"</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make run        <span class=c1># 启动</span>
+</span></span><span class=line><span class=cl>make <span class=nb>test</span>       <span class=c1># 跑测试</span>
+</span></span><span class=line><span class=cl>make lint       <span class=c1># 静态检查</span>
+</span></span><span class=line><span class=cl>make build      <span class=c1># 构建产物</span>
+</span></span><span class=line><span class=cl>make image      <span class=c1># 打 Docker 镜像</span>
+</span></span><span class=line><span class=cl>make deploy     <span class=c1># 发布</span>
+</span></span></code></pre></td></tr></table></div></div><p>新人入职第一天看一眼 Makefile，就知道这个项目能干啥、怎么开始。<strong>没有 Makefile 的项目，新人靠口口相传或翻 README，效率差得不是一点半点</strong>。</p><p>本文讲清楚 Makefile 的核心语法、现代项目里的写法、和那些容易踩的坑。</p><hr><h2 id=一makefile-的最小可用版><a href=#%e4%b8%80makefile-%e7%9a%84%e6%9c%80%e5%b0%8f%e5%8f%af%e7%94%a8%e7%89%88 class=header-anchor></a>一、Makefile 的最小可用版</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=c># Makefile
+</span></span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>help</span> <span class=n>run</span> <span class=n>test</span> <span class=n>build</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>help</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;Available commands:&#34;</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;  make run     - Run the application&#34;</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;  make test    - Run tests&#34;</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;  make build   - Build artifact&#34;</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;  make clean   - Remove artifacts&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>run</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	go run main.go
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>test</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	go <span class=nb>test</span> ./...
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	go build -o bin/app main.go
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	rm -rf bin/
+</span></span></code></pre></td></tr></table></div></div><p>执行：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make <span class=nb>help</span>
+</span></span><span class=line><span class=cl>make <span class=nb>test</span>
+</span></span></code></pre></td></tr></table></div></div><p>⚠️ <strong>关键陷阱</strong>：Makefile 命令前<strong>必须是 Tab 字符</strong>——空格会报 <code>missing separator</code> 错误。这是 Makefile 最让人崩溃的语法点。</p><hr><h2 id=二核心概念><a href=#%e4%ba%8c%e6%a0%b8%e5%bf%83%e6%a6%82%e5%bf%b5 class=header-anchor></a>二、核心概念</h2><h3 id=1-目标target-依赖prerequisite-命令recipe><a href=#1-%e7%9b%ae%e6%a0%87target-%e4%be%9d%e8%b5%96prerequisite-%e5%91%bd%e4%bb%a4recipe class=header-anchor></a>1. 目标（target）/ 依赖（prerequisite）/ 命令（recipe）</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>target</span><span class=o>:</span> <span class=n>prerequisites</span>
+</span></span><span class=line><span class=cl>	recipe
+</span></span></code></pre></td></tr></table></div></div><p>例子：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span> <span class=n>src</span>/<span class=n>main</span>.<span class=n>go</span>
+</span></span><span class=line><span class=cl>	go build -o bin/app src/main.go
+</span></span></code></pre></td></tr></table></div></div><p>意思——&ldquo;build 这个目标依赖 main.go，要执行 <code>go build</code>"。Make 会比较 main.go 的修改时间和 bin/app 的修改时间——<strong>如果 main.go 没变，重复 <code>make build</code> 不会重新构建</strong>。</p><h3 id=2-伪目标phony><a href=#2-%e4%bc%aa%e7%9b%ae%e6%a0%87phony class=header-anchor></a>2. 伪目标（.PHONY）</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	rm -rf bin/
+</span></span></code></pre></td></tr></table></div></div><p><code>.PHONY</code> 告诉 Make——<strong>这不是一个真实文件，永远执行</strong>。否则如果项目目录里恰好有个文件叫 <code>clean</code>，<code>make clean</code> 会被识别成"clean 文件已存在，无需重做&rdquo;——什么都不做。</p><p><strong>所有"动作型"目标都要加 <code>.PHONY</code></strong>，这是工程纪律。</p><h3 id=3-变量><a href=#3-%e5%8f%98%e9%87%8f class=header-anchor></a>3. 变量</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>APP</span> <span class=o>:=</span> myapp
+</span></span><span class=line><span class=cl><span class=nv>VERSION</span> <span class=o>:=</span> <span class=k>$(</span>shell git describe --tags --always<span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>GO</span> <span class=o>:=</span> go
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=k>$(</span>GO<span class=k>)</span> build -ldflags <span class=s2>&#34;-X main.Version=</span><span class=k>$(</span>VERSION<span class=k>)</span><span class=s2>&#34;</span> -o bin/<span class=k>$(</span>APP<span class=k>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>:=</code> 是立即求值（推荐），<code>=</code> 是延迟求值（每次引用才计算，容易意外）。</p><h3 id=4-条件><a href=#4-%e6%9d%a1%e4%bb%b6 class=header-anchor></a>4. 条件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>GOOS</span> <span class=o>?=</span> linux
+</span></span><span class=line><span class=cl><span class=nv>GOARCH</span> <span class=o>?=</span> amd64
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=nv>GOOS</span><span class=o>=</span><span class=k>$(</span>GOOS<span class=k>)</span> <span class=nv>GOARCH</span><span class=o>=</span><span class=k>$(</span>GOARCH<span class=k>)</span> go build -o bin/app
+</span></span></code></pre></td></tr></table></div></div><p><code>?=</code> 表示"如果没设过就用这个默认值"——可以被命令行覆盖：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>make build <span class=nv>GOOS</span><span class=o>=</span>darwin <span class=nv>GOARCH</span><span class=o>=</span>arm64
+</span></span></code></pre></td></tr></table></div></div><hr><h2 id=三现代项目的-makefile-模板><a href=#%e4%b8%89%e7%8e%b0%e4%bb%a3%e9%a1%b9%e7%9b%ae%e7%9a%84-makefile-%e6%a8%a1%e6%9d%bf class=header-anchor></a>三、现代项目的 Makefile 模板</h2><h3 id=go-项目><a href=#go-%e9%a1%b9%e7%9b%ae class=header-anchor></a>Go 项目</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>help</span> <span class=n>run</span> <span class=n>test</span> <span class=n>test</span>-<span class=n>cover</span> <span class=n>lint</span> <span class=n>build</span> <span class=n>image</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>APP</span>        <span class=o>:=</span> myapp
+</span></span><span class=line><span class=cl><span class=nv>VERSION</span>    <span class=o>:=</span> <span class=k>$(</span>shell git describe --tags --always 2&gt;/dev/null <span class=o>||</span> <span class=nb>echo</span> <span class=s2>&#34;dev&#34;</span><span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>LDFLAGS</span>    <span class=o>:=</span> -ldflags <span class=s2>&#34;-X main.Version=</span><span class=k>$(</span>VERSION<span class=k>)</span><span class=s2> -s -w&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>DOCKER_TAG</span> <span class=o>:=</span> <span class=k>$(</span>APP<span class=k>)</span>:<span class=k>$(</span>VERSION<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>help</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;Available commands:&#34;</span>
+</span></span><span class=line><span class=cl>	@grep -E <span class=s1>&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> Makefile <span class=p>|</span> awk <span class=s1>&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;  \033[36m%-20s\033[0m %s\n&#34;, $$1, $$2}&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>run</span><span class=o>:</span> <span class=c>## 启动开发服务器
+</span></span></span><span class=line><span class=cl>	go run main.go
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>test</span><span class=o>:</span> <span class=c>## 跑单元测试
+</span></span></span><span class=line><span class=cl>	go <span class=nb>test</span> ./... -race -v
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>test-cover</span><span class=o>:</span> <span class=c>## 测试 + 覆盖率报告
+</span></span></span><span class=line><span class=cl>	go <span class=nb>test</span> ./... -coverprofile<span class=o>=</span>coverage.out
+</span></span><span class=line><span class=cl>	go tool cover -html<span class=o>=</span>coverage.out -o coverage.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>lint</span><span class=o>:</span> <span class=c>## 静态检查
+</span></span></span><span class=line><span class=cl>	golangci-lint run
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span> <span class=c>## 编译产物
+</span></span></span><span class=line><span class=cl>	<span class=nv>CGO_ENABLED</span><span class=o>=</span><span class=m>0</span> go build <span class=k>$(</span>LDFLAGS<span class=k>)</span> -o bin/<span class=k>$(</span>APP<span class=k>)</span> main.go
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>image</span><span class=o>:</span> <span class=c>## 打 Docker 镜像
+</span></span></span><span class=line><span class=cl>	docker build -t <span class=k>$(</span>DOCKER_TAG<span class=k>)</span> .
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span> <span class=c>## 清理产物
+</span></span></span><span class=line><span class=cl>	rm -rf bin/ coverage.out coverage.html
+</span></span></code></pre></td></tr></table></div></div><p><code>grep -E ... ## ...</code> 这套是个常用技巧——<strong>用注释自动生成 help</strong>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ make <span class=nb>help</span>
+</span></span><span class=line><span class=cl>Available commands:
+</span></span><span class=line><span class=cl>  run                   启动开发服务器
+</span></span><span class=line><span class=cl>  <span class=nb>test</span>                  跑单元测试
+</span></span><span class=line><span class=cl>  test-cover            测试 + 覆盖率报告
+</span></span><span class=line><span class=cl>  lint                  静态检查
+</span></span><span class=line><span class=cl>  build                 编译产物
+</span></span><span class=line><span class=cl>  image                 打 Docker 镜像
+</span></span><span class=line><span class=cl>  clean                 清理产物
+</span></span></code></pre></td></tr></table></div></div><h3 id=java-spring-boot-项目><a href=#java-spring-boot-%e9%a1%b9%e7%9b%ae class=header-anchor></a>Java Spring Boot 项目</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>help</span> <span class=n>run</span> <span class=n>test</span> <span class=n>build</span> <span class=n>image</span> <span class=n>deploy</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>APP</span>    <span class=o>:=</span> myapp
+</span></span><span class=line><span class=cl><span class=nv>PROFILE</span> <span class=o>?=</span> dev
+</span></span><span class=line><span class=cl><span class=nv>TAG</span>    <span class=o>:=</span> <span class=k>$(</span>shell git rev-parse --short HEAD<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>help</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@grep -E <span class=s1>&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> Makefile <span class=p>|</span> awk <span class=s1>&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;  %-12s %s\n&#34;, $$1, $$2}&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>run</span><span class=o>:</span> <span class=c>## 启动应用
+</span></span></span><span class=line><span class=cl>	./mvnw spring-boot:run -Dspring-boot.run.profiles<span class=o>=</span><span class=k>$(</span>PROFILE<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>test</span><span class=o>:</span> <span class=c>## 单元测试
+</span></span></span><span class=line><span class=cl>	./mvnw <span class=nb>test</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span> <span class=c>## 打 jar
+</span></span></span><span class=line><span class=cl>	./mvnw clean package -DskipTests
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>image</span><span class=o>:</span> <span class=n>build</span> <span class=c>## 打镜像
+</span></span></span><span class=line><span class=cl>	docker build -t <span class=k>$(</span>APP<span class=k>)</span>:<span class=k>$(</span>TAG<span class=k>)</span> .
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>deploy</span><span class=o>:</span> <span class=n>image</span> <span class=c>## 推送 + 部署
+</span></span></span><span class=line><span class=cl>	docker push registry.internal/<span class=k>$(</span>APP<span class=k>)</span>:<span class=k>$(</span>TAG<span class=k>)</span>
+</span></span><span class=line><span class=cl>	kubectl <span class=nb>set</span> image deploy/<span class=k>$(</span>APP<span class=k>)</span> <span class=k>$(</span>APP<span class=k>)</span><span class=o>=</span>registry.internal/<span class=k>$(</span>APP<span class=k>)</span>:<span class=k>$(</span>TAG<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	./mvnw clean
+</span></span><span class=line><span class=cl>	rm -rf target/
+</span></span></code></pre></td></tr></table></div></div><p>注意 <code>image: build</code> 这种语法——<strong>image 依赖 build</strong>，所以执行 <code>make image</code> 时会先跑 <code>make build</code>。</p><h3 id=前端项目><a href=#%e5%89%8d%e7%ab%af%e9%a1%b9%e7%9b%ae class=header-anchor></a>前端项目</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>help</span> <span class=n>dev</span> <span class=n>test</span> <span class=n>lint</span> <span class=n>build</span> <span class=n>preview</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>PM</span> <span class=o>:=</span> pnpm
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>help</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@grep -E <span class=s1>&#39;^[a-zA-Z_-]+:.*?## .*$$&#39;</span> Makefile <span class=p>|</span> awk <span class=s1>&#39;BEGIN {FS = &#34;:.*?## &#34;}; {printf &#34;  %-12s %s\n&#34;, $$1, $$2}&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>install</span><span class=o>:</span> <span class=c>## 装依赖
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> install
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>dev</span><span class=o>:</span> <span class=n>install</span> <span class=c>## 开发模式
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run dev
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>test</span><span class=o>:</span> <span class=c>## 跑测试
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run <span class=nb>test</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>lint</span><span class=o>:</span> <span class=c>## ESLint + Prettier 检查
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run lint
+</span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run format:check
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span> <span class=n>install</span> <span class=c>## 生产构建
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run build
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>preview</span><span class=o>:</span> <span class=n>build</span> <span class=c>## 预览构建产物
+</span></span></span><span class=line><span class=cl>	<span class=k>$(</span>PM<span class=k>)</span> run preview
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	rm -rf node_modules dist coverage
+</span></span></code></pre></td></tr></table></div></div><p><code>PM</code> 变量让你能在 npm/yarn/pnpm 间切换——<code>make build PM=npm</code> 即可。</p><hr><h2 id=四写-makefile-的工程纪律><a href=#%e5%9b%9b%e5%86%99-makefile-%e7%9a%84%e5%b7%a5%e7%a8%8b%e7%ba%aa%e5%be%8b class=header-anchor></a>四、写 Makefile 的工程纪律</h2><h3 id=1-命令前永远是-tab><a href=#1-%e5%91%bd%e4%bb%a4%e5%89%8d%e6%b0%b8%e8%bf%9c%e6%98%af-tab class=header-anchor></a>1. 命令前永远是 Tab</h3><p>最大的坑——空格 vs Tab。配置编辑器：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>.editorconfig:
+</span></span><span class=line><span class=cl>[Makefile]
+</span></span><span class=line><span class=cl>indent_style = tab
+</span></span><span class=line><span class=cl>indent_size = 4
+</span></span></code></pre></td></tr></table></div></div><h3 id=2-所有动作目标都加-phony><a href=#2-%e6%89%80%e6%9c%89%e5%8a%a8%e4%bd%9c%e7%9b%ae%e6%a0%87%e9%83%bd%e5%8a%a0-phony class=header-anchor></a>2. 所有动作目标都加 .PHONY</h3><p>不加的话哪天目录里有个同名文件就废了。</p><h3 id=3-命令前加--抑制回显><a href=#3-%e5%91%bd%e4%bb%a4%e5%89%8d%e5%8a%a0--%e6%8a%91%e5%88%b6%e5%9b%9e%e6%98%be class=header-anchor></a>3. 命令前加 @ 抑制回显</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>test</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@echo <span class=s2>&#34;Running tests...&#34;</span>
+</span></span><span class=line><span class=cl>	go <span class=nb>test</span> ./...
+</span></span></code></pre></td></tr></table></div></div><p>不加 <code>@</code> 的话每条命令都会先打印一遍——输出会很啰嗦。</p><h3 id=4-常用变量放顶部><a href=#4-%e5%b8%b8%e7%94%a8%e5%8f%98%e9%87%8f%e6%94%be%e9%a1%b6%e9%83%a8 class=header-anchor></a>4. 常用变量放顶部</h3><p><code>APP</code>、<code>VERSION</code>、<code>GO</code>、<code>DOCKER_TAG</code> 这种<strong>所有人改起来频繁的变量</strong>放最上面，方便修改。</p><h3 id=5-提供-help-目标><a href=#5-%e6%8f%90%e4%be%9b-help-%e7%9b%ae%e6%a0%87 class=header-anchor></a>5. 提供 help 目标</h3><p>5 行注释正则就能自动生成——这是 Makefile 体验的一半。</p><h3 id=6-别把环境变量硬编码><a href=#6-%e5%88%ab%e6%8a%8a%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e7%a1%ac%e7%bc%96%e7%a0%81 class=header-anchor></a>6. 别把环境变量硬编码</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=c># ❌ 反例
+</span></span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=nv>GOPROXY</span><span class=o>=</span>https://goproxy.cn go build
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c># ✓ 推荐
+</span></span></span><span class=line><span class=cl><span class=nv>GOPROXY</span> <span class=o>?=</span> https://goproxy.cn
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=nv>GOPROXY</span><span class=o>=</span><span class=k>$(</span>GOPROXY<span class=k>)</span> go build
+</span></span></code></pre></td></tr></table></div></div><p>新人换代理时不用改 Makefile。</p><h3 id=7-错误处理><a href=#7-%e9%94%99%e8%af%af%e5%a4%84%e7%90%86 class=header-anchor></a>7. 错误处理</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>deploy</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@./scripts/check-env.sh <span class=o>||</span> <span class=o>(</span><span class=nb>echo</span> <span class=s2>&#34;env check failed&#34;</span><span class=p>;</span> <span class=nb>exit</span> 1<span class=o>)</span>
+</span></span><span class=line><span class=cl>	kubectl apply -f deploy.yaml
+</span></span></code></pre></td></tr></table></div></div><p>链式命令默认失败就停，但单独的脚本要显式 check。</p><hr><h2 id=五进阶用法><a href=#%e4%ba%94%e8%bf%9b%e9%98%b6%e7%94%a8%e6%b3%95 class=header-anchor></a>五、进阶用法</h2><h3 id=1-多目录子项目><a href=#1-%e5%a4%9a%e7%9b%ae%e5%bd%95%e5%ad%90%e9%a1%b9%e7%9b%ae class=header-anchor></a>1. 多目录子项目</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>SUBDIRS</span> <span class=o>:=</span> api worker scheduler
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> dir in <span class=k>$(</span>SUBDIRS<span class=k>)</span><span class=p>;</span> <span class=k>do</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>		<span class=k>$(</span>MAKE<span class=k>)</span> -C <span class=nv>$$</span>dir build<span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>	<span class=k>done</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>$(MAKE) -C dir target</code> 在子目录跑 make。</p><h3 id=2-多平台交叉编译><a href=#2-%e5%a4%9a%e5%b9%b3%e5%8f%b0%e4%ba%a4%e5%8f%89%e7%bc%96%e8%af%91 class=header-anchor></a>2. 多平台交叉编译</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>PLATFORMS</span> <span class=o>:=</span> linux/amd64 linux/arm64 darwin/amd64 darwin/arm64
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>cross-build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@for p in <span class=k>$(</span>PLATFORMS<span class=k>)</span><span class=p>;</span> <span class=k>do</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>		<span class=nv>os</span><span class=o>=</span><span class=nv>$$</span><span class=o>(</span><span class=nb>echo</span> <span class=nv>$$</span>p <span class=p>|</span> cut -d/ -f1<span class=o>)</span><span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>		<span class=nv>arch</span><span class=o>=</span><span class=nv>$$</span><span class=o>(</span><span class=nb>echo</span> <span class=nv>$$</span>p <span class=p>|</span> cut -d/ -f2<span class=o>)</span><span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>		<span class=nb>echo</span> <span class=s2>&#34;Building for </span><span class=nv>$$</span><span class=s2>os/</span><span class=nv>$$</span><span class=s2>arch...&#34;</span><span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>		<span class=nv>GOOS</span><span class=o>=</span><span class=nv>$$</span>os <span class=nv>GOARCH</span><span class=o>=</span><span class=nv>$$</span>arch go build -o bin/app-<span class=nv>$$</span>os-<span class=nv>$$</span>arch<span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl>	<span class=k>done</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=3-依赖检查><a href=#3-%e4%be%9d%e8%b5%96%e6%a3%80%e6%9f%a5 class=header-anchor></a>3. 依赖检查</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>check-tools</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@command -v go &gt;/dev/null <span class=o>||</span> <span class=o>(</span><span class=nb>echo</span> <span class=s2>&#34;go not found&#34;</span><span class=p>;</span> <span class=nb>exit</span> 1<span class=o>)</span>
+</span></span><span class=line><span class=cl>	@command -v docker &gt;/dev/null <span class=o>||</span> <span class=o>(</span><span class=nb>echo</span> <span class=s2>&#34;docker not found&#34;</span><span class=p>;</span> <span class=nb>exit</span> 1<span class=o>)</span>
+</span></span><span class=line><span class=cl>	@command -v kubectl &gt;/dev/null <span class=o>||</span> <span class=o>(</span><span class=nb>echo</span> <span class=s2>&#34;kubectl not found&#34;</span><span class=p>;</span> <span class=nb>exit</span> 1<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span> <span class=n>check</span>-<span class=n>tools</span>
+</span></span><span class=line><span class=cl>	go build -o bin/app
+</span></span></code></pre></td></tr></table></div></div><h3 id=4-include-子模块><a href=#4-include-%e5%ad%90%e6%a8%a1%e5%9d%97 class=header-anchor></a>4. include 子模块</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=err>include</span> <span class=err>scripts/build.mk</span>
+</span></span><span class=line><span class=cl><span class=err>include</span> <span class=err>scripts/deploy.mk</span>
+</span></span></code></pre></td></tr></table></div></div><p>把 Makefile 拆成多个文件——主 Makefile 只声明几个高阶目标，细节在子 mk 里。</p><hr><h2 id=六makefile-vs-脚本-vs-npm-scripts><a href=#%e5%85%admakefile-vs-%e8%84%9a%e6%9c%ac-vs-npm-scripts class=header-anchor></a>六、Makefile vs 脚本 vs npm scripts</h2><div class=table-wrapper><table><thead><tr><th style=text-align:left></th><th style=text-align:left>Makefile</th><th style=text-align:left>shell 脚本</th><th style=text-align:left>package.json scripts</th></tr></thead><tbody><tr><td style=text-align:left>跨平台</td><td style=text-align:left>△ 需要 make</td><td style=text-align:left>△ 需要 bash</td><td style=text-align:left>✓</td></tr><tr><td style=text-align:left>依赖关系</td><td style=text-align:left>✓ 内建</td><td style=text-align:left>✗ 自己写</td><td style=text-align:left>✗ 自己写</td></tr><tr><td style=text-align:left>自动跳过未变</td><td style=text-align:left>✓</td><td style=text-align:left>✗</td><td style=text-align:left>✗</td></tr><tr><td style=text-align:left>可读性</td><td style=text-align:left>△ 冷门语法</td><td style=text-align:left>✓</td><td style=text-align:left>✓</td></tr><tr><td style=text-align:left>调试</td><td style=text-align:left>△</td><td style=text-align:left>✓</td><td style=text-align:left>✓</td></tr><tr><td style=text-align:left>已普及度</td><td style=text-align:left>✓ Linux 自带</td><td style=text-align:left>✓</td><td style=text-align:left>△ 仅 Node 项目</td></tr></tbody></table></div><p><strong>给一个建议：</strong></p><blockquote><p><strong>任何项目（不论语言）都该有 Makefile 作为『统一入口』</strong>——前端项目可以同时保留 package.json scripts，但 <code>make dev</code> / <code>make test</code> / <code>make build</code> 也应该能跑。这让"新人进项目"和"CI 配置"都极简。</p></blockquote><hr><h2 id=七windows-兼容><a href=#%e4%b8%83windows-%e5%85%bc%e5%ae%b9 class=header-anchor></a>七、Windows 兼容</h2><p>Makefile 在 Windows 下需要装 <code>make</code>（通过 chocolatey、Git Bash、WSL 都行）。如果团队有 Windows 用户：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=err>ifeq</span> <span class=err>(</span><span class=k>$(</span><span class=nv>OS</span><span class=k>)</span><span class=err>,Windows_NT)</span>
+</span></span><span class=line><span class=cl>	<span class=nv>RM</span> <span class=o>:=</span> rmdir /s /q
+</span></span><span class=line><span class=cl><span class=err>else</span>
+</span></span><span class=line><span class=cl>	<span class=nv>RM</span> <span class=o>:=</span> rm -rf
+</span></span><span class=line><span class=cl><span class=err>endif</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=k>$(</span>RM<span class=k>)</span> bin
+</span></span></code></pre></td></tr></table></div></div><p>或者更简单——<strong>让 Windows 用户用 WSL</strong>，业务级开发现在已经是默认配置。</p><hr><h2 id=八ci-集成><a href=#%e5%85%abci-%e9%9b%86%e6%88%90 class=header-anchor></a>八、CI 集成</h2><p>GitLab CI / GitHub Actions 直接调 make：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># .github/workflows/ci.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>jobs</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>test</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>runs-on</span><span class=p>:</span><span class=w> </span><span class=l>ubuntu-latest</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>steps</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>uses</span><span class=p>:</span><span class=w> </span><span class=l>actions/checkout@v3</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>run</span><span class=p>:</span><span class=w> </span><span class=l>make test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>run</span><span class=p>:</span><span class=w> </span><span class=l>make lint</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>run</span><span class=p>:</span><span class=w> </span><span class=l>make build</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p><strong>CI 配置文件极简——所有逻辑都在 Makefile 里</strong>。换 CI 平台（GitLab → GitHub Actions → Jenkins）只要改这一个文件，Makefile 不动。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>Makefile 不是构建工具，是『项目的遥控器』——让任何人 5 分钟看懂这个项目能做什么、怎么做。</strong></p></blockquote><p>记住几条：</p><ul><li><strong>命令前是 Tab 不是空格</strong>——这是 Makefile 第一坑</li><li><strong>所有动作目标加 <code>.PHONY</code></strong></li><li><strong>写 help 目标</strong>——用注释 + grep 自动生成</li><li><strong>变量放顶部，外部可覆盖</strong></li><li><strong>CI 直接调 make</strong>——配置文件不要重复逻辑</li></ul><p>把项目里那些"git 仓库下完不知道怎么跑"的痛点用 Makefile 一次性解决——这是最便宜的体验提升。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/makefile/>Makefile</a>
+<a href=/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/>自动化</a>
+<a href=/tags/%E6%9E%84%E5%BB%BA/>构建</a>
+<a href=/tags/devops/>DevOps</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside><h2 class=section-title>相关文章</h2><div class=subsection-list><div class=article-list--tile><article class=has-image><a href=/p/publish-go-module-to-pkg-go-dev/><div class=article-image><img alt="Featured image of post 如何把 Go 模块文档发布到 pkg.go.dev" loading=lazy src=/p/publish-go-module-to-pkg-go-dev/cover.svg></div><div class=article-details><h2 class=article-title>如何把 Go 模块文档发布到 pkg.go.dev</h2></div></a></article><article class=has-image><a href=/p/markdown-common-syntax/><div class=article-image><img alt="Featured image of post Markdown 常见语法整理" loading=lazy src=/p/markdown-common-syntax/cover.svg></div><div class=article-details><h2 class=article-title>Markdown 常见语法整理</h2></div></a></article><article class=has-image><a href=/p/git-and-github-summary/><div class=article-image><img alt="Featured image of post Git和GitHub使用总结" height=150 loading=lazy src=/p/git-and-github-summary/cover_hu_6a988a678ab34e82.jpg srcset="/p/git-and-github-summary/cover_hu_6a988a678ab34e82.jpg 1x, /p/git-and-github-summary/cover_hu_4340de9f563a0e45.jpg 2x" width=250></div><div class=article-details style="background:linear-gradient(0deg,#42320480 0%,#e6e6e5C0 100%)"><h2 class=article-title>Git和GitHub使用总结</h2></div></a></article></div></div></aside><link rel=stylesheet href=/scss/partials/comments/disqusjs.min.css><div class=disqus-container><div id=disqus_thread></div><script type=application/javascript>let disqusjs;function loadDisqusJS(){disqusjs=new DisqusJS({shortname:"lingcoder",siteName:"牛哥聊技术",apikey:"hbSd06aWxr0gG0Q5iLnamVwib1M5WOlSAhFGD02suXBzSjxAumZdHuaht4u17bTj",admin:"lingcoder"})}function lazyLoadDisqusJS(){const t=["localhost","127.0.0.1"],n=window.location.hostname;if(t.includes(n)){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}let e=document.createElement("script");e.src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js",e.async=!1,document.body.appendChild(e),e.onload=()=>{loadDisqusJS(),window.addEventListener("onColorSchemeChange",e=>{disqusjs&&loadDisqusJS()})}}let runningOnBrowser=typeof window!="undefined",isBot=runningOnBrowser&&!("onscroll"in window)||typeof navigator!="undefined"&&/(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent),supportsIntersectionObserver=runningOnBrowser&&"IntersectionObserver"in window;if(!isBot&&supportsIntersectionObserver){let e=new IntersectionObserver(function(t){t[0].isIntersecting&&(lazyLoadDisqusJS(),e.disconnect())});e.observe(document.getElementById("disqus_thread"))}else lazyLoadDisqusJS()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript></div><footer class=site-footer><section class=copyright>&copy;
+2016 -
+2026 牛哥聊技术</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=4.0.1>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><script type=module>
+    import gallery from '\/ts\/gallery.js';
+
+    const articleContent = document.querySelector('.article-content');
+    const shouldLoad = articleContent && (articleContent.querySelectorAll('figure').length > 0 || articleContent.querySelectorAll('img.gallery-image').length > 0);
+    
+    if (shouldLoad) {
+        gallery(articleContent);
+
+        const PhotoSwipeLightbox = (await import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js")).default;
+        const styleHref = "https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.css";
+
+        const styleTag = document.createElement('link');
+        styleTag.rel = 'stylesheet';
+        styleTag.href = styleHref;
+        document.head.appendChild(styleTag);
+
+        const lightbox = new PhotoSwipeLightbox({
+            gallerySelector: '.article-content',
+            childSelector: 'figure a.image-link',
+            pswpModule: () => import("https:\/\/cdn.jsdelivr.net\/npm\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js")
+        });
+        lightbox.init();
+    }
+</script></main></div><script type=text/javascript src=/ts/main.f856840516f7c2ad1769a8f5937e3d08d6cb386e2cd2dd025ae696e0ff207958.js defer></script></body></html>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE5C8"/>
+          <stop offset="0.5" stop-color="#FFB87A"/>
+          <stop offset="1" stop-color="#FF8A5C"/>
+      </linearGradient>
+      <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9CC07C"/>
+          <stop offset="1" stop-color="#5A7E3D"/>
+    </linearGradient>
+  </defs>
+
+    <rect width="1200" height="320" fill="url(#sky)"/>
+
+    <!-- Sun low -->
+    <circle cx="600" cy="280" r="58" fill="#FFE5A0" opacity="0.95"/>
+    <circle cx="600" cy="280" r="180" fill="#FFE5A0" opacity="0.18"/>
+
+    <!-- Wisp clouds -->
+    <g fill="#FFD8B5" opacity="0.6">
+        <ellipse cx="200" cy="120" rx="120" ry="6"/>
+        <ellipse cx="900" cy="80" rx="140" ry="6"/>
+        <ellipse cx="1080" cy="160" rx="100" ry="5"/>
+    </g>
+
+    <!-- Distant mountains -->
+    <path d="M 0 320 L 200 240 L 380 290 L 580 230 L 780 280 L 980 240 L 1200 290 L 1200 360 L 0 360 Z"
+          fill="#5C5870" opacity="0.55"/>
+
+    <!-- Distant tree line -->
+    <g fill="#3A5C2A" opacity="0.7">
+        <ellipse cx="80" cy="350" rx="40" ry="22"/>
+        <ellipse cx="180" cy="345" rx="50" ry="25"/>
+        <ellipse cx="290" cy="350" rx="45" ry="22"/>
+        <ellipse cx="400" cy="345" rx="55" ry="25"/>
+        <ellipse cx="520" cy="350" rx="50" ry="22"/>
+        <ellipse cx="650" cy="345" rx="45" ry="25"/>
+        <ellipse cx="780" cy="350" rx="50" ry="22"/>
+        <ellipse cx="900" cy="345" rx="55" ry="25"/>
+        <ellipse cx="1020" cy="350" rx="45" ry="22"/>
+        <ellipse cx="1140" cy="345" rx="50" ry="25"/>
+    </g>
+
+    <!-- Fields -->
+    <rect y="350" width="1200" height="280" fill="url(#field)"/>
+
+    <!-- Country road winding through -->
+    <path d="M 580 350 L 620 350 L 700 480 L 760 630 L 440 630 L 510 480 Z"
+          fill="#E0D5A8"/>
+    <!-- Road center line dashed -->
+    <g stroke="#FFFFFF" stroke-width="3" stroke-dasharray="14 10" opacity="0.85">
+        <line x1="600" y1="350" x2="600" y2="630"/>
+    </g>
+
+    <!-- Field stripes -->
+    <g stroke="#5A7E3D" stroke-width="2" opacity="0.45">
+        <path d="M 0 410 Q 200 405 400 412 T 800 408 T 1200 412"/>
+        <path d="M 0 460 Q 200 455 400 462 T 800 458 T 1200 462"/>
+        <path d="M 0 520 Q 200 515 400 522 T 800 518 T 1200 522"/>
+        <path d="M 0 580 Q 200 575 400 582 T 800 578 T 1200 582"/>
+  </g>
+
+    <!-- Lonely tree -->
+    <g transform="translate(900,440)">
+        <rect x="-4" y="0" width="8" height="55" fill="#5C3A1F"/>
+        <ellipse cx="0" cy="-15" rx="40" ry="35" fill="#3A5C2A"/>
+        <ellipse cx="-12" cy="-30" rx="30" ry="25" fill="#5A7E3D"/>
+        <ellipse cx="14" cy="-20" rx="28" ry="22" fill="#3A5C2A"/>
+  </g>
+
+    <!-- Hay bales -->
+    <g fill="#D8B570">
+        <ellipse cx="240" cy="490" rx="28" ry="20"/>
+        <ellipse cx="240" cy="490" rx="28" ry="14" fill="#A88848"/>
+        <ellipse cx="320" cy="510" rx="28" ry="20"/>
+        <ellipse cx="320" cy="510" rx="28" ry="14" fill="#A88848"/>
+  </g>
+
+    <text x="60" y="610" fill="#3A5C2A" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

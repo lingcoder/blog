@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>升级 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%8D%87%E7%BA%A7/</link><description>Recent content in 升级 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 07 Aug 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%8D%87%E7%BA%A7/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenZeppelin Contracts 5.0 的关键变化</title><link>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</link><pubDate>Thu, 07 Aug 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</guid><description>&lt;img src="https://www.lingcoder.com/p/openzeppelin-5-major-changes/cover.svg" alt="Featured image of post OpenZeppelin Contracts 5.0 的关键变化" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… &lt;strong&gt;几乎每个生产级合约项目都依赖它&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;2023 年 10 月发布的 &lt;strong&gt;5.0&lt;/strong&gt; 是它自 4.0 之后最大的一次主版本升级——&lt;strong&gt;不只是 bug 修复&lt;/strong&gt;，而是对 API、安全模型、模块组织的全面重塑。&lt;/p&gt;
+&lt;p&gt;本文讲清楚 5.0 的核心变化、升级要踩的坑、新特性的工程价值。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一最大变化solidity-0820-基线"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%a4%a7%e5%8f%98%e5%8c%96solidity-0820-%e5%9f%ba%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;一、最大变化：Solidity 0.8.20+ 基线
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin 5.0 要求 &lt;strong&gt;Solidity ^0.8.20&lt;/strong&gt;——意味着几个旧版本必须放弃：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;pragma solidity ^0.8.0&lt;/code&gt; 不够了&lt;/li&gt;
+&lt;li&gt;升级编译器同时要校对每个 mixin/inherit&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;升 Solidity 版本通常是个连锁反应——所有依赖的第三方库也要兼容。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二ownable-必须传-initialowner"&gt;&lt;a href="#%e4%ba%8cownable-%e5%bf%85%e9%a1%bb%e4%bc%a0-initialowner" class="header-anchor"&gt;&lt;/a&gt;二、Ownable 必须传 &lt;code&gt;initialOwner&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;最容易踩的小坑——&lt;code&gt;Ownable&lt;/code&gt; 构造函数变了：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 4.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyContract&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Ownable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt; &lt;span class="c1"&gt;// 自动用 msg.sender 作为 owner
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyContract&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Ownable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;initialOwner&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;Ownable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initialOwner&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt; &lt;span class="c1"&gt;// 必须显式传
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为什么改？——&lt;strong&gt;因为 &lt;code&gt;msg.sender&lt;/code&gt; 在 deployer 用 factory 模式时往往不是真实的 owner&lt;/strong&gt;。强制显式传 owner，**避免&amp;quot;工厂部署却把 owner 设成工厂&amp;quot;**这类隐蔽 bug。&lt;/p&gt;
+&lt;p&gt;升级时所有 Ownable 的子合约构造函数都要改。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三accesscontrol-的角色管理变了"&gt;&lt;a href="#%e4%b8%89accesscontrol-%e7%9a%84%e8%a7%92%e8%89%b2%e7%ae%a1%e7%90%86%e5%8f%98%e4%ba%86" class="header-anchor"&gt;&lt;/a&gt;三、AccessControl 的角色管理变了
+&lt;/h2&gt;&lt;h3 id="_grantrole-移到-internal"&gt;&lt;a href="#_grantrole-%e7%a7%bb%e5%88%b0-internal" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;_grantRole&lt;/code&gt; 移到 internal
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 4.x：_setupRole 用于初始化阶段
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_setupRole&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_ADMIN_ROLE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x：_setupRole 删除，统一用 _grantRole
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_grantRole&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;DEFAULT_ADMIN_ROLE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;sender&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;_setupRole&lt;/code&gt; 这个&amp;quot;专门为初始化用&amp;quot;的函数被合并——&lt;strong&gt;减少 API 表面&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="hasrole-行为不变但-getrolemembercount--getrolemember-移到了-accesscontrolenumerable"&gt;&lt;a href="#hasrole-%e8%a1%8c%e4%b8%ba%e4%b8%8d%e5%8f%98%e4%bd%86-getrolemembercount--getrolemember-%e7%a7%bb%e5%88%b0%e4%ba%86-accesscontrolenumerable" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;hasRole&lt;/code&gt; 行为不变，但 &lt;code&gt;getRoleMemberCount&lt;/code&gt; / &lt;code&gt;getRoleMember&lt;/code&gt; 移到了 &lt;code&gt;AccessControlEnumerable&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;如果你需要枚举角色成员，必须显式继承 &lt;code&gt;AccessControlEnumerable&lt;/code&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四erc20-的-_beforetokentransfer--_aftertokentransfer-删除"&gt;&lt;a href="#%e5%9b%9berc20-%e7%9a%84-_beforetokentransfer--_aftertokentransfer-%e5%88%a0%e9%99%a4" class="header-anchor"&gt;&lt;/a&gt;四、ERC20 的 &lt;code&gt;_beforeTokenTransfer&lt;/code&gt; / &lt;code&gt;_afterTokenTransfer&lt;/code&gt; 删除
+&lt;/h2&gt;&lt;p&gt;4.x 钩子模型：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;_beforeTokenTransfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;internal&lt;/span&gt; &lt;span class="k"&gt;virtual&lt;/span&gt; &lt;span class="k"&gt;override&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_beforeTokenTransfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;5.x 简化为单个 &lt;code&gt;_update&lt;/code&gt; 钩子：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;_update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;internal&lt;/span&gt; &lt;span class="k"&gt;virtual&lt;/span&gt; &lt;span class="k"&gt;override&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 在这里加自定义逻辑
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;为什么改&lt;/strong&gt;——钩子分前后两个增加了心智负担和 Gas 开销，单个 &lt;code&gt;_update&lt;/code&gt; 函数已经覆盖所有需求。&lt;/p&gt;
+&lt;p&gt;升级时所有自定义 ERC20 / ERC721 都要把 hook 重写。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五safeerc20-的简化"&gt;&lt;a href="#%e4%ba%94safeerc20-%e7%9a%84%e7%ae%80%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;五、SafeERC20 的简化
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 4.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;SafeERC20&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;safeTransfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;SafeERC20&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;safeApprove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;spender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ⚠️ 已弃用
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;safeTransfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 用 using for
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;forceApprove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;spender&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 替代 safeApprove
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;safeApprove&lt;/code&gt; 因为重入 + 兼容性问题被废除——&lt;strong&gt;&lt;code&gt;forceApprove&lt;/code&gt; 通过先 approve(0) 再 approve(amount) 解决&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六proxy--upgradeability-的整理"&gt;&lt;a href="#%e5%85%adproxy--upgradeability-%e7%9a%84%e6%95%b4%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;六、Proxy / Upgradeability 的整理
+&lt;/h2&gt;&lt;h3 id="升级合约用-erc-1967-原生槽"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e5%90%88%e7%ba%a6%e7%94%a8-erc-1967-%e5%8e%9f%e7%94%9f%e6%a7%bd" class="header-anchor"&gt;&lt;/a&gt;升级合约用 ERC-1967 原生槽
+&lt;/h3&gt;&lt;p&gt;5.x 完全用 EIP-1967 标准槽（不再有自定义实现）——&lt;strong&gt;所有可升级合约都用同一套 storage slot&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="initializable-的-_disableinitializers"&gt;&lt;a href="#initializable-%e7%9a%84-_disableinitializers" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;Initializable&lt;/code&gt; 的 &lt;code&gt;_disableInitializers&lt;/code&gt;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_disableInitializers&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// 防止 implementation 合约被攻击者初始化
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这是必须做的——&lt;strong&gt;否则 implementation 合约本身可能被外部直接 init&lt;/strong&gt;（Parity Wallet 2017 年就因为这个被 self-destruct，14 万 ETH 永久冻结）。5.x 的 &lt;code&gt;Initializable&lt;/code&gt; 加了更严格的检查。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七新增模块"&gt;&lt;a href="#%e4%b8%83%e6%96%b0%e5%a2%9e%e6%a8%a1%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;七、新增模块
+&lt;/h2&gt;&lt;h3 id="multicall"&gt;&lt;a href="#multicall" class="header-anchor"&gt;&lt;/a&gt;Multicall
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyContract&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Multicall&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 一笔交易里调多个本合约函数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;multicall&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encodeCall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MyContract&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;func1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(...)),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nb"&gt;abi&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encodeCall&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MyContract&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;func2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(...))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;节省 Gas、保证原子性&lt;/strong&gt;——很多 DeFi 协议自己实现 Multicall，5.x 提供了官方版本。&lt;/p&gt;
+&lt;h3 id="nonces"&gt;&lt;a href="#nonces" class="header-anchor"&gt;&lt;/a&gt;Nonces
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyContract&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Nonces&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 防 replay 的 nonce 管理标准化
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;nonce&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_useNonce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;ERC-2612 permit、EIP-712 签名场景的标配。&lt;/p&gt;
+&lt;h3 id="erc4337账户抽象"&gt;&lt;a href="#erc4337%e8%b4%a6%e6%88%b7%e6%8a%bd%e8%b1%a1" class="header-anchor"&gt;&lt;/a&gt;ERC4337（账户抽象）
+&lt;/h3&gt;&lt;p&gt;5.x 提供基础组件，&lt;strong&gt;让你能更容易地实现 ERC-4337 智能账户&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="erc2771-forwarder"&gt;&lt;a href="#erc2771-forwarder" class="header-anchor"&gt;&lt;/a&gt;ERC2771 Forwarder
+&lt;/h3&gt;&lt;p&gt;支持 meta-transaction（用户不付 Gas，relayer 代发）。&lt;/p&gt;
+&lt;h3 id="erc-7201-命名空间存储namespaced-storage"&gt;&lt;a href="#erc-7201-%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4%e5%ad%98%e5%82%a8namespaced-storage" class="header-anchor"&gt;&lt;/a&gt;ERC-7201 命名空间存储（Namespaced Storage）
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;contracts-upgradeable&lt;/code&gt; 包里全面改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
+ &gt;ERC-7201&lt;/a&gt; 命名空间存储布局，&lt;strong&gt;取代原来的 &lt;code&gt;__gap&lt;/code&gt; 模式&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x 风格
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;/// @custom:storage-location erc7201:openzeppelin.storage.MyContract
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="nc"&gt;MyContractStorage&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="nb"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;每个合约的 storage 字段被收进一个独立 struct，slot 由 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生——&lt;strong&gt;升级加字段不再受顺序约束&lt;/strong&gt;，老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移过来要小心 storage layout 兼容。这是 5.x 在升级合约存储模型上最大的改动。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八删除的东西"&gt;&lt;a href="#%e5%85%ab%e5%88%a0%e9%99%a4%e7%9a%84%e4%b8%9c%e8%a5%bf" class="header-anchor"&gt;&lt;/a&gt;八、删除的东西
+&lt;/h2&gt;&lt;h3 id="1-一些低使用率的工具"&gt;&lt;a href="#1-%e4%b8%80%e4%ba%9b%e4%bd%8e%e4%bd%bf%e7%94%a8%e7%8e%87%e7%9a%84%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;1. 一些低使用率的工具
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;MerkleProof&lt;/code&gt; 内部实现优化，但 API 兼容；&lt;code&gt;Address.isContract&lt;/code&gt; 删除（用 &lt;code&gt;code.length &amp;gt; 0&lt;/code&gt; 替代）。&lt;/p&gt;
+&lt;h3 id="2-counters-库"&gt;&lt;a href="#2-counters-%e5%ba%93" class="header-anchor"&gt;&lt;/a&gt;2. &lt;code&gt;Counters&lt;/code&gt; 库
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 4.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;using&lt;/span&gt; &lt;span class="n"&gt;Counters&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;Counters&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;Counters&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt; &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;_id&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_id&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;increment&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="k"&gt;private&lt;/span&gt; &lt;span class="n"&gt;_id&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_id&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;随着 Solidity 0.8+ 内置溢出检查，&lt;code&gt;Counters&lt;/code&gt; 已经没意义——&lt;strong&gt;直接用 uint256 + ++&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-addressfunctiondelegatecall"&gt;&lt;a href="#3-addressfunctiondelegatecall" class="header-anchor"&gt;&lt;/a&gt;3. &lt;code&gt;Address.functionDelegateCall&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;整体 &lt;code&gt;Address&lt;/code&gt; 库被简化——某些 helper 函数移除或重命名。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九governor-的全面重构"&gt;&lt;a href="#%e4%b9%9dgovernor-%e7%9a%84%e5%85%a8%e9%9d%a2%e9%87%8d%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;九、Governor 的全面重构
+&lt;/h2&gt;&lt;p&gt;DAO 治理的 &lt;code&gt;Governor&lt;/code&gt; 模块——4.x 的复杂度被 5.x 大幅简化：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.x
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyGovernor&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;Governor&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GovernorSettings&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GovernorCountingSimple&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GovernorVotes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GovernorVotesQuorumFraction&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;GovernorTimelockControl&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="p"&gt;...&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;mixin 数量更精简、API 更一致——&lt;strong&gt;做 DAO 的项目必看&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十安全增强"&gt;&lt;a href="#%e5%8d%81%e5%ae%89%e5%85%a8%e5%a2%9e%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;十、安全增强
+&lt;/h2&gt;&lt;h3 id="1-更严格的-reentrancy-检查"&gt;&lt;a href="#1-%e6%9b%b4%e4%b8%a5%e6%a0%bc%e7%9a%84-reentrancy-%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;1. 更严格的 reentrancy 检查
+&lt;/h3&gt;&lt;p&gt;5.0 的 &lt;code&gt;ReentrancyGuard&lt;/code&gt; 仍是普通 storage 实现（5.0 发布时 EIP-1153 transient storage 还未上链；EIP-1153 随 Cancun 升级在 2024-03 才上线主网）。&lt;strong&gt;5.1（2024-10）之后&lt;/strong&gt;新增了独立的 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt; 合约——基于 EIP-1153 transient storage，gas 显著降低（普通版热槽约 5000 gas，transient 版约 200 gas）。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.0+：普通版
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts/utils/ReentrancyGuard.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 5.1+：transient 版（更省 gas，但需 EVM 支持 EIP-1153）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-permit-标准化"&gt;&lt;a href="#2-permit-%e6%a0%87%e5%87%86%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;2. Permit 标准化
+&lt;/h3&gt;&lt;p&gt;ERC-2612 (permit) 在 5.x 默认开启更严格的签名校验。&lt;/p&gt;
+&lt;h3 id="3-改进的-ecdsa-验证"&gt;&lt;a href="#3-%e6%94%b9%e8%bf%9b%e7%9a%84-ecdsa-%e9%aa%8c%e8%af%81" class="header-anchor"&gt;&lt;/a&gt;3. 改进的 ECDSA 验证
+&lt;/h3&gt;&lt;p&gt;签名相关的工具类（&lt;code&gt;ECDSA&lt;/code&gt;、&lt;code&gt;SignatureChecker&lt;/code&gt;）的 API 更清晰，&lt;strong&gt;避免 &lt;code&gt;recover&lt;/code&gt; 返回 0 地址不被察觉的隐患&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一升级实战-checklist"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%8d%87%e7%ba%a7%e5%ae%9e%e6%88%98-checklist" class="header-anchor"&gt;&lt;/a&gt;十一、升级实战 Checklist
+&lt;/h2&gt;&lt;p&gt;老项目升 5.x 的清单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;Solidity 升到 0.8.20+&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;&lt;code&gt;Ownable&lt;/code&gt; 子合约改构造函数&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;&lt;code&gt;_setupRole&lt;/code&gt; → &lt;code&gt;_grantRole&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;&lt;code&gt;_beforeTokenTransfer&lt;/code&gt; / &lt;code&gt;_afterTokenTransfer&lt;/code&gt; → &lt;code&gt;_update&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;&lt;code&gt;safeApprove&lt;/code&gt; → &lt;code&gt;forceApprove&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;删除 &lt;code&gt;Counters&lt;/code&gt;，用 uint256 +1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;删除 &lt;code&gt;Address.isContract&lt;/code&gt;，用 &lt;code&gt;addr.code.length &amp;gt; 0&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;可升级合约的 implementation 加 &lt;code&gt;_disableInitializers()&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;Governor 子合约重写&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;strong&gt;完整跑 audits / tests&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;工具：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 用 OpenZeppelin 的 upgrade tool&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;npx @openzeppelin/upgrades migrate
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;未必能自动改全——&lt;strong&gt;手工 review 仍然必须&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十二新项目的最佳实践"&gt;&lt;a href="#%e5%8d%81%e4%ba%8c%e6%96%b0%e9%a1%b9%e7%9b%ae%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;十二、新项目的最佳实践
+&lt;/h2&gt;&lt;p&gt;如果你是从 0 起步——&lt;strong&gt;直接用 5.x&lt;/strong&gt;。几条建议：&lt;/p&gt;
+&lt;h3 id="1-用-erc-1967-标准的可升级合约"&gt;&lt;a href="#1-%e7%94%a8-erc-1967-%e6%a0%87%e5%87%86%e7%9a%84%e5%8f%af%e5%8d%87%e7%ba%a7%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;1. 用 ERC-1967 标准的可升级合约
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;contract&lt;/span&gt; &lt;span class="nc"&gt;MyContract&lt;/span&gt; &lt;span class="k"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Initializable&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;OwnableUpgradeable&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;/// @custom:oz-upgrades-unsafe-allow constructor
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;constructor&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_disableInitializers&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// ⚠️ 必加：防止 implementation 合约被外部 init
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;initialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;initialOwner&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;initializer&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;__Ownable_init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initialOwner&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-永远-_disableinitializers"&gt;&lt;a href="#2-%e6%b0%b8%e8%bf%9c-_disableinitializers" class="header-anchor"&gt;&lt;/a&gt;2. 永远 &lt;code&gt;_disableInitializers()&lt;/code&gt;
+&lt;/h3&gt;&lt;h3 id="3-用-using-safeerc20-for-ierc20"&gt;&lt;a href="#3-%e7%94%a8-using-safeerc20-for-ierc20" class="header-anchor"&gt;&lt;/a&gt;3. 用 &lt;code&gt;using SafeERC20 for IERC20&lt;/code&gt;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;using&lt;/span&gt; &lt;span class="n"&gt;SafeERC20&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;IERC20&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;token&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;safeTransfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="4-reentrancyguard-默认启用"&gt;&lt;a href="#4-reentrancyguard-%e9%bb%98%e8%ae%a4%e5%90%af%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;4. ReentrancyGuard 默认启用
+&lt;/h3&gt;&lt;p&gt;任何接收/转账函数加 &lt;code&gt;nonReentrant&lt;/code&gt;——&lt;strong&gt;5.1+ 优先用 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt;（transient storage 版，每次开销约 200 gas），5.0 用普通版（gas 量级与 4.x 同）&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="5-关注-eip-712-签名"&gt;&lt;a href="#5-%e5%85%b3%e6%b3%a8-eip-712-%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;5. 关注 EIP-712 签名
+&lt;/h3&gt;&lt;p&gt;权限调用 / 用户授权 / meta-tx——签名相关都用 OpenZeppelin 的 EIP-712 实现，别自己造。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十三为什么这次升级值得"&gt;&lt;a href="#%e5%8d%81%e4%b8%89%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e6%ac%a1%e5%8d%87%e7%ba%a7%e5%80%bc%e5%be%97" class="header-anchor"&gt;&lt;/a&gt;十三、为什么这次升级值得
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin 4.x 系列已经是事实标准——&lt;strong&gt;5.x 升级带来的不是惊艳新功能，而是『更精简、更安全、更现代』&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;具体收益：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;代码量减少&lt;/strong&gt;：单个 &lt;code&gt;_update&lt;/code&gt; 替代两个 hook&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更小 Gas&lt;/strong&gt;：transient storage、内置优化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;避免历史坑&lt;/strong&gt;：&lt;code&gt;forceApprove&lt;/code&gt;、&lt;code&gt;_disableInitializers&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DAO 治理更易用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新场景支持&lt;/strong&gt;：ERC-4337、Multicall&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;OpenZeppelin 5.0 不是『可选的小升级』——它是 Solidity 0.8.20+ 时代的事实标准，新项目应该直接采用，老项目应该规划迁移。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Ownable&lt;/code&gt; 构造函数必传 owner&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ERC20 hook 改为 &lt;code&gt;_update&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;safeApprove&lt;/code&gt; 用 &lt;code&gt;forceApprove&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Counters 删除，直接 uint256&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;可升级合约必加 &lt;code&gt;_disableInitializers&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;永远去 OpenZeppelin GitHub 看 release notes&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;智能合约的&amp;quot;代码即资金&amp;quot;特性意味着——&lt;strong&gt;用过期的库 = 用过期的安全保护&lt;/strong&gt;。OpenZeppelin 5.x 是当下应该用的版本。&lt;/p&gt;</description></item><item><title>Spring Boot 3 与 Spring 6 的变化与迁移</title><link>https://www.lingcoder.com/p/spring-boot-3-and-spring-6/</link><pubDate>Tue, 17 Jun 2025 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-3-and-spring-6/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-3-and-spring-6/cover.svg" alt="Featured image of post Spring Boot 3 与 Spring 6 的变化与迁移" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3.0 / Spring 6.0 在 2022 年 11 月发布，是 Spring 自 Spring 4.0 以来&lt;strong&gt;最大的一次跃迁&lt;/strong&gt;。它不只是版本号 +1——而是整个技术栈的重新对齐：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java 17 是最低基线&lt;/strong&gt;——告别 Java 8/11&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;从 javax 到 jakarta&lt;/strong&gt;——命名空间彻底切换&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GraalVM 原生镜像支持&lt;/strong&gt;——启动时间从秒级到毫秒级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内置 Observability&lt;/strong&gt;——Micrometer + OTel&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Servlet 6.0 / Jakarta EE 10&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文讲清楚这些变化、为什么这么变、升级要踩什么坑、什么场景该升、什么场景缓一缓。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一最大的变化javax--jakarta"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%a4%a7%e7%9a%84%e5%8f%98%e5%8c%96javax--jakarta" class="header-anchor"&gt;&lt;/a&gt;一、最大的变化：javax → jakarta
+&lt;/h2&gt;&lt;p&gt;这是最容易踩的坑——所有从 &lt;code&gt;javax.&lt;/code&gt; 开始的标准库包名都改成了 &lt;code&gt;jakarta.&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Spring Boot 2.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.servlet.http.HttpServletRequest&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.persistence.Entity&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.validation.constraints.NotNull&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;javax.annotation.Resource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Spring Boot 3.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.servlet.http.HttpServletRequest&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.persistence.Entity&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.validation.constraints.NotNull&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nn"&gt;jakarta.annotation.Resource&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="为什么改"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%94%b9" class="header-anchor"&gt;&lt;/a&gt;为什么改
+&lt;/h3&gt;&lt;p&gt;Java EE 在 2017 年捐给 Eclipse 基金会成为 Jakarta EE。2019 年 Oracle 正式禁止 Eclipse 在新版本中继续使用 &lt;code&gt;javax.*&lt;/code&gt;——所以从 Jakarta EE 9 开始全部改成 &lt;code&gt;jakarta.*&lt;/code&gt;。Spring 6 跟着改。&lt;/p&gt;
+&lt;h3 id="升级痛点"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e7%97%9b%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;升级痛点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;依赖的第三方库要全是 Jakarta 兼容版本&lt;/strong&gt;——MyBatis、Hibernate、Druid、各种 starter 都要升级&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大量 import 要批量替换&lt;/strong&gt;——IDE 有自动迁移工具，但要 review&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;老的 javax 库没升级 → 直接编译失败&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果项目里有依赖&lt;strong&gt;仍在用 javax&lt;/strong&gt;——升 Spring Boot 3 之前必须先确认所有依赖都有兼容版本。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二java-17-最低基线"&gt;&lt;a href="#%e4%ba%8cjava-17-%e6%9c%80%e4%bd%8e%e5%9f%ba%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;二、Java 17 最低基线
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 强制 &lt;strong&gt;Java 17+&lt;/strong&gt;——告别 Java 8/11。&lt;/p&gt;
+&lt;h3 id="java-17-给你的礼物"&gt;&lt;a href="#java-17-%e7%bb%99%e4%bd%a0%e7%9a%84%e7%a4%bc%e7%89%a9" class="header-anchor"&gt;&lt;/a&gt;Java 17 给你的礼物
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Records（数据载体）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;record&lt;/span&gt; &lt;span class="nc"&gt;UserDTO&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;age&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Sealed classes&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;sealed&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;Shape&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;permits&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Circle&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Square&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Pattern matching for instanceof&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;obj&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;instanceof&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;length&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Switch expressions&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;status&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;A&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Active&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;case&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;I&amp;#34;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Inactive&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;Unknown&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;};&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Text blocks（多行字符串）&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;name&amp;#34;: &amp;#34;test&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;age&amp;#34;: 30
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; &amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这些特性早几年就有，但&lt;strong&gt;Spring Boot 3 让你必须用 Java 17&lt;/strong&gt;——团队终于有理由全员升级。&lt;/p&gt;
+&lt;h3 id="升级痛点-1"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e7%97%9b%e7%82%b9-1" class="header-anchor"&gt;&lt;/a&gt;升级痛点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Java 8/11 的 build 脚本要改&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;某些第三方库（特别是字节码操作类）要升级&lt;/strong&gt;——CGLIB、ASM、Lombok 等&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JVM 参数有变化&lt;/strong&gt;——某些 Java 8 时代的参数被废除&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三原生镜像启动速度的革命"&gt;&lt;a href="#%e4%b8%89%e5%8e%9f%e7%94%9f%e9%95%9c%e5%83%8f%e5%90%af%e5%8a%a8%e9%80%9f%e5%ba%a6%e7%9a%84%e9%9d%a9%e5%91%bd" class="header-anchor"&gt;&lt;/a&gt;三、原生镜像：启动速度的革命
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 内置 &lt;strong&gt;GraalVM 原生镜像&lt;/strong&gt;支持——把 JVM 应用编译成单个原生二进制：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./mvnw native:compile
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./target/myapp &lt;span class="c1"&gt;# 启动！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="性能对比"&gt;&lt;a href="#%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;性能对比
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;标准 JVM&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;原生镜像&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;启动时间&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5-30 秒&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;30-100ms&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;内存占用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;200-500 MB&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;30-80 MB&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;峰值性能&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;高（JIT 优化）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中（AOT 编译）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;编译时间&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;秒级&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;几分钟&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;镜像体积&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;JAR + JDK&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;单二进制&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="适用场景"&gt;&lt;a href="#%e9%80%82%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;适用场景
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Serverless / FaaS&lt;/strong&gt;——冷启动毫秒级，函数计算成本大降&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CLI 工具&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;K8s 短生命周期 Pod&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;资源受限环境&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="不适合"&gt;&lt;a href="#%e4%b8%8d%e9%80%82%e5%90%88" class="header-anchor"&gt;&lt;/a&gt;不适合
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;峰值性能敏感&lt;/strong&gt;——AOT 编译没 JIT 优化空间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大量动态特性&lt;/strong&gt;（反射、动态代理）——需要额外配置元数据&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;依赖很多的项目&lt;/strong&gt;——编译时间长得受不了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;GraalVM 是杀手锏但不是银弹——&lt;strong&gt;多数业务系统暂时不需要&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四observability-一等公民"&gt;&lt;a href="#%e5%9b%9bobservability-%e4%b8%80%e7%ad%89%e5%85%ac%e6%b0%91" class="header-anchor"&gt;&lt;/a&gt;四、Observability 一等公民
+&lt;/h2&gt;&lt;p&gt;Spring Boot 3 把可观测性提到了前所未有的高度——内置 &lt;strong&gt;Micrometer Observation API&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ObservedAspect&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;observedAspect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ObservationRegistry&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;registry&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;new&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ObservedAspect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;registry&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Service&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;OrderService&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Observed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;order.create&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OrderDTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dto&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 自动产生 metrics + traces + logs&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;@Observed&lt;/code&gt; 自动产出：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Metrics&lt;/strong&gt;：Prometheus 抓取&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Traces&lt;/strong&gt;：OpenTelemetry 上报到 Tempo/Jaeger&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logs&lt;/strong&gt;：结构化日志带 trace_id&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;统一的 Observability 模型&lt;/strong&gt;——以前要分别配 Micrometer + Sleuth + 自定义 logger，现在一个注解搞定。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五http-interface声明式-http-客户端"&gt;&lt;a href="#%e4%ba%94http-interface%e5%a3%b0%e6%98%8e%e5%bc%8f-http-%e5%ae%a2%e6%88%b7%e7%ab%af" class="header-anchor"&gt;&lt;/a&gt;五、HTTP Interface：声明式 HTTP 客户端
+&lt;/h2&gt;&lt;p&gt;Spring 6 引入&lt;strong&gt;声明式 HTTP 客户端&lt;/strong&gt;——类似 Feign 但内置：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;interface&lt;/span&gt; &lt;span class="nc"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@GetExchange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/users/{id}&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@PathVariable&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@PostExchange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;/users&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;@RequestBody&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserDTO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;dto&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;Builder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;HttpServiceProxyFactory&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;factory&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;HttpServiceProxyFactory&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;builderFor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;WebClientAdapter&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;baseUrl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://api.com&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;()))&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;factory&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;createClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;不需要再引 Feign——&lt;strong&gt;官方原生支持&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六problem-details-rfc-7807"&gt;&lt;a href="#%e5%85%adproblem-details-rfc-7807" class="header-anchor"&gt;&lt;/a&gt;六、Problem Details (RFC 7807)
+&lt;/h2&gt;&lt;p&gt;错误响应标准化——返回 &lt;code&gt;application/problem+json&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;type&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;https://example.com/probs/insufficient-balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;title&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Insufficient balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;status&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;detail&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Balance is 100, required 500&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;instance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/orders/12345&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@ExceptionHandler&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InsufficientBalanceException&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;InsufficientBalanceException&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;ProblemDetail&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;forStatusAndDetail&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BAD_REQUEST&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getMessage&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setType&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;URI&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;https://example.com/probs/insufficient-balance&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业内标准——前端能用统一姿势处理。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七虚拟线程spring-boot-32"&gt;&lt;a href="#%e4%b8%83%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8bspring-boot-32" class="header-anchor"&gt;&lt;/a&gt;七、虚拟线程（Spring Boot 3.2+）
+&lt;/h2&gt;&lt;p&gt;JDK 21 GA 了虚拟线程——Spring Boot 3.2+ 一键启用：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;threads&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;virtual&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;enabled&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;效果：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Tomcat 每个请求一个虚拟线程&lt;/li&gt;
+&lt;li&gt;阻塞 IO 不再占用 OS 线程&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;传统 MVC 风格代码 + 虚拟线程 = WebFlux 的吞吐&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;很多人会问&amp;quot;还要不要 WebFlux？&amp;quot;——&lt;strong&gt;虚拟线程让传统 MVC 代码用接近 WebFlux 的吞吐量服务高并发，且没学习曲线&lt;/strong&gt;。WebFlux 的位置开始变窄。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八其他变化清单"&gt;&lt;a href="#%e5%85%ab%e5%85%b6%e4%bb%96%e5%8f%98%e5%8c%96%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、其他变化清单
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;删除 Java 8 / 11 支持&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除 Spring MVC 老的 path matcher&lt;/strong&gt;（默认走 PathPattern）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新的 PropertyResolver&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CRaC（Coordinated Restore at Checkpoint）&lt;/strong&gt;：JVM 状态快照恢复，再降启动时间&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/2 H2C 支持改进&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AOT 编译预处理&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更好的 SQL DSL（Spring Data 改进）&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="九升级实战清单"&gt;&lt;a href="#%e4%b9%9d%e5%8d%87%e7%ba%a7%e5%ae%9e%e6%88%98%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;九、升级实战清单
+&lt;/h2&gt;&lt;h3 id="评估期"&gt;&lt;a href="#%e8%af%84%e4%bc%b0%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;评估期
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 列出所有依赖，确认全部有 Spring Boot 3 / Jakarta 兼容版本&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 确认 Java 17+ 在所有环境（dev、test、prod、CI）可用&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 评估 javax → jakarta 替换工作量&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 检查是否用了将被废弃的 API（如 WebSecurityConfigurerAdapter）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="升级期"&gt;&lt;a href="#%e5%8d%87%e7%ba%a7%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;升级期
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;升 JDK 到 17&lt;/strong&gt;（独立做，验证业务正常）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量替换 javax → jakarta&lt;/strong&gt;（IDE 工具或 OpenRewrite）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;升 Spring Boot 3.0 → 3.x 最新版&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;升所有第三方依赖&lt;/strong&gt;到 Jakarta 兼容版&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修编译错误 + 测试&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Security 改为新 SecurityFilterChain 写法&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;开启 Observability 替换老的 Sleuth&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="验证期"&gt;&lt;a href="#%e9%aa%8c%e8%af%81%e6%9c%9f" class="header-anchor"&gt;&lt;/a&gt;验证期
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;全量回归测试&lt;/li&gt;
+&lt;li&gt;性能基准比对（启动时间、内存、QPS）&lt;/li&gt;
+&lt;li&gt;灰度发布&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="迁移工具"&gt;&lt;a href="#%e8%bf%81%e7%a7%bb%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;迁移工具
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;OpenRewrite&lt;/strong&gt;：&lt;a class="link" href="https://github.com/openrewrite/rewrite-spring" target="_blank" rel="noopener"
+ &gt;github.com/openrewrite/rewrite-spring&lt;/a&gt; 自动改大部分代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot Migrator&lt;/strong&gt;：官方工具&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IntelliJ IDEA&lt;/strong&gt;：内置 jakarta 替换重构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十什么场景该升--什么场景缓一缓"&gt;&lt;a href="#%e5%8d%81%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e5%8d%87--%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e7%bc%93%e4%b8%80%e7%bc%93" class="header-anchor"&gt;&lt;/a&gt;十、什么场景该升 / 什么场景缓一缓
+&lt;/h2&gt;&lt;h3 id="-应该升"&gt;&lt;a href="#-%e5%ba%94%e8%af%a5%e5%8d%87" class="header-anchor"&gt;&lt;/a&gt;✅ 应该升
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目&lt;/strong&gt;——直接用 3.x，不要从 2.x 起步&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JDK 已经在 17+&lt;/strong&gt;——升级成本最小&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;想用虚拟线程 / 原生镜像&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Spring Boot 2.7 已无 OSS 支持&lt;/strong&gt;（OSS 支持已于 2023 年 11 月结束，商业扩展支持也已于 2025 年 8 月结束）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="-缓一缓"&gt;&lt;a href="#-%e7%bc%93%e4%b8%80%e7%bc%93" class="header-anchor"&gt;&lt;/a&gt;⏳ 缓一缓
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;依赖中有大量未升级的 javax 库&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JDK 还卡在 8/11 升不上去&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务系统稳定，没有强需求&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;团队没人有时间做迁移测试&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;绝大多数项目应该启动迁移&lt;/strong&gt;——Spring Boot 2.7 的 OSS 支持已于 2023 年 11 月结束，商业扩展支持也已于 2025 年 8 月结束，再不升就完全没有安全更新了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一spring-boot-2--3-的几个真实坑"&gt;&lt;a href="#%e5%8d%81%e4%b8%80spring-boot-2--3-%e7%9a%84%e5%87%a0%e4%b8%aa%e7%9c%9f%e5%ae%9e%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;十一、Spring Boot 2 → 3 的几个真实坑
+&lt;/h2&gt;&lt;h3 id="1-jpa-用了-javaxpersistencegenerationtype-等"&gt;&lt;a href="#1-jpa-%e7%94%a8%e4%ba%86-javaxpersistencegenerationtype-%e7%ad%89" class="header-anchor"&gt;&lt;/a&gt;1. JPA 用了 &lt;code&gt;javax.persistence.GenerationType&lt;/code&gt; 等
+&lt;/h3&gt;&lt;p&gt;全局替换 import。&lt;/p&gt;
+&lt;h3 id="2-spring-security-配置类"&gt;&lt;a href="#2-spring-security-%e9%85%8d%e7%bd%ae%e7%b1%bb" class="header-anchor"&gt;&lt;/a&gt;2. Spring Security 配置类
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 2.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SecurityConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;extends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;WebSecurityConfigurerAdapter&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Override&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;protected&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;HttpSecurity&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;throws&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 3.x&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Bean&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SecurityFilterChain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;filterChain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;HttpSecurity&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;throws&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Exception&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;http&lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;WebSecurityConfigurerAdapter&lt;/code&gt; 在 3.x 完全删除——&lt;strong&gt;所有项目都要重写 Security 配置&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-swaggeruispringdoc-openapi"&gt;&lt;a href="#3-swaggeruispringdoc-openapi" class="header-anchor"&gt;&lt;/a&gt;3. SwaggerUI（springdoc-openapi）
+&lt;/h3&gt;&lt;p&gt;要从 1.x 升 2.x——配置完全重写。&lt;/p&gt;
+&lt;h3 id="4-spring-cloud-版本对应"&gt;&lt;a href="#4-spring-cloud-%e7%89%88%e6%9c%ac%e5%af%b9%e5%ba%94" class="header-anchor"&gt;&lt;/a&gt;4. Spring Cloud 版本对应
+&lt;/h3&gt;&lt;p&gt;Spring Boot 3 不能用 Spring Cloud 2021.0（仍是 javax）。&lt;strong&gt;对应关系按 Boot 小版本严格区分&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;Spring Boot&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Spring Cloud&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.0.x / 3.1.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2022.0.x（Kilburn）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.2.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2023.0.x（Leyton）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.3.x / 3.4.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2023.0.x 或 2024.0.x（Moorgate）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;3.5.x&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;2025.0.x（Northfields）&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;踩坑提醒&lt;/strong&gt;：跨大版本配错（如 Boot 3.4+ 配 2022.0.x）会出现 starter 缺失、CVE 不修等问题。升 Boot 时务必参照 &lt;a class="link" href="https://github.com/spring-cloud/spring-cloud-release/wiki/Supported-Versions" target="_blank" rel="noopener"
+ &gt;Spring Cloud Supported Versions&lt;/a&gt; 同步升 Cloud。&lt;/p&gt;
+&lt;h3 id="5-mybatis-plus"&gt;&lt;a href="#5-mybatis-plus" class="header-anchor"&gt;&lt;/a&gt;5. MyBatis-Plus
+&lt;/h3&gt;&lt;p&gt;需要 3.5.3+——更老的版本不兼容 Spring Boot 3。&lt;/p&gt;
+&lt;h3 id="6-lombok"&gt;&lt;a href="#6-lombok" class="header-anchor"&gt;&lt;/a&gt;6. Lombok
+&lt;/h3&gt;&lt;p&gt;要 1.18.24+——老版本可能编译不过。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Spring Boot 3 是 Spring 生态进入 Jakarta + Java 17 + 原生镜像 + Observability 时代的入场券——不是小升级，是范式转移。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程实践：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;新项目无脑用 3.x&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;老项目要规划迁移&lt;/strong&gt;——拖到 2.7 EOL 就被动了&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 17+ 是基线&lt;/strong&gt;，不可回避&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OpenRewrite 自动迁移&lt;/strong&gt;省掉 80% 体力活&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程让传统 MVC 写法逼近 WebFlux 吞吐&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;升 Spring Boot 3 不是&amp;quot;为了升而升&amp;quot;——是 Java 服务端走向下一个十年的必经之路。&lt;/p&gt;</description></item></channel></rss>
