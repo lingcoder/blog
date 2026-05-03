@@ -852,7 +852,7 @@
  &lt;/blockquote&gt;
 &lt;p&gt;工程实践：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;新项目无脑用 3.x&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新项目优先用 3.x&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;老项目要规划迁移&lt;/strong&gt;——拖到 2.7 EOL 就被动了&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Java 17+ 是基线&lt;/strong&gt;，不可回避&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;OpenRewrite 自动迁移&lt;/strong&gt;省掉 80% 体力活&lt;/li&gt;

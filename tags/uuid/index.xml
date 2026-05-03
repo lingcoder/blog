@@ -172,7 +172,7 @@
 &lt;li&gt;&lt;strong&gt;关联表的外键也要 VARCHAR&lt;/strong&gt;——空间和性能双爆炸&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;业务编码可能为空&lt;/strong&gt;（早期数据没填）→ 主键不能为空 → 全表数据迁移&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;几乎所有场景都不该这么做&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多数 OLTP 场景都不推荐这么做&lt;/strong&gt;——除非表很小且业务键真正稳定不变。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三决策树"&gt;&lt;a href="#%e4%b8%89%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;三、决策树
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
@@ -281,7 +281,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;复合主键麻烦多——外键关联痛苦、ORM 支持不好、加新维度时改表复杂。&lt;strong&gt;永远用单字段主键 + 唯一索引表达组合唯一&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="反模式-5自增--uuid-双主键"&gt;&lt;a href="#%e5%8f%8d%e6%a8%a1%e5%bc%8f-5%e8%87%aa%e5%a2%9e--uuid-%e5%8f%8c%e4%b8%bb%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反模式 5：自增 + UUID 双主键
-&lt;/h3&gt;&lt;p&gt;&amp;ldquo;我两个都要！&amp;quot;——同时维护两个 ID 是分裂的开始。&lt;strong&gt;单一真理来源（single source of truth）&lt;/strong&gt;——只有一个主键。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&amp;ldquo;我两个都要！&amp;quot;——同时维护两个 ID 维护成本高、容易产生不一致。&lt;strong&gt;单一真理来源（single source of truth）&lt;/strong&gt;——只有一个主键。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七性能数据对比"&gt;&lt;a href="#%e4%b8%83%e6%80%a7%e8%83%bd%e6%95%b0%e6%8d%ae%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;七、性能数据对比
 &lt;/h2&gt;&lt;p&gt;10 亿行表，单条 INSERT 的耗时（实测大致比例）：&lt;/p&gt;

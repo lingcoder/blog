@@ -487,7 +487,7 @@
 &lt;p&gt;&lt;strong&gt;给一个直接的建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;新项目无脑 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;新项目优先 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧 &lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
 
  &lt;/blockquote&gt;

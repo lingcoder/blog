@@ -302,7 +302,8 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userRepo&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;block&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 把异步变同步&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;.block()&lt;/code&gt; 让响应式优势全没了——&lt;strong&gt;只在测试代码或 main 函数里临时用&lt;/strong&gt;。生产代码里看到 &lt;code&gt;.block()&lt;/code&gt; 几乎都是反模式。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;.block()&lt;/code&gt; 让响应式优势全没了——&lt;strong&gt;主要用在测试代码、main 函数、或与同步框架/启动初始化的桥接处&lt;/strong&gt;。生产代码里大面积出现
+&lt;code&gt;.block()&lt;/code&gt; 通常是反模式信号。&lt;/p&gt;
 &lt;h3 id="3-threadlocal-失效"&gt;&lt;a href="#3-threadlocal-%e5%a4%b1%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;3. ThreadLocal 失效
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;

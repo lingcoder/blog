@@ -565,8 +565,9 @@
 &lt;li&gt;&lt;code&gt;MST&lt;/code&gt;（Mountain Standard Time）是&lt;strong&gt;美国山地时区&lt;/strong&gt;——非美国人这辈子用不到几次&lt;/li&gt;
 &lt;li&gt;整个&amp;quot;顺口溜&amp;quot;只有美国人觉得顺口&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 的时候，本质是在念一遍&amp;quot;我承认这个美国人当年随便挑的日期是宇宙真理&amp;quot;。其他语言一句 &lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 非要绕一圈。&lt;/p&gt;
-&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者觉得&amp;quot;这样我方便 / 我觉得有意思&amp;quot;，就推给所有用户。多少有点 American-centric 的味道。&lt;/p&gt;
+&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 时，都得在脑子里把美式 1/2/3/4/5/6/7 顺口溜过一遍——其他语言一句
+&lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 要绕一圈。&lt;/p&gt;
+&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者当年的便利感，最后由所有用户来承担。多少有点 American-centric 的味道。&lt;/p&gt;
 &lt;p&gt;不影响 Go 是好语言，但读 / 写这两处时偶尔会忍不住想&amp;quot;本来可以不这样的&amp;quot;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七java-泛型的限制"&gt;&lt;a href="#%e4%b8%83java-%e6%b3%9b%e5%9e%8b%e7%9a%84%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;七、Java 泛型的限制

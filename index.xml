@@ -1218,7 +1218,7 @@ boost 系数。&lt;/p&gt;
  &lt;p&gt;继续阅读：&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/" &gt;PancakeSwap V3 深度解析（下）：合约篇&lt;/a&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;</description></item><item><title>从 Lambda 到虚拟线程——Java 关键特性演进</title><link>https://www.lingcoder.com/p/java-version-evolution-and-trend/</link><pubDate>Sat, 21 Mar 2026 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/java-version-evolution-and-trend/</guid><description>&lt;img src="https://www.lingcoder.com/p/java-version-evolution-and-trend/cover.svg" alt="Featured image of post 从 Lambda 到虚拟线程——Java 关键特性演进" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;Java 已经走过 30 年——从 1995 年发布到 2025 年的 25——它&lt;strong&gt;死了几十次又活了几十次&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Java 已经走过 30 年——从 1995 年发布到 2025 年的 25——它被&amp;quot;唱衰&amp;quot;过很多次，但每次都挺过来了。&lt;/p&gt;
 &lt;p&gt;很多人对 Java 的印象停留在 8——Lambda、Stream、&lt;code&gt;Optional&lt;/code&gt;。但 Java 8 之后&lt;strong&gt;每 6 个月一个版本&lt;/strong&gt;——加入了大量颠覆性特性：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;9-11&lt;/strong&gt;：模块化、var、HTTP Client&lt;/li&gt;
@@ -1271,7 +1271,7 @@ boost 系数。&lt;/p&gt;
 &lt;p&gt;Java 17 是&lt;strong&gt;目前最值得长期 commit 的版本&lt;/strong&gt;——稳定 + 现代 + 生态全面支持。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四java-212023虚拟线程时代"&gt;&lt;a href="#%e5%9b%9bjava-212023%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8b%e6%97%b6%e4%bb%a3" class="header-anchor"&gt;&lt;/a&gt;四、Java 21（2023）：虚拟线程时代
-&lt;/h2&gt;&lt;p&gt;第三个 LTS——&lt;strong&gt;Java 21 的核心特性可能是 Java 史上最重要的&lt;/strong&gt;：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;第三个 LTS——&lt;strong&gt;Java 21 的核心特性可以说是 Java 近十年最具分量的一批&lt;/strong&gt;：&lt;/p&gt;
 &lt;h3 id="虚拟线程project-loom"&gt;&lt;a href="#%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8bproject-loom" class="header-anchor"&gt;&lt;/a&gt;虚拟线程（Project Loom）
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -1346,7 +1346,7 @@ boost 系数。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;模式匹配让代码极简——&lt;strong&gt;Java 在向 Scala / Kotlin 学&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;模式匹配让代码更简洁——这一波明显借鉴了 Scala / Kotlin 的成熟实践。&lt;/p&gt;
 &lt;h3 id="records--sealed-升级"&gt;&lt;a href="#records--sealed-%e5%8d%87%e7%ba%a7" class="header-anchor"&gt;&lt;/a&gt;Records &amp;amp; Sealed 升级
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -1544,7 +1544,7 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;Pattern Matching 让代码现代化&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Valhalla / Panama / Leyden 是未来 5 年最大的 Java 项目&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你 5 年没升过 Java——&lt;strong&gt;2026 是该升的时刻&lt;/strong&gt;。Java 21+ 真的不一样了。&lt;/p&gt;</description></item><item><title>常见 EVM 提案速查：ERC 与 EIP 的核心标准</title><link>https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/</link><pubDate>Sat, 14 Feb 2026 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/</guid><description>&lt;img src="https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/cover.svg" alt="Featured image of post 常见 EVM 提案速查：ERC 与 EIP 的核心标准" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;p&gt;如果你 5 年没升过 Java，2026 年值得认真考虑升级——Java 21+ 的体验和过去差别很大。&lt;/p&gt;</description></item><item><title>常见 EVM 提案速查：ERC 与 EIP 的核心标准</title><link>https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/</link><pubDate>Sat, 14 Feb 2026 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/</guid><description>&lt;img src="https://www.lingcoder.com/p/common-evm-eip-erc-cheatsheet/cover.svg" alt="Featured image of post 常见 EVM 提案速查：ERC 与 EIP 的核心标准" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;Web3 生态里 ERC 和 EIP 提案多到眼花缭乱——&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;ERC-20 / 721 / 1155 是耳熟能详的代币标准&lt;/li&gt;
@@ -2564,8 +2564,9 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;code&gt;MST&lt;/code&gt;（Mountain Standard Time）是&lt;strong&gt;美国山地时区&lt;/strong&gt;——非美国人这辈子用不到几次&lt;/li&gt;
 &lt;li&gt;整个&amp;quot;顺口溜&amp;quot;只有美国人觉得顺口&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 的时候，本质是在念一遍&amp;quot;我承认这个美国人当年随便挑的日期是宇宙真理&amp;quot;。其他语言一句 &lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 非要绕一圈。&lt;/p&gt;
-&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者觉得&amp;quot;这样我方便 / 我觉得有意思&amp;quot;，就推给所有用户。多少有点 American-centric 的味道。&lt;/p&gt;
+&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 时，都得在脑子里把美式 1/2/3/4/5/6/7 顺口溜过一遍——其他语言一句
+&lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 要绕一圈。&lt;/p&gt;
+&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者当年的便利感，最后由所有用户来承担。多少有点 American-centric 的味道。&lt;/p&gt;
 &lt;p&gt;不影响 Go 是好语言，但读 / 写这两处时偶尔会忍不住想&amp;quot;本来可以不这样的&amp;quot;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七java-泛型的限制"&gt;&lt;a href="#%e4%b8%83java-%e6%b3%9b%e5%9e%8b%e7%9a%84%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;七、Java 泛型的限制
@@ -2866,7 +2867,7 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;关联表的外键也要 VARCHAR&lt;/strong&gt;——空间和性能双爆炸&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;业务编码可能为空&lt;/strong&gt;（早期数据没填）→ 主键不能为空 → 全表数据迁移&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;几乎所有场景都不该这么做&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多数 OLTP 场景都不推荐这么做&lt;/strong&gt;——除非表很小且业务键真正稳定不变。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三决策树"&gt;&lt;a href="#%e4%b8%89%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;三、决策树
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
@@ -2975,7 +2976,7 @@ boost 系数。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;复合主键麻烦多——外键关联痛苦、ORM 支持不好、加新维度时改表复杂。&lt;strong&gt;永远用单字段主键 + 唯一索引表达组合唯一&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="反模式-5自增--uuid-双主键"&gt;&lt;a href="#%e5%8f%8d%e6%a8%a1%e5%bc%8f-5%e8%87%aa%e5%a2%9e--uuid-%e5%8f%8c%e4%b8%bb%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反模式 5：自增 + UUID 双主键
-&lt;/h3&gt;&lt;p&gt;&amp;ldquo;我两个都要！&amp;quot;——同时维护两个 ID 是分裂的开始。&lt;strong&gt;单一真理来源（single source of truth）&lt;/strong&gt;——只有一个主键。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&amp;ldquo;我两个都要！&amp;quot;——同时维护两个 ID 维护成本高、容易产生不一致。&lt;strong&gt;单一真理来源（single source of truth）&lt;/strong&gt;——只有一个主键。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七性能数据对比"&gt;&lt;a href="#%e4%b8%83%e6%80%a7%e8%83%bd%e6%95%b0%e6%8d%ae%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;七、性能数据对比
 &lt;/h2&gt;&lt;p&gt;10 亿行表，单条 INSERT 的耗时（实测大致比例）：&lt;/p&gt;
@@ -3845,7 +3846,7 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;PriceOracleProxy.sol&lt;/strong&gt;：预言机抽象层&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Governance.sol&lt;/strong&gt;：治理合约&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;。代码里的每一行都经过严格审计。&lt;/p&gt;
+&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;，工程质量在 DeFi 中属于标杆水平。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把 Compound 的价值压一句：&lt;/p&gt;
@@ -3862,7 +3863,8 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;COMP 让协议进入&amp;quot;代币治理&amp;quot;时代&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;V3 进一步简化和专注&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得读 5 遍以上——&lt;strong&gt;这是 DeFi 工程师的必读源码&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>数据字典表与菜单的国际化方案</title><link>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</link><pubDate>Fri, 19 Sep 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</guid><description>&lt;img src="https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/cover.svg" alt="Featured image of post 数据字典表与菜单的国际化方案" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得反复研读——
+&lt;strong&gt;是 DeFi 工程师值得花时间啃的源码之一&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>数据字典表与菜单的国际化方案</title><link>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</link><pubDate>Fri, 19 Sep 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</guid><description>&lt;img src="https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/cover.svg" alt="Featured image of post 数据字典表与菜单的国际化方案" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;国内系统做国际化常常掉进一个误区——&lt;strong&gt;以为前端搞个 i18n 文件就完事了&lt;/strong&gt;。但当业务真要支持多语言（出海、跨境电商、海外 SaaS）时，你会发现：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;错误消息从后端来——前端 i18n 没用&lt;/li&gt;
@@ -6224,7 +6226,7 @@ boost 系数。&lt;/p&gt;
  &lt;/blockquote&gt;
 &lt;p&gt;工程实践：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;新项目无脑用 3.x&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新项目优先用 3.x&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;老项目要规划迁移&lt;/strong&gt;——拖到 2.7 EOL 就被动了&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Java 17+ 是基线&lt;/strong&gt;，不可回避&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;OpenRewrite 自动迁移&lt;/strong&gt;省掉 80% 体力活&lt;/li&gt;
@@ -8845,8 +8847,11 @@ Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八江湖里的人"&gt;&lt;a href="#%e5%85%ab%e6%b1%9f%e6%b9%96%e9%87%8c%e7%9a%84%e4%ba%ba" class="header-anchor"&gt;&lt;/a&gt;八、江湖里的人
 &lt;/h2&gt;&lt;p&gt;币圈的&amp;quot;江湖&amp;quot;从来不只是商业竞争——人和人之间的恩怨也是另一个维度的故事。&lt;/p&gt;
-&lt;p&gt;跟火币的李林比较起来挺有意思。李林比 CZ 早入行 4 年，火币早期市占率远高于币安。但李林选择 2018 年回中国发展，押注合规路线，结果 2021 年监管打压一来，火币基本被打回原形。CZ 走的是完全相反的路——离中国越远越好——结果完全不一样。两人后来鲜有交集，但圈内一直把他们当作&amp;quot;两条路线对照案例&amp;rdquo;。&lt;/p&gt;
-&lt;p&gt;跟孙宇晨的关系微妙一点。孙宇晨是币圈&amp;quot;营销之王&amp;quot;，最爱出风头，CZ 是&amp;quot;低调技术派&amp;quot;。两人公开场合互相捧过几次。后来 2023 年 SEC 起诉孙宇晨涉及市场操纵，币安也被带进去——这成了 CZ 后来跟 SEC 和解书里的一项指控。&lt;/p&gt;
+&lt;p&gt;跟火币的李林比较起来挺有意思。李林比 CZ 早入行 4 年，火币早期市占率远高于币安。但李林选择 2018 年回中国发展，押注合规路线，结果
+2021 年监管收紧后，火币的市场地位明显下滑。CZ
+走的是完全相反的路——离中国越远越好——结果完全不一样。两人后来鲜有交集，但圈内一直把他们当作&amp;quot;两条路线对照案例&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;跟孙宇晨的关系微妙一点。孙宇晨以高调营销著称，CZ 则更偏低调技术派。两人公开场合互相捧过几次。后来 2023 年 SEC
+起诉孙宇晨涉及市场操纵，币安也被带进去——这成了 CZ 后来跟 SEC 和解书里的一项指控。&lt;/p&gt;
 &lt;p&gt;跟同期的几位老炮（赵东、李笑来等等）也都有传闻，但 CZ 在公开场合极少评价同行——这是他个人风格的一部分。&lt;/p&gt;
 &lt;p&gt;他这辈子真正&amp;quot;撕过&amp;quot;的对手，其实只有一个：SBF。&lt;/p&gt;
 &lt;hr&gt;
@@ -10061,7 +10066,7 @@ Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;
  &lt;p&gt;&lt;strong&gt;可升级是工程能力，不可升级是产品承诺，怎么在两者之间找平衡，是每一个协议设计者要回答的问题。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;</description></item><item><title>OpenSea Seaport 协议详解</title><link>https://www.lingcoder.com/p/opensea-seaport-protocol/</link><pubDate>Tue, 20 Aug 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/opensea-seaport-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/opensea-seaport-protocol/cover.svg" alt="Featured image of post OpenSea Seaport 协议详解" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;OpenSea 是 NFT 市场的事实垄断者——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;OpenSea 长期是 NFT 市场的头部平台——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了 NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;多对多交易&lt;/strong&gt;：一笔订单能涉及多种资产、多个发送方、多个接收方&lt;/li&gt;
@@ -10692,7 +10697,8 @@ Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="2-集群模式至少-3-节点"&gt;&lt;a href="#2-%e9%9b%86%e7%be%a4%e6%a8%a1%e5%bc%8f%e8%87%b3%e5%b0%91-3-%e8%8a%82%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;2. 集群模式：至少 3 节点
-&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署 1 节点等于自杀。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;
+。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署单节点没有任何高可用保证，强烈不建议。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;这个差异在调试时很重要：Distro 是 AP，节点挂掉时部分实例信息可能短暂不一致——这是设计如此，不是 bug。&lt;/p&gt;
@@ -11111,7 +11117,7 @@ Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Autowired&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;写注释承认问题等于不解决——技术债越堆越多。&lt;strong&gt;循环依赖必须当作 P0 bug 处理&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;写注释承认问题等于不解决——技术债越堆越多。&lt;strong&gt;循环依赖应作为架构债务专项跟踪，原则上不允许长期存在&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
@@ -12608,7 +12614,8 @@ Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userRepo&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;findById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;block&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// 把异步变同步&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;.block()&lt;/code&gt; 让响应式优势全没了——&lt;strong&gt;只在测试代码或 main 函数里临时用&lt;/strong&gt;。生产代码里看到 &lt;code&gt;.block()&lt;/code&gt; 几乎都是反模式。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;.block()&lt;/code&gt; 让响应式优势全没了——&lt;strong&gt;主要用在测试代码、main 函数、或与同步框架/启动初始化的桥接处&lt;/strong&gt;。生产代码里大面积出现
+&lt;code&gt;.block()&lt;/code&gt; 通常是反模式信号。&lt;/p&gt;
 &lt;h3 id="3-threadlocal-失效"&gt;&lt;a href="#3-threadlocal-%e5%a4%b1%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;3. ThreadLocal 失效
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -15761,7 +15768,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;li&gt;但每笔交易都附一个 SNARK 证明，&lt;strong&gt;证明这笔交易合法&lt;/strong&gt;（没双花、有足够余额、签名正确）&lt;/li&gt;
 &lt;li&gt;验证者验证 SNARK，无需知道任何细节&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;链上数据完全隐私——但合法性能被任何节点验证。&lt;strong&gt;这是 ZKP 的工程巅峰应用之一&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;链上数据完全隐私——但合法性能被任何节点验证。&lt;strong&gt;这是 ZKP 工程化最有代表性的应用之一&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五zkp-在以太坊zk-rollup"&gt;&lt;a href="#%e4%ba%94zkp-%e5%9c%a8%e4%bb%a5%e5%a4%aa%e5%9d%8azk-rollup" class="header-anchor"&gt;&lt;/a&gt;五、ZKP 在以太坊：zk-Rollup
 &lt;/h2&gt;&lt;p&gt;以太坊主网 TPS 低、Gas 贵——这是公链扩容的核心问题。Layer2 是主流方向，&lt;strong&gt;zk-Rollup&lt;/strong&gt; 是其中最被看好的一种。&lt;/p&gt;
@@ -15988,11 +15995,12 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;工程视角：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;SNARK 是当下主流&lt;/strong&gt;，但 STARK / Halo2 在崛起&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;zk-Rollup 是以太坊扩容的长期答案&lt;/strong&gt;——但目前生态还在追赶 Optimistic&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zk-Rollup 被普遍认为是以太坊扩容最有前景的方向之一&lt;/strong&gt;——但目前生态还在追赶 Optimistic&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;隐私身份、隐私投票、zkML 是未来 5 年最有想象力的方向&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;学 ZKP 不是必须会写电路&lt;/strong&gt;——理解它的能力边界，知道何时使用，已经是巨大进步&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;零知识证明在 2010 年是数学家玩具，2020 年是 Web3 工程的核心武器。&lt;strong&gt;它正在重塑互联网中『可验证』和『隐私』的边界&lt;/strong&gt;——值得每个工程师入门了解一次。&lt;/p&gt;</description></item><item><title>又见第一篇博客</title><link>https://www.lingcoder.com/p/first-blog/</link><pubDate>Tue, 03 Jan 2023 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/first-blog/</guid><description>&lt;img src="https://www.lingcoder.com/p/first-blog/cover.png" alt="Featured image of post 又见第一篇博客" /&gt;&lt;p&gt;2023年元旦归来的第一件事，决定再次把博客搞起来。为什么是“又”呢，因为这样的事情做了不下两次了，每次都以荒废告终。
+&lt;p&gt;零知识证明在 2010 年还主要停留在学术研究阶段，到 2020 年才在 Web3 工程中真正落地。**它正在重塑互联网中『可验证』和『隐私』的边界
+**——值得每个工程师入门了解一次。&lt;/p&gt;</description></item><item><title>又见第一篇博客</title><link>https://www.lingcoder.com/p/first-blog/</link><pubDate>Tue, 03 Jan 2023 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/first-blog/</guid><description>&lt;img src="https://www.lingcoder.com/p/first-blog/cover.png" alt="Featured image of post 又见第一篇博客" /&gt;&lt;p&gt;2023年元旦归来的第一件事，决定再次把博客搞起来。为什么是“又”呢，因为这样的事情做了不下两次了，每次都以荒废告终。
 慢慢把以前的文章移过来，希望这次能坚持下去。。。&lt;/p&gt;
 
  &lt;blockquote&gt;
@@ -16217,7 +16225,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;短信成本可不便宜——这层不开等于把信用卡放在地上让人捡。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;短信成本可不便宜——这层不开，攻击场景下损失会被迅速放大。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五发送人机校验前置"&gt;&lt;a href="#%e4%ba%94%e5%8f%91%e9%80%81%e4%ba%ba%e6%9c%ba%e6%a0%a1%e9%aa%8c%e5%89%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;五、发送：人机校验前置
 &lt;/h2&gt;&lt;p&gt;仅靠 IP 限流防不住僵尸网络（每个肉鸡 IP 不同）。&lt;strong&gt;真正的最强防御是滑块/拼图/reCAPTCHA&lt;/strong&gt;——人机校验通过后才允许调发送接口。&lt;/p&gt;
@@ -17096,7 +17104,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;MapStruct 是这件事的终局答案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MapStruct 是目前这件事最成熟的方案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一最小可运行-demo"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%b0%8f%e5%8f%af%e8%bf%90%e8%a1%8c-demo" class="header-anchor"&gt;&lt;/a&gt;一、最小可运行 Demo
 &lt;/h2&gt;&lt;h3 id="1-引入依赖"&gt;&lt;a href="#1-%e5%bc%95%e5%85%a5%e4%be%9d%e8%b5%96" class="header-anchor"&gt;&lt;/a&gt;1. 引入依赖
@@ -17639,7 +17647,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/blockquote&gt;
 &lt;p&gt;工程上几条建议：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;新项目无脑用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;新项目优先用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;配 &lt;code&gt;unmappedTargetPolicy = WARN&lt;/code&gt; 让编译警告帮你抓漏字段&lt;/li&gt;
 &lt;li&gt;复杂业务用自定义 Converter，但 Converter 里不要写 RPC/DB&lt;/li&gt;
 &lt;li&gt;Lombok 同时用一定要加 binding 依赖&lt;/li&gt;
@@ -19604,14 +19612,14 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里几乎没有对手——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里比较突出——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十实战建议"&gt;&lt;a href="#%e5%8d%81%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;十、实战建议
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;先 BOTH 后调优&lt;/strong&gt;——默认就用本地 + Redis 两级，稳定后再针对低命中率 cache 单独配&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;TTL 至少 5 分钟&lt;/strong&gt;——TTL 过短的缓存几乎不会命中&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;热点 key 一律开 &lt;code&gt;@CacheRefresh&lt;/code&gt;&lt;/strong&gt;——避免雪崩&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开等于在自找麻烦&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开会让多实例本地缓存的数据一致性失控&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;cacheNullValue = true&lt;/code&gt;&lt;/strong&gt;——除非业务明确不需要防穿透&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;监控命中率&lt;/strong&gt;——低于 70% 的 cache 都要重新审视设计&lt;/li&gt;
 &lt;/ol&gt;
@@ -20963,7 +20971,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
 &lt;h3 id="3-中文分词ik-不是默认装的"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8dik-%e4%b8%8d%e6%98%af%e9%bb%98%e8%ae%a4%e8%a3%85%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;3. 中文分词：IK 不是默认装的
-&lt;/h3&gt;&lt;p&gt;ES 自带的分词器对中文是按字分的，根本不能用。生产环境必须装 ik 分词器：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;ES 默认分词器对中文按字切分，多数全文检索场景下不适用。生产环境必须装 ik 分词器：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -21661,7 +21669,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/ol&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;不要用『性能』作为选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;不建议把『性能』当成选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -22070,7 +22078,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;不能做必填校验&lt;/strong&gt;——你 &lt;code&gt;new User()&lt;/code&gt; 之后直接用，编译期不会报错&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;和 JavaBean 规范冲突&lt;/strong&gt;——&lt;code&gt;set&lt;/code&gt; 系列方法返回 void 是 JavaBean 标准，框架（早期 BeanUtils、序列化库）可能不识别&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 适合内部 POJO，不适合作为对外 API&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 更适合内部 POJO，对外 API 通常优先选 Builder 这种语义更明确的风格&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三builder-模式标准写法"&gt;&lt;a href="#%e4%b8%89builder-%e6%a8%a1%e5%bc%8f%e6%a0%87%e5%87%86%e5%86%99%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;三、Builder 模式：标准写法
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -22276,7 +22284,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格不要混在一个类上&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格通常不建议混在一个类上&lt;/strong&gt;——除非你确实需要可变 + Builder 双重能力，否则会让语义模糊。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五builder-进阶用法"&gt;&lt;a href="#%e4%ba%94builder-%e8%bf%9b%e9%98%b6%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;五、Builder 进阶用法
 &lt;/h2&gt;&lt;h3 id="必填字段强制阶梯式-builderstep-builder"&gt;&lt;a href="#%e5%bf%85%e5%a1%ab%e5%ad%97%e6%ae%b5%e5%bc%ba%e5%88%b6%e9%98%b6%e6%a2%af%e5%bc%8f-builderstep-builder" class="header-anchor"&gt;&lt;/a&gt;必填字段强制：阶梯式 Builder（Step Builder）
@@ -25329,7 +25337,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  Complex --&gt;|没有| Aviator2[Aviator + 配置中心]&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;给一个直接的工程建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;能用 Aviator 就别上 Drools。Drools 是个完整框架，复杂度成本高，只有规则数量上百 + 规则间有推理 + 团队有专门维护时才值得。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;轻量场景优先 Aviator + 配置中心；只有规则数量上百、规则间有推理、且团队有人专门维护时，才值得引入 Drools 这种完整框架。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -26049,7 +26057,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;xhr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;send&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;这种是 80% 的场景&lt;/strong&gt;——别给自己加戏。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;这种是大部分场景&lt;/strong&gt;——多数情况下不需要后端介入，避免加不必要的复杂度。&lt;/p&gt;
 &lt;h3 id="类型-b服务端要先做事才有文件"&gt;&lt;a href="#%e7%b1%bb%e5%9e%8b-b%e6%9c%8d%e5%8a%a1%e7%ab%af%e8%a6%81%e5%85%88%e5%81%9a%e4%ba%8b%e6%89%8d%e6%9c%89%e6%96%87%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;类型 B：服务端要先&amp;quot;做事&amp;quot;才有文件
 &lt;/h3&gt;&lt;p&gt;真正复杂的——服务端先生成 Excel（30 秒）、再让前端下载。生成过程中浏览器看到的是 0 字节、Content-Length 还没确定。&lt;strong&gt;进度只有服务端知道&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;类型 B 才是本文的主场。&lt;/p&gt;
@@ -27492,7 +27500,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;getAge&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;reduce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ 涉及装箱拆箱，慢&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;数值场景永远用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——避免装箱开销。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;数值场景优先用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——能避免装箱开销。&lt;/p&gt;
 &lt;h3 id="6-peek-不要做副作用"&gt;&lt;a href="#6-peek-%e4%b8%8d%e8%a6%81%e5%81%9a%e5%89%af%e4%bd%9c%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;6. peek 不要做副作用
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -27502,7 +27510,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;peek&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setStatus&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;count&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ peek 是调试用的&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的 peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;，&lt;strong&gt;业务副作用永远不该放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的
+peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;——&lt;strong&gt;业务副作用不要放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七什么场景该用-stream什么场景不该"&gt;&lt;a href="#%e4%b8%83%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e7%94%a8-stream%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e4%b8%8d%e8%af%a5" class="header-anchor"&gt;&lt;/a&gt;七、什么场景该用 Stream，什么场景不该
 &lt;/h2&gt;&lt;h3 id="-适合-stream-的场景"&gt;&lt;a href="#-%e9%80%82%e5%90%88-stream-%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;✅ 适合 Stream 的场景
@@ -27530,7 +27539,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法引用 &amp;gt; Lambda &amp;gt; 匿名内部类&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先方法引用，其次 Lambda，最后匿名内部类&lt;/strong&gt;（按可读性视情况调整）&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Optional 只作返回值，不做字段/参数&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;parallelStream 慎用，多数场景串行更快&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;数值用 mapToInt/Long/Double&lt;/strong&gt;&lt;/li&gt;
@@ -28025,7 +28034,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;给一个直接的建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;新项目无脑 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;新项目优先 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧 &lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
 
  &lt;/blockquote&gt;
@@ -31723,7 +31732,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;给一句决策建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;新项目无脑 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;新项目优先用 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;Spring Boot 仍然完整支持 war 是为了向后兼容，不是推荐方向。把这点拎清楚，后面所有选择就都顺了。&lt;/p&gt;</description></item><item><title>设计模式漫谈：四种「工厂」到底有什么区别</title><link>https://www.lingcoder.com/p/design-patterns-four-factories/</link><pubDate>Thu, 12 Jul 2018 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/design-patterns-four-factories/</guid><description>&lt;img src="https://www.lingcoder.com/p/design-patterns-four-factories/cover.svg" alt="Featured image of post 设计模式漫谈：四种「工厂」到底有什么区别" /&gt;&lt;p&gt;很多人聊&amp;quot;工厂模式&amp;quot;时会下意识地说&amp;quot;工厂模式嘛，就是 &lt;code&gt;XxxFactory.create()&lt;/code&gt;&amp;quot;——可一旦有人追问&amp;quot;那简单工厂、静态工厂、工厂方法、抽象工厂到底有啥区别？&amp;quot;，往往就答不上来了。&lt;/p&gt;
@@ -32424,7 +32433,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;业务方法签名上看到一堆 &lt;code&gt;@LogTime @Cached @Idempotent @RateLimit @OperationLog @DistributedLock&lt;/code&gt;——不熟悉项目的人&lt;strong&gt;根本不知道每个注解干啥&lt;/strong&gt;，行为变成&amp;quot;看不见的魔法&amp;quot;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;AOP 的金科玉律：注解多于 3 个就要警惕，多于 5 个一定有过度设计&lt;/strong&gt;。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;经验上&lt;/strong&gt;：业务方法上的 AOP 注解多于 3 个就值得复盘，多于 5 个往往是过度设计的信号。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -32575,7 +32584,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;3. 事件溯源能力弱&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Spring 事件是进程内的——重启就没了，没有&amp;quot;事件回放&amp;quot;能力。要做事件溯源（Event Sourcing）需要更专业的方案（Axon、自己写 outbox）。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;4. 链式事件失控&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A 事件触发 B listener，B listener 又发 C 事件，C 又发 D……&lt;strong&gt;复杂业务里事件链能绕成一团乱麻&lt;/strong&gt;。控制好事件层级，永远别超过 2 跳。&lt;/p&gt;
+&lt;p&gt;A 事件触发 B listener，B listener 又发 C 事件，C 又发 D……&lt;strong&gt;复杂业务里事件链能绕成一团乱麻&lt;/strong&gt;。控制好事件层级，建议不超过 2 跳。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三aop-vs-事件怎么选"&gt;&lt;a href="#%e4%b8%89aop-vs-%e4%ba%8b%e4%bb%b6%e6%80%8e%e4%b9%88%e9%80%89" class="header-anchor"&gt;&lt;/a&gt;三、AOP vs 事件：怎么选
 &lt;/h2&gt;&lt;table&gt;
@@ -32713,7 +32722,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;li&gt;事件处理&amp;quot;积分/通知/MQ&amp;quot;这种副流程——主业务只发事件&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h2 id="六几个工程纪律"&gt;&lt;a href="#%e5%85%ad%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e7%ba%aa%e5%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、几个工程纪律
+&lt;h2 id="六几条工程惯例"&gt;&lt;a href="#%e5%85%ad%e5%87%a0%e6%9d%a1%e5%b7%a5%e7%a8%8b%e6%83%af%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、几条工程惯例
 &lt;/h2&gt;&lt;h3 id="1-注解上限"&gt;&lt;a href="#1-%e6%b3%a8%e8%a7%a3%e4%b8%8a%e9%99%90" class="header-anchor"&gt;&lt;/a&gt;1. 注解上限
 &lt;/h3&gt;&lt;p&gt;业务方法上的 AOP 注解不要超过 3 个。多了说明：&lt;/p&gt;
 &lt;ul&gt;
@@ -32738,7 +32747,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;p&gt;&lt;strong&gt;AOP 解决『跟业务无关但跨方法都要做的事』，事件机制解决『主业务做完之后触发的副流程』——前者是『包』，后者是『发』。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;工程上几条铁律：&lt;/p&gt;
+&lt;p&gt;工程上几条建议：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;业务方法专注业务，横切交给 AOP，副流程交给事件&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AOP 注解 ≤ 3 个，命名要业务化&lt;/strong&gt;&lt;/li&gt;
@@ -32997,7 +33006,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;li&gt;&lt;strong&gt;时钟漂移&lt;/strong&gt;——节点之间的系统时钟不一致，过期时间判断会失准&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
-&lt;p&gt;实际工程中，&lt;strong&gt;99% 的业务用 Redisson 单实例锁就够了&lt;/strong&gt;，性能高、用法简单；只有少数对正确性极敏感的场景才上 ZooKeeper。&lt;/p&gt;
+&lt;p&gt;工程上&lt;strong&gt;多数业务场景用 Redisson 单实例锁就足够&lt;/strong&gt;——性能高、用法简单；只有对正确性极敏感的少数场景才上 ZooKeeper。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="各姿势对比"&gt;&lt;a href="#%e5%90%84%e5%a7%bf%e5%8a%bf%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;各姿势对比
 &lt;/h2&gt;&lt;table&gt;

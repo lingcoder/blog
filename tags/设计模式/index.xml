@@ -1306,7 +1306,7 @@
 &lt;li&gt;&lt;strong&gt;不能做必填校验&lt;/strong&gt;——你 &lt;code&gt;new User()&lt;/code&gt; 之后直接用，编译期不会报错&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;和 JavaBean 规范冲突&lt;/strong&gt;——&lt;code&gt;set&lt;/code&gt; 系列方法返回 void 是 JavaBean 标准，框架（早期 BeanUtils、序列化库）可能不识别&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 适合内部 POJO，不适合作为对外 API&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 更适合内部 POJO，对外 API 通常优先选 Builder 这种语义更明确的风格&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三builder-模式标准写法"&gt;&lt;a href="#%e4%b8%89builder-%e6%a8%a1%e5%bc%8f%e6%a0%87%e5%87%86%e5%86%99%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;三、Builder 模式：标准写法
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -1512,7 +1512,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格不要混在一个类上&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格通常不建议混在一个类上&lt;/strong&gt;——除非你确实需要可变 + Builder 双重能力，否则会让语义模糊。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五builder-进阶用法"&gt;&lt;a href="#%e4%ba%94builder-%e8%bf%9b%e9%98%b6%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;五、Builder 进阶用法
 &lt;/h2&gt;&lt;h3 id="必填字段强制阶梯式-builderstep-builder"&gt;&lt;a href="#%e5%bf%85%e5%a1%ab%e5%ad%97%e6%ae%b5%e5%bc%ba%e5%88%b6%e9%98%b6%e6%a2%af%e5%bc%8f-builderstep-builder" class="header-anchor"&gt;&lt;/a&gt;必填字段强制：阶梯式 Builder（Step Builder）

@@ -217,7 +217,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;短信成本可不便宜——这层不开等于把信用卡放在地上让人捡。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;短信成本可不便宜——这层不开，攻击场景下损失会被迅速放大。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五发送人机校验前置"&gt;&lt;a href="#%e4%ba%94%e5%8f%91%e9%80%81%e4%ba%ba%e6%9c%ba%e6%a0%a1%e9%aa%8c%e5%89%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;五、发送：人机校验前置
 &lt;/h2&gt;&lt;p&gt;仅靠 IP 限流防不住僵尸网络（每个肉鸡 IP 不同）。&lt;strong&gt;真正的最强防御是滑块/拼图/reCAPTCHA&lt;/strong&gt;——人机校验通过后才允许调发送接口。&lt;/p&gt;

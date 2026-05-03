@@ -237,7 +237,7 @@
 &lt;li&gt;&lt;strong&gt;PriceOracleProxy.sol&lt;/strong&gt;：预言机抽象层&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Governance.sol&lt;/strong&gt;：治理合约&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;。代码里的每一行都经过严格审计。&lt;/p&gt;
+&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;，工程质量在 DeFi 中属于标杆水平。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把 Compound 的价值压一句：&lt;/p&gt;
@@ -254,4 +254,5 @@
 &lt;li&gt;&lt;strong&gt;COMP 让协议进入&amp;quot;代币治理&amp;quot;时代&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;V3 进一步简化和专注&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得读 5 遍以上——&lt;strong&gt;这是 DeFi 工程师的必读源码&lt;/strong&gt;。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得反复研读——
+&lt;strong&gt;是 DeFi 工程师值得花时间啃的源码之一&lt;/strong&gt;。&lt;/p&gt;</description></item></channel></rss>

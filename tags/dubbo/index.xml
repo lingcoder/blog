@@ -120,7 +120,7 @@
 &lt;/ol&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;不要用『性能』作为选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;不建议把『性能』当成选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;

@@ -427,14 +427,14 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里几乎没有对手——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里比较突出——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十实战建议"&gt;&lt;a href="#%e5%8d%81%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;十、实战建议
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;先 BOTH 后调优&lt;/strong&gt;——默认就用本地 + Redis 两级，稳定后再针对低命中率 cache 单独配&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;TTL 至少 5 分钟&lt;/strong&gt;——TTL 过短的缓存几乎不会命中&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;热点 key 一律开 &lt;code&gt;@CacheRefresh&lt;/code&gt;&lt;/strong&gt;——避免雪崩&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开等于在自找麻烦&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开会让多实例本地缓存的数据一致性失控&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;cacheNullValue = true&lt;/code&gt;&lt;/strong&gt;——除非业务明确不需要防穿透&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;监控命中率&lt;/strong&gt;——低于 70% 的 cache 都要重新审视设计&lt;/li&gt;
 &lt;/ol&gt;

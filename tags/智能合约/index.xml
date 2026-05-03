@@ -237,7 +237,7 @@
 &lt;li&gt;&lt;strong&gt;PriceOracleProxy.sol&lt;/strong&gt;：预言机抽象层&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Governance.sol&lt;/strong&gt;：治理合约&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;。代码里的每一行都经过严格审计。&lt;/p&gt;
+&lt;p&gt;这些不是&amp;quot;教学代码&amp;rdquo;——是&lt;strong&gt;真实管理着数十亿美元资金的代码&lt;/strong&gt;，工程质量在 DeFi 中属于标杆水平。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把 Compound 的价值压一句：&lt;/p&gt;
@@ -254,7 +254,8 @@
 &lt;li&gt;&lt;strong&gt;COMP 让协议进入&amp;quot;代币治理&amp;quot;时代&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;V3 进一步简化和专注&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得读 5 遍以上——&lt;strong&gt;这是 DeFi 工程师的必读源码&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>OpenZeppelin Contracts 5.0 的关键变化</title><link>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</link><pubDate>Thu, 07 Aug 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</guid><description>&lt;img src="https://www.lingcoder.com/p/openzeppelin-5-major-changes/cover.svg" alt="Featured image of post OpenZeppelin Contracts 5.0 的关键变化" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得反复研读——
+&lt;strong&gt;是 DeFi 工程师值得花时间啃的源码之一&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>OpenZeppelin Contracts 5.0 的关键变化</title><link>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</link><pubDate>Thu, 07 Aug 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</guid><description>&lt;img src="https://www.lingcoder.com/p/openzeppelin-5-major-changes/cover.svg" alt="Featured image of post OpenZeppelin Contracts 5.0 的关键变化" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… &lt;strong&gt;几乎每个生产级合约项目都依赖它&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;2023 年 10 月发布的 &lt;strong&gt;5.0&lt;/strong&gt; 是它自 4.0 之后最大的一次主版本升级——&lt;strong&gt;不只是 bug 修复&lt;/strong&gt;，而是对 API、安全模型、模块组织的全面重塑。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 5.0 的核心变化、升级要踩的坑、新特性的工程价值。&lt;/p&gt;

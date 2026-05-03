@@ -103,7 +103,7 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;MapStruct 是这件事的终局答案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MapStruct 是目前这件事最成熟的方案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一最小可运行-demo"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%b0%8f%e5%8f%af%e8%bf%90%e8%a1%8c-demo" class="header-anchor"&gt;&lt;/a&gt;一、最小可运行 Demo
 &lt;/h2&gt;&lt;h3 id="1-引入依赖"&gt;&lt;a href="#1-%e5%bc%95%e5%85%a5%e4%be%9d%e8%b5%96" class="header-anchor"&gt;&lt;/a&gt;1. 引入依赖
@@ -646,7 +646,7 @@
  &lt;/blockquote&gt;
 &lt;p&gt;工程上几条建议：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;新项目无脑用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;新项目优先用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;配 &lt;code&gt;unmappedTargetPolicy = WARN&lt;/code&gt; 让编译警告帮你抓漏字段&lt;/li&gt;
 &lt;li&gt;复杂业务用自定义 Converter，但 Converter 里不要写 RPC/DB&lt;/li&gt;
 &lt;li&gt;Lombok 同时用一定要加 binding 依赖&lt;/li&gt;

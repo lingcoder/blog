@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Java on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/java/</link><description>Recent content in Java on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 21 Mar 2026 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/java/index.xml" rel="self" type="application/rss+xml"/><item><title>从 Lambda 到虚拟线程——Java 关键特性演进</title><link>https://www.lingcoder.com/p/java-version-evolution-and-trend/</link><pubDate>Sat, 21 Mar 2026 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/java-version-evolution-and-trend/</guid><description>&lt;img src="https://www.lingcoder.com/p/java-version-evolution-and-trend/cover.svg" alt="Featured image of post 从 Lambda 到虚拟线程——Java 关键特性演进" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;Java 已经走过 30 年——从 1995 年发布到 2025 年的 25——它&lt;strong&gt;死了几十次又活了几十次&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Java 已经走过 30 年——从 1995 年发布到 2025 年的 25——它被&amp;quot;唱衰&amp;quot;过很多次，但每次都挺过来了。&lt;/p&gt;
 &lt;p&gt;很多人对 Java 的印象停留在 8——Lambda、Stream、&lt;code&gt;Optional&lt;/code&gt;。但 Java 8 之后&lt;strong&gt;每 6 个月一个版本&lt;/strong&gt;——加入了大量颠覆性特性：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;9-11&lt;/strong&gt;：模块化、var、HTTP Client&lt;/li&gt;
@@ -52,7 +52,7 @@
 &lt;p&gt;Java 17 是&lt;strong&gt;目前最值得长期 commit 的版本&lt;/strong&gt;——稳定 + 现代 + 生态全面支持。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四java-212023虚拟线程时代"&gt;&lt;a href="#%e5%9b%9bjava-212023%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8b%e6%97%b6%e4%bb%a3" class="header-anchor"&gt;&lt;/a&gt;四、Java 21（2023）：虚拟线程时代
-&lt;/h2&gt;&lt;p&gt;第三个 LTS——&lt;strong&gt;Java 21 的核心特性可能是 Java 史上最重要的&lt;/strong&gt;：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;第三个 LTS——&lt;strong&gt;Java 21 的核心特性可以说是 Java 近十年最具分量的一批&lt;/strong&gt;：&lt;/p&gt;
 &lt;h3 id="虚拟线程project-loom"&gt;&lt;a href="#%e8%99%9a%e6%8b%9f%e7%ba%bf%e7%a8%8bproject-loom" class="header-anchor"&gt;&lt;/a&gt;虚拟线程（Project Loom）
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -127,7 +127,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;模式匹配让代码极简——&lt;strong&gt;Java 在向 Scala / Kotlin 学&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;模式匹配让代码更简洁——这一波明显借鉴了 Scala / Kotlin 的成熟实践。&lt;/p&gt;
 &lt;h3 id="records--sealed-升级"&gt;&lt;a href="#records--sealed-%e5%8d%87%e7%ba%a7" class="header-anchor"&gt;&lt;/a&gt;Records &amp;amp; Sealed 升级
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -325,7 +325,7 @@
 &lt;li&gt;&lt;strong&gt;Pattern Matching 让代码现代化&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Valhalla / Panama / Leyden 是未来 5 年最大的 Java 项目&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你 5 年没升过 Java——&lt;strong&gt;2026 是该升的时刻&lt;/strong&gt;。Java 21+ 真的不一样了。&lt;/p&gt;</description></item><item><title>Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用</title><link>https://www.lingcoder.com/p/go-generics-vs-java-generics/</link><pubDate>Tue, 09 Dec 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/go-generics-vs-java-generics/</guid><description>&lt;img src="https://www.lingcoder.com/p/go-generics-vs-java-generics/cover.svg" alt="Featured image of post Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;p&gt;如果你 5 年没升过 Java，2026 年值得认真考虑升级——Java 21+ 的体验和过去差别很大。&lt;/p&gt;</description></item><item><title>Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用</title><link>https://www.lingcoder.com/p/go-generics-vs-java-generics/</link><pubDate>Tue, 09 Dec 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/go-generics-vs-java-generics/</guid><description>&lt;img src="https://www.lingcoder.com/p/go-generics-vs-java-generics/cover.svg" alt="Featured image of post Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;泛型是现代编程语言的&amp;quot;老话题&amp;quot;了——Java 1.5（2004 年）就有，C++、C#、TypeScript 都早早具备。但&lt;strong&gt;Go 直到 1.18（2022 年）才引入泛型&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;很多人好奇——&lt;strong&gt;Go 的泛型和 Java 比有什么不同&lt;/strong&gt;？只是&amp;quot;语法换换&amp;quot;还是真有本质差异？&lt;/p&gt;
 &lt;p&gt;本文从语法、实现机制、边界、常见用法做全面对比——&lt;strong&gt;让你看完能准确判断&amp;quot;什么场景哪个语言的泛型更好用&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
@@ -892,8 +892,9 @@
 &lt;li&gt;&lt;code&gt;MST&lt;/code&gt;（Mountain Standard Time）是&lt;strong&gt;美国山地时区&lt;/strong&gt;——非美国人这辈子用不到几次&lt;/li&gt;
 &lt;li&gt;整个&amp;quot;顺口溜&amp;quot;只有美国人觉得顺口&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 的时候，本质是在念一遍&amp;quot;我承认这个美国人当年随便挑的日期是宇宙真理&amp;quot;。其他语言一句 &lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 非要绕一圈。&lt;/p&gt;
-&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者觉得&amp;quot;这样我方便 / 我觉得有意思&amp;quot;，就推给所有用户。多少有点 American-centric 的味道。&lt;/p&gt;
+&lt;p&gt;所以 Go 程序员每次写 &lt;code&gt;time.Format(&amp;quot;2006-01-02 15:04:05&amp;quot;)&lt;/code&gt; 时，都得在脑子里把美式 1/2/3/4/5/6/7 顺口溜过一遍——其他语言一句
+&lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 就能表达的事，Go 要绕一圈。&lt;/p&gt;
+&lt;p&gt;跟泛型用 &lt;code&gt;[]&lt;/code&gt; 一样，&lt;strong&gt;这两件事有同一种气味&lt;/strong&gt;——设计者当年的便利感，最后由所有用户来承担。多少有点 American-centric 的味道。&lt;/p&gt;
 &lt;p&gt;不影响 Go 是好语言，但读 / 写这两处时偶尔会忍不住想&amp;quot;本来可以不这样的&amp;quot;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七java-泛型的限制"&gt;&lt;a href="#%e4%b8%83java-%e6%b3%9b%e5%9e%8b%e7%9a%84%e9%99%90%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;七、Java 泛型的限制
@@ -1655,7 +1656,7 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;MapStruct 是这件事的终局答案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;MapStruct 是目前这件事最成熟的方案。&lt;/strong&gt; 它不是运行时反射，而是&lt;strong&gt;在编译时由 APT 生成转换代码&lt;/strong&gt;——既类型安全，又性能接近手写。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一最小可运行-demo"&gt;&lt;a href="#%e4%b8%80%e6%9c%80%e5%b0%8f%e5%8f%af%e8%bf%90%e8%a1%8c-demo" class="header-anchor"&gt;&lt;/a&gt;一、最小可运行 Demo
 &lt;/h2&gt;&lt;h3 id="1-引入依赖"&gt;&lt;a href="#1-%e5%bc%95%e5%85%a5%e4%be%9d%e8%b5%96" class="header-anchor"&gt;&lt;/a&gt;1. 引入依赖
@@ -2198,7 +2199,7 @@
  &lt;/blockquote&gt;
 &lt;p&gt;工程上几条建议：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;新项目无脑用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;新项目优先用 MapStruct，&lt;strong&gt;别再在生产代码里 &lt;code&gt;BeanUtils.copyProperties&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;配 &lt;code&gt;unmappedTargetPolicy = WARN&lt;/code&gt; 让编译警告帮你抓漏字段&lt;/li&gt;
 &lt;li&gt;复杂业务用自定义 Converter，但 Converter 里不要写 RPC/DB&lt;/li&gt;
 &lt;li&gt;Lombok 同时用一定要加 binding 依赖&lt;/li&gt;
@@ -3702,7 +3703,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
 &lt;h3 id="3-中文分词ik-不是默认装的"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8dik-%e4%b8%8d%e6%98%af%e9%bb%98%e8%ae%a4%e8%a3%85%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;3. 中文分词：IK 不是默认装的
-&lt;/h3&gt;&lt;p&gt;ES 自带的分词器对中文是按字分的，根本不能用。生产环境必须装 ik 分词器：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;ES 默认分词器对中文按字切分，多数全文检索场景下不适用。生产环境必须装 ik 分词器：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -4028,7 +4029,7 @@
 &lt;li&gt;&lt;strong&gt;不能做必填校验&lt;/strong&gt;——你 &lt;code&gt;new User()&lt;/code&gt; 之后直接用，编译期不会报错&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;和 JavaBean 规范冲突&lt;/strong&gt;——&lt;code&gt;set&lt;/code&gt; 系列方法返回 void 是 JavaBean 标准，框架（早期 BeanUtils、序列化库）可能不识别&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 适合内部 POJO，不适合作为对外 API&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;所以——&lt;strong&gt;Fluent Setter 更适合内部 POJO，对外 API 通常优先选 Builder 这种语义更明确的风格&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三builder-模式标准写法"&gt;&lt;a href="#%e4%b8%89builder-%e6%a8%a1%e5%bc%8f%e6%a0%87%e5%87%86%e5%86%99%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;三、Builder 模式：标准写法
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -4234,7 +4235,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格不要混在一个类上&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;两种风格通常不建议混在一个类上&lt;/strong&gt;——除非你确实需要可变 + Builder 双重能力，否则会让语义模糊。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五builder-进阶用法"&gt;&lt;a href="#%e4%ba%94builder-%e8%bf%9b%e9%98%b6%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;五、Builder 进阶用法
 &lt;/h2&gt;&lt;h3 id="必填字段强制阶梯式-builderstep-builder"&gt;&lt;a href="#%e5%bf%85%e5%a1%ab%e5%ad%97%e6%ae%b5%e5%bc%ba%e5%88%b6%e9%98%b6%e6%a2%af%e5%bc%8f-builderstep-builder" class="header-anchor"&gt;&lt;/a&gt;必填字段强制：阶梯式 Builder（Step Builder）
@@ -6177,7 +6178,7 @@
  Complex --&gt;|没有| Aviator2[Aviator + 配置中心]&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;给一个直接的工程建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;能用 Aviator 就别上 Drools。Drools 是个完整框架，复杂度成本高，只有规则数量上百 + 规则间有推理 + 团队有专门维护时才值得。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;轻量场景优先 Aviator + 配置中心；只有规则数量上百、规则间有推理、且团队有人专门维护时，才值得引入 Drools 这种完整框架。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -7459,7 +7460,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;getAge&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;reduce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ 涉及装箱拆箱，慢&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;数值场景永远用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——避免装箱开销。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;数值场景优先用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——能避免装箱开销。&lt;/p&gt;
 &lt;h3 id="6-peek-不要做副作用"&gt;&lt;a href="#6-peek-%e4%b8%8d%e8%a6%81%e5%81%9a%e5%89%af%e4%bd%9c%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;6. peek 不要做副作用
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -7469,7 +7470,8 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;peek&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setStatus&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;count&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ peek 是调试用的&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的 peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;，&lt;strong&gt;业务副作用永远不该放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的
+peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;——&lt;strong&gt;业务副作用不要放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七什么场景该用-stream什么场景不该"&gt;&lt;a href="#%e4%b8%83%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e7%94%a8-stream%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e4%b8%8d%e8%af%a5" class="header-anchor"&gt;&lt;/a&gt;七、什么场景该用 Stream，什么场景不该
 &lt;/h2&gt;&lt;h3 id="-适合-stream-的场景"&gt;&lt;a href="#-%e9%80%82%e5%90%88-stream-%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;✅ 适合 Stream 的场景
@@ -7497,7 +7499,7 @@
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法引用 &amp;gt; Lambda &amp;gt; 匿名内部类&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先方法引用，其次 Lambda，最后匿名内部类&lt;/strong&gt;（按可读性视情况调整）&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Optional 只作返回值，不做字段/参数&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;parallelStream 慎用，多数场景串行更快&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;数值用 mapToInt/Long/Double&lt;/strong&gt;&lt;/li&gt;

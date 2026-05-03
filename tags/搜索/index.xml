@@ -433,7 +433,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
 &lt;h3 id="3-中文分词ik-不是默认装的"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8dik-%e4%b8%8d%e6%98%af%e9%bb%98%e8%ae%a4%e8%a3%85%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;3. 中文分词：IK 不是默认装的
-&lt;/h3&gt;&lt;p&gt;ES 自带的分词器对中文是按字分的，根本不能用。生产环境必须装 ik 分词器：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;ES 默认分词器对中文按字切分，多数全文检索场景下不适用。生产环境必须装 ik 分词器：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1

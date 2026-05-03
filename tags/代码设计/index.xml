@@ -208,7 +208,7 @@
 &lt;p&gt;业务方法签名上看到一堆 &lt;code&gt;@LogTime @Cached @Idempotent @RateLimit @OperationLog @DistributedLock&lt;/code&gt;——不熟悉项目的人&lt;strong&gt;根本不知道每个注解干啥&lt;/strong&gt;，行为变成&amp;quot;看不见的魔法&amp;quot;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;AOP 的金科玉律：注解多于 3 个就要警惕，多于 5 个一定有过度设计&lt;/strong&gt;。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;经验上&lt;/strong&gt;：业务方法上的 AOP 注解多于 3 个就值得复盘，多于 5 个往往是过度设计的信号。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -359,7 +359,7 @@
 &lt;p&gt;&lt;strong&gt;3. 事件溯源能力弱&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Spring 事件是进程内的——重启就没了，没有&amp;quot;事件回放&amp;quot;能力。要做事件溯源（Event Sourcing）需要更专业的方案（Axon、自己写 outbox）。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;4. 链式事件失控&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A 事件触发 B listener，B listener 又发 C 事件，C 又发 D……&lt;strong&gt;复杂业务里事件链能绕成一团乱麻&lt;/strong&gt;。控制好事件层级，永远别超过 2 跳。&lt;/p&gt;
+&lt;p&gt;A 事件触发 B listener，B listener 又发 C 事件，C 又发 D……&lt;strong&gt;复杂业务里事件链能绕成一团乱麻&lt;/strong&gt;。控制好事件层级，建议不超过 2 跳。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三aop-vs-事件怎么选"&gt;&lt;a href="#%e4%b8%89aop-vs-%e4%ba%8b%e4%bb%b6%e6%80%8e%e4%b9%88%e9%80%89" class="header-anchor"&gt;&lt;/a&gt;三、AOP vs 事件：怎么选
 &lt;/h2&gt;&lt;table&gt;
@@ -497,7 +497,7 @@
 &lt;li&gt;事件处理&amp;quot;积分/通知/MQ&amp;quot;这种副流程——主业务只发事件&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h2 id="六几个工程纪律"&gt;&lt;a href="#%e5%85%ad%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e7%ba%aa%e5%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、几个工程纪律
+&lt;h2 id="六几条工程惯例"&gt;&lt;a href="#%e5%85%ad%e5%87%a0%e6%9d%a1%e5%b7%a5%e7%a8%8b%e6%83%af%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、几条工程惯例
 &lt;/h2&gt;&lt;h3 id="1-注解上限"&gt;&lt;a href="#1-%e6%b3%a8%e8%a7%a3%e4%b8%8a%e9%99%90" class="header-anchor"&gt;&lt;/a&gt;1. 注解上限
 &lt;/h3&gt;&lt;p&gt;业务方法上的 AOP 注解不要超过 3 个。多了说明：&lt;/p&gt;
 &lt;ul&gt;
@@ -522,7 +522,7 @@
  &lt;p&gt;&lt;strong&gt;AOP 解决『跟业务无关但跨方法都要做的事』，事件机制解决『主业务做完之后触发的副流程』——前者是『包』，后者是『发』。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;工程上几条铁律：&lt;/p&gt;
+&lt;p&gt;工程上几条建议：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;业务方法专注业务，横切交给 AOP，副流程交给事件&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AOP 注解 ≤ 3 个，命名要业务化&lt;/strong&gt;&lt;/li&gt;

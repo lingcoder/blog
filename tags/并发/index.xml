@@ -1273,7 +1273,7 @@
 &lt;li&gt;&lt;strong&gt;时钟漂移&lt;/strong&gt;——节点之间的系统时钟不一致，过期时间判断会失准&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
-&lt;p&gt;实际工程中，&lt;strong&gt;99% 的业务用 Redisson 单实例锁就够了&lt;/strong&gt;，性能高、用法简单；只有少数对正确性极敏感的场景才上 ZooKeeper。&lt;/p&gt;
+&lt;p&gt;工程上&lt;strong&gt;多数业务场景用 Redisson 单实例锁就足够&lt;/strong&gt;——性能高、用法简单；只有对正确性极敏感的少数场景才上 ZooKeeper。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="各姿势对比"&gt;&lt;a href="#%e5%90%84%e5%a7%bf%e5%8a%bf%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;各姿势对比
 &lt;/h2&gt;&lt;table&gt;

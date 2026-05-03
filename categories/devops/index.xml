@@ -1,181 +1,166 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>DevOps on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/devops/</link><description>Recent content in DevOps on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 05 Oct 2023 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/devops/index.xml" rel="self" type="application/rss+xml"/><item><title>如何把 Go 模块文档发布到 pkg.go.dev</title><link>https://www.lingcoder.com/p/publish-go-module-to-pkg-go-dev/</link><pubDate>Thu, 05 Oct 2023 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/publish-go-module-to-pkg-go-dev/</guid><description>&lt;img src="https://www.lingcoder.com/p/publish-go-module-to-pkg-go-dev/cover.svg" alt="Featured image of post 如何把 Go 模块文档发布到 pkg.go.dev" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;Go 生态里没有 npm registry / Maven Central 这种&amp;quot;集中仓库&amp;quot;——&lt;strong&gt;Go 模块直接通过 git 仓库地址拉取&lt;/strong&gt;：&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工程实践 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/devops/</link><description>Recent content in 工程实践 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 14 Aug 2025 15:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/devops/index.xml" rel="self" type="application/rss+xml"/><item><title>Spring Boot 配置加载机制详解</title><link>https://www.lingcoder.com/p/spring-boot-config-loading-mechanism/</link><pubDate>Thu, 14 Aug 2025 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-config-loading-mechanism/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-config-loading-mechanism/cover.svg" alt="Featured image of post Spring Boot 配置加载机制详解" /&gt;&lt;h2 id="几乎每个-spring-boot-项目都遇到过"&gt;&lt;a href="#%e5%87%a0%e4%b9%8e%e6%af%8f%e4%b8%aa-spring-boot-%e9%a1%b9%e7%9b%ae%e9%83%bd%e9%81%87%e5%88%b0%e8%bf%87" class="header-anchor"&gt;&lt;/a&gt;几乎每个 Spring Boot 项目都遇到过
+&lt;/h2&gt;&lt;p&gt;排查问题时最让人崩溃的一类故障是——&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;配置改了重启了，行为还是老的。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;经验稍丰富的开发会立刻反应过来：&lt;strong&gt;它从别处加载了更高优先级的配置，覆盖了你的修改&lt;/strong&gt;。但这&amp;quot;别处&amp;quot;具体是哪里？覆盖顺序是什么？为什么有些配置改了没生效，有些反而立刻生效？&lt;/p&gt;
+&lt;p&gt;Spring Boot 的配置加载体系在文档里写得相对分散，本文把它&lt;strong&gt;完整拉直说一遍&lt;/strong&gt;——从 &lt;code&gt;application.yml&lt;/code&gt; 到环境变量、从 &lt;code&gt;bootstrap.yml&lt;/code&gt; 到 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt;、从 &lt;code&gt;--server.port=8080&lt;/code&gt; 到 K8s ConfigMap，把所有渠道按优先级排成一张图。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一spring-boot-配置的位置全集"&gt;&lt;a href="#%e4%b8%80spring-boot-%e9%85%8d%e7%bd%ae%e7%9a%84%e4%bd%8d%e7%bd%ae%e5%85%a8%e9%9b%86" class="header-anchor"&gt;&lt;/a&gt;一、Spring Boot 配置的&amp;quot;位置&amp;quot;全集
+&lt;/h2&gt;&lt;p&gt;Spring Boot 能从这些地方读取配置（&lt;strong&gt;优先级从高到低&lt;/strong&gt;）：&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ A["1. 命令行参数&lt;br/&gt;--server.port=8080"]
+ B["2. SPRING_APPLICATION_JSON&lt;br/&gt;JSON 串注入"]
+ C["3. ServletConfig / ServletContext 参数"]
+ D["4. JNDI 属性"]
+ E["5. Java System Properties&lt;br/&gt;-Dxxx=yyy"]
+ F["6. OS 环境变量&lt;br/&gt;SERVER_PORT=8080"]
+ G["7. RandomValuePropertySource&lt;br/&gt;random.*"]
+ H["8. 外部 application.yml&lt;br/&gt;(jar 包外)"]
+ I["9. 外部 application-{profile}.yml"]
+ J["10. 内部 application.yml&lt;br/&gt;(jar 包内)"]
+ K["11. 内部 application-{profile}.yml"]
+ L["12. @PropertySource 注解"]
+ M["13. 默认值&lt;br/&gt;SpringApplication.setDefaultProperties"]
+
+ A --&gt; B --&gt; C --&gt; D --&gt; E --&gt; F --&gt; G --&gt; H --&gt; I --&gt; J --&gt; K --&gt; L --&gt; M&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;优先级越靠上的源覆盖越靠下的源&lt;/strong&gt;——同一个 key 多处定义时，最高优先级的值生效。&lt;/p&gt;
+&lt;p&gt;记住一个原则：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;&amp;ldquo;外部覆盖内部、命令行覆盖文件、Profile 覆盖默认&amp;rdquo;&lt;/strong&gt;——这三句话覆盖了 95% 的优先级问题。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="二为什么命令行优先级最高"&gt;&lt;a href="#%e4%ba%8c%e4%b8%ba%e4%bb%80%e4%b9%88%e5%91%bd%e4%bb%a4%e8%a1%8c%e4%bc%98%e5%85%88%e7%ba%a7%e6%9c%80%e9%ab%98" class="header-anchor"&gt;&lt;/a&gt;二、为什么命令行优先级最高
+&lt;/h2&gt;&lt;p&gt;Spring Boot 把命令行优先级设到最高，是为了&lt;strong&gt;给运维一个『不需要改代码也能改配置』的口子&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go get github.com/lingcoder/go-fsm
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar --server.port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;9999&lt;/span&gt; --spring.datasource.url&lt;span class="o"&gt;=&lt;/span&gt;...
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;但有一个东西扮演了&amp;quot;官方文档站&amp;quot;的角色——&lt;a class="link" href="https://pkg.go.dev" target="_blank" rel="noopener"
- &gt;pkg.go.dev&lt;/a&gt;。它不存代码，&lt;strong&gt;只存文档&lt;/strong&gt;——从你的 Go 源码自动生成。&lt;/p&gt;
-&lt;p&gt;如果你写了一个 Go 库想让人用，&lt;strong&gt;&lt;code&gt;go get&lt;/code&gt; 能拉到不代表你&amp;quot;发布了&amp;quot;&lt;/strong&gt;——pkg.go.dev 上有完整文档、版本列表、示例代码、依赖图，才是 Go 生态意义上的&amp;quot;发布&amp;quot;。&lt;/p&gt;
-&lt;p&gt;本文用我自己的 &lt;a class="link" href="https://github.com/lingcoder/go-fsm" target="_blank" rel="noopener"
- &gt;&lt;code&gt;go-fsm&lt;/code&gt;&lt;/a&gt; 作为例子，把发布流程、文档规范、版本管理讲清楚。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;无论 jar 包里 &lt;code&gt;application.yml&lt;/code&gt; 写了什么，命令行说了算。&lt;/p&gt;
+&lt;p&gt;K8s 里也是这个意思——通过 ConfigMap 传环境变量，环境变量优先级高于 jar 内配置，就实现了&amp;quot;同一个 jar 部署到不同环境&amp;quot;。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id="一pkggodev-是什么"&gt;&lt;a href="#%e4%b8%80pkggodev-%e6%98%af%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;一、pkg.go.dev 是什么
-&lt;/h2&gt;&lt;p&gt;它是 Google 维护的 Go 模块文档中心：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;自动从 GitHub / GitLab 拉取公开 Go 模块&lt;/li&gt;
-&lt;li&gt;解析源码生成 HTML 文档&lt;/li&gt;
-&lt;li&gt;显示版本列表、license、依赖图、被引用数&lt;/li&gt;
-&lt;li&gt;支持搜索、跳转、链接到源码&lt;/li&gt;
-&lt;/ul&gt;
-&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
- GitHub[GitHub Tag] --&gt; Proxy[proxy.golang.org]
- Proxy --&gt; PkgGoDev[pkg.go.dev]
- PkgGoDev --&gt; Doc[文档站]&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;你不需要&amp;quot;提交&amp;quot;什么&lt;/strong&gt;——只要模块能被 &lt;code&gt;go get&lt;/code&gt;，pkg.go.dev 就会自动收录。&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id="二最小可发布的-go-模块"&gt;&lt;a href="#%e4%ba%8c%e6%9c%80%e5%b0%8f%e5%8f%af%e5%8f%91%e5%b8%83%e7%9a%84-go-%e6%a8%a1%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;二、最小可发布的 Go 模块
-&lt;/h2&gt;&lt;h3 id="1-仓库结构"&gt;&lt;a href="#1-%e4%bb%93%e5%ba%93%e7%bb%93%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;1. 仓库结构
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;h2 id="三applicationyml-在哪些位置会被找到"&gt;&lt;a href="#%e4%b8%89applicationyml-%e5%9c%a8%e5%93%aa%e4%ba%9b%e4%bd%8d%e7%bd%ae%e4%bc%9a%e8%a2%ab%e6%89%be%e5%88%b0" class="header-anchor"&gt;&lt;/a&gt;三、application.yml 在哪些位置会被找到
+&lt;/h2&gt;&lt;p&gt;Spring Boot 启动时&lt;strong&gt;按以下顺序查找配置文件&lt;/strong&gt;（&lt;strong&gt;Spring Boot 2.3+&lt;/strong&gt; 默认）：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
-&lt;/span&gt;&lt;span class="lnt"&gt; 2
-&lt;/span&gt;&lt;span class="lnt"&gt; 3
-&lt;/span&gt;&lt;span class="lnt"&gt; 4
-&lt;/span&gt;&lt;span class="lnt"&gt; 5
-&lt;/span&gt;&lt;span class="lnt"&gt; 6
-&lt;/span&gt;&lt;span class="lnt"&gt; 7
-&lt;/span&gt;&lt;span class="lnt"&gt; 8
-&lt;/span&gt;&lt;span class="lnt"&gt; 9
-&lt;/span&gt;&lt;span class="lnt"&gt;10
-&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go-fsm/
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── go.mod
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── go.sum
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── LICENSE
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── README.md
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── doc.go # 包级文档
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── fsm.go # 主代码
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── fsm_test.go
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── examples/
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── basic/
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └── main.go
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1. file:./config/*/ (运行目录 config 下的一级子目录,2.3+ 起最高优先级)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2. file:./config/ (运行目录的 config 子目录)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;3. file:./ (运行目录)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;4. classpath:/config/ (jar 内的 config/)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;5. classpath:/ (jar 内根目录)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id="2-gomod"&gt;&lt;a href="#2-gomod" class="header-anchor"&gt;&lt;/a&gt;2. go.mod
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;file:&lt;/code&gt; 开头表示文件系统位置&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;classpath:&lt;/code&gt; 是 jar 包内&lt;/li&gt;
+&lt;li&gt;越靠前的位置优先级越高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;file:./config/*/&lt;/code&gt; 经常被忽视&lt;/strong&gt;——K8s 把多个 ConfigMap 分别挂到 &lt;code&gt;config/redis/&lt;/code&gt;、&lt;code&gt;config/db/&lt;/code&gt; 等子目录时，就靠这一项被加载&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;这就是为什么&amp;quot;jar 同级目录放 application.yml&amp;quot;能覆盖 jar 内配置&lt;/strong&gt;——是 #2 覆盖 #4 的体现。&lt;/p&gt;
+&lt;p&gt;文件名默认是 &lt;code&gt;application&lt;/code&gt;，可以通过 &lt;code&gt;spring.config.name&lt;/code&gt; 改：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar --spring.config.name&lt;span class="o"&gt;=&lt;/span&gt;myapp
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;会去找 &lt;code&gt;myapp.yml&lt;/code&gt; / &lt;code&gt;myapp.properties&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;spring.config.location&lt;/code&gt; 能完全自定义查找路径：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar --spring.config.location&lt;span class="o"&gt;=&lt;/span&gt;file:/etc/myapp/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="四profile-机制环境维度切换"&gt;&lt;a href="#%e5%9b%9bprofile-%e6%9c%ba%e5%88%b6%e7%8e%af%e5%a2%83%e7%bb%b4%e5%ba%a6%e5%88%87%e6%8d%a2" class="header-anchor"&gt;&lt;/a&gt;四、Profile 机制：环境维度切换
+&lt;/h2&gt;&lt;h3 id="激活-profile"&gt;&lt;a href="#%e6%bf%80%e6%b4%bb-profile" class="header-anchor"&gt;&lt;/a&gt;激活 Profile
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar --spring.profiles.active&lt;span class="o"&gt;=&lt;/span&gt;prod
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;或者环境变量：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;SPRING_PROFILES_ACTIVE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;prod java -jar app.jar
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="profile-文件命名"&gt;&lt;a href="#profile-%e6%96%87%e4%bb%b6%e5%91%bd%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;Profile 文件命名
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;span class="lnt"&gt;2
 &lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;module github.com/lingcoder/go-fsm
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go 1.21
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;application.yml ← 共享配置
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;application-dev.yml ← dev profile 独占
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;application-test.yml ← test profile 独占
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;application-prod.yml ← prod profile 独占
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;module&lt;/code&gt; 名&lt;strong&gt;必须是仓库的 import path&lt;/strong&gt;——pkg.go.dev 通过这个找到对应的 git 仓库。&lt;/p&gt;
-&lt;h3 id="3-docgo包级文档"&gt;&lt;a href="#3-docgo%e5%8c%85%e7%ba%a7%e6%96%87%e6%a1%a3" class="header-anchor"&gt;&lt;/a&gt;3. doc.go：包级文档
+&lt;/div&gt;&lt;p&gt;激活某个 profile 时，&lt;strong&gt;&lt;code&gt;application.yml&lt;/code&gt; 和 &lt;code&gt;application-{profile}.yml&lt;/code&gt; 都会被加载&lt;/strong&gt;，profile 文件覆盖通用文件。&lt;/p&gt;
+&lt;h3 id="多-profile-同时激活"&gt;&lt;a href="#%e5%a4%9a-profile-%e5%90%8c%e6%97%b6%e6%bf%80%e6%b4%bb" class="header-anchor"&gt;&lt;/a&gt;多 Profile 同时激活
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
-&lt;/span&gt;&lt;span class="lnt"&gt; 2
-&lt;/span&gt;&lt;span class="lnt"&gt; 3
-&lt;/span&gt;&lt;span class="lnt"&gt; 4
-&lt;/span&gt;&lt;span class="lnt"&gt; 5
-&lt;/span&gt;&lt;span class="lnt"&gt; 6
-&lt;/span&gt;&lt;span class="lnt"&gt; 7
-&lt;/span&gt;&lt;span class="lnt"&gt; 8
-&lt;/span&gt;&lt;span class="lnt"&gt; 9
-&lt;/span&gt;&lt;span class="lnt"&gt;10
-&lt;/span&gt;&lt;span class="lnt"&gt;11
-&lt;/span&gt;&lt;span class="lnt"&gt;12
-&lt;/span&gt;&lt;span class="lnt"&gt;13
-&lt;/span&gt;&lt;span class="lnt"&gt;14
-&lt;/span&gt;&lt;span class="lnt"&gt;15
-&lt;/span&gt;&lt;span class="lnt"&gt;16
-&lt;/span&gt;&lt;span class="lnt"&gt;17
-&lt;/span&gt;&lt;span class="lnt"&gt;18
-&lt;/span&gt;&lt;span class="lnt"&gt;19
-&lt;/span&gt;&lt;span class="lnt"&gt;20
-&lt;/span&gt;&lt;span class="lnt"&gt;21
-&lt;/span&gt;&lt;span class="lnt"&gt;22
-&lt;/span&gt;&lt;span class="lnt"&gt;23
-&lt;/span&gt;&lt;span class="lnt"&gt;24
-&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Package fsm provides a lightweight, type-safe finite state machine&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// implementation for Go applications.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// # Quick Start&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Define states and events:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// const (&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// StatePending = fsm.State(&amp;#34;pending&amp;#34;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// StateApproved = fsm.State(&amp;#34;approved&amp;#34;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// StateRejected = fsm.State(&amp;#34;rejected&amp;#34;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// )&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// m := fsm.New(StatePending).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// On(EventApprove).From(StatePending).To(StateApproved).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// On(EventReject).From(StatePending).To(StateRejected).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Build()&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// # Features&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - Type-safe state and event definitions&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - Hooks before / after transitions&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - Concurrent-safe by default&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - Zero dependencies&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;--spring.profiles.active&lt;span class="o"&gt;=&lt;/span&gt;prod,monitoring,debug
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;按数组顺序加载，&lt;strong&gt;后面的覆盖前面的&lt;/strong&gt;。这是做&amp;quot;基础 prod 配置 + 加监控 + 加调试日志&amp;quot;组合的标准姿势。&lt;/p&gt;
+&lt;h3 id="springprofilesinclude"&gt;&lt;a href="#springprofilesinclude" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;spring.profiles.include&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;不同于 &lt;code&gt;active&lt;/code&gt; 是&amp;quot;激活什么&amp;quot;，&lt;code&gt;include&lt;/code&gt; 是&amp;quot;再附加什么&amp;quot;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# application-prod.yml&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;profiles&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;include&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;monitoring&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;doc.go&lt;/code&gt; 里的 package 注释会成为 pkg.go.dev 主页的描述——&lt;strong&gt;它是用户对你库的第一印象&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id="4-readmemd"&gt;&lt;a href="#4-readmemd" class="header-anchor"&gt;&lt;/a&gt;4. README.md
-&lt;/h3&gt;&lt;p&gt;pkg.go.dev 会&lt;strong&gt;同时展示 README 与包级 doc&lt;/strong&gt;——README 显示在首页 Overview 区，包级 doc 显示在 Documentation 区。两者各司其职：README 面向 GitHub / pkg.go.dev 访客做项目介绍，&lt;code&gt;doc.go&lt;/code&gt; 面向 godoc / IDE 跳转做 API 文档。建议把 GitHub 风格的徽章、功能 GIF、安装命令放 README，把 API 用法和 example 放 &lt;code&gt;doc.go&lt;/code&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;激活 prod 时自动也加载 &lt;code&gt;application-monitoring.yml&lt;/code&gt;——&lt;strong&gt;保证一组配置成套生效，不用每次写命令行参数&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id="三文档规范让-godoc-漂亮"&gt;&lt;a href="#%e4%b8%89%e6%96%87%e6%a1%a3%e8%a7%84%e8%8c%83%e8%ae%a9-godoc-%e6%bc%82%e4%ba%ae" class="header-anchor"&gt;&lt;/a&gt;三、文档规范：让 godoc 漂亮
-&lt;/h2&gt;&lt;p&gt;&lt;code&gt;pkg.go.dev&lt;/code&gt; 的文档完全从 Go 源码注释生成——&lt;strong&gt;注释规范决定文档质量&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id="1-每个导出符号都要有注释"&gt;&lt;a href="#1-%e6%af%8f%e4%b8%aa%e5%af%bc%e5%87%ba%e7%ac%a6%e5%8f%b7%e9%83%bd%e8%a6%81%e6%9c%89%e6%b3%a8%e9%87%8a" class="header-anchor"&gt;&lt;/a&gt;1. 每个导出符号都要有注释
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
-&lt;/span&gt;&lt;span class="lnt"&gt; 2
-&lt;/span&gt;&lt;span class="lnt"&gt; 3
-&lt;/span&gt;&lt;span class="lnt"&gt; 4
-&lt;/span&gt;&lt;span class="lnt"&gt; 5
-&lt;/span&gt;&lt;span class="lnt"&gt; 6
-&lt;/span&gt;&lt;span class="lnt"&gt; 7
-&lt;/span&gt;&lt;span class="lnt"&gt; 8
-&lt;/span&gt;&lt;span class="lnt"&gt; 9
-&lt;/span&gt;&lt;span class="lnt"&gt;10
-&lt;/span&gt;&lt;span class="lnt"&gt;11
-&lt;/span&gt;&lt;span class="lnt"&gt;12
-&lt;/span&gt;&lt;span class="lnt"&gt;13
-&lt;/span&gt;&lt;span class="lnt"&gt;14
-&lt;/span&gt;&lt;span class="lnt"&gt;15
-&lt;/span&gt;&lt;span class="lnt"&gt;16
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// State represents a state in the finite state machine.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Event represents a transition trigger event.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Event&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;string&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// FSM is a finite state machine instance.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// New creates a new FSM with the given initial state.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;New&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;initial&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;initial&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;注释必须以&lt;strong&gt;符号名开头&lt;/strong&gt;——这是 godoc 的强约定。&lt;/p&gt;
-&lt;h3 id="2-多行注释"&gt;&lt;a href="#2-%e5%a4%9a%e8%a1%8c%e6%b3%a8%e9%87%8a" class="header-anchor"&gt;&lt;/a&gt;2. 多行注释
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;h2 id="五bootstrapyml-vs-applicationyml"&gt;&lt;a href="#%e4%ba%94bootstrapyml-vs-applicationyml" class="header-anchor"&gt;&lt;/a&gt;五、&lt;code&gt;bootstrap.yml&lt;/code&gt; vs &lt;code&gt;application.yml&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;Spring Cloud 项目里还会出现 &lt;code&gt;bootstrap.yml&lt;/code&gt;——&lt;strong&gt;它是 Spring Cloud 引入的，比 &lt;code&gt;application.yml&lt;/code&gt; 更早加载&lt;/strong&gt;。&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ A[bootstrap.yml&lt;br/&gt;加载阶段 1] --&gt; B[拉取远程配置中心]
+ B --&gt; C[application.yml&lt;br/&gt;加载阶段 2]
+ C --&gt; D[最终 Environment]&lt;/pre&gt;&lt;p&gt;&lt;code&gt;bootstrap.yml&lt;/code&gt; 的典型用途——&lt;strong&gt;配置&amp;quot;配置中心客户端本身&amp;quot;&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;span class="lnt"&gt;2
@@ -188,39 +173,108 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;9
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Trigger fires an event and transitions the FSM.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// If no transition is defined for the current state and event,&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// it returns an ErrNoTransition error.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Trigger is safe for concurrent use.&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;Trigger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;error&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# bootstrap.yml&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;application&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;user-service&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;cloud&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;nacos&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;config&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;server-addr&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;nacos.internal:8848&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;namespace&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;prod&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;空行分段，&lt;strong&gt;每段一个意思&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id="3-列表"&gt;&lt;a href="#3-%e5%88%97%e8%a1%a8" class="header-anchor"&gt;&lt;/a&gt;3. 列表
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;/div&gt;&lt;p&gt;为什么必须更早加载？因为 Nacos / Apollo / Spring Cloud Config 的客户端要先连上配置中心，才能拉到 &lt;code&gt;application.yml&lt;/code&gt; 里的业务配置——&lt;strong&gt;鸡生蛋、蛋生鸡的问题&lt;/strong&gt;。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;Spring Cloud 2020.0 之后官方推荐用 &lt;code&gt;spring.config.import&lt;/code&gt; 替代 &lt;code&gt;bootstrap.yml&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;config&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;import&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;optional:nacos:application.yml&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;但 &lt;code&gt;bootstrap.yml&lt;/code&gt; 仍然兼容，且大量老项目还在用。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="六外部化配置12-factor-的最佳实践"&gt;&lt;a href="#%e5%85%ad%e5%a4%96%e9%83%a8%e5%8c%96%e9%85%8d%e7%bd%ae12-factor-%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;六、外部化配置：12-Factor 的最佳实践
+&lt;/h2&gt;&lt;p&gt;12-Factor App 第三条：&amp;ldquo;Store config in the environment&amp;rdquo;——&lt;strong&gt;配置应当从环境而来，而不是写死在代码里&lt;/strong&gt;。Spring Boot 的设计完全贴合这个理念：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;span class="lnt"&gt;2
 &lt;/span&gt;&lt;span class="lnt"&gt;3
 &lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Available hooks:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - BeforeTransition: called before state changes&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - AfterTransition: called after state changes&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// - OnError: called when transition fails&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# application.yml&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;spring&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;datasource&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;url&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${DB_URL:jdbc:mysql://localhost:3306/test}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;username&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${DB_USER:root}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;password&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${DB_PASS:}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;注意——&lt;strong&gt;列表项前要有 4 空格缩进&lt;/strong&gt;，pkg.go.dev 才会渲染成 bullet。&lt;/p&gt;
-&lt;h3 id="4-可执行示例"&gt;&lt;a href="#4-%e5%8f%af%e6%89%a7%e8%a1%8c%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;4. 可执行示例
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;example_*.go&lt;/code&gt; 文件里的 &lt;code&gt;Example*&lt;/code&gt; 函数会&lt;strong&gt;自动出现在 pkg.go.dev&lt;/strong&gt;：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;${VAR:default}&lt;/code&gt; 语法——&lt;strong&gt;先看环境变量，没有就用默认值&lt;/strong&gt;。这种写法的好处：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同一个 jar 在 dev/test/prod 三套环境跑&lt;/li&gt;
+&lt;li&gt;K8s 里通过 ConfigMap / Secret 注入&lt;/li&gt;
+&lt;li&gt;本地开发不需要 Secret，用默认值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;K8s 部署时：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;DB_URL&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;value&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;jdbc:mysql://prod-mysql:3306/order&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;DB_PASS&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;valueFrom&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;secretKeyRef&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;db-secret&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;key&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;password&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="七value-vs-configurationproperties"&gt;&lt;a href="#%e4%b8%83value-vs-configurationproperties" class="header-anchor"&gt;&lt;/a&gt;七、&lt;code&gt;@Value&lt;/code&gt; vs &lt;code&gt;@ConfigurationProperties&lt;/code&gt;
+&lt;/h2&gt;&lt;p&gt;业务代码注入配置有两种主流方式。&lt;/p&gt;
+&lt;h3 id="value单字段注入"&gt;&lt;a href="#value%e5%8d%95%e5%ad%97%e6%ae%b5%e6%b3%a8%e5%85%a5" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;@Value&lt;/code&gt;：单字段注入
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Value&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;${server.port:8080}&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;简单直接，但有几个限制：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;不支持类型校验&lt;/strong&gt;——拼写错了运行时才发现&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不支持嵌套对象&lt;/strong&gt;——只能拿单个值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不便于测试&lt;/strong&gt;——要在 test 里 mock 整个 Environment&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="configurationproperties批量映射"&gt;&lt;a href="#configurationproperties%e6%89%b9%e9%87%8f%e6%98%a0%e5%b0%84" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;@ConfigurationProperties&lt;/code&gt;：批量映射
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
 &lt;/span&gt;&lt;span class="lnt"&gt; 2
@@ -234,35 +288,23 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;10
 &lt;/span&gt;&lt;span class="lnt"&gt;11
 &lt;/span&gt;&lt;span class="lnt"&gt;12
-&lt;/span&gt;&lt;span class="lnt"&gt;13
-&lt;/span&gt;&lt;span class="lnt"&gt;14
-&lt;/span&gt;&lt;span class="lnt"&gt;15
-&lt;/span&gt;&lt;span class="lnt"&gt;16
-&lt;/span&gt;&lt;span class="lnt"&gt;17
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// example_test.go&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm_test&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Component&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@ConfigurationProperties&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;feature&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Validated&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FeatureConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@NotBlank&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Min&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Max&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Map&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;github.com/lingcoder/go-fsm&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;ExampleFSM_Trigger&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;New&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;On&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;From&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;To&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approved&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;Build&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Trigger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fmt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;State&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// Output: approved&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// getters / setters&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;// Output: ...&lt;/code&gt; 是 Go 测试框架的语法——&lt;strong&gt;它既验证示例正确性，也是文档&lt;/strong&gt;。&lt;/p&gt;
-&lt;h3 id="5-标题go-119"&gt;&lt;a href="#5-%e6%a0%87%e9%a2%98go-119" class="header-anchor"&gt;&lt;/a&gt;5. 标题（Go 1.19+）
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
 &lt;/span&gt;&lt;span class="lnt"&gt;2
@@ -270,60 +312,19 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;span class="lnt"&gt;5
 &lt;/span&gt;&lt;span class="lnt"&gt;6
-&lt;/span&gt;&lt;span class="lnt"&gt;7
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-go" data-lang="go"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// # Configuration&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// The FSM can be configured via options...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// # Performance&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// The FSM is optimized for...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;feature&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;my-feature&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;threshold&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;50&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;region&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;cn&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;env&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;prod&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;#&lt;/code&gt; 在注释里被识别为标题——pkg.go.dev 会渲染成大标题、生成目录。&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id="四版本管理发布正式版本"&gt;&lt;a href="#%e5%9b%9b%e7%89%88%e6%9c%ac%e7%ae%a1%e7%90%86%e5%8f%91%e5%b8%83%e6%ad%a3%e5%bc%8f%e7%89%88%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;四、版本管理：发布正式版本
-&lt;/h2&gt;&lt;h3 id="1-用-git-tag-发布"&gt;&lt;a href="#1-%e7%94%a8-git-tag-%e5%8f%91%e5%b8%83" class="header-anchor"&gt;&lt;/a&gt;1. 用 git tag 发布
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;span class="lnt"&gt;2
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git tag v1.0.0
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git push origin v1.0.0
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;tag 必须是 &lt;code&gt;vX.Y.Z&lt;/code&gt; 格式&lt;/strong&gt;——Go modules 强制语义化版本。&lt;/p&gt;
-&lt;h3 id="2-让-pkggodev-收录新版本"&gt;&lt;a href="#2-%e8%ae%a9-pkggodev-%e6%94%b6%e5%bd%95%e6%96%b0%e7%89%88%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;2. 让 pkg.go.dev 收录新版本
-&lt;/h3&gt;&lt;p&gt;打 tag 后，第一次访问 &lt;code&gt;https://pkg.go.dev/github.com/lingcoder/go-fsm@v1.0.0&lt;/code&gt; 会触发&lt;strong&gt;proxy.golang.org 抓取&lt;/strong&gt;——几秒后页面就有了。&lt;/p&gt;
-&lt;p&gt;或者用：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go get github.com/lingcoder/go-fsm@v1.0.0
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;也会触发同样的抓取。&lt;/p&gt;
-&lt;h3 id="3-v2-的特殊规则"&gt;&lt;a href="#3-v2-%e7%9a%84%e7%89%b9%e6%ae%8a%e8%a7%84%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;3. v2+ 的特殊规则
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;重要&lt;/strong&gt;：v2 及以上版本要在 module path 里加版本号：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;span class="lnt"&gt;2
-&lt;/span&gt;&lt;span class="lnt"&gt;3
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;v0.x.x / v1.x.x → module path: github.com/lingcoder/go-fsm
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;v2.x.x → module path: github.com/lingcoder/go-fsm/v2
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;v3.x.x → module path: github.com/lingcoder/go-fsm/v3
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;发布 v2 时：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;@ConfigurationProperties&lt;/code&gt; 是生产推荐姿势&lt;/strong&gt;——类型安全、能 &lt;code&gt;@Validated&lt;/code&gt; 校验、IDE 提示完整、便于单元测试。&lt;/p&gt;
+&lt;h3 id="refreshscope"&gt;&lt;a href="#refreshscope" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;@RefreshScope&lt;/code&gt;
+&lt;/h3&gt;&lt;p&gt;配置中心场景下，要让配置变更立刻生效需要加 &lt;code&gt;@RefreshScope&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -332,30 +333,348 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;# go.mod
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;module github.com/lingcoder/go-fsm/v2
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go 1.21
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Component&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@RefreshScope&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@ConfigurationProperties&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;feature&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FeatureConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;但&lt;strong&gt;记住&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@RefreshScope&lt;/code&gt; 不要加在 &lt;code&gt;@Configuration&lt;/code&gt; 上&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@ConfigurationProperties&lt;/code&gt; 自带的刷新已经够多数场景用，&lt;strong&gt;不一定需要 &lt;code&gt;@RefreshScope&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;复杂业务的&amp;quot;动态配置&amp;quot;建议直接通过事件订阅，而不是依赖 &lt;code&gt;@RefreshScope&lt;/code&gt; 重建 Bean&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="八调试技巧搞清楚配置从哪里来"&gt;&lt;a href="#%e5%85%ab%e8%b0%83%e8%af%95%e6%8a%80%e5%b7%a7%e6%90%9e%e6%b8%85%e6%a5%9a%e9%85%8d%e7%bd%ae%e4%bb%8e%e5%93%aa%e9%87%8c%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;八、调试技巧：搞清楚配置从哪里来
+&lt;/h2&gt;&lt;h3 id="1-actuator-的-actuatorenv"&gt;&lt;a href="#1-actuator-%e7%9a%84-actuatorenv" class="header-anchor"&gt;&lt;/a&gt;1. Actuator 的 &lt;code&gt;/actuator/env&lt;/code&gt;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;management&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;endpoints&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;web&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;exposure&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;include&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;env,configprops&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;调用 &lt;code&gt;/actuator/env&lt;/code&gt; 能看到&lt;strong&gt;每个 PropertySource、每个 key 的来源和最终值&lt;/strong&gt;——是排查&amp;quot;配置不生效&amp;quot;的最快办法。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;name&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;applicationConfig: [classpath:/application.yml]&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;properties&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;server.port&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nt"&gt;&amp;#34;value&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8080&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;并打 tag &lt;code&gt;v2.0.0&lt;/code&gt;。这是 Go 1.13 之后的强制规则——&lt;strong&gt;强迫&amp;quot;breaking change 必显式&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;h3 id="2-启动日志-debug"&gt;&lt;a href="#2-%e5%90%af%e5%8a%a8%e6%97%a5%e5%bf%97-debug" class="header-anchor"&gt;&lt;/a&gt;2. 启动日志 DEBUG
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar --debug
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;会打出每个 starter 的自动配置生效情况。&lt;/p&gt;
+&lt;h3 id="3-启动参数检查"&gt;&lt;a href="#3-%e5%90%af%e5%8a%a8%e5%8f%82%e6%95%b0%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;3. 启动参数检查
+&lt;/h3&gt;&lt;p&gt;如果你怀疑有命令行参数在覆盖配置，看启动脚本里的所有 &lt;code&gt;-D&lt;/code&gt; 和 &lt;code&gt;--&lt;/code&gt;，再看环境变量：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;env &lt;span class="p"&gt;|&lt;/span&gt; grep -i SPRING
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;很多&amp;quot;诡异覆盖&amp;quot;是 K8s ConfigMap 里悄悄塞了同名变量。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id="五license-文件影响排名"&gt;&lt;a href="#%e4%ba%94license-%e6%96%87%e4%bb%b6%e5%bd%b1%e5%93%8d%e6%8e%92%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;五、license 文件：影响排名
-&lt;/h2&gt;&lt;p&gt;pkg.go.dev 会显示模块的 license——&lt;strong&gt;有 license 的模块在搜索结果里更靠前&lt;/strong&gt;。最常用：&lt;/p&gt;
+&lt;h2 id="九几个最常被踩的坑"&gt;&lt;a href="#%e4%b9%9d%e5%87%a0%e4%b8%aa%e6%9c%80%e5%b8%b8%e8%a2%ab%e8%b8%a9%e7%9a%84%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;九、几个最常被踩的坑
+&lt;/h2&gt;&lt;h3 id="坑-1yaml-缩进与冒号后空格"&gt;&lt;a href="#%e5%9d%91-1yaml-%e7%bc%a9%e8%bf%9b%e4%b8%8e%e5%86%92%e5%8f%b7%e5%90%8e%e7%a9%ba%e6%a0%bc" class="header-anchor"&gt;&lt;/a&gt;坑 1：YAML 缩进与冒号后空格
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;server&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;port:8080 &lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c"&gt;# ❌ 冒号后没空格 → 当作字符串&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;server&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;port&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;8080&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c"&gt;# ✓&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="坑-2profile-里的相对路径"&gt;&lt;a href="#%e5%9d%91-2profile-%e9%87%8c%e7%9a%84%e7%9b%b8%e5%af%b9%e8%b7%af%e5%be%84" class="header-anchor"&gt;&lt;/a&gt;坑 2：Profile 里的相对路径
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# application-prod.yml&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;logging&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;file&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;logs/app.log &lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c"&gt;# 相对路径，相对于&amp;#34;工作目录&amp;#34;，不是项目目录&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;部署到容器后工作目录可能不是你以为的位置——&lt;strong&gt;生产路径写绝对路径&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="坑-3环境变量大小写转换"&gt;&lt;a href="#%e5%9d%91-3%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e5%a4%a7%e5%b0%8f%e5%86%99%e8%bd%ac%e6%8d%a2" class="header-anchor"&gt;&lt;/a&gt;坑 3：环境变量大小写转换
+&lt;/h3&gt;&lt;p&gt;YAML 里的 &lt;code&gt;spring.datasource.url&lt;/code&gt; 对应环境变量是 &lt;code&gt;SPRING_DATASOURCE_URL&lt;/code&gt;——&lt;strong&gt;点变下划线、全大写&lt;/strong&gt;。写成 &lt;code&gt;spring.datasource.url&lt;/code&gt; 当环境变量是不会被认到的（虽然 Spring Boot 现在支持驼峰转 kebab，但环境变量必须全大写）。&lt;/p&gt;
+&lt;h3 id="坑-4占位符递归"&gt;&lt;a href="#%e5%9d%91-4%e5%8d%a0%e4%bd%8d%e7%ac%a6%e9%80%92%e5%bd%92" class="header-anchor"&gt;&lt;/a&gt;坑 4：占位符递归
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;foo&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${bar}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;bar&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${foo} &lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c"&gt;# ❌ 死循环&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;启动直接报错。但更隐蔽的是：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;app&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;fullName&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${prefix}-${name:default}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;${prefix}-suffix&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;会展开成预期之外的字符串，自己看不出来。&lt;strong&gt;复杂占位符建议拉直写&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="坑-5configurationproperties-没生效"&gt;&lt;a href="#%e5%9d%91-5configurationproperties-%e6%b2%a1%e7%94%9f%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;坑 5：&lt;code&gt;@ConfigurationProperties&lt;/code&gt; 没生效
+&lt;/h3&gt;&lt;p&gt;最常见原因是&lt;strong&gt;没加 &lt;code&gt;@Component&lt;/code&gt; 或 &lt;code&gt;@EnableConfigurationProperties&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Component&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@ConfigurationProperties&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;prefix&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;feature&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FeatureConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;或者：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Configuration&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@EnableConfigurationProperties&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;FeatureConfig&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;AppConfig&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;...&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;二者选其一。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十生产-checklist"&gt;&lt;a href="#%e5%8d%81%e7%94%9f%e4%ba%a7-checklist" class="header-anchor"&gt;&lt;/a&gt;十、生产 Checklist
+&lt;/h2&gt;&lt;p&gt;部署前过一遍：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;MIT&lt;/strong&gt; —— 最宽松，工业首选&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Apache 2.0&lt;/strong&gt; —— 带专利授权条款，大公司喜欢&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;BSD-3-Clause&lt;/strong&gt; —— 简单、宽松&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 不在代码 / yml 里硬编码密钥、数据库密码&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 敏感配置通过环境变量 / Secret 注入&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 不同环境分别有 &lt;code&gt;application-{env}.yml&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; &lt;code&gt;--spring.profiles.active&lt;/code&gt; 在启动脚本明确传入&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 业务代码用 &lt;code&gt;@ConfigurationProperties&lt;/code&gt; + &lt;code&gt;@Validated&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 路径相关配置写绝对路径&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; Actuator &lt;code&gt;env&lt;/code&gt; 和 &lt;code&gt;configprops&lt;/code&gt; 在生产环境&lt;strong&gt;关闭或加权限&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 大型项目的全局配置走 &lt;code&gt;bootstrap.yml&lt;/code&gt; 或 &lt;code&gt;spring.config.import&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 启动后用 &lt;code&gt;/actuator/env&lt;/code&gt; 抽查关键配置的来源&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;把对应的 LICENSE 文件放仓库根目录就行——pkg.go.dev 自动识别。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;没 license 的代码 &lt;strong&gt;法律上等于&amp;quot;All rights reserved&amp;quot;&lt;/strong&gt; ——别人不能用。开源前一定要加。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Spring Boot 配置加载的本质是『多个 PropertySource 按优先级合并』——只要把『谁覆盖谁』这件事弄明白，所有&amp;quot;配置不生效&amp;quot;的问题都能 5 分钟定位。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;hr&gt;
-&lt;h2 id="六ci-集成自动化发布"&gt;&lt;a href="#%e5%85%adci-%e9%9b%86%e6%88%90%e8%87%aa%e5%8a%a8%e5%8c%96%e5%8f%91%e5%b8%83" class="header-anchor"&gt;&lt;/a&gt;六、CI 集成：自动化发布
-&lt;/h2&gt;&lt;p&gt;GitHub Actions 自动测试 + 发版：&lt;/p&gt;
+&lt;p&gt;记住几条核心规则：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;优先级&lt;/strong&gt;：命令行 &amp;gt; 环境变量 &amp;gt; 外部文件 &amp;gt; 内部文件 &amp;gt; 默认值&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Profile&lt;/strong&gt;：通用 + profile 配置都加载，profile 覆盖通用&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;业务用 &lt;code&gt;@ConfigurationProperties&lt;/code&gt;&lt;/strong&gt;，少用 &lt;code&gt;@Value&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;配置中心走 &lt;code&gt;bootstrap.yml&lt;/code&gt; / &lt;code&gt;spring.config.import&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;排查用 &lt;code&gt;/actuator/env&lt;/code&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;把这些吃透，配置层基本不会再出意外。&lt;/p&gt;</description></item><item><title>软件研发生命周期中的核心文档梳理</title><link>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</link><pubDate>Tue, 06 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/key-documents-in-the-software-development-lifecycle/</guid><description>&lt;h1 id="软件研发生命周期中的核心文档梳理"&gt;&lt;a href="#%e8%bd%af%e4%bb%b6%e7%a0%94%e5%8f%91%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e4%b8%ad%e7%9a%84%e6%a0%b8%e5%bf%83%e6%96%87%e6%a1%a3%e6%a2%b3%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;软件研发生命周期中的核心文档梳理
+&lt;/h1&gt;&lt;p&gt;在软件研发项目的全流程中，文档是一项不可或缺的支撑工具。它们不仅仅是“凭证”，更是团队协作、需求澄清、技术落地、交付和维护的重要桥梁。对于管理者、产品、开发、测试乃至运维等不同角色，理解并正确使用每类文档，能有效提升项目的效率和质量。本文将对研发生命周期各阶段的主流文档进行梳理，着重说明其主要作用、使用场景和典型使用角色。&lt;/p&gt;
+&lt;h2 id="1-项目启动与可行性分析阶段"&gt;&lt;a href="#1-%e9%a1%b9%e7%9b%ae%e5%90%af%e5%8a%a8%e4%b8%8e%e5%8f%af%e8%a1%8c%e6%80%a7%e5%88%86%e6%9e%90%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;1. 项目启动与可行性分析阶段
+&lt;/h2&gt;&lt;h3 id="11-项目建议书立项文档"&gt;&lt;a href="#11-%e9%a1%b9%e7%9b%ae%e5%bb%ba%e8%ae%ae%e4%b9%a6%e7%ab%8b%e9%a1%b9%e6%96%87%e6%a1%a3" class="header-anchor"&gt;&lt;/a&gt;1.1 项目建议书/立项文档
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：明确项目背景、预期目标和价值，论证开展该项目的合理性和必要性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：项目正式启动前，项目申报、资源争取、重大决策时。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：项目负责人、高管、产品经理、业务方。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/1_project_initiation/project_proposal.md" target="_blank" rel="noopener"
+ &gt;查看项目建议书模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="12-可行性分析报告可选"&gt;&lt;a href="#12-%e5%8f%af%e8%a1%8c%e6%80%a7%e5%88%86%e6%9e%90%e6%8a%a5%e5%91%8a%e5%8f%af%e9%80%89" class="header-anchor"&gt;&lt;/a&gt;1.2 可行性分析报告（可选）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：多维度分析项目在技术、经济、资源、合规等方面的可行性与主要风险。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：创新性较强、规模较大的项目立项评审阶段。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：架构师、技术负责人、项目管理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/1_project_initiation/feasibility_analysis.md" target="_blank" rel="noopener"
+ &gt;查看可行性分析报告模板&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="2-需求分析阶段"&gt;&lt;a href="#2-%e9%9c%80%e6%b1%82%e5%88%86%e6%9e%90%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;2. 需求分析阶段
+&lt;/h2&gt;&lt;h3 id="21-业务需求文档需求调研报告"&gt;&lt;a href="#21-%e4%b8%9a%e5%8a%a1%e9%9c%80%e6%b1%82%e6%96%87%e6%a1%a3%e9%9c%80%e6%b1%82%e8%b0%83%e7%a0%94%e6%8a%a5%e5%91%8a" class="header-anchor"&gt;&lt;/a&gt;2.1 业务需求文档/需求调研报告
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：全面记录用户实际业务流程、关键需求与问题点，从业务视角定义系统边界。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：需求调研、业务梳理、需求评审前期。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：业务分析师、产品经理、客户代表。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/2_requirements_analysis/business_requirements.md" target="_blank" rel="noopener"
+ &gt;查看业务需求文档模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="22-软件需求规格说明书srs"&gt;&lt;a href="#22-%e8%bd%af%e4%bb%b6%e9%9c%80%e6%b1%82%e8%a7%84%e6%a0%bc%e8%af%b4%e6%98%8e%e4%b9%a6srs" class="header-anchor"&gt;&lt;/a&gt;2.2 软件需求规格说明书（SRS）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：作为开发、测试、验收等一切后续工作的正式依据，将功能与非功能需求精确落地。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：需求评审、开发前需求冻结、变更管理、测试验收。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：产品经理、开发、测试、项目管理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/2_requirements_analysis/software_requirements_specification.md" target="_blank" rel="noopener"
+ &gt;查看软件需求规格说明书模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="23-原型图--交互设计文档可选"&gt;&lt;a href="#23-%e5%8e%9f%e5%9e%8b%e5%9b%be--%e4%ba%a4%e4%ba%92%e8%ae%be%e8%ae%a1%e6%96%87%e6%a1%a3%e5%8f%af%e9%80%89" class="header-anchor"&gt;&lt;/a&gt;2.3 原型图 / 交互设计文档（可选）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：通过界面视觉化，帮助各方对齐功能预期和操作流程，提高需求沟通效率。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：需求澄清、界面评审、前后端协作。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：产品经理、UI/UX设计师、开发、测试。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/2_requirements_analysis/ui_prototype.md" target="_blank" rel="noopener"
+ &gt;查看原型图/交互设计文档模板&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="3-设计阶段"&gt;&lt;a href="#3-%e8%ae%be%e8%ae%a1%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;3. 设计阶段
+&lt;/h2&gt;&lt;h3 id="31-概要设计说明书high-level-design-hld"&gt;&lt;a href="#31-%e6%a6%82%e8%a6%81%e8%ae%be%e8%ae%a1%e8%af%b4%e6%98%8e%e4%b9%a6high-level-design-hld" class="header-anchor"&gt;&lt;/a&gt;3.1 概要设计说明书（High-Level Design, HLD）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：定义系统总体架构、模块划分、主要逻辑流程和关键技术选型，为详细设计和开发奠定基础。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：设计方案评审、团队分工、技术决策。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：架构师、技术负责人、开发主程、项目经理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/3_design_phase/high_level_design.md" target="_blank" rel="noopener"
+ &gt;查看概要设计说明书模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="32-详细设计说明书low-level-design-lld"&gt;&lt;a href="#32-%e8%af%a6%e7%bb%86%e8%ae%be%e8%ae%a1%e8%af%b4%e6%98%8e%e4%b9%a6low-level-design-lld" class="header-anchor"&gt;&lt;/a&gt;3.2 详细设计说明书（Low-Level Design, LLD）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：细致描述各个模块/功能的实现细节，包括数据结构、接口、核心算法和异常处理，为具体编码提供指引。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：开发任务分解、代码编写前、Code Review。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：开发主程、开发工程师、测试人员、架构师。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/3_design_phase/low_level_design.md" target="_blank" rel="noopener"
+ &gt;查看详细设计说明书模板&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="4-实现与测试阶段"&gt;&lt;a href="#4-%e5%ae%9e%e7%8e%b0%e4%b8%8e%e6%b5%8b%e8%af%95%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;4. 实现与测试阶段
+&lt;/h2&gt;&lt;h3 id="41-测试用例说明书--测试计划"&gt;&lt;a href="#41-%e6%b5%8b%e8%af%95%e7%94%a8%e4%be%8b%e8%af%b4%e6%98%8e%e4%b9%a6--%e6%b5%8b%e8%af%95%e8%ae%a1%e5%88%92" class="header-anchor"&gt;&lt;/a&gt;4.1 测试用例说明书 / 测试计划
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：明确验证每一条需求和功能点的具体方式，涵盖正常/异常流程与边界场景。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：测试设计、开发自测、回归测试、验收测试。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：测试工程师、开发自测、产品经理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/4_implementation_testing/test_plan.md" target="_blank" rel="noopener"
+ &gt;查看测试计划模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="42-测试报告"&gt;&lt;a href="#42-%e6%b5%8b%e8%af%95%e6%8a%a5%e5%91%8a" class="header-anchor"&gt;&lt;/a&gt;4.2 测试报告
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：汇总测试执行结果与缺陷情况，为产品发布与质量判断提供依据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：测试完成后、阶段性评审、最终上线决策。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：测试工程师、项目经理、开发负责人。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/4_implementation_testing/test_report.md" target="_blank" rel="noopener"
+ &gt;查看测试报告模板&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="5-上线与运维阶段"&gt;&lt;a href="#5-%e4%b8%8a%e7%ba%bf%e4%b8%8e%e8%bf%90%e7%bb%b4%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;5. 上线与运维阶段
+&lt;/h2&gt;&lt;h3 id="51-发布手册上线方案"&gt;&lt;a href="#51-%e5%8f%91%e5%b8%83%e6%89%8b%e5%86%8c%e4%b8%8a%e7%ba%bf%e6%96%b9%e6%a1%88" class="header-anchor"&gt;&lt;/a&gt;5.1 发布手册/上线方案
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：规范发布流程，明确上线操作步骤、注意事项、回滚与应急措施。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：系统上线、版本发布、运维流程梳理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：运维工程师、开发、实施人员。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/5_deployment_maintenance/release_plan.md" target="_blank" rel="noopener"
+ &gt;查看发布手册/上线方案模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="52-用户手册操作说明"&gt;&lt;a href="#52-%e7%94%a8%e6%88%b7%e6%89%8b%e5%86%8c%e6%93%8d%e4%bd%9c%e8%af%b4%e6%98%8e" class="header-anchor"&gt;&lt;/a&gt;5.2 用户手册/操作说明
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：指导终端用户或业务方规范使用系统，降低培训和支持成本。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：新系统推广、用户培训、客户支持。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：产品经理、技术支持、终端用户。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/5_deployment_maintenance/user_manual.md" target="_blank" rel="noopener"
+ &gt;查看用户手册/操作说明模板&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="53-运维手册技术支持文档"&gt;&lt;a href="#53-%e8%bf%90%e7%bb%b4%e6%89%8b%e5%86%8c%e6%8a%80%e6%9c%af%e6%94%af%e6%8c%81%e6%96%87%e6%a1%a3" class="header-anchor"&gt;&lt;/a&gt;5.3 运维手册/技术支持文档
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;主要作用&lt;/strong&gt;：梳理系统部署、监控、常见故障排查和恢复流程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：系统上线运维、快速排障、知识传承。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;典型角色&lt;/strong&gt;：运维工程师、技术支持、开发团队。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;模板文件&lt;/strong&gt;：&lt;a class="link" href="https://github.com/lingcoder/docs-template/blob/main/project-management/5_deployment_maintenance/operations_manual.md" target="_blank" rel="noopener"
+ &gt;查看运维手册/技术支持文档模板&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="结语"&gt;&lt;a href="#%e7%bb%93%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;结语
+&lt;/h2&gt;&lt;p&gt;文档贯穿软件研发全流程，不同文档的侧重点各有不同，针对的使用场景和主要角色也各异。正确理解和高效利用这些文档，有助于团队协作、信息传递和项目质量管控。不论项目大小，适度、规范、持续更新的文档体系，都是实现高质量交付与维护的关键保障。&lt;/p&gt;</description></item><item><title>Conda和poetry搭配使用</title><link>https://www.lingcoder.com/p/conda-and-poetry-usage/</link><pubDate>Mon, 11 Sep 2023 18:07:52 +0800</pubDate><guid>https://www.lingcoder.com/p/conda-and-poetry-usage/</guid><description>&lt;p&gt;创建一个新的conda环境，并在这个环境中使用 poetry。
+这是为了防止conda环境和poetry环境之间有冲突，或者因为全局系统级别的Python和包影响项目。&lt;/p&gt;
+&lt;p&gt;步骤：&lt;/p&gt;
+&lt;p&gt;创建conda环境（此处的myenv是环境名，3.11是你需要的Python版本）：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;conda create -n myenv &lt;span class="nv"&gt;python&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;3.11 --no-default-packages
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;激活这个conda环境：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;conda activate myenv
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;确认你正在使用conda环境中的Python。在终端输入以下命令，查看python路径：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;which python
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;你应该可以看到一个指向你刚创建的conda环境的路径。&lt;/p&gt;
+&lt;p&gt;现在，你应该可以在你的conda环境中安装和使用 poetry 了。可以通过以下命令来安装 poetry：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install poetry
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;当我们在conda环境中启动了poetry后，可以创建一个新的poetry项目，或切换到已有的poetry项目目录下，然后使用 &lt;code&gt;poetry install&lt;/code&gt; 安装项目的依赖。由于你是在conda环境中启动的 poetry，所以依赖会被安装在当前的conda环境中。
+请注意，使用这种方式，conda会负责管理Python和二进制依赖，而poetry则负责管理Python包。&lt;/p&gt;
+&lt;p&gt;最后，附赠一份poetry项目常用的镜像构建脚本：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -383,142 +702,38 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;23
 &lt;/span&gt;&lt;span class="lnt"&gt;24
 &lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# .github/workflows/release.yml&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;release&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;on&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;push&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;v*&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;jobs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;release&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;runs-on&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;ubuntu-latest&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;steps&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;uses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;actions/checkout@v3&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;uses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;actions/setup-go@v4&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;with&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;go-version&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;1.21&amp;#39;&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;Test&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;go test ./...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;Vet&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;go vet ./...&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="nt"&gt;name&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;Trigger pkg.go.dev fetch&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;run&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="sd"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="sd"&gt; curl -sSf &amp;#34;https://proxy.golang.org/github.com/${{ github.repository }}/@v/${{ github.ref_name }}.info&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;python:3.11-bookworm&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;as&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;builder&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/app&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; pyproject.toml poetry.lock /app/&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ENV&lt;/span&gt; POETRY_VIRTUALENVS_CREATE false&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; pip3 install pip --upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; pip3 install poetry --upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; poetry install --no-root --only main&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;python:3.11-slim-bookworm&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/app&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; --from&lt;span class="o"&gt;=&lt;/span&gt;builder /usr/local/lib/python3.11 /usr/local/lib/python3.11&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; --from&lt;span class="o"&gt;=&lt;/span&gt;builder /usr/local/bin/ /usr/local/bin/&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; . /app&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;EXPOSE&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;8080&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Run the application when the container launches&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;CMD&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;python&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;main.py&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;最后一步主动告诉 proxy.golang.org 拉取——&lt;strong&gt;比等用户访问快&lt;/strong&gt;。&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id="七提高搜索排名"&gt;&lt;a href="#%e4%b8%83%e6%8f%90%e9%ab%98%e6%90%9c%e7%b4%a2%e6%8e%92%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;七、提高搜索排名
-&lt;/h2&gt;&lt;p&gt;pkg.go.dev 的搜索排名考虑：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;被 import 数量&lt;/strong&gt;——其他 Go 模块依赖你的越多，排名越高&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;license 是否存在&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;文档完整度&lt;/strong&gt;——所有导出符号都有注释&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;版本稳定&lt;/strong&gt;——是否打过 v1+ tag&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;README / doc.go 内容&lt;/strong&gt;——关键词是否覆盖搜索词&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;策略：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;取&lt;strong&gt;好搜的名字&lt;/strong&gt;（关键词命中度高）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;早发 v1.0.0&lt;/strong&gt;——pkg.go.dev 把 0.x 版本视为不稳定&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;写好 doc.go&lt;/strong&gt;——是搜索引擎的主要食粮&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;写 example&lt;/strong&gt;——示例丰富的库更受欢迎&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;h2 id="八常见问题"&gt;&lt;a href="#%e5%85%ab%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;八、常见问题
-&lt;/h2&gt;&lt;h3 id="1-推了-tag-但-pkggodev-没显示"&gt;&lt;a href="#1-%e6%8e%a8%e4%ba%86-tag-%e4%bd%86-pkggodev-%e6%b2%a1%e6%98%be%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;1. 推了 tag 但 pkg.go.dev 没显示
-&lt;/h3&gt;&lt;p&gt;主动触发抓取：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;curl &lt;span class="s2"&gt;&amp;#34;https://proxy.golang.org/github.com/your/repo/@v/v1.0.0.info&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;或访问一次 &lt;code&gt;https://pkg.go.dev/github.com/your/repo@v1.0.0&lt;/code&gt;。&lt;/p&gt;
-&lt;h3 id="2-readme-里的图片不显示"&gt;&lt;a href="#2-readme-%e9%87%8c%e7%9a%84%e5%9b%be%e7%89%87%e4%b8%8d%e6%98%be%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;2. README 里的图片不显示
-&lt;/h3&gt;&lt;p&gt;pkg.go.dev &lt;strong&gt;会渲染 README&lt;/strong&gt;，但&lt;strong&gt;不加载相对路径的本地图片&lt;/strong&gt;——&lt;code&gt;![logo](docs/logo.png)&lt;/code&gt; 这种引用在 pkg.go.dev 上看不到。要让图片正常显示：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;用 GitHub raw 的绝对 URL：&lt;code&gt;![logo](https://raw.githubusercontent.com/owner/repo/main/docs/logo.png)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;或者把图片放在 GitHub Pages / 图床上引用&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;API 文档建议同时维护 README（项目介绍）和 &lt;code&gt;doc.go&lt;/code&gt;（API 用法）——两者会分别在 Overview 区和 Documentation 区展示，互不替代。&lt;/p&gt;
-&lt;h3 id="3-私有仓库怎么办"&gt;&lt;a href="#3-%e7%a7%81%e6%9c%89%e4%bb%93%e5%ba%93%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;3. 私有仓库怎么办
-&lt;/h3&gt;&lt;p&gt;私有 module 不会在 pkg.go.dev 出现。要内部 doc：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;自托管 &lt;code&gt;godoc -http=:6060&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;公司内部用 &lt;code&gt;pkgsite&lt;/code&gt; 自建&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="4-删除已发布版本"&gt;&lt;a href="#4-%e5%88%a0%e9%99%a4%e5%b7%b2%e5%8f%91%e5%b8%83%e7%89%88%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;4. 删除已发布版本
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;不能删除&lt;/strong&gt;。一旦 tag 发布到 proxy.golang.org，会被永久缓存——这是 Go modules 的&amp;quot;checksum 不可变&amp;quot;承诺。&lt;/p&gt;
-&lt;p&gt;发现版本有 bug：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;标记 retract（go.mod 里加 &lt;code&gt;retract v1.0.5&lt;/code&gt;）&lt;/li&gt;
-&lt;li&gt;立刻发新版本 v1.0.6 修复&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
-&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;span class="lnt"&gt;2
-&lt;/span&gt;&lt;span class="lnt"&gt;3
-&lt;/span&gt;&lt;span class="lnt"&gt;4
-&lt;/span&gt;&lt;span class="lnt"&gt;5
-&lt;/span&gt;&lt;span class="lnt"&gt;6
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;// go.mod
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;module github.com/lingcoder/go-fsm
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;go 1.21
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;retract v1.0.5 // bug, use v1.0.6+
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;retracted 版本仍能解析，但用户用 &lt;code&gt;go get&lt;/code&gt; 时会得到警告。&lt;/p&gt;
-&lt;h3 id="5-examples-怎么组织"&gt;&lt;a href="#5-examples-%e6%80%8e%e4%b9%88%e7%bb%84%e7%bb%87" class="header-anchor"&gt;&lt;/a&gt;5. examples 怎么组织
-&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;简单示例 → &lt;code&gt;example_test.go&lt;/code&gt;（pkg.go.dev 显示）&lt;/li&gt;
-&lt;li&gt;完整 demo → &lt;code&gt;examples/&lt;/code&gt; 目录（GitHub 显示但 pkg.go.dev 不显示——所以 doc.go 里指向）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;h2 id="九一份发布前-checklist"&gt;&lt;a href="#%e4%b9%9d%e4%b8%80%e4%bb%bd%e5%8f%91%e5%b8%83%e5%89%8d-checklist" class="header-anchor"&gt;&lt;/a&gt;九、一份发布前 Checklist
-&lt;/h2&gt;&lt;p&gt;发版前对照检查：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; go.mod 的 module path 正确&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; doc.go 写好包级文档&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 所有导出符号有注释（用 &lt;code&gt;golint&lt;/code&gt; / &lt;code&gt;revive&lt;/code&gt; 检查）&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; LICENSE 文件存在&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; README.md 包含安装、quickstart、license&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 至少 3 个 Example 函数&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 单元测试覆盖关键路径&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; CI 通过&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 打 v1.0.0+ tag（或符合 v2+ 规则）&lt;/li&gt;
-&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 推 tag 后访问 pkg.go.dev 验证&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
-&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
-
- &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Go 模块发布的『正式仪式』是 git tag + pkg.go.dev——但真正决定库能否被人用的是 doc.go 和 Example 函数的质量。&lt;/strong&gt;&lt;/p&gt;
-
- &lt;/blockquote&gt;
-&lt;p&gt;工程要点：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;注释以符号名开头&lt;/strong&gt;，每个导出符号都有&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;doc.go 是包的脸面&lt;/strong&gt;——花时间写&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Example 函数比一万字文档有效&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;v1.0.0 是分水岭&lt;/strong&gt;——别永远停在 0.x&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;v2+ 必改 module path&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;把这套做对，你的 Go 库就不只是&amp;quot;能 &lt;code&gt;go get&lt;/code&gt;&amp;quot;——&lt;strong&gt;它有文档、有版本、有声誉&lt;/strong&gt;，是 Go 生态的&amp;quot;正式公民&amp;quot;。&lt;/p&gt;</description></item><item><title>Markdown 常见语法整理</title><link>https://www.lingcoder.com/p/markdown-common-syntax/</link><pubDate>Tue, 18 Apr 2023 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/markdown-common-syntax/</guid><description>&lt;img src="https://www.lingcoder.com/p/markdown-common-syntax/cover.svg" alt="Featured image of post Markdown 常见语法整理" /&gt;&lt;h2 id="为什么写一篇-markdown-语法-demo"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%86%99%e4%b8%80%e7%af%87-markdown-%e8%af%ad%e6%b3%95-demo" class="header-anchor"&gt;&lt;/a&gt;为什么写一篇 Markdown 语法 Demo
+&lt;/div&gt;</description></item><item><title>Markdown 常见语法整理</title><link>https://www.lingcoder.com/p/markdown-common-syntax/</link><pubDate>Tue, 18 Apr 2023 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/markdown-common-syntax/</guid><description>&lt;img src="https://www.lingcoder.com/p/markdown-common-syntax/cover.svg" alt="Featured image of post Markdown 常见语法整理" /&gt;&lt;h2 id="为什么写一篇-markdown-语法-demo"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e5%86%99%e4%b8%80%e7%af%87-markdown-%e8%af%ad%e6%b3%95-demo" class="header-anchor"&gt;&lt;/a&gt;为什么写一篇 Markdown 语法 Demo
 &lt;/h2&gt;&lt;p&gt;Markdown 这东西看着简单，写多了你会发现：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;不同博客平台、不同文档系统、甚至同一个工具的不同版本，&lt;strong&gt;支持的语法和扩展不一致&lt;/strong&gt;&lt;/li&gt;
@@ -2885,4 +3100,523 @@
 &lt;li&gt;管理权限
 &lt;a class="link" href="https://github.com/sitaramc/gitolite" target="_blank" rel="noopener"
  &gt;Gitolite&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</description></item></channel></rss>
+&lt;/ol&gt;</description></item><item><title>Spring Boot 项目打包：War 与 Jar 的区别和注意事项</title><link>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</link><pubDate>Tue, 30 Oct 2018 17:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-war-vs-jar/cover.svg" alt="Featured image of post Spring Boot 项目打包：War 与 Jar 的区别和注意事项" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;新人接触 Spring Boot 时常困惑一个问题——明明同样是 Java Web 项目，为什么有的项目用 &lt;code&gt;mvn package&lt;/code&gt; 出来是个 jar，有的项目却出来一个 war，部署方式还截然不同？&lt;/p&gt;
+&lt;p&gt;答案要从 Spring Boot 的设计哲学说起。&lt;strong&gt;Spring Boot 提倡&amp;quot;内嵌容器、可执行 jar&amp;quot;的方式&lt;/strong&gt;——一个 &lt;code&gt;java -jar app.jar&lt;/code&gt; 就跑起来，再也不用 Tomcat 这样的外部容器。但传统的 Java EE 时代，war 包 + 外部容器才是标准玩法。Spring Boot 也兼容这种做法，让老项目能平滑迁移。&lt;/p&gt;
+&lt;p&gt;这两种打包方式选错了，轻则启动姿势别扭，重则配置失效、监控失灵。本文把它们的区别、坑、和实操要点一次讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="war-与-jar-的本质区别"&gt;&lt;a href="#war-%e4%b8%8e-jar-%e7%9a%84%e6%9c%ac%e8%b4%a8%e5%8c%ba%e5%88%ab" class="header-anchor"&gt;&lt;/a&gt;War 与 Jar 的本质区别
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Jar 包&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;War 包&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;用途&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;通用 Java 库、可执行应用&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Java Web 应用归档（Web Application Archive）&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;入口&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;META-INF/MANIFEST.MF&lt;/code&gt; 的 Main-Class&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;WEB-INF/web.xml&lt;/code&gt; 或 &lt;code&gt;ServletContainerInitializer&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;部署&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;java -jar app.jar&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;拷到 Tomcat/Jetty 的 &lt;code&gt;webapps&lt;/code&gt; 目录&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;容器&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;内嵌（Tomcat/Jetty/Undertow）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;外部&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;静态资源&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;code&gt;BOOT-INF/classes/static&lt;/code&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;项目根目录或 &lt;code&gt;webapp&lt;/code&gt; 下&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;类加载顺序&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;由 Spring Boot Loader 控制&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;由外部容器控制&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;最关键一句话——&lt;strong&gt;jar 把容器装进了应用，war 把应用装进了容器&lt;/strong&gt;。这条决定了两者后续所有差异。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="spring-boot-默认推荐-jar原因是什么"&gt;&lt;a href="#spring-boot-%e9%bb%98%e8%ae%a4%e6%8e%a8%e8%8d%90-jar%e5%8e%9f%e5%9b%a0%e6%98%af%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;Spring Boot 默认推荐 Jar，原因是什么
+&lt;/h2&gt;&lt;p&gt;Spring Boot 默认 jar 不是凭感觉，是经过权衡的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Jar 的好处：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;零运维&lt;/strong&gt;：不需要装 Tomcat，不需要管 &lt;code&gt;server.xml&lt;/code&gt;，部署=拷贝 jar 包&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;环境一致&lt;/strong&gt;：开发、测试、生产用的是同一个内嵌 Tomcat，行为一致&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容器版本可控&lt;/strong&gt;：升级 Tomcat 只是改 pom 依赖&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;天然适合容器化&lt;/strong&gt;：一个 jar 就是一个 Docker 镜像的核心&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每个应用独立运行&lt;/strong&gt;：互不影响，Crash 隔离&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;War 的传统优势在云原生时代逐渐弱化：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;原本&amp;quot;一个 Tomcat 跑多个应用&amp;quot;的模式，被 Kubernetes 一个 Pod 一个应用替代了&lt;/li&gt;
+&lt;li&gt;原本&amp;quot;运维统一管 Tomcat&amp;quot;的优势，被容器编排取代了&lt;/li&gt;
+&lt;li&gt;原本&amp;quot;war 包小，复用容器&amp;quot;的优势，对几百 MB 起步的 Spring 应用根本不算优势&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;所以现在的工程默认建议：除非有明确历史包袱或合规要求，新项目一律 jar。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="怎么打-jar-包"&gt;&lt;a href="#%e6%80%8e%e4%b9%88%e6%89%93-jar-%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;怎么打 Jar 包
+&lt;/h2&gt;&lt;p&gt;Spring Boot 项目默认就是 jar。&lt;code&gt;pom.xml&lt;/code&gt; 里：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;spring-boot-maven-plugin&lt;/code&gt; 的 &lt;code&gt;repackage&lt;/code&gt; 目标会把项目打成&amp;quot;可执行 jar&amp;quot;——里面包含一个特殊的 &lt;code&gt;BOOT-INF/lib/&lt;/code&gt; 装所有依赖，外层有 Spring Boot 自己的 &lt;code&gt;JarLauncher&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;jar&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;META&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="bp"&gt;INF&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;│&lt;/span&gt; &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;MANIFEST&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MF&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="n"&gt;Main&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;Class&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;springframework&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;JarLauncher&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;org&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;springframework&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;boot&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="n"&gt;Spring&lt;/span&gt; &lt;span class="n"&gt;Boot&lt;/span&gt; &lt;span class="err"&gt;启动类加载器&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;BOOT&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="bp"&gt;INF&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;classes&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="err"&gt;你的代码&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;├──&lt;/span&gt; &lt;span class="n"&gt;lib&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="err"&gt;←&lt;/span&gt; &lt;span class="err"&gt;所有第三方依赖&lt;/span&gt; &lt;span class="n"&gt;jar&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="err"&gt;└──&lt;/span&gt; &lt;span class="n"&gt;classpath&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;启动方式：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -jar app.jar
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;java -Xms512m -Xmx2g -jar app.jar --spring.profiles.active&lt;span class="o"&gt;=&lt;/span&gt;prod
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="怎么打-war-包"&gt;&lt;a href="#%e6%80%8e%e4%b9%88%e6%89%93-war-%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;怎么打 War 包
+&lt;/h2&gt;&lt;p&gt;把同一个项目改成 war 输出，需要四步：&lt;/p&gt;
+&lt;h3 id="1-改-packaging"&gt;&lt;a href="#1-%e6%94%b9-packaging" class="header-anchor"&gt;&lt;/a&gt;1. 改 packaging
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;war&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="2-排除内嵌-tomcat"&gt;&lt;a href="#2-%e6%8e%92%e9%99%a4%e5%86%85%e5%b5%8c-tomcat" class="header-anchor"&gt;&lt;/a&gt;2. 排除内嵌 Tomcat
+&lt;/h3&gt;&lt;p&gt;外部容器已经提供了 Servlet 容器，再带一份会冲突：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-web&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;exclusions&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;exclusion&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/exclusion&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/exclusions&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 编译用，不打进 war --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-启动类继承-springbootservletinitializer"&gt;&lt;a href="#3-%e5%90%af%e5%8a%a8%e7%b1%bb%e7%bb%a7%e6%89%bf-springbootservletinitializer" class="header-anchor"&gt;&lt;/a&gt;3. 启动类继承 &lt;code&gt;SpringBootServletInitializer&lt;/code&gt;
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@SpringBootApplication&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Application&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;extends&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringBootServletInitializer&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nd"&gt;@Override&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;protected&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringApplicationBuilder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SpringApplicationBuilder&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;builder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;sources&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;static&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt;&lt;span class="o"&gt;[]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;SpringApplication&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Application&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;SpringBootServletInitializer&lt;/code&gt; 会让 war 既能 &lt;code&gt;java -jar&lt;/code&gt; 跑，也能丢进 Tomcat 跑。&lt;strong&gt;保留 &lt;code&gt;main&lt;/code&gt; 方法是个好习惯&lt;/strong&gt;——本地调试还是 &lt;code&gt;java -jar&lt;/code&gt; 最方便。&lt;/p&gt;
+&lt;h3 id="4-部署"&gt;&lt;a href="#4-%e9%83%a8%e7%bd%b2" class="header-anchor"&gt;&lt;/a&gt;4. 部署
+&lt;/h3&gt;&lt;p&gt;把生成的 &lt;code&gt;app.war&lt;/code&gt; 拷贝到 &lt;code&gt;$TOMCAT_HOME/webapps/&lt;/code&gt; 下，Tomcat 自动解压并启动：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;http://host:port/app/... ← context path 默认是 war 包名
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id="七个最常见的-war-部署坑"&gt;&lt;a href="#%e4%b8%83%e4%b8%aa%e6%9c%80%e5%b8%b8%e8%a7%81%e7%9a%84-war-%e9%83%a8%e7%bd%b2%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;七个最常见的 War 部署坑
+&lt;/h2&gt;&lt;h3 id="坑-1context-path-不一致"&gt;&lt;a href="#%e5%9d%91-1context-path-%e4%b8%8d%e4%b8%80%e8%87%b4" class="header-anchor"&gt;&lt;/a&gt;坑 1：context path 不一致
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 启动时，Spring Boot 默认 context path 是 &lt;code&gt;/&lt;/code&gt;；war 部署到 Tomcat 时，context path 默认是 &lt;strong&gt;war 文件名&lt;/strong&gt;。前端写死接口路径的话，部署完所有请求 404。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：要么把 war 重命名为 &lt;code&gt;ROOT.war&lt;/code&gt;（context path = &lt;code&gt;/&lt;/code&gt;），要么前端通过相对路径拼接。&lt;/p&gt;
+&lt;h3 id="坑-2内嵌-tomcat-没排干净"&gt;&lt;a href="#%e5%9d%91-2%e5%86%85%e5%b5%8c-tomcat-%e6%b2%a1%e6%8e%92%e5%b9%b2%e5%87%80" class="header-anchor"&gt;&lt;/a&gt;坑 2：内嵌 Tomcat 没排干净
+&lt;/h3&gt;&lt;p&gt;如果忘了 &lt;code&gt;&amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;&lt;/code&gt;，war 里会带一份 Tomcat。在外部 Tomcat 里跑会出现 ClassLoader 冲突——&lt;code&gt;NoSuchMethodError&lt;/code&gt;、&lt;code&gt;LinkageError&lt;/code&gt; 各种奇葩报错。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;mvn dependency:tree&lt;/code&gt; 检查 war 里没有 &lt;code&gt;tomcat-embed-*&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id="坑-3serverport-配置失效"&gt;&lt;a href="#%e5%9d%91-3serverport-%e9%85%8d%e7%bd%ae%e5%a4%b1%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;坑 3：&lt;code&gt;server.port&lt;/code&gt; 配置失效
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;application.yml&lt;/code&gt; 里的 &lt;code&gt;server.port: 8081&lt;/code&gt; 在 war 部署里完全无效——端口由外部 Tomcat 决定。同理 &lt;code&gt;server.servlet.context-path&lt;/code&gt; 也无效。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：明确知道这些&amp;quot;server.*&amp;ldquo;配置只对内嵌容器生效。&lt;/p&gt;
+&lt;h3 id="坑-4propertysource-找不到外部配置"&gt;&lt;a href="#%e5%9d%91-4propertysource-%e6%89%be%e4%b8%8d%e5%88%b0%e5%a4%96%e9%83%a8%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;坑 4：&lt;code&gt;@PropertySource&lt;/code&gt; 找不到外部配置
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 时 Spring Boot 会自动加载 jar 同级目录的 &lt;code&gt;application.yml&lt;/code&gt; 覆盖内置；war 部署时没有&amp;quot;jar 同级目录&amp;quot;这个概念，外部配置要显式放在 Tomcat 的 &lt;code&gt;lib&lt;/code&gt; 或者通过 &lt;code&gt;-Dspring.config.location=&lt;/code&gt; 指定。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 在 Tomcat 启动参数里加&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-Dspring.config.location&lt;span class="o"&gt;=&lt;/span&gt;file:/etc/myapp/application.yml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="坑-5日志文件路径混乱"&gt;&lt;a href="#%e5%9d%91-5%e6%97%a5%e5%bf%97%e6%96%87%e4%bb%b6%e8%b7%af%e5%be%84%e6%b7%b7%e4%b9%b1" class="header-anchor"&gt;&lt;/a&gt;坑 5：日志文件路径混乱
+&lt;/h3&gt;&lt;p&gt;Spring Boot 的 &lt;code&gt;logging.file.name=app.log&lt;/code&gt; 是相对当前工作目录的，war 部署时这个目录是 Tomcat 的 &lt;code&gt;bin/&lt;/code&gt;，不是你以为的项目目录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：日志路径&lt;strong&gt;永远写绝对路径&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="坑-6jsp-默认不支持"&gt;&lt;a href="#%e5%9d%91-6jsp-%e9%bb%98%e8%ae%a4%e4%b8%8d%e6%94%af%e6%8c%81" class="header-anchor"&gt;&lt;/a&gt;坑 6：JSP 默认不支持
+&lt;/h3&gt;&lt;p&gt;Spring Boot 的可执行 jar &lt;strong&gt;不支持 JSP&lt;/strong&gt;（这也是为什么老项目改造时会被卡）。war 部署时虽然支持，但前提是：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.tomcat.embed&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;tomcat-embed-jasper&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：新项目用 Thymeleaf / Freemarker / 前后端分离，远离 JSP。&lt;/p&gt;
+&lt;h3 id="坑-7filter--listener-触发顺序"&gt;&lt;a href="#%e5%9d%91-7filter--listener-%e8%a7%a6%e5%8f%91%e9%a1%ba%e5%ba%8f" class="header-anchor"&gt;&lt;/a&gt;坑 7：Filter / Listener 触发顺序
+&lt;/h3&gt;&lt;p&gt;外部 Tomcat 加载 war 时，&lt;code&gt;@WebFilter&lt;/code&gt; 等注解的扫描机制和 Spring Boot 自带容器有差异。某些 Filter 可能比 Spring 容器还早初始化，导致 &lt;code&gt;@Autowired&lt;/code&gt; 是 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;FilterRegistrationBean&lt;/code&gt; 显式注册 Filter，由 Spring 控制生命周期。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="镜像化时代的最佳实践"&gt;&lt;a href="#%e9%95%9c%e5%83%8f%e5%8c%96%e6%97%b6%e4%bb%a3%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;镜像化时代的最佳实践
+&lt;/h2&gt;&lt;p&gt;如果你的项目要打 Docker 镜像，&lt;strong&gt;强烈推荐用 jar&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;eclipse-temurin:17-jre&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; target/app.jar /app.jar&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ENTRYPOINT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;java&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;-jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;/app.jar&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;简单、清晰、可复制。&lt;strong&gt;war + Tomcat&lt;/strong&gt; 的镜像虽然也能跑，但要装 Tomcat、改 &lt;code&gt;server.xml&lt;/code&gt;、暴露端口，且镜像体积更大、启动更慢。&lt;/p&gt;
+&lt;p&gt;进一步的优化是用 Spring Boot 的 &lt;code&gt;Layered Jar&lt;/code&gt; 把不变的依赖和频繁变化的业务代码分层，加速 Docker 镜像构建：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;layers&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;enabled&amp;gt;&lt;/span&gt;true&lt;span class="nt"&gt;&amp;lt;/enabled&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/layers&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/configuration&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-dockerfile" data-lang="dockerfile"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;FROM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;eclipse-temurin:17-jre&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;WORKDIR&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/app&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;COPY&lt;/span&gt; target/app.jar app.jar&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;RUN&lt;/span&gt; java -Djarmode&lt;span class="o"&gt;=&lt;/span&gt;layertools -jar app.jar extract&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# Spring Boot 3.2+ 路径&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;ENTRYPOINT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;java&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;org.springframework.boot.loader.launch.JarLauncher&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;版本注意&lt;/strong&gt;：ENTRYPOINT 类路径在 Boot 3.2 处发生过迁移——&lt;strong&gt;Boot 3.2+ 用 &lt;code&gt;org.springframework.boot.loader.launch.JarLauncher&lt;/code&gt;，3.1 及以下是 &lt;code&gt;org.springframework.boot.loader.JarLauncher&lt;/code&gt;&lt;/strong&gt;。两者写错都会启动报 &lt;code&gt;ClassNotFoundException&lt;/code&gt;，按你实际的 Boot 版本选。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="选择决策树"&gt;&lt;a href="#%e9%80%89%e6%8b%a9%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;选择决策树
+&lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ Start([新项目还是老项目?])
+ Start --&gt;|新项目| Jar1[直接用 Jar]
+ Start --&gt;|老项目| Old{有外部 Tomcat 集群?}
+ Old --&gt;|没有| Jar2[迁移成 Jar]
+ Old --&gt;|有| Reason{为什么用外部 Tomcat?}
+ Reason --&gt;|历史习惯| Migrate[评估迁移成本，建议慢慢转 Jar]
+ Reason --&gt;|多应用共享容器| Docker[考虑 K8s 替代]
+ Reason --&gt;|合规/审计要求| War[继续用 War]
+ Reason --&gt;|JSP/老旧依赖| War&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;War 与 Jar 的选择，本质上是&amp;quot;跟着 Java EE 时代的部署模式走，还是跟着云原生的部署模式走&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;给一句决策建议：&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;新项目优先用 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;Spring Boot 仍然完整支持 war 是为了向后兼容，不是推荐方向。把这点拎清楚，后面所有选择就都顺了。&lt;/p&gt;</description></item><item><title>Tomcat8日志切割和定期删除</title><link>https://www.lingcoder.com/p/tomcat8-log-splitter/</link><pubDate>Tue, 17 Oct 2017 09:02:06 +0800</pubDate><guid>https://www.lingcoder.com/p/tomcat8-log-splitter/</guid><description>&lt;h2 id="日志切割"&gt;&lt;a href="#%e6%97%a5%e5%bf%97%e5%88%87%e5%89%b2" class="header-anchor"&gt;&lt;/a&gt;日志切割
+&lt;/h2&gt;&lt;h3 id="安装-cronolog"&gt;&lt;a href="#%e5%ae%89%e8%a3%85-cronolog" class="header-anchor"&gt;&lt;/a&gt;安装 cronolog
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;安装&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 下载cronolog-1.6.2.tar.gz 并解压&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget http://cronolog.org/download/cronolog-1.6.2.tar.gz 
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 解压&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar zxvf cronolog-1.6.2.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 编译安装&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; cronolog-1.6.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./configure &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;验证安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 验证是否安装成功&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;which cronolog
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 显示以下信息则成功&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# /usr/local/sbin/cronolog&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="修改-tomcat-8-配置"&gt;&lt;a href="#%e4%bf%ae%e6%94%b9-tomcat-8-%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;修改 Tomcat 8 配置
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;替换 tomcat 目录下 /bin/Catalina.sh 文件内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$CATALINA_OUT&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;CATALINA_OUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;日志路径/catalina.out
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;fi&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$CATALINA_OUT&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nv"&gt;CATALINA_OUT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;日志路径/catalina.%Y-%m-%d.out
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;注释掉 &lt;code&gt;touch &amp;quot;$CATALINA_OUT&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;#touch &amp;#34;$CATALINA_OUT&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;替换（共有两处修改）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-sh" data-lang="sh"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; org.apache.catalina.startup.Bootstrap &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; start &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &amp;gt;&amp;gt; &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$CATALINA_OUT&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; 2&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; org.apache.catalina.startup.Bootstrap &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; start 2&amp;gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="se"&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;|&lt;/span&gt; /usr/local/sbin/cronolog &lt;span class="s2"&gt;&amp;#34;&lt;/span&gt;&lt;span class="nv"&gt;$CATALINA_OUT&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /dev/null &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;重启 tomcat 即可。&lt;/p&gt;
+&lt;h2 id="定时删除"&gt;&lt;a href="#%e5%ae%9a%e6%97%b6%e5%88%a0%e9%99%a4" class="header-anchor"&gt;&lt;/a&gt;定时删除
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;新建 xxx.sh 文件，添加内容如下：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="cp"&gt;#!/bin/sh
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2"&gt;&amp;#34;*.out&amp;#34;&lt;/span&gt; -exec rm -rf &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2"&gt;&amp;#34;*.log&amp;#34;&lt;/span&gt; -exec rm -rf &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;find /usr/local/apache-tomcat-8.5.15/logs/ -mtime +1 -name &lt;span class="s2"&gt;&amp;#34;*.txt&amp;#34;&lt;/span&gt; -exec rm -rf &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;执行 &lt;code&gt;crontab -e&lt;/code&gt; 命令打开定时任务配置文件，在里面录入&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ini" data-lang="ini"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;10 0 * * * sh 目录/xxx.sh &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;定时任务cron命令示例：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-ruby" data-lang="ruby"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="c1"&gt;# 每隔一分钟执行一次任务 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="c1"&gt;# 每小时的0点执行一次任务，比如6:00，10:00 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="c1"&gt;# 每个月2号，每小时的6分和10分执行一次任务 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;*/&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="o"&gt;*/&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="c1"&gt;# 每隔3分钟或5分钟执行一次任务，比如10:03，10:05，10:06 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

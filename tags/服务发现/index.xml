@@ -327,7 +327,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="2-集群模式至少-3-节点"&gt;&lt;a href="#2-%e9%9b%86%e7%be%a4%e6%a8%a1%e5%bc%8f%e8%87%b3%e5%b0%91-3-%e8%8a%82%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;2. 集群模式：至少 3 节点
-&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署 1 节点等于自杀。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;
+。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署单节点没有任何高可用保证，强烈不建议。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;这个差异在调试时很重要：Distro 是 AP，节点挂掉时部分实例信息可能短暂不一致——这是设计如此，不是 bug。&lt;/p&gt;

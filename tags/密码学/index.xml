@@ -108,7 +108,7 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;li&gt;但每笔交易都附一个 SNARK 证明，&lt;strong&gt;证明这笔交易合法&lt;/strong&gt;（没双花、有足够余额、签名正确）&lt;/li&gt;
 &lt;li&gt;验证者验证 SNARK，无需知道任何细节&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;链上数据完全隐私——但合法性能被任何节点验证。&lt;strong&gt;这是 ZKP 的工程巅峰应用之一&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;链上数据完全隐私——但合法性能被任何节点验证。&lt;strong&gt;这是 ZKP 工程化最有代表性的应用之一&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五zkp-在以太坊zk-rollup"&gt;&lt;a href="#%e4%ba%94zkp-%e5%9c%a8%e4%bb%a5%e5%a4%aa%e5%9d%8azk-rollup" class="header-anchor"&gt;&lt;/a&gt;五、ZKP 在以太坊：zk-Rollup
 &lt;/h2&gt;&lt;p&gt;以太坊主网 TPS 低、Gas 贵——这是公链扩容的核心问题。Layer2 是主流方向，&lt;strong&gt;zk-Rollup&lt;/strong&gt; 是其中最被看好的一种。&lt;/p&gt;
@@ -335,8 +335,9 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;p&gt;工程视角：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;SNARK 是当下主流&lt;/strong&gt;，但 STARK / Halo2 在崛起&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;zk-Rollup 是以太坊扩容的长期答案&lt;/strong&gt;——但目前生态还在追赶 Optimistic&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zk-Rollup 被普遍认为是以太坊扩容最有前景的方向之一&lt;/strong&gt;——但目前生态还在追赶 Optimistic&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;隐私身份、隐私投票、zkML 是未来 5 年最有想象力的方向&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;学 ZKP 不是必须会写电路&lt;/strong&gt;——理解它的能力边界，知道何时使用，已经是巨大进步&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;零知识证明在 2010 年是数学家玩具，2020 年是 Web3 工程的核心武器。&lt;strong&gt;它正在重塑互联网中『可验证』和『隐私』的边界&lt;/strong&gt;——值得每个工程师入门了解一次。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;零知识证明在 2010 年还主要停留在学术研究阶段，到 2020 年才在 Web3 工程中真正落地。**它正在重塑互联网中『可验证』和『隐私』的边界
+**——值得每个工程师入门了解一次。&lt;/p&gt;</description></item></channel></rss>

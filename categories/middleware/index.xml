@@ -1,4 +1,810 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>中间件 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/middleware/</link><description>Recent content in 中间件 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 20 Jun 2024 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/middleware/index.xml" rel="self" type="application/rss+xml"/><item><title>Nacos 配置中心与服务发现的实战要点</title><link>https://www.lingcoder.com/p/nacos-best-practices/</link><pubDate>Thu, 20 Jun 2024 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/nacos-best-practices/</guid><description>&lt;img src="https://www.lingcoder.com/p/nacos-best-practices/cover.svg" alt="Featured image of post Nacos 配置中心与服务发现的实战要点" /&gt;&lt;h2 id="为什么-nacos-装起来容易用对很难"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-nacos-%e8%a3%85%e8%b5%b7%e6%9d%a5%e5%ae%b9%e6%98%93%e7%94%a8%e5%af%b9%e5%be%88%e9%9a%be" class="header-anchor"&gt;&lt;/a&gt;为什么 Nacos 装起来容易，用对很难
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>中间件 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/middleware/</link><description>Recent content in 中间件 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 06 Nov 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/middleware/index.xml" rel="self" type="application/rss+xml"/><item><title>Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍</title><link>https://www.lingcoder.com/p/protobuf-protocol-deep-dive/</link><pubDate>Thu, 06 Nov 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/protobuf-protocol-deep-dive/</guid><description>&lt;img src="https://www.lingcoder.com/p/protobuf-protocol-deep-dive/cover.svg" alt="Featured image of post Protobuf 协议原理解析：为什么它能比 JSON 小一半还快几倍" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;写过 gRPC 或 Dubbo 的人都见过 &lt;code&gt;.proto&lt;/code&gt; 文件：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;repeated&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;编译生成代码、序列化、传输——&lt;strong&gt;业务里只用到几行 API&lt;/strong&gt;，但底层 Protobuf 的二进制格式做了非常多巧妙的设计。&lt;/p&gt;
+&lt;p&gt;理解 Protobuf 的内部原理对工程有几个直接价值：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;能解释&lt;strong&gt;为什么 Protobuf 比 JSON 小一半&lt;/strong&gt;——不只是&amp;quot;去掉了字段名&amp;quot;那么简单&lt;/li&gt;
+&lt;li&gt;能避免&lt;strong&gt;字段编号变更&lt;/strong&gt;导致的兼容性灾难&lt;/li&gt;
+&lt;li&gt;能在性能敏感场景&lt;strong&gt;做出精准选型&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本文从 wire format 到 Varint 到字段标签，把 Protobuf 的核心机制讲清楚。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一为什么不是-json"&gt;&lt;a href="#%e4%b8%80%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e6%98%af-json" class="header-anchor"&gt;&lt;/a&gt;一、为什么不是 JSON
+&lt;/h2&gt;&lt;p&gt;JSON 的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段名占大量空间&lt;/strong&gt;——&lt;code&gt;{&amp;quot;username&amp;quot;: &amp;quot;alice&amp;quot;, &amp;quot;age&amp;quot;: 30}&lt;/code&gt; 字段名比值还长&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字编码冗余&lt;/strong&gt;——123456789 当字符串编码要 9 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解析慢&lt;/strong&gt;——要 tokenize、要 parse、要 build object&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无 schema&lt;/strong&gt;——不知道字段类型，要靠运行时推断&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Protobuf 的解法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段名替换为编号&lt;/strong&gt;——&lt;code&gt;username&lt;/code&gt; 变成 &lt;code&gt;1&lt;/code&gt;，&lt;code&gt;age&lt;/code&gt; 变成 &lt;code&gt;2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字用 Varint&lt;/strong&gt;——小数字用更少字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二进制 stream 解析&lt;/strong&gt;——按 schema 直接读&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;schema 是契约&lt;/strong&gt;——sender / receiver 都依赖同一个 .proto&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="二wire-format字段的二进制表示"&gt;&lt;a href="#%e4%ba%8cwire-format%e5%ad%97%e6%ae%b5%e7%9a%84%e4%ba%8c%e8%bf%9b%e5%88%b6%e8%a1%a8%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;二、Wire Format：字段的二进制表示
+&lt;/h2&gt;&lt;p&gt;每个字段在 wire 上都是 &lt;strong&gt;(tag, value)&lt;/strong&gt; 的形式。tag 由两部分组成：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag = (field_number &amp;lt;&amp;lt; 3) | wire_type
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;field_number&lt;/strong&gt;：在 .proto 里定义的字段编号（如 &lt;code&gt;name = 2&lt;/code&gt; 中的 2）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;wire_type&lt;/strong&gt;：3 位，表示 value 的编码方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="wire-types"&gt;&lt;a href="#wire-types" class="header-anchor"&gt;&lt;/a&gt;Wire Types
+&lt;/h3&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;Type&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;名称&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;用途&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;0&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Varint&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;int32 / int64 / uint32 / uint64 / bool / enum&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;1&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;64-bit&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;fixed64 / sfixed64 / double&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;2&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Length-delim&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;string / bytes / message / packed&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;5&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;32-bit&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;fixed32 / sfixed32 / float&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;类型 3、4 是 group 类型（已弃用）。&lt;/p&gt;
+&lt;h3 id="例子"&gt;&lt;a href="#%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;例子
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;message Person { string name = 1; int32 age = 2; }&lt;/code&gt;，对应数据 &lt;code&gt;{name: &amp;quot;abc&amp;quot;, age: 30}&lt;/code&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wire_type&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x0A&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;abc&amp;#34;&lt;/span&gt; &lt;span class="err"&gt;→&lt;/span&gt; &lt;span class="mi"&gt;61&lt;/span&gt; &lt;span class="mi"&gt;62&lt;/span&gt; &lt;span class="mi"&gt;63&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wire_type&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x10&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;30&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="err"&gt;→&lt;/span&gt; &lt;span class="mh"&gt;0x1E&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;整个二进制：&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="mi"&gt;03&lt;/span&gt; &lt;span class="mi"&gt;61&lt;/span&gt; &lt;span class="mi"&gt;62&lt;/span&gt; &lt;span class="mi"&gt;63&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="n"&gt;E&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;只有 7 字节——而 JSON 的 &lt;code&gt;{&amp;quot;name&amp;quot;:&amp;quot;abc&amp;quot;,&amp;quot;age&amp;quot;:30}&lt;/code&gt; 是 22 字节。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三varint变长整数编码"&gt;&lt;a href="#%e4%b8%89varint%e5%8f%98%e9%95%bf%e6%95%b4%e6%95%b0%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;三、Varint：变长整数编码
+&lt;/h2&gt;&lt;p&gt;Varint 是 Protobuf 的核心创新——&lt;strong&gt;小数字用更少字节，大数字才用多字节&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="编码规则"&gt;&lt;a href="#%e7%bc%96%e7%a0%81%e8%a7%84%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;编码规则
+&lt;/h3&gt;&lt;p&gt;每个字节的最高位（MSB）作为&amp;quot;还有更多字节&amp;quot;的标志：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MSB = 1 → 后面还有&lt;/li&gt;
+&lt;li&gt;MSB = 0 → 这是最后一个字节&lt;/li&gt;
+&lt;li&gt;其余 7 位是 payload&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="编码示例"&gt;&lt;a href="#%e7%bc%96%e7%a0%81%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;编码示例
+&lt;/h3&gt;&lt;p&gt;数字 1：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;binary: 00000001
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Varint: 00000001 (1 byte)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;数字 300：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;binary: 100101100 (9 bits)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;groups of 7: 0000010 0101100
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;按小端: 0101100 0000010
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;加 MSB: 1010 1100 0000 0010
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hex: AC 02
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;数字越小占的字节越少：&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;数字范围&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Varint 字节数&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;0 - 127&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;128 - 16383&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;2&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;16384 - 2M&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;2M - 268M&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;4&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;268M+&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;业务里 ID 多数小于 2 亿——&lt;strong&gt;Varint 比定长 8 字节 int64 节省 50% 以上&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="varint-的代价"&gt;&lt;a href="#varint-%e7%9a%84%e4%bb%a3%e4%bb%b7" class="header-anchor"&gt;&lt;/a&gt;Varint 的代价
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;负数特别大&lt;/strong&gt;：-1 在补码下是 &lt;code&gt;0xFFFFFFFF...FFFF&lt;/code&gt;（10 字节），所有负数都用 10 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解决&lt;/strong&gt;：&lt;code&gt;sint32 / sint64&lt;/code&gt; 用 ZigZag 编码——&lt;strong&gt;正负数交替排列&lt;/strong&gt;，让 -1, 1, -2, 2 都很小&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sint32 编码: (n &amp;lt;&amp;lt; 1) ^ (n &amp;gt;&amp;gt; 31)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-1 → 1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;1 → 2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;-2 → 3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;2 → 4
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;有负数的字段一定要用 sint32 / sint64&lt;/strong&gt;——否则空间浪费惊人。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四length-delimited字符串和子消息"&gt;&lt;a href="#%e5%9b%9blength-delimited%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%92%8c%e5%ad%90%e6%b6%88%e6%81%af" class="header-anchor"&gt;&lt;/a&gt;四、Length-delimited：字符串和子消息
+&lt;/h2&gt;&lt;p&gt;string、bytes、嵌套 message、packed repeated 都用 length-delimited：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;[tag][length][bytes...]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;length 也是 Varint——所以 1 字节就能表示 0-127 字节的内容。&lt;/p&gt;
+&lt;h3 id="嵌套-message"&gt;&lt;a href="#%e5%b5%8c%e5%a5%97-message" class="header-anchor"&gt;&lt;/a&gt;嵌套 message
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Address&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;city&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;Person&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="n"&gt;addr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;嵌套消息不是&amp;quot;展开&amp;quot;——而是当作一段嵌入的二进制流：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-gdscript3" data-lang="gdscript3"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;field&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;addr&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;tag&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x12&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;length&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;varint&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Address&lt;/span&gt; &lt;span class="err"&gt;的完整序列化字节&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这意味着——&lt;strong&gt;Protobuf 的解析器是递归的&lt;/strong&gt;，但内存效率极高。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五字段编号兼容性的命脉"&gt;&lt;a href="#%e4%ba%94%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e5%85%bc%e5%ae%b9%e6%80%a7%e7%9a%84%e5%91%bd%e8%84%89" class="header-anchor"&gt;&lt;/a&gt;五、字段编号：兼容性的命脉
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;字段编号是 Protobuf 兼容性的核心约定&lt;/strong&gt;——一旦定了，永不能改：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 之后加的
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="兼容规则"&gt;&lt;a href="#%e5%85%bc%e5%ae%b9%e8%a7%84%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;兼容规则
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新增字段&lt;/strong&gt; → 老 client 解析时跳过未知字段（不报错）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;删除字段&lt;/strong&gt; → 字段编号&lt;strong&gt;永不复用&lt;/strong&gt;，加 &lt;code&gt;reserved&lt;/code&gt; 防止&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;改类型&lt;/strong&gt; → 大多数情况会破坏兼容（除少数兼容对，如 &lt;code&gt;int32 ↔ int64&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;改字段名&lt;/strong&gt; → 不影响 wire（wire 只用编号）但破坏代码层面 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="reserved-的用法"&gt;&lt;a href="#reserved-%e7%9a%84%e7%94%a8%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;reserved 的用法
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;reserved&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;reserved&lt;/span&gt; &lt;span class="s"&gt;&amp;#34;old_field&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int64&lt;/span&gt; &lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;防止后人不小心复用了已删除的字段编号——会编译错误。&lt;/p&gt;
+&lt;h3 id="字段编号的成本"&gt;&lt;a href="#%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e7%9a%84%e6%88%90%e6%9c%ac" class="header-anchor"&gt;&lt;/a&gt;字段编号的成本
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1-15&lt;/strong&gt; 编号占 1 字节 tag&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;16-2047&lt;/strong&gt; 占 2 字节&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2048+&lt;/strong&gt; 占 3 字节&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;高频字段尽量用 1-15 编号&lt;/strong&gt;——能省一字节。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六repeated-和-packed-编码"&gt;&lt;a href="#%e5%85%adrepeated-%e5%92%8c-packed-%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;六、Repeated 和 packed 编码
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;repeated&lt;/span&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;ids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;默认编码（proto2）：每个元素&lt;strong&gt;单独发一遍 tag + value&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag value tag value tag value ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;[packed = true]&lt;/code&gt;（proto3 默认）：合并成单个 length-delimited 块：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tag length value value value ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;packed 显著节省空间&lt;/strong&gt;——尤其当数组元素都是小数字时。proto3 默认 packed，proto2 要显式声明。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七proto2-vs-proto3"&gt;&lt;a href="#%e4%b8%83proto2-vs-proto3" class="header-anchor"&gt;&lt;/a&gt;七、Proto2 vs Proto3
+&lt;/h2&gt;&lt;h3 id="proto2"&gt;&lt;a href="#proto2" class="header-anchor"&gt;&lt;/a&gt;Proto2
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;字段标记 &lt;code&gt;required&lt;/code&gt; / &lt;code&gt;optional&lt;/code&gt; / &lt;code&gt;repeated&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;默认值显式声明&lt;/li&gt;
+&lt;li&gt;区分&amp;quot;未设置&amp;quot;和&amp;quot;等于默认值&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="proto3"&gt;&lt;a href="#proto3" class="header-anchor"&gt;&lt;/a&gt;Proto3
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;删掉 &lt;code&gt;required&lt;/code&gt; 和 &lt;code&gt;optional&lt;/code&gt;（后又部分恢复）&lt;/li&gt;
+&lt;li&gt;字段总是 optional&lt;/li&gt;
+&lt;li&gt;默认值不发送&lt;/li&gt;
+&lt;li&gt;packed 默认开启&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="现状"&gt;&lt;a href="#%e7%8e%b0%e7%8a%b6" class="header-anchor"&gt;&lt;/a&gt;现状
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;新项目用 proto3&lt;/strong&gt;——更简洁&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2020 年后 proto3 又支持 &lt;code&gt;optional&lt;/code&gt;&lt;/strong&gt;——能区分&amp;quot;没设&amp;quot; vs &amp;ldquo;等于默认值&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;老项目用 proto2 也没问题，但社区主要在 proto3&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="八性能对比"&gt;&lt;a href="#%e5%85%ab%e6%80%a7%e8%83%bd%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;八、性能对比
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;JSON&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Protobuf&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Avro&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;MessagePack&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;体积（典型业务对象）&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;0.4-0.5×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;0.4×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;0.6×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;序列化速度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;5-10×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;反序列化速度&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;1×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;5-10×&lt;/strong&gt;&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;5×&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;3×&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;跨语言&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;人类可读&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;Schema 强约束&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Protobuf 的核心优势&lt;/strong&gt;：体积 + 速度 + schema 一致性。&lt;strong&gt;核心劣势&lt;/strong&gt;：不可读 + 必须先有 schema。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九什么场景用-protobuf"&gt;&lt;a href="#%e4%b9%9d%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e7%94%a8-protobuf" class="header-anchor"&gt;&lt;/a&gt;九、什么场景用 Protobuf
+&lt;/h2&gt;&lt;p&gt;✅ 适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gRPC&lt;/strong&gt; 服务调用——Protobuf 是 gRPC 默认序列化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;微服务间通信&lt;/strong&gt;——schema 强约束，避免字段约定问题&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移动端 / IoT&lt;/strong&gt; ——节省带宽&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量数据处理&lt;/strong&gt;（Hadoop / Kafka）——高吞吐&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;存储优化&lt;/strong&gt;——某些 KV 存储用 Protobuf 序列化 value&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 不适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;对外 REST API&lt;/strong&gt;——前端期望 JSON&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小项目 / 调试期&lt;/strong&gt;——要 .proto 文件 + 编译器，启动成本高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;schema 频繁变化&lt;/strong&gt;——每次都要发版&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;需要人类可读&lt;/strong&gt;——Protobuf 没法直接看&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="十几个工程踩坑"&gt;&lt;a href="#%e5%8d%81%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e8%b8%a9%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;十、几个工程踩坑
+&lt;/h2&gt;&lt;h3 id="1-字段编号永不复用"&gt;&lt;a href="#1-%e5%ad%97%e6%ae%b5%e7%bc%96%e5%8f%b7%e6%b0%b8%e4%b8%8d%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;1. 字段编号永不复用
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 删除了 string old_field = 4;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;string&lt;/span&gt; &lt;span class="n"&gt;new_field&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 不能复用编号 4！
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;老 client 拿到新数据时会&lt;strong&gt;把 new_field 的内容当成 old_field 解析&lt;/strong&gt;——数据被错乱。&lt;strong&gt;永远 reserved&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-enum-默认值"&gt;&lt;a href="#2-enum-%e9%bb%98%e8%ae%a4%e5%80%bc" class="header-anchor"&gt;&lt;/a&gt;2. enum 默认值
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;enum&lt;/span&gt; &lt;span class="n"&gt;Status&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;PENDING&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 必须有 0 值（默认）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;ACTIVE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;proto3 强制 enum 必须有 0 值——&lt;strong&gt;这个值代表&amp;quot;未设置&amp;quot;&lt;/strong&gt;。业务设计 enum 时考虑这个。&lt;/p&gt;
+&lt;h3 id="3-大消息分包"&gt;&lt;a href="#3-%e5%a4%a7%e6%b6%88%e6%81%af%e5%88%86%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;3. 大消息分包
+&lt;/h3&gt;&lt;p&gt;某些 RPC 框架对单个 message 大小有限制（如 gRPC 默认 4MB）——&lt;strong&gt;大数据要 stream 而非单包&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;service&lt;/span&gt; &lt;span class="n"&gt;FileService&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;rpc&lt;/span&gt; &lt;span class="n"&gt;Upload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;stream&lt;/span&gt; &lt;span class="n"&gt;FileChunk&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UploadResp&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="4-字符串编码"&gt;&lt;a href="#4-%e5%ad%97%e7%ac%a6%e4%b8%b2%e7%bc%96%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;4. 字符串编码
+&lt;/h3&gt;&lt;p&gt;Protobuf string 必须是合法 UTF-8——&lt;strong&gt;塞二进制数据用 bytes 类型&lt;/strong&gt;，否则解析会失败。&lt;/p&gt;
+&lt;h3 id="5-optional-的-has-方法"&gt;&lt;a href="#5-optional-%e7%9a%84-has-%e6%96%b9%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;5. Optional 的 has 方法
+&lt;/h3&gt;&lt;p&gt;proto3 的 optional 字段才能区分&amp;quot;没设&amp;quot;和&amp;quot;等于默认值&amp;quot;——&lt;strong&gt;普通字段无法区分&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-proto" data-lang="proto"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;message&lt;/span&gt; &lt;span class="nc"&gt;User&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;age&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 普通：age = 0 和&amp;#34;没设&amp;#34;无法区分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;optional&lt;/span&gt; &lt;span class="kt"&gt;int32&lt;/span&gt; &lt;span class="n"&gt;score&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// optional：能区分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="err"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;业务模型设计时考虑——&lt;strong&gt;重要的&amp;quot;是否存在&amp;quot;语义字段加 optional&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十一protobuf-与-grpc-的关系"&gt;&lt;a href="#%e5%8d%81%e4%b8%80protobuf-%e4%b8%8e-grpc-%e7%9a%84%e5%85%b3%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;十一、Protobuf 与 gRPC 的关系
+&lt;/h2&gt;&lt;p&gt;很多人误以为&amp;quot;Protobuf = gRPC&amp;quot;——其实它们独立：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;：序列化协议&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;gRPC&lt;/strong&gt;：基于 HTTP/2 的 RPC 框架，&lt;strong&gt;默认用 Protobuf&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Protobuf 也能用在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不走 gRPC 的 RPC（如 Dubbo3 的 Triple 协议）&lt;/li&gt;
+&lt;li&gt;Kafka 消息序列化&lt;/li&gt;
+&lt;li&gt;自己写的二进制协议&lt;/li&gt;
+&lt;li&gt;文件存储&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Protobuf 不只是『二进制 JSON』——它是 schema-driven 序列化的范式：用编号代替字段名、用 Varint 节省空间、用 wire type 保证可解析、用兼容规则保证演进。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;工程要点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;字段编号永不复用&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小数字用 Varint&lt;/strong&gt;，负数用 sint&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重要字段用 1-15 编号&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;enum 必须有 0 值&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;packed repeated 默认开&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大数据用 stream RPC&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;理解 Protobuf 的内部原理——下次再排查&amp;quot;为什么我的 protobuf 数据 client 解不出来&amp;quot;时，你能瞬间想到是字段编号被改了还是类型不兼容。&lt;/p&gt;</description></item><item><title>浅谈 Raft：让分布式一致性变可理解的算法</title><link>https://www.lingcoder.com/p/raft-consensus-explained/</link><pubDate>Sun, 15 Dec 2024 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/raft-consensus-explained/</guid><description>&lt;img src="https://www.lingcoder.com/p/raft-consensus-explained/cover.svg" alt="Featured image of post 浅谈 Raft：让分布式一致性变可理解的算法" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+&lt;/h2&gt;&lt;p&gt;分布式系统里&amp;quot;多个节点对一件事达成一致&amp;quot;听起来简单，做对极难——这就是**共识算法（Consensus）**要解决的问题。&lt;/p&gt;
+&lt;p&gt;最经典的共识算法是 &lt;strong&gt;Paxos&lt;/strong&gt;——Lamport 1998 年的论文。但 Paxos 论文有个臭名昭著的问题：&lt;strong&gt;没人看得懂&lt;/strong&gt;。Lamport 后来又写了&amp;quot;Paxos Made Simple&amp;quot;试图解释——还是难懂。&lt;/p&gt;
+&lt;p&gt;2014 年 Stanford 的 Diego Ongaro 和 John Ousterhout 提出了 &lt;strong&gt;Raft 算法&lt;/strong&gt;——明确目标是&amp;quot;&lt;strong&gt;可理解性优先&lt;/strong&gt;&amp;quot;。论文标题就是 &lt;em&gt;In Search of an Understandable Consensus Algorithm&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;Raft 现在是工业界事实标准——&lt;strong&gt;etcd、Consul、TiKV、CockroachDB、HashiCorp 全家桶&lt;/strong&gt;都在用。本文用直觉的方式把 Raft 讲清楚——不写公式，但讲清核心机制和工程意义。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一共识算法在解决什么问题"&gt;&lt;a href="#%e4%b8%80%e5%85%b1%e8%af%86%e7%ae%97%e6%b3%95%e5%9c%a8%e8%a7%a3%e5%86%b3%e4%bb%80%e4%b9%88%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一、共识算法在解决什么问题
+&lt;/h2&gt;&lt;p&gt;设想 5 台机器要一起维护一份日志：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Machine 1: [A, B, C, D]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Machine 2: [A, B, C, ?]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Machine 3: [A, B, C, D, E]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Machine 4: [A, B, ?, ?]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Machine 5: [A, B, C, D]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;某些机器宕机、网络分区、消息延迟——&lt;strong&gt;怎么保证所有活着的机器最终都看到同一份日志？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;共识算法要保证：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Safety（安全性）&lt;/strong&gt;：即使发生故障，所有节点的状态不会冲突&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Liveness（活性）&lt;/strong&gt;：只要多数节点存活，系统能继续工作&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consistency（一致性）&lt;/strong&gt;：相同输入序列产生相同输出&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Raft 用三个核心机制实现这些性质——&lt;strong&gt;领导选举、日志复制、安全性&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二raft-的角色"&gt;&lt;a href="#%e4%ba%8craft-%e7%9a%84%e8%a7%92%e8%89%b2" class="header-anchor"&gt;&lt;/a&gt;二、Raft 的角色
+&lt;/h2&gt;&lt;p&gt;集群里每个节点处于三种状态之一：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Leader&lt;/strong&gt;：唯一的&amp;quot;指挥官&amp;quot;，处理所有客户端请求&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Follower&lt;/strong&gt;：被动响应 Leader 和 Candidate 的消息&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Candidate&lt;/strong&gt;：选举期间的临时角色&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
+ Follower --&gt;|超时未收到心跳| Candidate
+ Candidate --&gt;|获得多数票| Leader
+ Candidate --&gt;|发现已有 Leader| Follower
+ Leader --&gt;|发现更高 term| Follower&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;任何时刻只有一个 Leader&lt;/strong&gt;——这是 Raft 简化的关键。所有写入都通过 Leader——Leader 把变更复制到 Followers——Follower 投票确认——Leader 提交并通知所有人。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="三领导选举"&gt;&lt;a href="#%e4%b8%89%e9%a2%86%e5%af%bc%e9%80%89%e4%b8%be" class="header-anchor"&gt;&lt;/a&gt;三、领导选举
+&lt;/h2&gt;&lt;p&gt;集群启动时所有节点都是 Follower。每个节点有一个&lt;strong&gt;随机选举超时&lt;/strong&gt;（150-300ms）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Follower 在超时内没收到 Leader 心跳 → 转为 Candidate&lt;/li&gt;
+&lt;li&gt;Candidate 给自己投一票，向其他节点发送&amp;quot;选我&amp;quot;请求&lt;/li&gt;
+&lt;li&gt;其他节点收到后：
+&lt;ul&gt;
+&lt;li&gt;如果当前 term 没投过票 → 投票给它&lt;/li&gt;
+&lt;li&gt;如果已投过票 → 拒绝&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Candidate 收到&lt;strong&gt;多数票（n/2+1）&lt;/strong&gt;→ 成为 Leader&lt;/li&gt;
+&lt;li&gt;新 Leader 立刻发心跳，宣告自己存在&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Note over Node1,Node5: 所有 Follower
+ Node1--&gt;&gt;Node1: 选举超时
+ Node1-&gt;&gt;Node2: RequestVote (term=1)
+ Node1-&gt;&gt;Node3: RequestVote
+ Node1-&gt;&gt;Node4: RequestVote
+ Node1-&gt;&gt;Node5: RequestVote
+ Node2--&gt;&gt;Node1: 投票 ✓
+ Node3--&gt;&gt;Node1: 投票 ✓
+ Note over Node1: 收到 3/5 票
+ Note over Node1: 成为 Leader
+ Node1-&gt;&gt;Node2: 心跳
+ Node1-&gt;&gt;Node3: 心跳&lt;/pre&gt;&lt;h3 id="为什么要随机超时"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e9%9a%8f%e6%9c%ba%e8%b6%85%e6%97%b6" class="header-anchor"&gt;&lt;/a&gt;为什么要随机超时
+&lt;/h3&gt;&lt;p&gt;如果所有节点超时一致——&lt;strong&gt;所有节点同时变 Candidate，互相投票冲突，没人能赢&lt;/strong&gt;。随机化让某个节点先到超时点——它最早开始拉票，更容易胜出。&lt;/p&gt;
+&lt;h3 id="term-概念"&gt;&lt;a href="#term-%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;Term 概念
+&lt;/h3&gt;&lt;p&gt;Raft 把时间分成&amp;quot;任期&amp;quot;（Term）——每次选举触发新的 term。Term 是单调递增的整数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Leader 每次发心跳带上自己的 term&lt;/li&gt;
+&lt;li&gt;Follower 收到更高 term → 降级、跟随新 Leader&lt;/li&gt;
+&lt;li&gt;旧 Leader 网络恢复后看到更高 term → 自动退位&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Term 解决了&amp;quot;脑裂后旧 Leader 还以为自己是 Leader&amp;quot;的问题&lt;/strong&gt;——所有响应都校验 term，更高 term 自动获胜。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四日志复制"&gt;&lt;a href="#%e5%9b%9b%e6%97%a5%e5%bf%97%e5%a4%8d%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;四、日志复制
+&lt;/h2&gt;&lt;p&gt;Leader 收到客户端写请求后：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;写入自己的日志&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;并行发给所有 Follower&lt;/strong&gt;（AppendEntries RPC）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多数 Follower 确认收到&lt;/strong&gt; → 提交（commit）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;下次心跳通知 Follower 提交&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;提交后应用到状态机，回复客户端&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
+ Client-&gt;&gt;Leader: write x=5
+ Leader-&gt;&gt;Leader: append log
+ par
+ Leader-&gt;&gt;Follower1: AppendEntries
+ Leader-&gt;&gt;Follower2: AppendEntries
+ Leader-&gt;&gt;Follower3: AppendEntries
+ Leader-&gt;&gt;Follower4: AppendEntries
+ end
+ Follower1--&gt;&gt;Leader: ack
+ Follower2--&gt;&gt;Leader: ack
+ Follower3--&gt;&gt;Leader: ack
+ Note over Leader: 收到 3/5 ack
+ Leader-&gt;&gt;Leader: commit
+ Leader--&gt;&gt;Client: ok
+ Leader-&gt;&gt;Follower1: 下次心跳通知 commit&lt;/pre&gt;&lt;h3 id="日志一致性"&gt;&lt;a href="#%e6%97%a5%e5%bf%97%e4%b8%80%e8%87%b4%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;日志一致性
+&lt;/h3&gt;&lt;p&gt;每条日志带上 &lt;code&gt;(term, index)&lt;/code&gt;——Follower 收到 AppendEntries 时检查：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;上一条日志的 (term, index) 和我本地的对得上吗？&lt;/li&gt;
+&lt;li&gt;对得上 → 追加新日志&lt;/li&gt;
+&lt;li&gt;对不上 → 拒绝，让 Leader 退一格再发&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Leader 维护每个 Follower 的 &lt;code&gt;nextIndex&lt;/code&gt;——发现 Follower 跟不上时&lt;strong&gt;逐步回退、重发&lt;/strong&gt;，直到对齐。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五安全性约束"&gt;&lt;a href="#%e4%ba%94%e5%ae%89%e5%85%a8%e6%80%a7%e7%ba%a6%e6%9d%9f" class="header-anchor"&gt;&lt;/a&gt;五、安全性约束
+&lt;/h2&gt;&lt;p&gt;光有选举和复制不够——&lt;strong&gt;必须保证已提交的日志永远不丢&lt;/strong&gt;。Raft 通过几个约束实现：&lt;/p&gt;
+&lt;h3 id="1-选举限制只有日志最新的节点能赢"&gt;&lt;a href="#1-%e9%80%89%e4%b8%be%e9%99%90%e5%88%b6%e5%8f%aa%e6%9c%89%e6%97%a5%e5%bf%97%e6%9c%80%e6%96%b0%e7%9a%84%e8%8a%82%e7%82%b9%e8%83%bd%e8%b5%a2" class="header-anchor"&gt;&lt;/a&gt;1. 选举限制：只有&amp;quot;日志最新&amp;quot;的节点能赢
+&lt;/h3&gt;&lt;p&gt;Candidate 拉票时附带&lt;strong&gt;自己最后一条日志的 (term, index)&lt;/strong&gt;。Follower 只投票给&amp;quot;日志比自己新或一样新&amp;quot;的 Candidate。&lt;/p&gt;
+&lt;p&gt;这保证&lt;strong&gt;新 Leader 一定包含所有已提交的日志&lt;/strong&gt;——不会有&amp;quot;新 Leader 上任后丢掉之前已提交的事&amp;quot;。&lt;/p&gt;
+&lt;h3 id="2-提交限制只能提交当前-term-的日志"&gt;&lt;a href="#2-%e6%8f%90%e4%ba%a4%e9%99%90%e5%88%b6%e5%8f%aa%e8%83%bd%e6%8f%90%e4%ba%a4%e5%bd%93%e5%89%8d-term-%e7%9a%84%e6%97%a5%e5%bf%97" class="header-anchor"&gt;&lt;/a&gt;2. 提交限制：只能提交当前 term 的日志
+&lt;/h3&gt;&lt;p&gt;Leader 不能直接提交&amp;quot;上一个 term 的日志&amp;quot;——只能等当前 term 有日志被多数复制后，&lt;strong&gt;带着把之前的日志一起提交&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这避免了一个微妙的 bug——Lamport 的 Paxos 也有类似机制，但 Raft 把它讲得更清楚。&lt;/p&gt;
+&lt;h3 id="3-appendentries-一致性检查"&gt;&lt;a href="#3-appendentries-%e4%b8%80%e8%87%b4%e6%80%a7%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;3. AppendEntries 一致性检查
+&lt;/h3&gt;&lt;p&gt;每次发日志都带上前一条日志的 (term, index)——Follower 检查匹配后才追加。这是一种&lt;strong&gt;简单粗暴但有效&lt;/strong&gt;的对齐方式。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六几个常见问题"&gt;&lt;a href="#%e5%85%ad%e5%87%a0%e4%b8%aa%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;六、几个常见问题
+&lt;/h2&gt;&lt;h3 id="1-网络分区怎么办"&gt;&lt;a href="#1-%e7%bd%91%e7%bb%9c%e5%88%86%e5%8c%ba%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;1. 网络分区怎么办
+&lt;/h3&gt;&lt;p&gt;5 节点集群被分成 [3, 2]：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;3 节点的子集仍可选举出 Leader、继续对外服务（多数派）&lt;/li&gt;
+&lt;li&gt;2 节点子集无法选出新 Leader、只能等待&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;分区恢复后——2 节点子集发现更高 term，自动跟随大集群的 Leader。&lt;strong&gt;未提交的事务被覆盖&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="2-leader-故障"&gt;&lt;a href="#2-leader-%e6%95%85%e9%9a%9c" class="header-anchor"&gt;&lt;/a&gt;2. Leader 故障
+&lt;/h3&gt;&lt;p&gt;Leader 宕机后心跳停止——某个 Follower 选举超时变 Candidate——选出新 Leader——继续工作。&lt;strong&gt;通常 1-2 秒内完成切换&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id="3-客户端读"&gt;&lt;a href="#3-%e5%ae%a2%e6%88%b7%e7%ab%af%e8%af%bb" class="header-anchor"&gt;&lt;/a&gt;3. 客户端读
+&lt;/h3&gt;&lt;p&gt;朴素做法：所有读都走 Leader——保证强一致，但 Leader 压力大。&lt;/p&gt;
+&lt;p&gt;优化方案：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ReadIndex&lt;/strong&gt;：读时让 Leader 确认自己仍是 Leader（一次心跳），然后本地读&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Lease Read&lt;/strong&gt;：Leader 持有&amp;quot;租约&amp;quot;，租约期内本地读&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Follower Read&lt;/strong&gt;：允许从 Follower 读（弱一致，但快）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="4-集群成员变更"&gt;&lt;a href="#4-%e9%9b%86%e7%be%a4%e6%88%90%e5%91%98%e5%8f%98%e6%9b%b4" class="header-anchor"&gt;&lt;/a&gt;4. 集群成员变更
+&lt;/h3&gt;&lt;p&gt;加节点 / 减节点这种&amp;quot;在运行中变更集群配置&amp;quot;——Raft 用&lt;strong&gt;两阶段共识&lt;/strong&gt;（Joint Consensus）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先达成&amp;quot;新旧配置共存&amp;quot;的共识&lt;/li&gt;
+&lt;li&gt;再切到纯新配置&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;避免了&amp;quot;新旧多数派同时存在导致两个 Leader&amp;quot;的脑裂。&lt;/p&gt;
+&lt;h3 id="5-日志压缩"&gt;&lt;a href="#5-%e6%97%a5%e5%bf%97%e5%8e%8b%e7%bc%a9" class="header-anchor"&gt;&lt;/a&gt;5. 日志压缩
+&lt;/h3&gt;&lt;p&gt;日志一直涨会爆磁盘——Raft 用&lt;strong&gt;快照（Snapshot）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;周期性把状态机全量存盘&lt;/li&gt;
+&lt;li&gt;旧日志可以删除&lt;/li&gt;
+&lt;li&gt;新加入的节点先拉快照，再追日志&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="七raft-的工业实现"&gt;&lt;a href="#%e4%b8%83raft-%e7%9a%84%e5%b7%a5%e4%b8%9a%e5%ae%9e%e7%8e%b0" class="header-anchor"&gt;&lt;/a&gt;七、Raft 的工业实现
+&lt;/h2&gt;&lt;h3 id="etcd"&gt;&lt;a href="#etcd" class="header-anchor"&gt;&lt;/a&gt;etcd
+&lt;/h3&gt;&lt;p&gt;Kubernetes 的元数据存储——5 节点 Raft 集群最常见。&lt;strong&gt;高可用 + 强一致&lt;/strong&gt;——但写性能不高（每次都要多数派 ack）。&lt;/p&gt;
+&lt;h3 id="consul"&gt;&lt;a href="#consul" class="header-anchor"&gt;&lt;/a&gt;Consul
+&lt;/h3&gt;&lt;p&gt;HashiCorp 的服务发现——同样 5 节点 Raft。&lt;/p&gt;
+&lt;h3 id="tikv"&gt;&lt;a href="#tikv" class="header-anchor"&gt;&lt;/a&gt;TiKV
+&lt;/h3&gt;&lt;p&gt;PingCAP 的分布式 KV——&lt;strong&gt;每个数据 region 独立 Raft&lt;/strong&gt;——上千个 Raft 组并行。&lt;/p&gt;
+&lt;h3 id="cockroachdb"&gt;&lt;a href="#cockroachdb" class="header-anchor"&gt;&lt;/a&gt;CockroachDB
+&lt;/h3&gt;&lt;p&gt;SQL 数据库底层用 Raft 复制每个 range。&lt;/p&gt;
+&lt;h3 id="apache-ratis"&gt;&lt;a href="#apache-ratis" class="header-anchor"&gt;&lt;/a&gt;Apache Ratis
+&lt;/h3&gt;&lt;p&gt;通用 Raft 库（Java）——OZone、Apache Iceberg 等用它。&lt;/p&gt;
+&lt;h3 id="mit-6824-的-lab"&gt;&lt;a href="#mit-6824-%e7%9a%84-lab" class="header-anchor"&gt;&lt;/a&gt;MIT 6.824 的 Lab
+&lt;/h3&gt;&lt;p&gt;学 Raft 最好的方式是&lt;strong&gt;自己实现一遍&lt;/strong&gt;——MIT 6.824 的 Lab 2A/2B/2C 就是手写 Raft。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八raft-vs-paxos-vs-multi-paxos"&gt;&lt;a href="#%e5%85%abraft-vs-paxos-vs-multi-paxos" class="header-anchor"&gt;&lt;/a&gt;八、Raft vs Paxos vs Multi-Paxos
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: left"&gt;&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Paxos&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Multi-Paxos&lt;/th&gt;
+ &lt;th style="text-align: left"&gt;Raft&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;出处&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Lamport 1998&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;同上扩展&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Ongaro 2014&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;角色&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Proposer/Acceptor/Learner&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;同上&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Leader/Follower/Candidate&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;强 Leader&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✗&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;✓&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;可理解性&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;低&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;中&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;&lt;strong&gt;高&lt;/strong&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: left"&gt;工业实现&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Chubby 早期文献描述&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;Chubby / Spanner / Megastore&lt;/td&gt;
+ &lt;td style="text-align: left"&gt;etcd / Consul / TiKV / 几乎所有新系统&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;关于 ZooKeeper&lt;/strong&gt;：ZooKeeper 用的是 &lt;strong&gt;ZAB（ZooKeeper Atomic Broadcast）&lt;/strong&gt;——不是 Multi-Paxos，而是一种 Paxos 变体，针对&amp;quot;主备复制 + 严格按序广播&amp;quot;做了简化。ZAB 和 Raft 的设计哲学接近（强 Leader + 心跳 + 单调递增的 epoch / term），但出现得更早，是 ZK 自家的方案。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;Raft 在功能上和 Multi-Paxos 等价——但&lt;strong&gt;可理解性、可实现性、可调试性&lt;/strong&gt;都强很多。这就是它后来居上的核心原因。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九什么时候用-raft什么时候不用"&gt;&lt;a href="#%e4%b9%9d%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e7%94%a8-raft%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e4%b8%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;九、什么时候用 Raft、什么时候不用
+&lt;/h2&gt;&lt;p&gt;✅ 适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;需要&lt;strong&gt;强一致性&lt;/strong&gt;的元数据存储（K8s 配置、服务发现）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据库的元数据复制&lt;/strong&gt;（schema、租约）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;小规模集群&lt;/strong&gt;（3-7 节点）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;写入不频繁但要绝对可靠&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 不适合：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;大规模数据复制&lt;/strong&gt;（百 GB 数据）——延迟高&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;极高写入吞吐场景&lt;/strong&gt;——多数派 ack 是瓶颈&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨数据中心&lt;/strong&gt;——网络延迟让心跳和投票变得脆弱&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AP 系统&lt;/strong&gt;（如 Cassandra）——选 P + A 而不是 C，根本不需要共识&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最低要 3 节点（容忍 1 个故障）、推荐 5 节点（容忍 2 个）——&lt;strong&gt;永远不要 1 节点 Raft&lt;/strong&gt;，那等于没用。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="十对工程的启发"&gt;&lt;a href="#%e5%8d%81%e5%af%b9%e5%b7%a5%e7%a8%8b%e7%9a%84%e5%90%af%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;十、对工程的启发
+&lt;/h2&gt;&lt;p&gt;Raft 不只是&amp;quot;一个算法&amp;quot;——它示范了几个值得借鉴的工程哲学：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;可理解性是设计目标&lt;/strong&gt;——不只是&amp;quot;能 work&amp;quot;，要&amp;quot;能讲清&amp;quot;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;强 Leader 简化系统&lt;/strong&gt;——比起完全对称的 Paxos，单 Leader 让推理更容易&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;机制分离&lt;/strong&gt;：选举、复制、安全性各自独立讲清楚&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;拒绝复杂特性&lt;/strong&gt;：Raft 的论文明确说&amp;quot;拒绝任何不必要的复杂&amp;quot;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;设计任何分布式系统时——&lt;strong&gt;理解 Raft 都是入门必修课&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
+&lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;strong&gt;Raft 用『强 Leader + 多数派复制 + 严格安全约束』把分布式一致性讲得像故事——可理解性是它最大的成就，可工业化是它的最大遗产。&lt;/strong&gt;&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;学习路径推荐：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;读 Raft 论文&lt;/strong&gt;：&lt;a class="link" href="https://raft.github.io" target="_blank" rel="noopener"
+ &gt;raft.github.io&lt;/a&gt;（强烈推荐）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;看可视化&lt;/strong&gt;：&lt;a class="link" href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener"
+ &gt;The Secret Lives of Data&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手写实现&lt;/strong&gt;：MIT 6.824 Lab 2&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用一遍 etcd / Consul&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;掌握 Raft 后再看 ZooKeeper、ZAB、Spanner 的 Multi-Paxos——能立刻看出它们解决问题的相同与不同。&lt;/p&gt;</description></item><item><title>Nacos 配置中心与服务发现的实战要点</title><link>https://www.lingcoder.com/p/nacos-best-practices/</link><pubDate>Thu, 20 Jun 2024 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/nacos-best-practices/</guid><description>&lt;img src="https://www.lingcoder.com/p/nacos-best-practices/cover.svg" alt="Featured image of post Nacos 配置中心与服务发现的实战要点" /&gt;&lt;h2 id="为什么-nacos-装起来容易用对很难"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-nacos-%e8%a3%85%e8%b5%b7%e6%9d%a5%e5%ae%b9%e6%98%93%e7%94%a8%e5%af%b9%e5%be%88%e9%9a%be" class="header-anchor"&gt;&lt;/a&gt;为什么 Nacos 装起来容易，用对很难
 &lt;/h2&gt;&lt;p&gt;Nacos 是当下国内最流行的&amp;quot;配置中心 + 注册中心&amp;quot;二合一组件——几乎所有用 Spring Cloud Alibaba 的项目都默认上它。&lt;/p&gt;
 &lt;p&gt;但用过的人会发现一些尴尬的事情：&lt;/p&gt;
 &lt;ul&gt;
@@ -327,7 +1133,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="2-集群模式至少-3-节点"&gt;&lt;a href="#2-%e9%9b%86%e7%be%a4%e6%a8%a1%e5%bc%8f%e8%87%b3%e5%b0%91-3-%e8%8a%82%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;2. 集群模式：至少 3 节点
-&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署 1 节点等于自杀。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Nacos 是&lt;strong&gt;双协议&lt;/strong&gt;架构——配置中心和永久实例走 &lt;strong&gt;JRaft（CP）&lt;/strong&gt;，默认服务发现的临时实例走自研的 &lt;strong&gt;Distro（AP）协议&lt;/strong&gt;
+。两类数据落到同一个集群、用不同的一致性模型。&lt;strong&gt;至少 3 节点保证高可用&lt;/strong&gt;——单节点是写测试代码用的，生产部署单节点没有任何高可用保证，强烈不建议。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;这个差异在调试时很重要：Distro 是 AP，节点挂掉时部分实例信息可能短暂不一致——这是设计如此，不是 bug。&lt;/p&gt;
@@ -860,14 +1667,14 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里几乎没有对手——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;JetCache 在&amp;quot;开箱即用程度&amp;quot;上目前在 Java 生态里比较突出——&lt;strong&gt;它的核心价值不是缓存本身，而是把生产经验固化进了注解&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十实战建议"&gt;&lt;a href="#%e5%8d%81%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;十、实战建议
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;先 BOTH 后调优&lt;/strong&gt;——默认就用本地 + Redis 两级，稳定后再针对低命中率 cache 单独配&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;TTL 至少 5 分钟&lt;/strong&gt;——TTL 过短的缓存几乎不会命中&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;热点 key 一律开 &lt;code&gt;@CacheRefresh&lt;/code&gt;&lt;/strong&gt;——避免雪崩&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开等于在自找麻烦&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多实例必开广播失效&lt;/strong&gt;——不开会让多实例本地缓存的数据一致性失控&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;cacheNullValue = true&lt;/code&gt;&lt;/strong&gt;——除非业务明确不需要防穿透&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;监控命中率&lt;/strong&gt;——低于 70% 的 cache 都要重新审视设计&lt;/li&gt;
 &lt;/ol&gt;
@@ -1347,7 +2154,7 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
 &lt;h3 id="3-中文分词ik-不是默认装的"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8dik-%e4%b8%8d%e6%98%af%e9%bb%98%e8%ae%a4%e8%a3%85%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;3. 中文分词：IK 不是默认装的
-&lt;/h3&gt;&lt;p&gt;ES 自带的分词器对中文是按字分的，根本不能用。生产环境必须装 ik 分词器：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;ES 默认分词器对中文按字切分，多数全文检索场景下不适用。生产环境必须装 ik 分词器：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -2674,7 +3481,7 @@
 &lt;li&gt;&lt;strong&gt;时钟漂移&lt;/strong&gt;——节点之间的系统时钟不一致，过期时间判断会失准&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
-&lt;p&gt;实际工程中，&lt;strong&gt;99% 的业务用 Redisson 单实例锁就够了&lt;/strong&gt;，性能高、用法简单；只有少数对正确性极敏感的场景才上 ZooKeeper。&lt;/p&gt;
+&lt;p&gt;工程上&lt;strong&gt;多数业务场景用 Redisson 单实例锁就足够&lt;/strong&gt;——性能高、用法简单；只有对正确性极敏感的少数场景才上 ZooKeeper。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="各姿势对比"&gt;&lt;a href="#%e5%90%84%e5%a7%bf%e5%8a%bf%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;各姿势对比
 &lt;/h2&gt;&lt;table&gt;

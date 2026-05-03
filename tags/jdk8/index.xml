@@ -702,7 +702,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;getAge&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;reduce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Integer&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ 涉及装箱拆箱，慢&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;数值场景永远用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——避免装箱开销。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;数值场景优先用 &lt;code&gt;mapToInt/Long/Double&lt;/code&gt;——能避免装箱开销。&lt;/p&gt;
 &lt;h3 id="6-peek-不要做副作用"&gt;&lt;a href="#6-peek-%e4%b8%8d%e8%a6%81%e5%81%9a%e5%89%af%e4%bd%9c%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;6. peek 不要做副作用
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -712,7 +712,8 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;users&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;peek&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setStatus&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)).&lt;/span&gt;&lt;span class="na"&gt;count&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ❌ peek 是调试用的&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的 peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;，&lt;strong&gt;业务副作用永远不该放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;JDK 9+ 在终止操作是 &lt;code&gt;count()&lt;/code&gt; 等&amp;quot;已知不需要遍历&amp;quot;的可短路场景下，会跳过 peek——副作用不执行。普通 &lt;code&gt;collect&lt;/code&gt; / &lt;code&gt;forEach&lt;/code&gt; 的
+peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quot;——&lt;strong&gt;业务副作用不要放在 peek 里&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七什么场景该用-stream什么场景不该"&gt;&lt;a href="#%e4%b8%83%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e7%94%a8-stream%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e4%b8%8d%e8%af%a5" class="header-anchor"&gt;&lt;/a&gt;七、什么场景该用 Stream，什么场景不该
 &lt;/h2&gt;&lt;h3 id="-适合-stream-的场景"&gt;&lt;a href="#-%e9%80%82%e5%90%88-stream-%e7%9a%84%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;✅ 适合 Stream 的场景
@@ -740,7 +741,7 @@
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;方法引用 &amp;gt; Lambda &amp;gt; 匿名内部类&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优先方法引用，其次 Lambda，最后匿名内部类&lt;/strong&gt;（按可读性视情况调整）&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Optional 只作返回值，不做字段/参数&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;parallelStream 慎用，多数场景串行更快&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;数值用 mapToInt/Long/Double&lt;/strong&gt;&lt;/li&gt;

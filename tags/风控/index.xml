@@ -437,7 +437,7 @@
  Complex --&gt;|没有| Aviator2[Aviator + 配置中心]&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;给一个直接的工程建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;能用 Aviator 就别上 Drools。Drools 是个完整框架，复杂度成本高，只有规则数量上百 + 规则间有推理 + 团队有专门维护时才值得。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;轻量场景优先 Aviator + 配置中心；只有规则数量上百、规则间有推理、且团队有人专门维护时，才值得引入 Drools 这种完整框架。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;

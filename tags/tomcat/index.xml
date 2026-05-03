@@ -351,7 +351,7 @@
 &lt;p&gt;&lt;strong&gt;给一句决策建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;新项目无脑 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;新项目优先用 Jar。老项目能改就改。除非有合规/历史/JSP 强约束，否则没有理由再用 War。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;Spring Boot 仍然完整支持 war 是为了向后兼容，不是推荐方向。把这点拎清楚，后面所有选择就都顺了。&lt;/p&gt;</description></item></channel></rss>

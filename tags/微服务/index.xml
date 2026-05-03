@@ -780,7 +780,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nd"&gt;@Autowired&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;private&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;UserClient&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;userClient&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;写注释承认问题等于不解决——技术债越堆越多。&lt;strong&gt;循环依赖必须当作 P0 bug 处理&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;写注释承认问题等于不解决——技术债越堆越多。&lt;strong&gt;循环依赖应作为架构债务专项跟踪，原则上不允许长期存在&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
@@ -920,7 +920,7 @@
 &lt;/ol&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;不要用『性能』作为选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;不建议把『性能』当成选 Dubbo 的唯一理由。&lt;/strong&gt; 如果你不能拿出一个真实的、被 Profiler 证实的、序列化耗时占主导的瓶颈，那性能差距对你来说几乎没意义。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;

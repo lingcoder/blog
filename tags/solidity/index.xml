@@ -1671,7 +1671,7 @@ Solidity 一一对上。&lt;/p&gt;
  &lt;p&gt;&lt;strong&gt;可升级是工程能力，不可升级是产品承诺，怎么在两者之间找平衡，是每一个协议设计者要回答的问题。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;</description></item><item><title>OpenSea Seaport 协议详解</title><link>https://www.lingcoder.com/p/opensea-seaport-protocol/</link><pubDate>Tue, 20 Aug 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/opensea-seaport-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/opensea-seaport-protocol/cover.svg" alt="Featured image of post OpenSea Seaport 协议详解" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;OpenSea 是 NFT 市场的事实垄断者——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;OpenSea 长期是 NFT 市场的头部平台——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了 NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;多对多交易&lt;/strong&gt;：一笔订单能涉及多种资产、多个发送方、多个接收方&lt;/li&gt;

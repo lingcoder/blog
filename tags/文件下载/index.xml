@@ -45,7 +45,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;xhr&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;send&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;这种是 80% 的场景&lt;/strong&gt;——别给自己加戏。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;这种是大部分场景&lt;/strong&gt;——多数情况下不需要后端介入，避免加不必要的复杂度。&lt;/p&gt;
 &lt;h3 id="类型-b服务端要先做事才有文件"&gt;&lt;a href="#%e7%b1%bb%e5%9e%8b-b%e6%9c%8d%e5%8a%a1%e7%ab%af%e8%a6%81%e5%85%88%e5%81%9a%e4%ba%8b%e6%89%8d%e6%9c%89%e6%96%87%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;类型 B：服务端要先&amp;quot;做事&amp;quot;才有文件
 &lt;/h3&gt;&lt;p&gt;真正复杂的——服务端先生成 Excel（30 秒）、再让前端下载。生成过程中浏览器看到的是 0 字节、Content-Length 还没确定。&lt;strong&gt;进度只有服务端知道&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;类型 B 才是本文的主场。&lt;/p&gt;
