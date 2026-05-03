@@ -1,1133 +1,1133 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Solana on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/solana/</link><description>Recent content in Solana on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 20 May 2025 17:48:31 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/solana/index.xml" rel="self" type="application/rss+xml"/><item><title>Flutter Web3 Wallet 开发指南</title><link>https://www.lingcoder.com/p/flutter-web3-wallet-dev-guide/</link><pubDate>Tue, 20 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/flutter-web3-wallet-dev-guide/</guid><description>&lt;h1 id="flutter-web3-wallet-开发指南">Flutter Web3 Wallet 开发指南
-&lt;/h1>&lt;h2 id="1-文档说明">1. 文档说明
-&lt;/h2>&lt;p>本文档是一份全面的 Flutter Web3 Wallet 开发知识体系与资源整理指南，旨在为团队提供：基础知识体系,标准规范参考,开发资源索引,术语解释。&lt;/p>
-&lt;h3 id="11-目标读者">1.1 目标读者
-&lt;/h3>&lt;ul>
-&lt;li>产品经理：了解技术可行性和实现方案，发现潜在功能需求&lt;/li>
-&lt;li>技术架构：掌握技术选型和架构设计&lt;/li>
-&lt;li>开发团队：获取开发资源和实现指南&lt;/li>
-&lt;li>安全团队：了解安全标准和最佳实践&lt;/li>
-&lt;li>项目经理：评估开发周期和资源需求&lt;/li>
-&lt;li>测试团队：了解测试策略和测试工具&lt;/li>
-&lt;/ul>
-&lt;h3 id="12-使用指南">1.2 使用指南
-&lt;/h3>&lt;ol>
-&lt;li>&lt;strong>知识储备阶段&lt;/strong>&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>学习区块链基础&lt;/li>
-&lt;li>理解钱包技术&lt;/li>
-&lt;li>掌握安全标准&lt;/li>
-&lt;li>熟悉开发工具&lt;/li>
-&lt;/ul>
-&lt;ol start="2">
-&lt;li>&lt;strong>技术选型阶段&lt;/strong>&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>评估技术方案&lt;/li>
-&lt;li>选择开发框架&lt;/li>
-&lt;li>确定工具链&lt;/li>
-&lt;li>制定安全策略&lt;/li>
-&lt;/ul>
-&lt;ol start="3">
-&lt;li>&lt;strong>开发准备阶段&lt;/strong>&lt;/li>
-&lt;/ol>
-&lt;ul>
-&lt;li>搭建开发环境&lt;/li>
-&lt;li>准备测试网络&lt;/li>
-&lt;li>配置监控工具&lt;/li>
-&lt;li>建立安全机制&lt;/li>
-&lt;/ul>
-&lt;h3 id="13-快速导航">1.3 快速导航
-&lt;/h3>&lt;ul>
-&lt;li>&lt;a class="link" href="#2-%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86" >基础知识&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="#3-%e6%a0%87%e5%87%86%e8%a7%84%e8%8c%83" >标准规范&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="#4-%e7%ab%9e%e5%93%81%e5%88%86%e6%9e%90" >竞品分析&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="#5-%e5%bc%80%e5%8f%91%e8%b5%84%e6%ba%90" >开发资源&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="#6-%e6%9c%af%e8%af%ad%e8%a7%a3%e9%87%8a" >术语解释&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;h2 id="2-基础知识">2. 基础知识
-&lt;/h2>&lt;h3 id="21-区块链基础">2.1 区块链基础
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>官方文档&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ethereum.org/en/developers/docs/" target="_blank" rel="noopener"
->Ethereum 官方文档&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com" target="_blank" rel="noopener"
->Solana 官方文档&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.bitcoin.org/devguide/" target="_blank" rel="noopener"
->Bitcoin 开发者文档&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs" target="_blank" rel="noopener"
->TRON 开发者文档&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>区块浏览&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://etherscan.io" target="_blank" rel="noopener"
->以太坊区块浏览器 (Etherscan)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://explorer.solana.com" target="_blank" rel="noopener"
->Solana 区块浏览器 (Solana Explorer)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.blockchain.com/explorer" target="_blank" rel="noopener"
->Bitcoin 区块浏览器 (Blockchain Explorer)&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://tronscan.org" target="_blank" rel="noopener"
->TRON 区块浏览器 (Tronscan)&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="3-标准提案规范">3. 标准提案规范
-&lt;/h2>&lt;h3 id="31-钱包相关">3.1 钱包相关
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>通用钱包标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki" target="_blank" rel="noopener"
->BIP-32&lt;/a>：分层确定性钱包（HD Wallets）&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" target="_blank" rel="noopener"
->BIP-39&lt;/a>：助记词生成与恢复&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki" target="_blank" rel="noopener"
->BIP-44&lt;/a>：多币种、多账户HD路径结构&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0044.md" target="_blank" rel="noopener"
->SLIP-0044&lt;/a>：币种编码&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
->BIP-38&lt;/a>：加密私钥的安全增强（可选）&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>比特币钱包专有标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki" target="_blank" rel="noopener"
->BIP-49&lt;/a>: 多网络支持&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki" target="_blank" rel="noopener"
->BIP-84&lt;/a>: Native SegWit 地址&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki" target="_blank" rel="noopener"
->BIP-85&lt;/a>: 确定性熵生成&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki" target="_blank" rel="noopener"
->BIP-86&lt;/a>: Taproot 地址&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
->BIP-174&lt;/a>: PSBT，促进硬件/软件钱包多方签名协作&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>以太坊钱包专有标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-55" target="_blank" rel="noopener"
->EIP-55&lt;/a>: 校验和地址格式，用于防止用户输入错误的以太坊地址。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-137" target="_blank" rel="noopener"
->EIP-137&lt;/a>: ENS 域名服务，实现“地址即域名”转账等功能。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-155" target="_blank" rel="noopener"
->EIP-155&lt;/a>: 交易签名重放保护，为多链网络防止交易重放攻击。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-681" target="_blank" rel="noopener"
->EIP-681&lt;/a>: 以太坊 URI 支付请求标准，便于钱包扫码或链接转账请求。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
->EIP-712&lt;/a>: 结构化数据签名，钱包常用于DApp登录、合约操作等。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1193" target="_blank" rel="noopener"
->EIP-1193&lt;/a>: Provider API 标准，dApp与钱包之间通信通用接口。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1271" target="_blank" rel="noopener"
->EIP-1271&lt;/a>: 合约钱包签名验证标准，为智能合约账户带来签名验证。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
->EIP-2255&lt;/a>: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
->EIP-2335&lt;/a>: Keystore V4 密钥加密存储格式，主流以太坊钱包通用加密文件规范。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
->EIP-2612&lt;/a>: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
->EIP-3085&lt;/a>: 钱包网络切换请求，便于dApp添加/切换自定义网络到钱包。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
->EIP-4337&lt;/a>: 账户抽象（Account Abstraction），智能合约钱包的关键协议。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noopener"
->EIP-4361&lt;/a>: 使用以太坊地址签名认证（Sign-In With Ethereum）。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-5805" target="_blank" rel="noopener"
->EIP-5805&lt;/a>: 钱包安全标准。&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank" rel="noopener"
->EIP-6963&lt;/a>: 多钱包发现和选择，提升多钱包生态用户体验。&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>索拉纳钱包专有标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://ed25519.cr.yp.to/" target="_blank" rel="noopener"
->Ed25519&lt;/a>: Solana 钱包采用的公私钥加密算法&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solana-labs/wallet-standard" target="_blank" rel="noopener"
->Solana Wallet Standard&lt;/a>: 钱包与 DApp 连接与兼容协议&lt;/li>
-&lt;li>&lt;a class="link" href="https://solanapay.com/" target="_blank" rel="noopener"
->Solana Pay&lt;/a>: 原生扫码/支付请求协议&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts" target="_blank" rel="noopener"
->Solana Address/Account Model&lt;/a>：账户结构及模型&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>波场钱包专有标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/multi-signature" target="_blank" rel="noopener"
->Tron Multi-signature&lt;/a>：多签账户功能&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="32-比特币生态标准">3.2 比特币生态标准
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>交易与协议扩展&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0002.mediawiki" target="_blank" rel="noopener"
->BIP-2/BIP-9&lt;/a>: BIP规范流程/软分叉激活讨论&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki" target="_blank" rel="noopener"
->BIP-21&lt;/a>: 比特币支付URI统一收款标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki" target="_blank" rel="noopener"
->BIP-47&lt;/a>: 支付代码（静默支付/隐私增强）&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki" target="_blank" rel="noopener"
->BIP-65&lt;/a>: OP_CHECKLOCKTIMEVERIFY时锁&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki" target="_blank" rel="noopener"
->BIP-70&lt;/a>: 支付请求协议&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
->BIP-174&lt;/a>: PSBT部分签名交易格式&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki" target="_blank" rel="noopener"
->BIP-340/341/342&lt;/a>: Taproot/Schnorr签名/可扩展性升级&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>地址与账号模型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki" target="_blank" rel="noopener"
->BIP-13&lt;/a>: 多重签名P2SH地址&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0170.mediawiki" target="_blank" rel="noopener"
->BIP-170&lt;/a>: 长度检查/二维码兼容&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>隐私与效率&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki" target="_blank" rel="noopener"
->BIP-78&lt;/a>: PayJoin隐私增强支付&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki" target="_blank" rel="noopener"
->BIP-155&lt;/a>: 节点通讯结构扩展&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki" target="_blank" rel="noopener"
->BIP-157/158&lt;/a>: 轻钱包同步（Neutrino）&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>扩展与第三方协议&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/lightningnetwork/lightning-rfc" target="_blank" rel="noopener"
->Lightning Network&lt;/a>: 闪电网络高效链下转账&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/OpenAssets/open-assets-protocol" target="_blank" rel="noopener"
->Open Assets&lt;/a>: 比特币链上非标准资产发行&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/Colored-Coins/Colored-Coins-Protocol-Specification" target="_blank" rel="noopener"
->Colored Coins&lt;/a>: 彩色币-layer2资产协议&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="33-以太坊生态标准">3.3 以太坊生态标准
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>资产与合约标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-20" target="_blank" rel="noopener"
->EIP-20&lt;/a>: 可替代代币（ERC-20）&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-721" target="_blank" rel="noopener"
->EIP-721&lt;/a>: NFT非同质化代币&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1155" target="_blank" rel="noopener"
->EIP-1155&lt;/a>: 多代币/混合资产标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4626" target="_blank" rel="noopener"
->EIP-4626&lt;/a>: Vault资产保险库&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>功能和扩展标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
->EIP-2612&lt;/a>: 代币无Gas批量操作（Permit）&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
->EIP-4337&lt;/a>: 账户抽象(AA)&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
->EIP-2930&lt;/a>: 可选访问列表&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3607" target="_blank" rel="noopener"
->EIP-3607&lt;/a>: 交易重放保护&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2535" target="_blank" rel="noopener"
->EIP-2535&lt;/a>: Diamond多合约分片架构&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
->EIP-712&lt;/a>: 结构化签名&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>治理与基础设施&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener"
->EIP-1967&lt;/a>: Proxy可升级合约标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4824" target="_blank" rel="noopener"
->EIP-4824&lt;/a>: DAO组织元数据标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-173" target="_blank" rel="noopener"
->EIP-173&lt;/a>: 合约所有权控制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="33-索拉纳生态标准">3.3 索拉纳生态标准
-&lt;/h3>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>代币与资产标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/token" target="_blank" rel="noopener"
->SPL Token&lt;/a>: 基础代币标准（SPL Token Program）&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/associated-token-account" target="_blank" rel="noopener"
->SPL Associated Token Account&lt;/a>: 关联Token账户&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.metaplex.com/programs/token-metadata/" target="_blank" rel="noopener"
->SPL Token Metadata&lt;/a>: 元数据/NFT扩展&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/token-swap" target="_blank" rel="noopener"
->SPL Token Swap&lt;/a>: 代币兑换池&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metaplex.com/programs/token-metadata" target="_blank" rel="noopener"
->Metaplex NFT&lt;/a>: NFT铸造/交易标准&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>功能与交互标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/name-service" target="_blank" rel="noopener"
->SPL Name Service&lt;/a>: 域名服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solana-labs/spl-governance" target="_blank" rel="noopener"
->SPL Governance&lt;/a>: 治理/DAO标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://solana.com/docs/economics/staking" target="_blank" rel="noopener"
->SPL Stake&lt;/a>: 质押参与规则&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/token-lending" target="_blank" rel="noopener"
->SPL Token Lending&lt;/a>: 借贷协议标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://spl.solana.com/memo" target="_blank" rel="noopener"
->SPL Memo&lt;/a>: 转账备注消息标准&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="34-波场生态标准">3.4 波场生态标准
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>资产与NFT标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://cn.developers.tron.network/docs/trc10-intro" target="_blank" rel="noopener"
->TRC-10&lt;/a>: 基础资产发行标准&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-20.md" target="_blank" rel="noopener"
->TRC-20&lt;/a>: ERC-20兼容合约资产&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-721.md" target="_blank" rel="noopener"
->TRC-721&lt;/a>: NFT资产发行协议&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-1155.md" target="_blank" rel="noopener"
->TRC-1155&lt;/a>: 多代币协议&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-30.md" target="_blank" rel="noopener"
->TRC-30&lt;/a>: 资产元数据、扩展协议&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>核心资源与功能&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#bandwidth" target="_blank" rel="noopener"
->带宽模型&lt;/a>: 交易带宽资源分配&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#energy" target="_blank" rel="noopener"
->能量模型&lt;/a>: 智能合约执行资源管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-delegation" target="_blank" rel="noopener"
->资源委托&lt;/a>: 资源托管代理&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-exchange" target="_blank" rel="noopener"
->资源交易&lt;/a>: 市场化资源换取机制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>治理体系标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-51.md" target="_blank" rel="noopener"
->TRC-51&lt;/a>: 提案投票制度&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-54.md" target="_blank" rel="noopener"
->TRC-54&lt;/a>: 参数治理配置&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/governance" target="_blank" rel="noopener"
->链上治理&lt;/a>: 链上治理机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://developers.tron.network/docs/community-governance" target="_blank" rel="noopener"
->社区治理&lt;/a>: 社区/开发者治理规则&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>安全最佳实践&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
->Ethereum Security Best Practices&lt;/a>&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
->Solana Security Best Practices&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="4-竞品分析">4. 竞品分析
-&lt;/h2>&lt;h3 id="41-主流钱包分析">4.1 主流钱包分析
-&lt;/h3>&lt;h4 id="evm-生态">EVM 生态
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>MetaMask&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/sdk/" target="_blank" rel="noopener"
->SDK&lt;/a>: SDK 使用&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
->Snap 系统&lt;/a>: 插件系统，支持自定义功能扩展&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
->钱包服务&lt;/a>: 钱包服务 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.metamask.io/wallet/" target="_blank" rel="noopener"
->钱包API&lt;/a>: 通用钱包 API&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/metamask-mobile" target="_blank" rel="noopener"
->移动端源码&lt;/a>: React Native 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/core" target="_blank" rel="noopener"
->核心库&lt;/a>: 状态管理和业务逻辑&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/MetaMask/core/tree/main/packages/keyring-controller" target="_blank" rel="noopener"
->Keyring 系统&lt;/a>: 密钥管理实现&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Trust Wallet&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/wallet-core" target="_blank" rel="noopener"
->多链支持&lt;/a>: 支持 60+ 区块链&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-dapps" target="_blank" rel="noopener"
->DApp 浏览器&lt;/a>: 内置浏览器&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-assets" target="_blank" rel="noopener"
->代币管理&lt;/a>: 代币添加和管理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core" target="_blank" rel="noopener"
->钱包核心库&lt;/a>: C++ 实现的核心库&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/android" target="_blank" rel="noopener"
->Android实现&lt;/a>: Android 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/swift" target="_blank" rel="noopener"
->iOS实现&lt;/a>: Swift 实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/src" target="_blank" rel="noopener"
->区块链适配器&lt;/a>: 链适配器实现&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Rainbow&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://rainbow.me/" target="_blank" rel="noopener"
->官网&lt;/a>: 官方网站&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;strong>技术实现&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://github.com/rainbow-me/rainbow" target="_blank" rel="noopener"
->源码&lt;/a>: 完整源码&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="solana-生态">Solana 生态
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>Phantom&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.phantom.com/" target="_blank" rel="noopener"
->官方文档&lt;/a>: 官方文档&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.phantom.com/solana/sending-a-transaction" target="_blank" rel="noopener"
->交易处理&lt;/a>: 交易处理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Solflare&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>核心功能&lt;/strong>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.solflare.com/solflare" target="_blank" rel="noopener"
->官方文档&lt;/a>: 官方文档&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/solflare-wallet/solflare-sdk" target="_blank" rel="noopener"
->钱包SDK&lt;/a>: DApp 集成&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="tron-生态">TRON 生态
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>TronLink&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://tronlink.org/" target="_blank" rel="noopener"
->官方网站&lt;/a>: 官方网站&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.tronlink.org/" target="_blank" rel="noopener"
->官方文档&lt;/a>: 完整源码&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>TokenPocket&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://tokenpocket.pro/" target="_blank" rel="noopener"
->官方网站&lt;/a>: 官方网站&lt;/li>
-&lt;li>&lt;a class="link" href="https://help.tokenpocket.pro/developer-cn" target="_blank" rel="noopener"
->官方文档&lt;/a>: 官方文档&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/TP-Lab/TokenPocket-Protocol" target="_blank" rel="noopener"
->TokenPocket-Protocol&lt;/a>: 该协议可以用于从网页和第三方App拉起TokenPocket钱包做授权
-转账等操作&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="bitcoin-生态">Bitcoin 生态
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>BlueWallet&lt;/strong>&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://bluewallet.io/" target="_blank" rel="noopener"
->官方网站&lt;/a>: 官方网站&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://bluewallet.io/docs/" target="_blank" rel="noopener"
->官方文档&lt;/a>: 官方文档&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet" target="_blank" rel="noopener"
->完整源码&lt;/a>: 完整源码&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Samourai Wallet&lt;/strong>&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://samouraiwallet.com/" target="_blank" rel="noopener"
->官方网站&lt;/a>: 官方网站&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://samouraiwallet.com/docs/" target="_blank" rel="noopener"
->官方文档&lt;/a>: 官方文档&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a class="link" href="https://github.com/Samourai-Wallet/Samourai-Wallet" target="_blank" rel="noopener"
->完整源码&lt;/a>: 完整源码&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="42-钱包集成框架">4.2 钱包集成框架
-&lt;/h3>&lt;h4 id="walletconnect">WalletConnect
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>核心功能&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs" target="_blank" rel="noopener"
->协议规范&lt;/a>: 协议技术规范&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/session" target="_blank" rel="noopener"
->会话管理&lt;/a>: 连接会话管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/relay" target="_blank" rel="noopener"
->消息中继&lt;/a>: 消息中继机制&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/push" target="_blank" rel="noopener"
->推送通知&lt;/a>: 消息推送服务&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>开发工具&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/flutter/installation" target="_blank" rel="noopener"
->Flutter SDK&lt;/a>: Flutter 开发工具包&lt;/li>
-&lt;li>&lt;a class="link" href="https://github.com/WalletConnect/walletconnect-flutter" target="_blank" rel="noopener"
->示例代码&lt;/a>: 集成示例&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/testing" target="_blank" rel="noopener"
->测试工具&lt;/a>: 测试和调试工具&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.walletconnect.com/2.0/monitoring" target="_blank" rel="noopener"
->监控服务&lt;/a>: 监控和分析&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>云服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://cloud.walletconnect.com/push" target="_blank" rel="noopener"
->推送服务&lt;/a>: 交易和消息推送&lt;/li>
-&lt;li>&lt;a class="link" href="https://cloud.walletconnect.com/relay" target="_blank" rel="noopener"
->中继服务&lt;/a>: 消息中继和同步&lt;/li>
-&lt;li>&lt;a class="link" href="https://cloud.walletconnect.com/analytics" target="_blank" rel="noopener"
->分析服务&lt;/a>: 使用数据分析&lt;/li>
-&lt;li>&lt;a class="link" href="https://cloud.walletconnect.com/console" target="_blank" rel="noopener"
->管理控制台&lt;/a>: 服务管理平台&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="deeplink">DeepLink
-&lt;/h4>&lt;ul>
-&lt;li>&lt;a class="link" href="https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content" target="_blank" rel="noopener"
->iOS&lt;/a>: iOS
-DeepLink&lt;/li>
-&lt;li>&lt;a class="link" href="https://developer.android.com/training/app-links/deep-linking" target="_blank" rel="noopener"
->Android&lt;/a>: Android DeepLink&lt;/li>
-&lt;/ul>
-&lt;h2 id="5-开发资源">5. 开发资源
-&lt;/h2>&lt;h3 id="51-flutter-开发资源">5.1 Flutter 开发资源
-&lt;/h3>&lt;h4 id="核心框架">核心框架
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>Flutter 框架&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs" target="_blank" rel="noopener"
->官方文档&lt;/a>: 完整的开发文档和指南&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/perf" target="_blank" rel="noopener"
->性能优化&lt;/a>: 性能调优和最佳实践&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/data-and-backend/state-mgmt" target="_blank" rel="noopener"
->状态管理&lt;/a>: 状态管理方案&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/platform-integration" target="_blank" rel="noopener"
->平台集成&lt;/a>: 平台特定功能&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>开发工具&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/tools/cli" target="_blank" rel="noopener"
->Flutter CLI&lt;/a>: 命令行工具&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/tools/devtools" target="_blank" rel="noopener"
->DevTools&lt;/a>: 调试和性能分析&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/tools/vs-code" target="_blank" rel="noopener"
->VS Code 插件&lt;/a>: VS Code 开发环境&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/development/tools/android-studio" target="_blank" rel="noopener"
->Android Studio 插件&lt;/a>: Android Studio 开发环境&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>测试工具&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/testing" target="_blank" rel="noopener"
->单元测试&lt;/a>: 测试框架和工具&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/testing#widget-tests" target="_blank" rel="noopener"
->Widget 测试&lt;/a>: UI 组件测试&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/testing#integration-tests" target="_blank" rel="noopener"
->集成测试&lt;/a>: 端到端测试&lt;/li>
-&lt;li>&lt;a class="link" href="https://flutter.dev/docs/testing#performance-tests" target="_blank" rel="noopener"
->性能测试&lt;/a>: 性能基准测试&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="52-开发工具与库">5.2 开发工具与库
-&lt;/h3>&lt;h4 id="flutter-核心包">Flutter 核心包
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>状态管理&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/riverpod" target="_blank" rel="noopener"
->riverpod&lt;/a>: 现代化状态管理方案&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/get_it" target="_blank" rel="noopener"
->get_it&lt;/a>: 依赖注入容器&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_bloc" target="_blank" rel="noopener"
->flutter_bloc&lt;/a>: BLoC 模式实现&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/mobx" target="_blank" rel="noopener"
->mobx&lt;/a>: 响应式状态管理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>网络与存储&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/dio" target="_blank" rel="noopener"
->dio&lt;/a>: 强大的 HTTP 客户端&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/shared_preferences" target="_blank" rel="noopener"
->shared_preferences&lt;/a>: 本地数据存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/hive" target="_blank" rel="noopener"
->hive&lt;/a>: 轻量级键值数据库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/sqflite" target="_blank" rel="noopener"
->sqflite&lt;/a>: SQLite 数据库&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>安全存储&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
->flutter_secure_storage&lt;/a>: 安全数据存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage_macos" target="_blank" rel="noopener"
->flutter_secure_storage_macos&lt;/a>: macOS 安全存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage_web" target="_blank" rel="noopener"
->flutter_secure_storage_web&lt;/a>: Web 安全存储&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_keychain" target="_blank" rel="noopener"
->flutter_keychain&lt;/a>: 钥匙串访问&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>系统交互&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/path_provider" target="_blank" rel="noopener"
->path_provider&lt;/a>: 文件路径管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/connectivity_plus" target="_blank" rel="noopener"
->connectivity_plus&lt;/a>: 网络连接状态&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/package_info_plus" target="_blank" rel="noopener"
->package_info_plus&lt;/a>: 应用包信息&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/device_info_plus" target="_blank" rel="noopener"
->device_info_plus&lt;/a>: 设备信息&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="ui-组件">UI 组件
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>基础组件&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_svg" target="_blank" rel="noopener"
->flutter_svg&lt;/a>: SVG 图片支持&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/cached_network_image" target="_blank" rel="noopener"
->cached_network_image&lt;/a>: 图片缓存&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_animate" target="_blank" rel="noopener"
->flutter_animate&lt;/a>: 动画效果&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/lottie" target="_blank" rel="noopener"
->lottie&lt;/a>: Lottie 动画支持&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>交互组件&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/mobile_scanner" target="_blank" rel="noopener"
->mobile_scanner&lt;/a>: 二维码扫描&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_slidable" target="_blank" rel="noopener"
->flutter_slidable&lt;/a>: 滑动操作&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_screenutil" target="_blank" rel="noopener"
->flutter_screenutil&lt;/a>: 屏幕适配&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/google_fonts" target="_blank" rel="noopener"
->google_fonts&lt;/a>: Google 字体&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>反馈组件&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_easyloading" target="_blank" rel="noopener"
->flutter_easyloading&lt;/a>: 加载提示&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/fluttertoast" target="_blank" rel="noopener"
->fluttertoast&lt;/a>: Toast 提示&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_switch" target="_blank" rel="noopener"
->flutter_switch&lt;/a>: 开关组件&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_spinkit" target="_blank" rel="noopener"
->flutter_spinkit&lt;/a>: 加载动画&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="web3-开发包">Web3 开发包
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>以太坊开发&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_core_bindings" target="_blank" rel="noopener"
->wallet_core_bindings&lt;/a>: Trust Wallet Core 绑定&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_v2" target="_blank" rel="noopener"
->wallet_connect_v2&lt;/a>: WalletConnect v2 支持&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
->web3dart&lt;/a>: 以太坊开发核心库&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>钱包集成&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_modal_flutter" target="_blank" rel="noopener"
->wallet_connect_modal_flutter&lt;/a>: WalletConnect 模态框&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_utils" target="_blank" rel="noopener"
->wallet_connect_utils&lt;/a>: WalletConnect 工具集&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_sign" target="_blank" rel="noopener"
->wallet_connect_sign&lt;/a>: WalletConnect 签名&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/wallet_connect_uri" target="_blank" rel="noopener"
->wallet_connect_uri&lt;/a>: WalletConnect URI 处理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>链适配器&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/solana_dart" target="_blank" rel="noopener"
->solana_dart&lt;/a>: Solana 开发库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/tronweb_dart" target="_blank" rel="noopener"
->tronweb_dart&lt;/a>: TRON 开发库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/bitcoin_dart" target="_blank" rel="noopener"
->bitcoin_dart&lt;/a>: Bitcoin 开发库&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/reown_appkit" target="_blank" rel="noopener"
->reown_appkit&lt;/a>: Onchain UX 平台工具包&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="安全与加密">安全与加密
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>密钥管理&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/bip39" target="_blank" rel="noopener"
->bip39&lt;/a>: 助记词生成&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
->bip32&lt;/a>: 分层确定性钱包&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/ed25519_hd_key" target="_blank" rel="noopener"
->ed25519_hd_key&lt;/a>: Ed25519 密钥派生&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/crypto" target="_blank" rel="noopener"
->crypto&lt;/a>: 加密算法&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>生物认证&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
->local_auth&lt;/a>: 生物认证&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_biometrics_plus" target="_blank" rel="noopener"
->flutter_biometrics_plus&lt;/a>: 生物识别增强版&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_auth_biometric" target="_blank" rel="noopener"
->flutter_auth_biometric&lt;/a>: 生物认证工具&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_secure_key_storage" target="_blank" rel="noopener"
->flutter_secure_key_storage&lt;/a>: 密钥存储&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="测试与质量">测试与质量
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>测试框架&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_test" target="_blank" rel="noopener"
->flutter_test&lt;/a>: 单元测试框架&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/mockito" target="_blank" rel="noopener"
->mockito&lt;/a>: 模拟测试&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_driver" target="_blank" rel="noopener"
->flutter_driver&lt;/a>: 端到端测试&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/integration_test" target="_blank" rel="noopener"
->integration_test&lt;/a>: 集成测试&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>代码质量&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_analyzer" target="_blank" rel="noopener"
->flutter_analyzer&lt;/a>: 代码分析&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/very_good_analysis" target="_blank" rel="noopener"
->very_good_analysis&lt;/a>: 代码规范&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_lints" target="_blank" rel="noopener"
->flutter_lints&lt;/a>: 代码检查规则&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/coverage" target="_blank" rel="noopener"
->coverage&lt;/a>: 测试覆盖率&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="调试与开发">调试与开发
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>开发工具&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/logger" target="_blank" rel="noopener"
->logger&lt;/a>: 日志记录&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_logs" target="_blank" rel="noopener"
->flutter_logs&lt;/a>: 日志管理&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_dotenv" target="_blank" rel="noopener"
->flutter_dotenv&lt;/a>: 环境变量&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_config" target="_blank" rel="noopener"
->flutter_config&lt;/a>: 配置管理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>代码生成&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/build_runner" target="_blank" rel="noopener"
->build_runner&lt;/a>: 代码生成工具&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/freezed" target="_blank" rel="noopener"
->freezed&lt;/a>: 不可变数据类生成&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/json_serializable" target="_blank" rel="noopener"
->json_serializable&lt;/a>: JSON 序列化&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/json_annotation" target="_blank" rel="noopener"
->json_annotation&lt;/a>: JSON 注解&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>应用配置&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_native_splash" target="_blank" rel="noopener"
->flutter_native_splash&lt;/a>: 启动屏&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_launcher_icons" target="_blank" rel="noopener"
->flutter_launcher_icons&lt;/a>: 应用图标&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/flutter_isolate" target="_blank" rel="noopener"
->flutter_isolate&lt;/a>: 隔离执行&lt;/li>
-&lt;li>&lt;a class="link" href="https://pub.dev/packages/url_launcher" target="_blank" rel="noopener"
->url_launcher&lt;/a>: URL 处理&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="53-节点与-api-服务">5.3 节点与 API 服务
-&lt;/h3>&lt;h4 id="evm-链服务">EVM 链服务
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>节点服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://infura.io/" target="_blank" rel="noopener"
->Infura&lt;/a>: 以太坊节点服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.alchemy.com/" target="_blank" rel="noopener"
->Alchemy&lt;/a>: 高级 API 服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.quicknode.com/" target="_blank" rel="noopener"
->QuickNode&lt;/a>: 全球节点网络&lt;/li>
-&lt;li>&lt;a class="link" href="https://chainstack.com/" target="_blank" rel="noopener"
->Chainstack&lt;/a>: 企业级节点服务&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>API 服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.etherscan.io/" target="_blank" rel="noopener"
->Etherscan API&lt;/a>: 区块浏览器 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.covalenthq.com/docs/api/" target="_blank" rel="noopener"
->Covalent API&lt;/a>: 多链数据 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://thegraph.com/docs/" target="_blank" rel="noopener"
->The Graph&lt;/a>: 链上数据索引&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.moralis.io/" target="_blank" rel="noopener"
->Moralis&lt;/a>: Web3 开发平台&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="solana-服务">Solana 服务
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>节点服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.helius.xyz/" target="_blank" rel="noopener"
->Helius&lt;/a>: 高性能 RPC 服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.alchemy.com/reference/solana-api-quickstart" target="_blank" rel="noopener"
->Alchemy Solana&lt;/a>: Solana API&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.quicknode.com/chains/solana" target="_blank" rel="noopener"
->QuickNode Solana&lt;/a>: Solana 节点&lt;/li>
-&lt;li>&lt;a class="link" href="https://genesysgo.com/" target="_blank" rel="noopener"
->GenesysGo&lt;/a>: 企业级节点服务&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>API 服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://docs.solana.com/api" target="_blank" rel="noopener"
->Solana Explorer API&lt;/a>: 区块浏览器 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.solana.fm/" target="_blank" rel="noopener"
->Solana FM API&lt;/a>: 高级数据 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.helius.xyz/digital-asset-standard-api" target="_blank" rel="noopener"
->DAS API&lt;/a>: 数字资产 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://docs.jup.ag/" target="_blank" rel="noopener"
->Jupiter API&lt;/a>: DEX 聚合器 API&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="其他链服务">其他链服务
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>TRON 服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://www.trongrid.io/" target="_blank" rel="noopener"
->TronGrid&lt;/a>: TRON 节点服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.trongrid.io/docs" target="_blank" rel="noopener"
->TRON API&lt;/a>: TRON 开发 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.trongrid.io/docs/explorer-api" target="_blank" rel="noopener"
->TRON Explorer API&lt;/a>: 区块浏览器 API&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.trongrid.io/docs/network-api" target="_blank" rel="noopener"
->TRON Network API&lt;/a>: 网络数据 API&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>Bitcoin 服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>&lt;a class="link" href="https://mempool.space/docs/api" target="_blank" rel="noopener"
->Mempool&lt;/a>: 内存池服务&lt;/li>
-&lt;li>&lt;a class="link" href="https://www.blockcypher.com/dev/bitcoin/" target="_blank" rel="noopener"
->BlockCypher&lt;/a>: 比特币 API&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="6-术语解释">6. 术语解释
-&lt;/h2>&lt;h3 id="61-区块链基础">6.1 区块链基础
-&lt;/h3>&lt;h4 id="核心概念">核心概念
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>区块链技术&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>区块链 (Blockchain): 分布式账本技术，通过密码学确保数据不可篡改&lt;/li>
-&lt;li>共识机制 (Consensus Mechanism): 确保网络一致性的算法，如 PoW、PoS、DPoS&lt;/li>
-&lt;li>智能合约 (Smart Contract): 自动执行的程序代码，部署在区块链上&lt;/li>
-&lt;li>节点 (Node): 网络参与者，维护区块链数据和参与共识&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>密码学基础&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>非对称加密 (Asymmetric Cryptography): 使用公钥和私钥对的加密系统&lt;/li>
-&lt;li>哈希函数 (Hash Function): 将任意长度数据转换为固定长度输出的函数&lt;/li>
-&lt;li>数字签名 (Digital Signature): 使用私钥对数据进行签名，验证数据来源和完整性&lt;/li>
-&lt;li>零知识证明 (Zero-knowledge Proof): 证明某个陈述为真而不泄露其他信息的技术&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>网络架构&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>主网 (Mainnet): 区块链的正式运行网络&lt;/li>
-&lt;li>测试网 (Testnet): 用于开发和测试的网络环境&lt;/li>
-&lt;li>侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li>
-&lt;li>跨链桥 (Bridge): 连接不同区块链的协议，实现资产和数据互通&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="62-钱包与安全">6.2 钱包与安全
-&lt;/h3>&lt;h4 id="钱包类型">钱包类型
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>按存储方式&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>热钱包 (Hot Wallet): 在线连接的钱包，方便但安全性较低&lt;/li>
-&lt;li>冷钱包 (Cold Wallet): 离线存储私钥的钱包，提供最高安全性&lt;/li>
-&lt;li>硬件钱包 (Hardware Wallet): 使用专用硬件设备存储私钥&lt;/li>
-&lt;li>托管钱包 (Custodial Wallet): 由第三方机构管理私钥的钱包&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>按功能特性&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>HD钱包 (Hierarchical Deterministic Wallet): 从单个种子派生多个密钥对的钱包&lt;/li>
-&lt;li>观察钱包 (Watch-only Wallet): 只能查看余额但不能签名的钱包&lt;/li>
-&lt;li>多重签名钱包 (Multi-sig Wallet): 需要多个私钥共同签名才能执行交易&lt;/li>
-&lt;li>智能合约钱包 (Smart Contract Wallet): 使用智能合约管理账户的钱包&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="安全机制">安全机制
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>密钥管理&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>私钥 (Private Key): 用于签名交易和证明资产所有权的密钥&lt;/li>
-&lt;li>公钥 (Public Key): 由私钥派生的公开密钥，用于验证签名&lt;/li>
-&lt;li>助记词 (Mnemonic): 人类可读的密钥备份，通常为 12-24 个单词&lt;/li>
-&lt;li>密钥派生路径 (Derivation Path): 从种子生成特定密钥的路径&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>安全特性&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>生物认证 (Biometric Authentication): 使用指纹、面部等生物特征进行身份验证&lt;/li>
-&lt;li>社交恢复 (Social Recovery): 通过可信社交关系恢复钱包访问权的机制&lt;/li>
-&lt;li>账户抽象 (Account Abstraction): 将账户逻辑从区块链协议中分离的设计模式&lt;/li>
-&lt;li>权限管理 (Permission Management): 控制不同操作所需权限的机制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="63-交易与合约">6.3 交易与合约
-&lt;/h3>&lt;h4 id="交易机制">交易机制
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>交易类型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>普通转账 (Transfer): 基本的代币转账交易&lt;/li>
-&lt;li>合约调用 (Contract Call): 调用智能合约的交易&lt;/li>
-&lt;li>批量交易 (Batch Transaction): 包含多个操作的交易&lt;/li>
-&lt;li>闪电交易 (Flash Transaction): 即时完成但可撤销的交易&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>交易属性&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>交易哈希 (Transaction Hash): 交易的唯一标识符&lt;/li>
-&lt;li>Gas 费用 (Gas Fee): 执行交易所需的计算资源费用&lt;/li>
-&lt;li>交易确认 (Transaction Confirmation): 交易被打包进区块并得到网络确认&lt;/li>
-&lt;li>交易状态 (Transaction Status): 交易的处理状态，如待处理、已确认、失败&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="智能合约">智能合约
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>合约类型&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>代币合约 (Token Contract): 管理代币发行和转账的合约&lt;/li>
-&lt;li>治理合约 (Governance Contract): 管理协议参数和升级的合约&lt;/li>
-&lt;li>交易合约 (Exchange Contract): 处理资产交换的合约&lt;/li>
-&lt;li>保险合约 (Insurance Contract): 提供风险保障的合约&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>合约特性&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>可升级性 (Upgradability): 合约代码可更新的特性&lt;/li>
-&lt;li>可组合性 (Composability): 合约之间可相互调用的特性&lt;/li>
-&lt;li>事件机制 (Event Mechanism): 合约状态变化的通知机制&lt;/li>
-&lt;li>访问控制 (Access Control): 控制合约功能访问权限的机制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="64-defi-与-nft">6.4 DeFi 与 NFT
-&lt;/h3>&lt;h4 id="defi-概念">DeFi 概念
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>基础服务&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>去中心化交易所 (DEX): 基于智能合约的资产交易平台&lt;/li>
-&lt;li>借贷协议 (Lending Protocol): 提供去中心化借贷服务的协议&lt;/li>
-&lt;li>稳定币 (Stablecoin): 价值与法定货币挂钩的加密货币&lt;/li>
-&lt;li>收益聚合器 (Yield Aggregator): 自动优化收益的 DeFi 协议&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>高级功能&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>闪电贷 (Flash Loan): 无需抵押的即时借贷&lt;/li>
-&lt;li>流动性挖矿 (Liquidity Mining): 提供流动性的奖励机制&lt;/li>
-&lt;li>收益耕作 (Yield Farming): 通过提供流动性获取收益&lt;/li>
-&lt;li>自动做市商 (AMM): 使用算法自动提供流动性的机制&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="nft-生态">NFT 生态
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>基础概念&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>非同质化代币 (NFT): 独特的数字资产，不可互换&lt;/li>
-&lt;li>元数据 (Metadata): NFT 的链下数据，包含图片、描述等&lt;/li>
-&lt;li>版税 (Royalty): NFT 二次销售时支付给创作者的费用&lt;/li>
-&lt;li>地板价 (Floor Price): NFT 集合中最低的挂单价格&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>应用场景&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>数字艺术 (Digital Art): 数字化的艺术品和收藏品&lt;/li>
-&lt;li>游戏资产 (Game Assets): 游戏中的虚拟物品和角色&lt;/li>
-&lt;li>虚拟土地 (Virtual Land): 元宇宙中的虚拟地产&lt;/li>
-&lt;li>身份认证 (Identity): 基于 NFT 的数字身份系统&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="65-跨链与互操作">6.5 跨链与互操作
-&lt;/h3>&lt;h4 id="跨链技术">跨链技术
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>基础架构&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>跨链桥 (Bridge): 连接不同区块链的协议&lt;/li>
-&lt;li>原子交换 (Atomic Swap): 不同链上资产的安全交换&lt;/li>
-&lt;li>中继器 (Relayer): 在链间传递消息和数据的服务&lt;/li>
-&lt;li>预言机 (Oracle): 将链下数据引入区块链的服务&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>互操作标准&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>跨链消息 (Cross-chain Message): 在不同链间传递的信息&lt;/li>
-&lt;li>互操作性协议 (Interoperability Protocol): 如 IBC、LayerZero 等跨链协议&lt;/li>
-&lt;li>跨链资产 (Cross-chain Asset): 可在不同链间转移的资产&lt;/li>
-&lt;li>跨链身份 (Cross-chain Identity): 在不同链间保持一致的的身份系统&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h4 id="扩展方案">扩展方案
-&lt;/h4>&lt;ul>
-&lt;li>
-&lt;p>&lt;strong>Layer 2&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>状态通道 (State Channel): 链下处理交易，链上结算&lt;/li>
-&lt;li>侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li>
-&lt;li>等离子链 (Plasma): 基于欺诈证明的链下扩展方案&lt;/li>
-&lt;li>乐观卷叠 (Optimistic Rollup): 基于欺诈证明的 Layer 2 方案&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;strong>分片技术&lt;/strong>&lt;/p>
-&lt;ul>
-&lt;li>状态分片 (State Sharding): 将区块链状态分成多个分片&lt;/li>
-&lt;li>交易分片 (Transaction Sharding): 将交易分配到不同分片处理&lt;/li>
-&lt;li>网络分片 (Network Sharding): 将网络节点分成多个分片&lt;/li>
-&lt;li>分片间通信 (Cross-shard Communication): 不同分片间的数据交换&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Solana on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/solana/</link><description>Recent content in Solana on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 20 May 2025 17:48:31 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/solana/index.xml" rel="self" type="application/rss+xml"/><item><title>Flutter Web3 Wallet 开发指南</title><link>https://www.lingcoder.com/p/flutter-web3-wallet-dev-guide/</link><pubDate>Tue, 20 May 2025 17:48:31 +0800</pubDate><guid>https://www.lingcoder.com/p/flutter-web3-wallet-dev-guide/</guid><description>&lt;h1 id="flutter-web3-wallet-开发指南"&gt;&lt;a href="#flutter-web3-wallet-%e5%bc%80%e5%8f%91%e6%8c%87%e5%8d%97" class="header-anchor"&gt;&lt;/a&gt;Flutter Web3 Wallet 开发指南
+&lt;/h1&gt;&lt;h2 id="1-文档说明"&gt;&lt;a href="#1-%e6%96%87%e6%a1%a3%e8%af%b4%e6%98%8e" class="header-anchor"&gt;&lt;/a&gt;1. 文档说明
+&lt;/h2&gt;&lt;p&gt;本文档是一份全面的 Flutter Web3 Wallet 开发知识体系与资源整理指南，旨在为团队提供：基础知识体系,标准规范参考,开发资源索引,术语解释。&lt;/p&gt;
+&lt;h3 id="11-目标读者"&gt;&lt;a href="#11-%e7%9b%ae%e6%a0%87%e8%af%bb%e8%80%85" class="header-anchor"&gt;&lt;/a&gt;1.1 目标读者
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;产品经理：了解技术可行性和实现方案，发现潜在功能需求&lt;/li&gt;
+&lt;li&gt;技术架构：掌握技术选型和架构设计&lt;/li&gt;
+&lt;li&gt;开发团队：获取开发资源和实现指南&lt;/li&gt;
+&lt;li&gt;安全团队：了解安全标准和最佳实践&lt;/li&gt;
+&lt;li&gt;项目经理：评估开发周期和资源需求&lt;/li&gt;
+&lt;li&gt;测试团队：了解测试策略和测试工具&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="12-使用指南"&gt;&lt;a href="#12-%e4%bd%bf%e7%94%a8%e6%8c%87%e5%8d%97" class="header-anchor"&gt;&lt;/a&gt;1.2 使用指南
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;知识储备阶段&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;学习区块链基础&lt;/li&gt;
+&lt;li&gt;理解钱包技术&lt;/li&gt;
+&lt;li&gt;掌握安全标准&lt;/li&gt;
+&lt;li&gt;熟悉开发工具&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start="2"&gt;
+&lt;li&gt;&lt;strong&gt;技术选型阶段&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;评估技术方案&lt;/li&gt;
+&lt;li&gt;选择开发框架&lt;/li&gt;
+&lt;li&gt;确定工具链&lt;/li&gt;
+&lt;li&gt;制定安全策略&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol start="3"&gt;
+&lt;li&gt;&lt;strong&gt;开发准备阶段&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;搭建开发环境&lt;/li&gt;
+&lt;li&gt;准备测试网络&lt;/li&gt;
+&lt;li&gt;配置监控工具&lt;/li&gt;
+&lt;li&gt;建立安全机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="13-快速导航"&gt;&lt;a href="#13-%e5%bf%ab%e9%80%9f%e5%af%bc%e8%88%aa" class="header-anchor"&gt;&lt;/a&gt;1.3 快速导航
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="#2-%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86" &gt;基础知识&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#3-%e6%a0%87%e5%87%86%e8%a7%84%e8%8c%83" &gt;标准规范&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#4-%e7%ab%9e%e5%93%81%e5%88%86%e6%9e%90" &gt;竞品分析&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#5-%e5%bc%80%e5%8f%91%e8%b5%84%e6%ba%90" &gt;开发资源&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="#6-%e6%9c%af%e8%af%ad%e8%a7%a3%e9%87%8a" &gt;术语解释&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="2-基础知识"&gt;&lt;a href="#2-%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86" class="header-anchor"&gt;&lt;/a&gt;2. 基础知识
+&lt;/h2&gt;&lt;h3 id="21-区块链基础"&gt;&lt;a href="#21-%e5%8c%ba%e5%9d%97%e9%93%be%e5%9f%ba%e7%a1%80" class="header-anchor"&gt;&lt;/a&gt;2.1 区块链基础
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;官方文档&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://ethereum.org/en/developers/docs/" target="_blank" rel="noopener"
+ &gt;Ethereum 官方文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.solana.com" target="_blank" rel="noopener"
+ &gt;Solana 官方文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.bitcoin.org/devguide/" target="_blank" rel="noopener"
+ &gt;Bitcoin 开发者文档&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs" target="_blank" rel="noopener"
+ &gt;TRON 开发者文档&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;区块浏览&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://etherscan.io" target="_blank" rel="noopener"
+ &gt;以太坊区块浏览器 (Etherscan)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://explorer.solana.com" target="_blank" rel="noopener"
+ &gt;Solana 区块浏览器 (Solana Explorer)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.blockchain.com/explorer" target="_blank" rel="noopener"
+ &gt;Bitcoin 区块浏览器 (Blockchain Explorer)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://tronscan.org" target="_blank" rel="noopener"
+ &gt;TRON 区块浏览器 (Tronscan)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="3-标准提案规范"&gt;&lt;a href="#3-%e6%a0%87%e5%87%86%e6%8f%90%e6%a1%88%e8%a7%84%e8%8c%83" class="header-anchor"&gt;&lt;/a&gt;3. 标准提案规范
+&lt;/h2&gt;&lt;h3 id="31-钱包相关"&gt;&lt;a href="#31-%e9%92%b1%e5%8c%85%e7%9b%b8%e5%85%b3" class="header-anchor"&gt;&lt;/a&gt;3.1 钱包相关
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;通用钱包标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-32&lt;/a&gt;：分层确定性钱包（HD Wallets）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-39&lt;/a&gt;：助记词生成与恢复&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-44&lt;/a&gt;：多币种、多账户HD路径结构&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/satoshilabs/slips/blob/master/slip-0044.md" target="_blank" rel="noopener"
+ &gt;SLIP-0044&lt;/a&gt;：币种编码&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-38&lt;/a&gt;：加密私钥的安全增强（可选）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;比特币钱包专有标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0049.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-49&lt;/a&gt;: 多网络支持&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-84&lt;/a&gt;: Native SegWit 地址&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-85&lt;/a&gt;: 确定性熵生成&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-86&lt;/a&gt;: Taproot 地址&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-174&lt;/a&gt;: PSBT，促进硬件/软件钱包多方签名协作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;以太坊钱包专有标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-55" target="_blank" rel="noopener"
+ &gt;EIP-55&lt;/a&gt;: 校验和地址格式，用于防止用户输入错误的以太坊地址。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-137" target="_blank" rel="noopener"
+ &gt;EIP-137&lt;/a&gt;: ENS 域名服务，实现“地址即域名”转账等功能。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-155" target="_blank" rel="noopener"
+ &gt;EIP-155&lt;/a&gt;: 交易签名重放保护，为多链网络防止交易重放攻击。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-681" target="_blank" rel="noopener"
+ &gt;EIP-681&lt;/a&gt;: 以太坊 URI 支付请求标准，便于钱包扫码或链接转账请求。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
+ &gt;EIP-712&lt;/a&gt;: 结构化数据签名，钱包常用于DApp登录、合约操作等。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1193" target="_blank" rel="noopener"
+ &gt;EIP-1193&lt;/a&gt;: Provider API 标准，dApp与钱包之间通信通用接口。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1271" target="_blank" rel="noopener"
+ &gt;EIP-1271&lt;/a&gt;: 合约钱包签名验证标准，为智能合约账户带来签名验证。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
+ &gt;EIP-2255&lt;/a&gt;: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
+ &gt;EIP-2335&lt;/a&gt;: Keystore V4 密钥加密存储格式，主流以太坊钱包通用加密文件规范。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
+ &gt;EIP-2612&lt;/a&gt;: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
+ &gt;EIP-3085&lt;/a&gt;: 钱包网络切换请求，便于dApp添加/切换自定义网络到钱包。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
+ &gt;EIP-4337&lt;/a&gt;: 账户抽象（Account Abstraction），智能合约钱包的关键协议。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank" rel="noopener"
+ &gt;EIP-4361&lt;/a&gt;: 使用以太坊地址签名认证（Sign-In With Ethereum）。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-5805" target="_blank" rel="noopener"
+ &gt;EIP-5805&lt;/a&gt;: 钱包安全标准。&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank" rel="noopener"
+ &gt;EIP-6963&lt;/a&gt;: 多钱包发现和选择，提升多钱包生态用户体验。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;索拉纳钱包专有标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://ed25519.cr.yp.to/" target="_blank" rel="noopener"
+ &gt;Ed25519&lt;/a&gt;: Solana 钱包采用的公私钥加密算法&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/solana-labs/wallet-standard" target="_blank" rel="noopener"
+ &gt;Solana Wallet Standard&lt;/a&gt;: 钱包与 DApp 连接与兼容协议&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://solanapay.com/" target="_blank" rel="noopener"
+ &gt;Solana Pay&lt;/a&gt;: 原生扫码/支付请求协议&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.solana.com/developing/programming-model/accounts" target="_blank" rel="noopener"
+ &gt;Solana Address/Account Model&lt;/a&gt;：账户结构及模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;波场钱包专有标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/multi-signature" target="_blank" rel="noopener"
+ &gt;Tron Multi-signature&lt;/a&gt;：多签账户功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="32-比特币生态标准"&gt;&lt;a href="#32-%e6%af%94%e7%89%b9%e5%b8%81%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.2 比特币生态标准
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交易与协议扩展&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0002.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-2/BIP-9&lt;/a&gt;: BIP规范流程/软分叉激活讨论&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-21&lt;/a&gt;: 比特币支付URI统一收款标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-47&lt;/a&gt;: 支付代码（静默支付/隐私增强）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-65&lt;/a&gt;: OP_CHECKLOCKTIMEVERIFY时锁&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-70&lt;/a&gt;: 支付请求协议&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-174&lt;/a&gt;: PSBT部分签名交易格式&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-340/341/342&lt;/a&gt;: Taproot/Schnorr签名/可扩展性升级&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地址与账号模型&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-13&lt;/a&gt;: 多重签名P2SH地址&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0170.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-170&lt;/a&gt;: 长度检查/二维码兼容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;隐私与效率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0078.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-78&lt;/a&gt;: PayJoin隐私增强支付&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0155.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-155&lt;/a&gt;: 节点通讯结构扩展&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki" target="_blank" rel="noopener"
+ &gt;BIP-157/158&lt;/a&gt;: 轻钱包同步（Neutrino）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;扩展与第三方协议&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/lightningnetwork/lightning-rfc" target="_blank" rel="noopener"
+ &gt;Lightning Network&lt;/a&gt;: 闪电网络高效链下转账&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/OpenAssets/open-assets-protocol" target="_blank" rel="noopener"
+ &gt;Open Assets&lt;/a&gt;: 比特币链上非标准资产发行&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/Colored-Coins/Colored-Coins-Protocol-Specification" target="_blank" rel="noopener"
+ &gt;Colored Coins&lt;/a&gt;: 彩色币-layer2资产协议&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="33-以太坊生态标准"&gt;&lt;a href="#33-%e4%bb%a5%e5%a4%aa%e5%9d%8a%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.3 以太坊生态标准
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;资产与合约标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-20" target="_blank" rel="noopener"
+ &gt;EIP-20&lt;/a&gt;: 可替代代币（ERC-20）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-721" target="_blank" rel="noopener"
+ &gt;EIP-721&lt;/a&gt;: NFT非同质化代币&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1155" target="_blank" rel="noopener"
+ &gt;EIP-1155&lt;/a&gt;: 多代币/混合资产标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4626" target="_blank" rel="noopener"
+ &gt;EIP-4626&lt;/a&gt;: Vault资产保险库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;功能和扩展标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
+ &gt;EIP-2612&lt;/a&gt;: 代币无Gas批量操作（Permit）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4337" target="_blank" rel="noopener"
+ &gt;EIP-4337&lt;/a&gt;: 账户抽象(AA)&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2930" target="_blank" rel="noopener"
+ &gt;EIP-2930&lt;/a&gt;: 可选访问列表&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3607" target="_blank" rel="noopener"
+ &gt;EIP-3607&lt;/a&gt;: 交易重放保护&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2535" target="_blank" rel="noopener"
+ &gt;EIP-2535&lt;/a&gt;: Diamond多合约分片架构&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener"
+ &gt;EIP-712&lt;/a&gt;: 结构化签名&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;治理与基础设施&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-1967" target="_blank" rel="noopener"
+ &gt;EIP-1967&lt;/a&gt;: Proxy可升级合约标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-4824" target="_blank" rel="noopener"
+ &gt;EIP-4824&lt;/a&gt;: DAO组织元数据标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-173" target="_blank" rel="noopener"
+ &gt;EIP-173&lt;/a&gt;: 合约所有权控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="33-索拉纳生态标准"&gt;&lt;a href="#33-%e7%b4%a2%e6%8b%89%e7%ba%b3%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.3 索拉纳生态标准
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代币与资产标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/token" target="_blank" rel="noopener"
+ &gt;SPL Token&lt;/a&gt;: 基础代币标准（SPL Token Program）&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/associated-token-account" target="_blank" rel="noopener"
+ &gt;SPL Associated Token Account&lt;/a&gt;: 关联Token账户&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.metaplex.com/programs/token-metadata/" target="_blank" rel="noopener"
+ &gt;SPL Token Metadata&lt;/a&gt;: 元数据/NFT扩展&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/token-swap" target="_blank" rel="noopener"
+ &gt;SPL Token Swap&lt;/a&gt;: 代币兑换池&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.metaplex.com/programs/token-metadata" target="_blank" rel="noopener"
+ &gt;Metaplex NFT&lt;/a&gt;: NFT铸造/交易标准&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;功能与交互标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/name-service" target="_blank" rel="noopener"
+ &gt;SPL Name Service&lt;/a&gt;: 域名服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/solana-labs/spl-governance" target="_blank" rel="noopener"
+ &gt;SPL Governance&lt;/a&gt;: 治理/DAO标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://solana.com/docs/economics/staking" target="_blank" rel="noopener"
+ &gt;SPL Stake&lt;/a&gt;: 质押参与规则&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/token-lending" target="_blank" rel="noopener"
+ &gt;SPL Token Lending&lt;/a&gt;: 借贷协议标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://spl.solana.com/memo" target="_blank" rel="noopener"
+ &gt;SPL Memo&lt;/a&gt;: 转账备注消息标准&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="34-波场生态标准"&gt;&lt;a href="#34-%e6%b3%a2%e5%9c%ba%e7%94%9f%e6%80%81%e6%a0%87%e5%87%86" class="header-anchor"&gt;&lt;/a&gt;3.4 波场生态标准
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;资产与NFT标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://cn.developers.tron.network/docs/trc10-intro" target="_blank" rel="noopener"
+ &gt;TRC-10&lt;/a&gt;: 基础资产发行标准&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-20.md" target="_blank" rel="noopener"
+ &gt;TRC-20&lt;/a&gt;: ERC-20兼容合约资产&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-721.md" target="_blank" rel="noopener"
+ &gt;TRC-721&lt;/a&gt;: NFT资产发行协议&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-1155.md" target="_blank" rel="noopener"
+ &gt;TRC-1155&lt;/a&gt;: 多代币协议&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-30.md" target="_blank" rel="noopener"
+ &gt;TRC-30&lt;/a&gt;: 资产元数据、扩展协议&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心资源与功能&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/resource-model#bandwidth" target="_blank" rel="noopener"
+ &gt;带宽模型&lt;/a&gt;: 交易带宽资源分配&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/resource-model#energy" target="_blank" rel="noopener"
+ &gt;能量模型&lt;/a&gt;: 智能合约执行资源管理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-delegation" target="_blank" rel="noopener"
+ &gt;资源委托&lt;/a&gt;: 资源托管代理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/resource-model#resource-exchange" target="_blank" rel="noopener"
+ &gt;资源交易&lt;/a&gt;: 市场化资源换取机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;治理体系标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-51.md" target="_blank" rel="noopener"
+ &gt;TRC-51&lt;/a&gt;: 提案投票制度&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/tronprotocol/tips/blob/master/tip-54.md" target="_blank" rel="noopener"
+ &gt;TRC-54&lt;/a&gt;: 参数治理配置&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/governance" target="_blank" rel="noopener"
+ &gt;链上治理&lt;/a&gt;: 链上治理机制&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developers.tron.network/docs/community-governance" target="_blank" rel="noopener"
+ &gt;社区治理&lt;/a&gt;: 社区/开发者治理规则&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;安全最佳实践&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
+ &gt;Ethereum Security Best Practices&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
+ &gt;Solana Security Best Practices&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="4-竞品分析"&gt;&lt;a href="#4-%e7%ab%9e%e5%93%81%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;4. 竞品分析
+&lt;/h2&gt;&lt;h3 id="41-主流钱包分析"&gt;&lt;a href="#41-%e4%b8%bb%e6%b5%81%e9%92%b1%e5%8c%85%e5%88%86%e6%9e%90" class="header-anchor"&gt;&lt;/a&gt;4.1 主流钱包分析
+&lt;/h3&gt;&lt;h4 id="evm-生态"&gt;&lt;a href="#evm-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;EVM 生态
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MetaMask&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心功能&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.metamask.io/sdk/" target="_blank" rel="noopener"
+ &gt;SDK&lt;/a&gt;: SDK 使用&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
+ &gt;Snap 系统&lt;/a&gt;: 插件系统，支持自定义功能扩展&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.metamask.io/snaps/" target="_blank" rel="noopener"
+ &gt;钱包服务&lt;/a&gt;: 钱包服务 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.metamask.io/wallet/" target="_blank" rel="noopener"
+ &gt;钱包API&lt;/a&gt;: 通用钱包 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;技术实现&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/MetaMask/metamask-mobile" target="_blank" rel="noopener"
+ &gt;移动端源码&lt;/a&gt;: React Native 实现&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/MetaMask/core" target="_blank" rel="noopener"
+ &gt;核心库&lt;/a&gt;: 状态管理和业务逻辑&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/MetaMask/core/tree/main/packages/keyring-controller" target="_blank" rel="noopener"
+ &gt;Keyring 系统&lt;/a&gt;: 密钥管理实现&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Trust Wallet&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心功能&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.trustwallet.com/developer/wallet-core" target="_blank" rel="noopener"
+ &gt;多链支持&lt;/a&gt;: 支持 60+ 区块链&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-dapps" target="_blank" rel="noopener"
+ &gt;DApp 浏览器&lt;/a&gt;: 内置浏览器&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.trustwallet.com/developer/listing-new-assets" target="_blank" rel="noopener"
+ &gt;代币管理&lt;/a&gt;: 代币添加和管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;技术实现&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/trustwallet/wallet-core" target="_blank" rel="noopener"
+ &gt;钱包核心库&lt;/a&gt;: C++ 实现的核心库&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/android" target="_blank" rel="noopener"
+ &gt;Android实现&lt;/a&gt;: Android 实现&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/swift" target="_blank" rel="noopener"
+ &gt;iOS实现&lt;/a&gt;: Swift 实现&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/trustwallet/wallet-core/tree/master/src" target="_blank" rel="noopener"
+ &gt;区块链适配器&lt;/a&gt;: 链适配器实现&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Rainbow&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心功能&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://rainbow.me/" target="_blank" rel="noopener"
+ &gt;官网&lt;/a&gt;: 官方网站&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;技术实现&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/rainbow-me/rainbow" target="_blank" rel="noopener"
+ &gt;源码&lt;/a&gt;: 完整源码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="solana-生态"&gt;&lt;a href="#solana-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;Solana 生态
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Phantom&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心功能&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.phantom.com/" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 官方文档&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.phantom.com/solana/sending-a-transaction" target="_blank" rel="noopener"
+ &gt;交易处理&lt;/a&gt;: 交易处理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Solflare&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心功能&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.solflare.com/solflare" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 官方文档&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/solflare-wallet/solflare-sdk" target="_blank" rel="noopener"
+ &gt;钱包SDK&lt;/a&gt;: DApp 集成&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="tron-生态"&gt;&lt;a href="#tron-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;TRON 生态
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;TronLink&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://tronlink.org/" target="_blank" rel="noopener"
+ &gt;官方网站&lt;/a&gt;: 官方网站&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.tronlink.org/" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 完整源码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;TokenPocket&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://tokenpocket.pro/" target="_blank" rel="noopener"
+ &gt;官方网站&lt;/a&gt;: 官方网站&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://help.tokenpocket.pro/developer-cn" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 官方文档&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/TP-Lab/TokenPocket-Protocol" target="_blank" rel="noopener"
+ &gt;TokenPocket-Protocol&lt;/a&gt;: 该协议可以用于从网页和第三方App拉起TokenPocket钱包做授权
+转账等操作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="bitcoin-生态"&gt;&lt;a href="#bitcoin-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;Bitcoin 生态
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;BlueWallet&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://bluewallet.io/" target="_blank" rel="noopener"
+ &gt;官方网站&lt;/a&gt;: 官方网站&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://bluewallet.io/docs/" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 官方文档&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/BlueWallet/BlueWallet" target="_blank" rel="noopener"
+ &gt;完整源码&lt;/a&gt;: 完整源码&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Samourai Wallet&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://samouraiwallet.com/" target="_blank" rel="noopener"
+ &gt;官方网站&lt;/a&gt;: 官方网站&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://samouraiwallet.com/docs/" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 官方文档&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/Samourai-Wallet/Samourai-Wallet" target="_blank" rel="noopener"
+ &gt;完整源码&lt;/a&gt;: 完整源码&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="42-钱包集成框架"&gt;&lt;a href="#42-%e9%92%b1%e5%8c%85%e9%9b%86%e6%88%90%e6%a1%86%e6%9e%b6" class="header-anchor"&gt;&lt;/a&gt;4.2 钱包集成框架
+&lt;/h3&gt;&lt;h4 id="walletconnect"&gt;&lt;a href="#walletconnect" class="header-anchor"&gt;&lt;/a&gt;WalletConnect
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心功能&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs" target="_blank" rel="noopener"
+ &gt;协议规范&lt;/a&gt;: 协议技术规范&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/session" target="_blank" rel="noopener"
+ &gt;会话管理&lt;/a&gt;: 连接会话管理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/relay" target="_blank" rel="noopener"
+ &gt;消息中继&lt;/a&gt;: 消息中继机制&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/specs/push" target="_blank" rel="noopener"
+ &gt;推送通知&lt;/a&gt;: 消息推送服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;开发工具&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/flutter/installation" target="_blank" rel="noopener"
+ &gt;Flutter SDK&lt;/a&gt;: Flutter 开发工具包&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/WalletConnect/walletconnect-flutter" target="_blank" rel="noopener"
+ &gt;示例代码&lt;/a&gt;: 集成示例&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/testing" target="_blank" rel="noopener"
+ &gt;测试工具&lt;/a&gt;: 测试和调试工具&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.walletconnect.com/2.0/monitoring" target="_blank" rel="noopener"
+ &gt;监控服务&lt;/a&gt;: 监控和分析&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;云服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://cloud.walletconnect.com/push" target="_blank" rel="noopener"
+ &gt;推送服务&lt;/a&gt;: 交易和消息推送&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://cloud.walletconnect.com/relay" target="_blank" rel="noopener"
+ &gt;中继服务&lt;/a&gt;: 消息中继和同步&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://cloud.walletconnect.com/analytics" target="_blank" rel="noopener"
+ &gt;分析服务&lt;/a&gt;: 使用数据分析&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://cloud.walletconnect.com/console" target="_blank" rel="noopener"
+ &gt;管理控制台&lt;/a&gt;: 服务管理平台&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="deeplink"&gt;&lt;a href="#deeplink" class="header-anchor"&gt;&lt;/a&gt;DeepLink
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content" target="_blank" rel="noopener"
+ &gt;iOS&lt;/a&gt;: iOS
+DeepLink&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://developer.android.com/training/app-links/deep-linking" target="_blank" rel="noopener"
+ &gt;Android&lt;/a&gt;: Android DeepLink&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="5-开发资源"&gt;&lt;a href="#5-%e5%bc%80%e5%8f%91%e8%b5%84%e6%ba%90" class="header-anchor"&gt;&lt;/a&gt;5. 开发资源
+&lt;/h2&gt;&lt;h3 id="51-flutter-开发资源"&gt;&lt;a href="#51-flutter-%e5%bc%80%e5%8f%91%e8%b5%84%e6%ba%90" class="header-anchor"&gt;&lt;/a&gt;5.1 Flutter 开发资源
+&lt;/h3&gt;&lt;h4 id="核心框架"&gt;&lt;a href="#%e6%a0%b8%e5%bf%83%e6%a1%86%e6%9e%b6" class="header-anchor"&gt;&lt;/a&gt;核心框架
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Flutter 框架&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs" target="_blank" rel="noopener"
+ &gt;官方文档&lt;/a&gt;: 完整的开发文档和指南&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/perf" target="_blank" rel="noopener"
+ &gt;性能优化&lt;/a&gt;: 性能调优和最佳实践&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/data-and-backend/state-mgmt" target="_blank" rel="noopener"
+ &gt;状态管理&lt;/a&gt;: 状态管理方案&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/platform-integration" target="_blank" rel="noopener"
+ &gt;平台集成&lt;/a&gt;: 平台特定功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;开发工具&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/tools/cli" target="_blank" rel="noopener"
+ &gt;Flutter CLI&lt;/a&gt;: 命令行工具&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/tools/devtools" target="_blank" rel="noopener"
+ &gt;DevTools&lt;/a&gt;: 调试和性能分析&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/tools/vs-code" target="_blank" rel="noopener"
+ &gt;VS Code 插件&lt;/a&gt;: VS Code 开发环境&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/development/tools/android-studio" target="_blank" rel="noopener"
+ &gt;Android Studio 插件&lt;/a&gt;: Android Studio 开发环境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;测试工具&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/testing" target="_blank" rel="noopener"
+ &gt;单元测试&lt;/a&gt;: 测试框架和工具&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/testing#widget-tests" target="_blank" rel="noopener"
+ &gt;Widget 测试&lt;/a&gt;: UI 组件测试&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/testing#integration-tests" target="_blank" rel="noopener"
+ &gt;集成测试&lt;/a&gt;: 端到端测试&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://flutter.dev/docs/testing#performance-tests" target="_blank" rel="noopener"
+ &gt;性能测试&lt;/a&gt;: 性能基准测试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="52-开发工具与库"&gt;&lt;a href="#52-%e5%bc%80%e5%8f%91%e5%b7%a5%e5%85%b7%e4%b8%8e%e5%ba%93" class="header-anchor"&gt;&lt;/a&gt;5.2 开发工具与库
+&lt;/h3&gt;&lt;h4 id="flutter-核心包"&gt;&lt;a href="#flutter-%e6%a0%b8%e5%bf%83%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Flutter 核心包
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;状态管理&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/riverpod" target="_blank" rel="noopener"
+ &gt;riverpod&lt;/a&gt;: 现代化状态管理方案&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/get_it" target="_blank" rel="noopener"
+ &gt;get_it&lt;/a&gt;: 依赖注入容器&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_bloc" target="_blank" rel="noopener"
+ &gt;flutter_bloc&lt;/a&gt;: BLoC 模式实现&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/mobx" target="_blank" rel="noopener"
+ &gt;mobx&lt;/a&gt;: 响应式状态管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;网络与存储&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/dio" target="_blank" rel="noopener"
+ &gt;dio&lt;/a&gt;: 强大的 HTTP 客户端&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/shared_preferences" target="_blank" rel="noopener"
+ &gt;shared_preferences&lt;/a&gt;: 本地数据存储&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/hive" target="_blank" rel="noopener"
+ &gt;hive&lt;/a&gt;: 轻量级键值数据库&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/sqflite" target="_blank" rel="noopener"
+ &gt;sqflite&lt;/a&gt;: SQLite 数据库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;安全存储&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
+ &gt;flutter_secure_storage&lt;/a&gt;: 安全数据存储&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage_macos" target="_blank" rel="noopener"
+ &gt;flutter_secure_storage_macos&lt;/a&gt;: macOS 安全存储&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage_web" target="_blank" rel="noopener"
+ &gt;flutter_secure_storage_web&lt;/a&gt;: Web 安全存储&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_keychain" target="_blank" rel="noopener"
+ &gt;flutter_keychain&lt;/a&gt;: 钥匙串访问&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;系统交互&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/path_provider" target="_blank" rel="noopener"
+ &gt;path_provider&lt;/a&gt;: 文件路径管理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/connectivity_plus" target="_blank" rel="noopener"
+ &gt;connectivity_plus&lt;/a&gt;: 网络连接状态&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/package_info_plus" target="_blank" rel="noopener"
+ &gt;package_info_plus&lt;/a&gt;: 应用包信息&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/device_info_plus" target="_blank" rel="noopener"
+ &gt;device_info_plus&lt;/a&gt;: 设备信息&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="ui-组件"&gt;&lt;a href="#ui-%e7%bb%84%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;UI 组件
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;基础组件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_svg" target="_blank" rel="noopener"
+ &gt;flutter_svg&lt;/a&gt;: SVG 图片支持&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/cached_network_image" target="_blank" rel="noopener"
+ &gt;cached_network_image&lt;/a&gt;: 图片缓存&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_animate" target="_blank" rel="noopener"
+ &gt;flutter_animate&lt;/a&gt;: 动画效果&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/lottie" target="_blank" rel="noopener"
+ &gt;lottie&lt;/a&gt;: Lottie 动画支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交互组件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/mobile_scanner" target="_blank" rel="noopener"
+ &gt;mobile_scanner&lt;/a&gt;: 二维码扫描&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_slidable" target="_blank" rel="noopener"
+ &gt;flutter_slidable&lt;/a&gt;: 滑动操作&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_screenutil" target="_blank" rel="noopener"
+ &gt;flutter_screenutil&lt;/a&gt;: 屏幕适配&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/google_fonts" target="_blank" rel="noopener"
+ &gt;google_fonts&lt;/a&gt;: Google 字体&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;反馈组件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_easyloading" target="_blank" rel="noopener"
+ &gt;flutter_easyloading&lt;/a&gt;: 加载提示&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/fluttertoast" target="_blank" rel="noopener"
+ &gt;fluttertoast&lt;/a&gt;: Toast 提示&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_switch" target="_blank" rel="noopener"
+ &gt;flutter_switch&lt;/a&gt;: 开关组件&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_spinkit" target="_blank" rel="noopener"
+ &gt;flutter_spinkit&lt;/a&gt;: 加载动画&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="web3-开发包"&gt;&lt;a href="#web3-%e5%bc%80%e5%8f%91%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Web3 开发包
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;以太坊开发&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_core_bindings" target="_blank" rel="noopener"
+ &gt;wallet_core_bindings&lt;/a&gt;: Trust Wallet Core 绑定&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_v2" target="_blank" rel="noopener"
+ &gt;wallet_connect_v2&lt;/a&gt;: WalletConnect v2 支持&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/web3dart" target="_blank" rel="noopener"
+ &gt;web3dart&lt;/a&gt;: 以太坊开发核心库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;钱包集成&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_modal_flutter" target="_blank" rel="noopener"
+ &gt;wallet_connect_modal_flutter&lt;/a&gt;: WalletConnect 模态框&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_utils" target="_blank" rel="noopener"
+ &gt;wallet_connect_utils&lt;/a&gt;: WalletConnect 工具集&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_sign" target="_blank" rel="noopener"
+ &gt;wallet_connect_sign&lt;/a&gt;: WalletConnect 签名&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/wallet_connect_uri" target="_blank" rel="noopener"
+ &gt;wallet_connect_uri&lt;/a&gt;: WalletConnect URI 处理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;链适配器&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana_dart" target="_blank" rel="noopener"
+ &gt;solana_dart&lt;/a&gt;: Solana 开发库&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/tronweb_dart" target="_blank" rel="noopener"
+ &gt;tronweb_dart&lt;/a&gt;: TRON 开发库&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/bitcoin_dart" target="_blank" rel="noopener"
+ &gt;bitcoin_dart&lt;/a&gt;: Bitcoin 开发库&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_appkit" target="_blank" rel="noopener"
+ &gt;reown_appkit&lt;/a&gt;: Onchain UX 平台工具包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="安全与加密"&gt;&lt;a href="#%e5%ae%89%e5%85%a8%e4%b8%8e%e5%8a%a0%e5%af%86" class="header-anchor"&gt;&lt;/a&gt;安全与加密
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/bip39" target="_blank" rel="noopener"
+ &gt;bip39&lt;/a&gt;: 助记词生成&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
+ &gt;bip32&lt;/a&gt;: 分层确定性钱包&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/ed25519_hd_key" target="_blank" rel="noopener"
+ &gt;ed25519_hd_key&lt;/a&gt;: Ed25519 密钥派生&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/crypto" target="_blank" rel="noopener"
+ &gt;crypto&lt;/a&gt;: 加密算法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生物认证&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
+ &gt;local_auth&lt;/a&gt;: 生物认证&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_biometrics_plus" target="_blank" rel="noopener"
+ &gt;flutter_biometrics_plus&lt;/a&gt;: 生物识别增强版&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_auth_biometric" target="_blank" rel="noopener"
+ &gt;flutter_auth_biometric&lt;/a&gt;: 生物认证工具&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_key_storage" target="_blank" rel="noopener"
+ &gt;flutter_secure_key_storage&lt;/a&gt;: 密钥存储&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="测试与质量"&gt;&lt;a href="#%e6%b5%8b%e8%af%95%e4%b8%8e%e8%b4%a8%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;测试与质量
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;测试框架&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_test" target="_blank" rel="noopener"
+ &gt;flutter_test&lt;/a&gt;: 单元测试框架&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/mockito" target="_blank" rel="noopener"
+ &gt;mockito&lt;/a&gt;: 模拟测试&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_driver" target="_blank" rel="noopener"
+ &gt;flutter_driver&lt;/a&gt;: 端到端测试&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/integration_test" target="_blank" rel="noopener"
+ &gt;integration_test&lt;/a&gt;: 集成测试&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代码质量&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_analyzer" target="_blank" rel="noopener"
+ &gt;flutter_analyzer&lt;/a&gt;: 代码分析&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/very_good_analysis" target="_blank" rel="noopener"
+ &gt;very_good_analysis&lt;/a&gt;: 代码规范&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_lints" target="_blank" rel="noopener"
+ &gt;flutter_lints&lt;/a&gt;: 代码检查规则&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/coverage" target="_blank" rel="noopener"
+ &gt;coverage&lt;/a&gt;: 测试覆盖率&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="调试与开发"&gt;&lt;a href="#%e8%b0%83%e8%af%95%e4%b8%8e%e5%bc%80%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;调试与开发
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;开发工具&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/logger" target="_blank" rel="noopener"
+ &gt;logger&lt;/a&gt;: 日志记录&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_logs" target="_blank" rel="noopener"
+ &gt;flutter_logs&lt;/a&gt;: 日志管理&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_dotenv" target="_blank" rel="noopener"
+ &gt;flutter_dotenv&lt;/a&gt;: 环境变量&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_config" target="_blank" rel="noopener"
+ &gt;flutter_config&lt;/a&gt;: 配置管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代码生成&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/build_runner" target="_blank" rel="noopener"
+ &gt;build_runner&lt;/a&gt;: 代码生成工具&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/freezed" target="_blank" rel="noopener"
+ &gt;freezed&lt;/a&gt;: 不可变数据类生成&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/json_serializable" target="_blank" rel="noopener"
+ &gt;json_serializable&lt;/a&gt;: JSON 序列化&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/json_annotation" target="_blank" rel="noopener"
+ &gt;json_annotation&lt;/a&gt;: JSON 注解&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用配置&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_native_splash" target="_blank" rel="noopener"
+ &gt;flutter_native_splash&lt;/a&gt;: 启动屏&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_launcher_icons" target="_blank" rel="noopener"
+ &gt;flutter_launcher_icons&lt;/a&gt;: 应用图标&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_isolate" target="_blank" rel="noopener"
+ &gt;flutter_isolate&lt;/a&gt;: 隔离执行&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/url_launcher" target="_blank" rel="noopener"
+ &gt;url_launcher&lt;/a&gt;: URL 处理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="53-节点与-api-服务"&gt;&lt;a href="#53-%e8%8a%82%e7%82%b9%e4%b8%8e-api-%e6%9c%8d%e5%8a%a1" class="header-anchor"&gt;&lt;/a&gt;5.3 节点与 API 服务
+&lt;/h3&gt;&lt;h4 id="evm-链服务"&gt;&lt;a href="#evm-%e9%93%be%e6%9c%8d%e5%8a%a1" class="header-anchor"&gt;&lt;/a&gt;EVM 链服务
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;节点服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://infura.io/" target="_blank" rel="noopener"
+ &gt;Infura&lt;/a&gt;: 以太坊节点服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.alchemy.com/" target="_blank" rel="noopener"
+ &gt;Alchemy&lt;/a&gt;: 高级 API 服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.quicknode.com/" target="_blank" rel="noopener"
+ &gt;QuickNode&lt;/a&gt;: 全球节点网络&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://chainstack.com/" target="_blank" rel="noopener"
+ &gt;Chainstack&lt;/a&gt;: 企业级节点服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;API 服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.etherscan.io/" target="_blank" rel="noopener"
+ &gt;Etherscan API&lt;/a&gt;: 区块浏览器 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.covalenthq.com/docs/api/" target="_blank" rel="noopener"
+ &gt;Covalent API&lt;/a&gt;: 多链数据 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://thegraph.com/docs/" target="_blank" rel="noopener"
+ &gt;The Graph&lt;/a&gt;: 链上数据索引&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.moralis.io/" target="_blank" rel="noopener"
+ &gt;Moralis&lt;/a&gt;: Web3 开发平台&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="solana-服务"&gt;&lt;a href="#solana-%e6%9c%8d%e5%8a%a1" class="header-anchor"&gt;&lt;/a&gt;Solana 服务
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;节点服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.helius.xyz/" target="_blank" rel="noopener"
+ &gt;Helius&lt;/a&gt;: 高性能 RPC 服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.alchemy.com/reference/solana-api-quickstart" target="_blank" rel="noopener"
+ &gt;Alchemy Solana&lt;/a&gt;: Solana API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.quicknode.com/chains/solana" target="_blank" rel="noopener"
+ &gt;QuickNode Solana&lt;/a&gt;: Solana 节点&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://genesysgo.com/" target="_blank" rel="noopener"
+ &gt;GenesysGo&lt;/a&gt;: 企业级节点服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;API 服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.solana.com/api" target="_blank" rel="noopener"
+ &gt;Solana Explorer API&lt;/a&gt;: 区块浏览器 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.solana.fm/" target="_blank" rel="noopener"
+ &gt;Solana FM API&lt;/a&gt;: 高级数据 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.helius.xyz/digital-asset-standard-api" target="_blank" rel="noopener"
+ &gt;DAS API&lt;/a&gt;: 数字资产 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://docs.jup.ag/" target="_blank" rel="noopener"
+ &gt;Jupiter API&lt;/a&gt;: DEX 聚合器 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="其他链服务"&gt;&lt;a href="#%e5%85%b6%e4%bb%96%e9%93%be%e6%9c%8d%e5%8a%a1" class="header-anchor"&gt;&lt;/a&gt;其他链服务
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;TRON 服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.trongrid.io/" target="_blank" rel="noopener"
+ &gt;TronGrid&lt;/a&gt;: TRON 节点服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.trongrid.io/docs" target="_blank" rel="noopener"
+ &gt;TRON API&lt;/a&gt;: TRON 开发 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.trongrid.io/docs/explorer-api" target="_blank" rel="noopener"
+ &gt;TRON Explorer API&lt;/a&gt;: 区块浏览器 API&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.trongrid.io/docs/network-api" target="_blank" rel="noopener"
+ &gt;TRON Network API&lt;/a&gt;: 网络数据 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Bitcoin 服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://mempool.space/docs/api" target="_blank" rel="noopener"
+ &gt;Mempool&lt;/a&gt;: 内存池服务&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://www.blockcypher.com/dev/bitcoin/" target="_blank" rel="noopener"
+ &gt;BlockCypher&lt;/a&gt;: 比特币 API&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="6-术语解释"&gt;&lt;a href="#6-%e6%9c%af%e8%af%ad%e8%a7%a3%e9%87%8a" class="header-anchor"&gt;&lt;/a&gt;6. 术语解释
+&lt;/h2&gt;&lt;h3 id="61-区块链基础"&gt;&lt;a href="#61-%e5%8c%ba%e5%9d%97%e9%93%be%e5%9f%ba%e7%a1%80" class="header-anchor"&gt;&lt;/a&gt;6.1 区块链基础
+&lt;/h3&gt;&lt;h4 id="核心概念"&gt;&lt;a href="#%e6%a0%b8%e5%bf%83%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;核心概念
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;区块链技术&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;区块链 (Blockchain): 分布式账本技术，通过密码学确保数据不可篡改&lt;/li&gt;
+&lt;li&gt;共识机制 (Consensus Mechanism): 确保网络一致性的算法，如 PoW、PoS、DPoS&lt;/li&gt;
+&lt;li&gt;智能合约 (Smart Contract): 自动执行的程序代码，部署在区块链上&lt;/li&gt;
+&lt;li&gt;节点 (Node): 网络参与者，维护区块链数据和参与共识&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密码学基础&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;非对称加密 (Asymmetric Cryptography): 使用公钥和私钥对的加密系统&lt;/li&gt;
+&lt;li&gt;哈希函数 (Hash Function): 将任意长度数据转换为固定长度输出的函数&lt;/li&gt;
+&lt;li&gt;数字签名 (Digital Signature): 使用私钥对数据进行签名，验证数据来源和完整性&lt;/li&gt;
+&lt;li&gt;零知识证明 (Zero-knowledge Proof): 证明某个陈述为真而不泄露其他信息的技术&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;网络架构&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;主网 (Mainnet): 区块链的正式运行网络&lt;/li&gt;
+&lt;li&gt;测试网 (Testnet): 用于开发和测试的网络环境&lt;/li&gt;
+&lt;li&gt;侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li&gt;
+&lt;li&gt;跨链桥 (Bridge): 连接不同区块链的协议，实现资产和数据互通&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="62-钱包与安全"&gt;&lt;a href="#62-%e9%92%b1%e5%8c%85%e4%b8%8e%e5%ae%89%e5%85%a8" class="header-anchor"&gt;&lt;/a&gt;6.2 钱包与安全
+&lt;/h3&gt;&lt;h4 id="钱包类型"&gt;&lt;a href="#%e9%92%b1%e5%8c%85%e7%b1%bb%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;钱包类型
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;按存储方式&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;热钱包 (Hot Wallet): 在线连接的钱包，方便但安全性较低&lt;/li&gt;
+&lt;li&gt;冷钱包 (Cold Wallet): 离线存储私钥的钱包，提供最高安全性&lt;/li&gt;
+&lt;li&gt;硬件钱包 (Hardware Wallet): 使用专用硬件设备存储私钥&lt;/li&gt;
+&lt;li&gt;托管钱包 (Custodial Wallet): 由第三方机构管理私钥的钱包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;按功能特性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;HD钱包 (Hierarchical Deterministic Wallet): 从单个种子派生多个密钥对的钱包&lt;/li&gt;
+&lt;li&gt;观察钱包 (Watch-only Wallet): 只能查看余额但不能签名的钱包&lt;/li&gt;
+&lt;li&gt;多重签名钱包 (Multi-sig Wallet): 需要多个私钥共同签名才能执行交易&lt;/li&gt;
+&lt;li&gt;智能合约钱包 (Smart Contract Wallet): 使用智能合约管理账户的钱包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="安全机制"&gt;&lt;a href="#%e5%ae%89%e5%85%a8%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;安全机制
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;私钥 (Private Key): 用于签名交易和证明资产所有权的密钥&lt;/li&gt;
+&lt;li&gt;公钥 (Public Key): 由私钥派生的公开密钥，用于验证签名&lt;/li&gt;
+&lt;li&gt;助记词 (Mnemonic): 人类可读的密钥备份，通常为 12-24 个单词&lt;/li&gt;
+&lt;li&gt;密钥派生路径 (Derivation Path): 从种子生成特定密钥的路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;安全特性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;生物认证 (Biometric Authentication): 使用指纹、面部等生物特征进行身份验证&lt;/li&gt;
+&lt;li&gt;社交恢复 (Social Recovery): 通过可信社交关系恢复钱包访问权的机制&lt;/li&gt;
+&lt;li&gt;账户抽象 (Account Abstraction): 将账户逻辑从区块链协议中分离的设计模式&lt;/li&gt;
+&lt;li&gt;权限管理 (Permission Management): 控制不同操作所需权限的机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="63-交易与合约"&gt;&lt;a href="#63-%e4%ba%a4%e6%98%93%e4%b8%8e%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;6.3 交易与合约
+&lt;/h3&gt;&lt;h4 id="交易机制"&gt;&lt;a href="#%e4%ba%a4%e6%98%93%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;交易机制
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交易类型&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;普通转账 (Transfer): 基本的代币转账交易&lt;/li&gt;
+&lt;li&gt;合约调用 (Contract Call): 调用智能合约的交易&lt;/li&gt;
+&lt;li&gt;批量交易 (Batch Transaction): 包含多个操作的交易&lt;/li&gt;
+&lt;li&gt;闪电交易 (Flash Transaction): 即时完成但可撤销的交易&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交易属性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;交易哈希 (Transaction Hash): 交易的唯一标识符&lt;/li&gt;
+&lt;li&gt;Gas 费用 (Gas Fee): 执行交易所需的计算资源费用&lt;/li&gt;
+&lt;li&gt;交易确认 (Transaction Confirmation): 交易被打包进区块并得到网络确认&lt;/li&gt;
+&lt;li&gt;交易状态 (Transaction Status): 交易的处理状态，如待处理、已确认、失败&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="智能合约"&gt;&lt;a href="#%e6%99%ba%e8%83%bd%e5%90%88%e7%ba%a6" class="header-anchor"&gt;&lt;/a&gt;智能合约
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;合约类型&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代币合约 (Token Contract): 管理代币发行和转账的合约&lt;/li&gt;
+&lt;li&gt;治理合约 (Governance Contract): 管理协议参数和升级的合约&lt;/li&gt;
+&lt;li&gt;交易合约 (Exchange Contract): 处理资产交换的合约&lt;/li&gt;
+&lt;li&gt;保险合约 (Insurance Contract): 提供风险保障的合约&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;合约特性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;可升级性 (Upgradability): 合约代码可更新的特性&lt;/li&gt;
+&lt;li&gt;可组合性 (Composability): 合约之间可相互调用的特性&lt;/li&gt;
+&lt;li&gt;事件机制 (Event Mechanism): 合约状态变化的通知机制&lt;/li&gt;
+&lt;li&gt;访问控制 (Access Control): 控制合约功能访问权限的机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="64-defi-与-nft"&gt;&lt;a href="#64-defi-%e4%b8%8e-nft" class="header-anchor"&gt;&lt;/a&gt;6.4 DeFi 与 NFT
+&lt;/h3&gt;&lt;h4 id="defi-概念"&gt;&lt;a href="#defi-%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;DeFi 概念
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;基础服务&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;去中心化交易所 (DEX): 基于智能合约的资产交易平台&lt;/li&gt;
+&lt;li&gt;借贷协议 (Lending Protocol): 提供去中心化借贷服务的协议&lt;/li&gt;
+&lt;li&gt;稳定币 (Stablecoin): 价值与法定货币挂钩的加密货币&lt;/li&gt;
+&lt;li&gt;收益聚合器 (Yield Aggregator): 自动优化收益的 DeFi 协议&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;高级功能&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;闪电贷 (Flash Loan): 无需抵押的即时借贷&lt;/li&gt;
+&lt;li&gt;流动性挖矿 (Liquidity Mining): 提供流动性的奖励机制&lt;/li&gt;
+&lt;li&gt;收益耕作 (Yield Farming): 通过提供流动性获取收益&lt;/li&gt;
+&lt;li&gt;自动做市商 (AMM): 使用算法自动提供流动性的机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="nft-生态"&gt;&lt;a href="#nft-%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;NFT 生态
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;基础概念&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;非同质化代币 (NFT): 独特的数字资产，不可互换&lt;/li&gt;
+&lt;li&gt;元数据 (Metadata): NFT 的链下数据，包含图片、描述等&lt;/li&gt;
+&lt;li&gt;版税 (Royalty): NFT 二次销售时支付给创作者的费用&lt;/li&gt;
+&lt;li&gt;地板价 (Floor Price): NFT 集合中最低的挂单价格&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用场景&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;数字艺术 (Digital Art): 数字化的艺术品和收藏品&lt;/li&gt;
+&lt;li&gt;游戏资产 (Game Assets): 游戏中的虚拟物品和角色&lt;/li&gt;
+&lt;li&gt;虚拟土地 (Virtual Land): 元宇宙中的虚拟地产&lt;/li&gt;
+&lt;li&gt;身份认证 (Identity): 基于 NFT 的数字身份系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="65-跨链与互操作"&gt;&lt;a href="#65-%e8%b7%a8%e9%93%be%e4%b8%8e%e4%ba%92%e6%93%8d%e4%bd%9c" class="header-anchor"&gt;&lt;/a&gt;6.5 跨链与互操作
+&lt;/h3&gt;&lt;h4 id="跨链技术"&gt;&lt;a href="#%e8%b7%a8%e9%93%be%e6%8a%80%e6%9c%af" class="header-anchor"&gt;&lt;/a&gt;跨链技术
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;基础架构&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;跨链桥 (Bridge): 连接不同区块链的协议&lt;/li&gt;
+&lt;li&gt;原子交换 (Atomic Swap): 不同链上资产的安全交换&lt;/li&gt;
+&lt;li&gt;中继器 (Relayer): 在链间传递消息和数据的服务&lt;/li&gt;
+&lt;li&gt;预言机 (Oracle): 将链下数据引入区块链的服务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;互操作标准&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;跨链消息 (Cross-chain Message): 在不同链间传递的信息&lt;/li&gt;
+&lt;li&gt;互操作性协议 (Interoperability Protocol): 如 IBC、LayerZero 等跨链协议&lt;/li&gt;
+&lt;li&gt;跨链资产 (Cross-chain Asset): 可在不同链间转移的资产&lt;/li&gt;
+&lt;li&gt;跨链身份 (Cross-chain Identity): 在不同链间保持一致的的身份系统&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id="扩展方案"&gt;&lt;a href="#%e6%89%a9%e5%b1%95%e6%96%b9%e6%a1%88" class="header-anchor"&gt;&lt;/a&gt;扩展方案
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Layer 2&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;状态通道 (State Channel): 链下处理交易，链上结算&lt;/li&gt;
+&lt;li&gt;侧链 (Sidechain): 与主链并行运行的独立区块链&lt;/li&gt;
+&lt;li&gt;等离子链 (Plasma): 基于欺诈证明的链下扩展方案&lt;/li&gt;
+&lt;li&gt;乐观卷叠 (Optimistic Rollup): 基于欺诈证明的 Layer 2 方案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;分片技术&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;状态分片 (State Sharding): 将区块链状态分成多个分片&lt;/li&gt;
+&lt;li&gt;交易分片 (Transaction Sharding): 将交易分配到不同分片处理&lt;/li&gt;
+&lt;li&gt;网络分片 (Network Sharding): 将网络节点分成多个分片&lt;/li&gt;
+&lt;li&gt;分片间通信 (Cross-shard Communication): 不同分片间的数据交换&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>

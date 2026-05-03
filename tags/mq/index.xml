@@ -1,610 +1,601 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQ on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/mq/</link><description>Recent content in MQ on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/mq/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" />&lt;h1 id="kafka集群搭建">Kafka集群搭建
-&lt;/h1>&lt;h2 id="使用场景">使用场景
-&lt;/h2>&lt;ul>
-&lt;li>异步处理： 如用户注册后，发送注册邮件，再发送注册短信。&lt;/li>
-&lt;li>应用解耦： 如用户下单后，订单系统需要通知库存系统。&lt;/li>
-&lt;li>流量削峰：如秒杀活动，一般会因为流量过大，导致流量暴增。&lt;/li>
-&lt;li>日志处理：解决大量日志采集后的传输问题。消息队列负责日志后续处理转发。&lt;/li>
-&lt;li>消息通讯：&lt;/li>
-&lt;/ul>
-&lt;h2 id="优点">优点
-&lt;/h2>&lt;ul>
-&lt;li>
-&lt;p>高吞吐量，非常普通的应将kafka也可以支持每秒数百万的消息。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>支持通过kafka服务器和消费机集群来区分消息。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>支持hadoop并行数据加载。&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="关键概念">关键概念：
-&lt;/h2>&lt;ul>
-&lt;li>
-&lt;p>broker: kafka集群中的一台或多台服务器统称broker。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>Topic： kafka处理的消息源（feeds of messages）的不同分类。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>partition：Topic物理机上的分组，一个topic可分为多个partition，每个partition是一个有序的队列。其中的每条消息都会被分配一个有序的id（offset）。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>Message ：消息，是通信的基本单位。每个producer可以向一个topic（主题）发布一些消息。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>Producers：消息和数据的生产者，向kafka的一个topic发布消息的过程叫producers。&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>consumers：消息和数据消费者，订阅topic并处理其发布的消息的过程叫做consumers。&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="安装运行">安装运行
-&lt;/h2>&lt;p>官网地址：http://kafka.apache.org/downloads&lt;/p>
-&lt;h3 id="1-软件环境">1. 软件环境
-&lt;/h3>&lt;ul>
-&lt;li>CenOS7/Ubuntu 虚拟机三台。&lt;/li>
-&lt;li>已经搭建好的zookeeper集群。&lt;/li>
-&lt;li>软件版本：kafka_2.12-2.2.0&lt;/li>
-&lt;/ul>
-&lt;h3 id="2-安装步骤">2. 安装步骤
-&lt;/h3>&lt;ul>
-&lt;li>下载官方二进制包&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.2.0/kafka_2.12-2.2.0.tgz
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1.png"
-width="837"
-height="207"
-srcset="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu_10e674885eadcfe7.png 480w, https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu_17351769a9dfc280.png 1024w"
-loading="lazy"
-alt="1558545503830"
-class="gallery-image"
-data-flex-grow="404"
-data-flex-basis="970px"
->&lt;/p>
-&lt;ul>
-&lt;li>解压&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">tar -zxvf kafka_2.12-2.2.0.tgz -C /usr/local/
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>修改配置文件&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">vim /usr/local/kafka_2.12-2.2.0/config/server.properties
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-properties" data-lang="properties">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 不可重复&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 这是这台虚拟机上的值，在另外两台虚拟机上应该是2或者3，&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 这个值是唯一的，每台虚拟机或者叫服务器不能相同&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">broker.id&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 填写本机ip&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">listeners&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">PLAINTEXT://192.168.137.200:9092&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">log.retention.hours&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">24&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 新增下面三项&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">message.max.byte&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">5242880&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">default.replication.factor&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">2&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">replica.fetch.max.bytes&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">5242880&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 设置zookeeper的连接端口,新版本的kafka不再使用zookeeper&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 而是通过brokerlist的配置让producer直接连接broker&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 这个brokerlist可以配置多个，只要有一个能连接上，就可以让producer获取道集群中的其他broker的信息,绕过了zookeeper&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">zookeeper.connect&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 id="3-启动运行">3. 启动运行
-&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入kafka的bin目录&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/local/kafka_2.12-2.2.0/bin/
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 启动kafka&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./kafka-server-start.sh -daemon ../config/server.properties
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>
-&lt;p>检测是否启动成功&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">jps
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>&lt;img src="https://www.lingcoder.com/images/1558551474814.png"
-loading="lazy"
-alt="1558551474814"
->&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="4-验证是否创建成功">4. 验证是否创建成功
-&lt;/h3>&lt;ul>
-&lt;li>创建 topic&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bas" data-lang="bas">&lt;span class="line">&lt;span class="cl">&lt;span class="o">./&lt;/span>&lt;span class="vg">kafka&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="vg">topics&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="vg">sh&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="vg">create&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="vg">zookeeper&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="mf">192.168.137.1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="il">2181&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="vg">replication&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="vg">factor&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="il">2&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="vg">partitions&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="il">1&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="vg">topic&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="vg">my&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="vg">topic&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>参数解释：&lt;/p>
-&lt;blockquote>
-&lt;p>&lt;code>--replication-factor 2&lt;/code> // 复制两份
-&lt;code>--partitions 1&lt;/code> // 创建1个分区
-&lt;code>--topic&lt;/code> // 主题为my-topic
-&lt;code>-- --zookeeper&lt;/code> // 此处为为zookeeper监听的地址&lt;/p>&lt;/blockquote>
-&lt;ul>
-&lt;li>创建生产者 producer&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># IP地址可以写brokerlist中的任意一个&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./kafka-console-producer.sh --broker-list 192.168.137.200:9092 --topic my-topic
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;p>此时，console处于阻塞状态，可以直接输入数据。&lt;/p>
-&lt;ul>
-&lt;li>创建消费者 consumer&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 要切换到另一台虚拟机的shell界面输入以下命令&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./kafka-console-consumer.sh --bootstrap-server 192.168.137.100:9092 --topic my-topic --from-beginning
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>显示所有topic&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./kafka-topics.sh --list --zookeeper 192.168.137.1:2181
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;h3 id="5-常用配置详解">5. 常用配置详解
-&lt;/h3>&lt;ul>
-&lt;li>&lt;strong>broker配置参数&lt;/strong>&lt;/li>
-&lt;/ul>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>参数&lt;/th>
-&lt;th>默认值&lt;/th>
-&lt;th>描述&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>broker.id&lt;/td>
-&lt;td>-1&lt;/td>
-&lt;td>每一个boker都有一个唯一的id作为它们的名字。当该服务器的IP地址发生改变时，broker.id没有变化，则不会影响consumers的消息情况&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>port&lt;/td>
-&lt;td>9092&lt;/td>
-&lt;td>broker server服务端口&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>host.name&lt;/td>
-&lt;td>&amp;quot;&amp;quot;&lt;/td>
-&lt;td>broker的主机地址，若是设置了，那么会绑定到这个地址上，若是没有，会绑定到所有的接口上，并将其中之一发送到ZK&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.dirs&lt;/td>
-&lt;td>/tmp/kafka-logs&lt;/td>
-&lt;td>kafka数据的存放地址，多个地址的话用逗号分割,多个目录分布在不同磁盘上可以提高读写性能 /data/kafka-logs-1，/data/kafka-logs-2&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>message.max.bytes&lt;/td>
-&lt;td>1000012&lt;/td>
-&lt;td>表示消息体的最大大小，单位是字节&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>num.network.threads&lt;/td>
-&lt;td>3&lt;/td>
-&lt;td>broker处理消息的最大线程数，一般情况下数量为cpu核数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>num.io.threads&lt;/td>
-&lt;td>8&lt;/td>
-&lt;td>处理IO的线程数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.flush.interval.messages&lt;/td>
-&lt;td>Long.MaxValue&lt;/td>
-&lt;td>在数据被写入到硬盘和消费者可用前最大累积的消息的数量&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.flush.interval.ms&lt;/td>
-&lt;td>Long.MaxValue&lt;/td>
-&lt;td>在数据被写入到硬盘前的最大时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.flush.scheduler.interval.ms&lt;/td>
-&lt;td>Long.MaxValue&lt;/td>
-&lt;td>检查数据是否要写入到硬盘的时间间隔。&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.retention.hours&lt;/td>
-&lt;td>168 (24*7)&lt;/td>
-&lt;td>控制一个log保留多长个小时&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.retention.bytes&lt;/td>
-&lt;td>-1&lt;/td>
-&lt;td>控制log文件最大尺寸&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.cleaner.enable&lt;/td>
-&lt;td>false&lt;/td>
-&lt;td>是否log cleaning&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.cleanup.policy&lt;/td>
-&lt;td>delete&lt;/td>
-&lt;td>delete还是compat.&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.segment.bytes&lt;/td>
-&lt;td>1073741824&lt;/td>
-&lt;td>单一的log segment文件大小&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>log.roll.hours&lt;/td>
-&lt;td>168&lt;/td>
-&lt;td>开始一个新的log文件片段的最大时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>background.threads&lt;/td>
-&lt;td>10&lt;/td>
-&lt;td>后台线程序&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>num.partitions&lt;/td>
-&lt;td>1&lt;/td>
-&lt;td>默认分区数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>socket.send.buffer.bytes&lt;/td>
-&lt;td>102400&lt;/td>
-&lt;td>socket SO_SNDBUFF参数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>socket.receive.buffer.bytes&lt;/td>
-&lt;td>102400&lt;/td>
-&lt;td>socket SO_RCVBUFF参数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>zookeeper.connect&lt;/td>
-&lt;td>&lt;/td>
-&lt;td>指定zookeeper连接字符串， 格式如hostname:port/chroot。chroot是一个namespace&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>zookeeper.connection.timeout.ms&lt;/td>
-&lt;td>6000&lt;/td>
-&lt;td>指定客户端连接zookeeper的最大超时时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>zookeeper.session.timeout.ms&lt;/td>
-&lt;td>6000&lt;/td>
-&lt;td>连接zk的session超时时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>zookeeper.sync.time.ms&lt;/td>
-&lt;td>2000&lt;/td>
-&lt;td>zk follower落后于zk leader的最长时间&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;ul>
-&lt;li>&lt;strong>-high-level consumer的配置参数&lt;/strong>&lt;/li>
-&lt;/ul>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>参数&lt;/th>
-&lt;th>默认值&lt;/th>
-&lt;th>描述&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>groupid&lt;/td>
-&lt;td>groupid&lt;/td>
-&lt;td>一个字符串用来指示一组consumer所在的组&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>socket.timeout.ms&lt;/td>
-&lt;td>30000&lt;/td>
-&lt;td>socket超时时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>socket.buffersize&lt;/td>
-&lt;td>64*1024&lt;/td>
-&lt;td>socket receive buffer&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>fetch.size&lt;/td>
-&lt;td>300 * 1024&lt;/td>
-&lt;td>控制在一个请求中获取的消息的字节数。 这个参数在0.8.x中由fetch.message.max.bytes,fetch.min.bytes取代&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>backoff.increment.ms&lt;/td>
-&lt;td>1000&lt;/td>
-&lt;td>这个参数避免在没有新数据的情况下重复频繁的拉数据。 如果拉到空数据，则多推后这个时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>queued.max.message.chunks&lt;/td>
-&lt;td>2&lt;/td>
-&lt;td>high level consumer内部缓存拉回来的消息到一个队列中。 这个值控制这个队列的大小&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>auto.commit.enable&lt;/td>
-&lt;td>true&lt;/td>
-&lt;td>如果true,consumer定期地往zookeeper写入每个分区的offset&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>auto.commit.interval.ms&lt;/td>
-&lt;td>10000&lt;/td>
-&lt;td>往zookeeper上写offset的频率&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>auto.offset.reset&lt;/td>
-&lt;td>largest&lt;/td>
-&lt;td>如果offset出了返回，则 smallest: 自动设置reset到最小的offset. largest : 自动设置offset到最大的offset. 其它值不允许，会抛出异常.&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>consumer.timeout.ms&lt;/td>
-&lt;td>-1&lt;/td>
-&lt;td>默认-1,consumer在没有新消息时无限期的block。如果设置一个正值， 一个超时异常会抛出&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>rebalance.retries.max&lt;/td>
-&lt;td>4&lt;/td>
-&lt;td>rebalance时的最大尝试次数&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;ul>
-&lt;li>&lt;strong>producer的配置参数&lt;/strong>&lt;/li>
-&lt;/ul>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th>参数&lt;/th>
-&lt;th>默认值&lt;/th>
-&lt;th>描述&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td>producer.type&lt;/td>
-&lt;td>sync&lt;/td>
-&lt;td>指定消息发送是同步还是异步。异步asyc成批发送用kafka.producer.AyncProducer， 同步sync用kafka.producer.SyncProducer&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>metadata.broker.list&lt;/td>
-&lt;td>boker list&lt;/td>
-&lt;td>使用这个参数传入boker和分区的静态信息，如host1:port1,host2:port2, 这个可以是全部boker的一部分&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>compression.codec&lt;/td>
-&lt;td>NoCompressionCodec&lt;/td>
-&lt;td>消息压缩，默认不压缩&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>compressed.topics&lt;/td>
-&lt;td>null&lt;/td>
-&lt;td>在设置了压缩的情况下，可以指定特定的topic压缩，未指定则全部压缩&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>message.send.max.retries&lt;/td>
-&lt;td>3&lt;/td>
-&lt;td>消息发送最大尝试次数&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>retry.backoff.ms&lt;/td>
-&lt;td>300&lt;/td>
-&lt;td>每次尝试增加的额外的间隔时间&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>topic.metadata.refresh.interval.ms&lt;/td>
-&lt;td>600000&lt;/td>
-&lt;td>定期的获取元数据的时间。当分区丢失，leader不可用时producer也会主动获取元数据，如果为0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>queue.buffering.max.ms&lt;/td>
-&lt;td>5000&lt;/td>
-&lt;td>在producer queue的缓存的数据最大时间，仅仅for asyc&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>queue.buffering.max.message&lt;/td>
-&lt;td>10000&lt;/td>
-&lt;td>producer 缓存的消息的最大数量，仅仅for asyc&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>queue.enqueue.timeout.ms&lt;/td>
-&lt;td>-1&lt;/td>
-&lt;td>0当queue满时丢掉，负值是queue满时block,正值是queue满时block相应的时间，仅仅for asyc&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>batch.num.messages&lt;/td>
-&lt;td>200&lt;/td>
-&lt;td>一批消息的数量，仅仅for asyc&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>request.required.acks&lt;/td>
-&lt;td>0&lt;/td>
-&lt;td>0表示producer无需等待leader的确认，1代表需要leader确认写入它的本地log并立即确认，-1代表所有的备份都完成后确认。 仅仅for sync&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td>request.timeout.ms&lt;/td>
-&lt;td>10000&lt;/td>
-&lt;td>确认超时时间&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;h2 id="kafka-manager-搭建">Kafka-manager 搭建
-&lt;/h2>&lt;p>下载地址:https://github.com/yahoo/kafka-manager/releases&lt;/p>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 在线下载&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://github.com/yahoo/kafka-manager/archive/2.0.0.2.tar.gz
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 解压到 /usr/local&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar -zxvf 2.0.0.2.tar.gz -C /usr/local
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改配置&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vim /usr/local/kafka-manager-2.0.0.2/conf/application.conf
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>编辑配置文件 application.conf&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
-&lt;/span>&lt;span class="lnt">2
-&lt;/span>&lt;span class="lnt">3
-&lt;/span>&lt;span class="lnt">4
-&lt;/span>&lt;span class="lnt">5
-&lt;/span>&lt;span class="lnt">6
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-properties" data-lang="properties">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## 注释这一行，下面添加一行&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># kafka-manager.zkhosts=&amp;#34;kafka-manager-zookeeper:2181&amp;#34; &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">## 根据自己的zookeeper重新配置&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">kafka-manager.zkhosts&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err"> &lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div>&lt;ul>
-&lt;li>启动 Kafka-manager&lt;/li>
-&lt;/ul>
-&lt;div class="highlight">&lt;div class="chroma">
-&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
-&lt;/span>&lt;span class="lnt"> 2
-&lt;/span>&lt;span class="lnt"> 3
-&lt;/span>&lt;span class="lnt"> 4
-&lt;/span>&lt;span class="lnt"> 5
-&lt;/span>&lt;span class="lnt"> 6
-&lt;/span>&lt;span class="lnt"> 7
-&lt;/span>&lt;span class="lnt"> 8
-&lt;/span>&lt;span class="lnt"> 9
-&lt;/span>&lt;span class="lnt">10
-&lt;/span>&lt;span class="lnt">11
-&lt;/span>&lt;span class="lnt">12
-&lt;/span>&lt;span class="lnt">13
-&lt;/span>&lt;span class="lnt">14
-&lt;/span>&lt;span class="lnt">15
-&lt;/span>&lt;span class="lnt">16
-&lt;/span>&lt;span class="lnt">17
-&lt;/span>&lt;span class="lnt">18
-&lt;/span>&lt;span class="lnt">19
-&lt;/span>&lt;span class="lnt">20
-&lt;/span>&lt;span class="lnt">21
-&lt;/span>&lt;span class="lnt">22
-&lt;/span>&lt;span class="lnt">23
-&lt;/span>&lt;span class="lnt">24
-&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
-&lt;td class="lntd">
-&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 切换到bin目录&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/local/kafka-manager-2.0.0.2/
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 执行生成zip部署文件&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./sbt clean dist
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 打包结束后,提取zip文件并解压到/usr/local&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">unzip /usr/local/kafka-manager-2.0.0.2/target/universal/kafka-manager-2.0.0.2.zip
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 移动到/usr/local/&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mv kafka-manager-2.0.0.2 /usr/local/kafka-manager
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 启动项目 &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># -Dhttp.port，指定端口,默认端口 9000 &lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># -Dconfig.file=conf/application.conf 指定配置文件:&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 切换到目录,&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/local/kafka-manager/bin
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式1 简单启动&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./bin/kafka-manager
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 方式2 指定配置,端口,后台启动&lt;/span>
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">nohup ./kafka-manager -Dconfig.file&lt;span class="o">=&lt;/span>../conf/application.conf -Dhttp.port&lt;span class="o">=&lt;/span>&lt;span class="m">9000&lt;/span> &lt;span class="p">&amp;amp;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
-&lt;/div>
-&lt;/div></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>MQ on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/mq/</link><description>Recent content in MQ on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/mq/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka集群搭建" /&gt;&lt;h1 id="kafka集群搭建"&gt;&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Kafka集群搭建
+&lt;/h1&gt;&lt;h2 id="使用场景"&gt;&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;使用场景
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;异步处理： 如用户注册后，发送注册邮件，再发送注册短信。&lt;/li&gt;
+&lt;li&gt;应用解耦： 如用户下单后，订单系统需要通知库存系统。&lt;/li&gt;
+&lt;li&gt;流量削峰：如秒杀活动，一般会因为流量过大，导致流量暴增。&lt;/li&gt;
+&lt;li&gt;日志处理：解决大量日志采集后的传输问题。消息队列负责日志后续处理转发。&lt;/li&gt;
+&lt;li&gt;消息通讯：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="优点"&gt;&lt;a href="#%e4%bc%98%e7%82%b9" class="header-anchor"&gt;&lt;/a&gt;优点
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;高吞吐量，非常普通的应将kafka也可以支持每秒数百万的消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;支持通过kafka服务器和消费机集群来区分消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;支持hadoop并行数据加载。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="关键概念"&gt;&lt;a href="#%e5%85%b3%e9%94%ae%e6%a6%82%e5%bf%b5" class="header-anchor"&gt;&lt;/a&gt;关键概念：
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;broker: kafka集群中的一台或多台服务器统称broker。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Topic： kafka处理的消息源（feeds of messages）的不同分类。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;partition：Topic物理机上的分组，一个topic可分为多个partition，每个partition是一个有序的队列。其中的每条消息都会被分配一个有序的id（offset）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Message ：消息，是通信的基本单位。每个producer可以向一个topic（主题）发布一些消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Producers：消息和数据的生产者，向kafka的一个topic发布消息的过程叫producers。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;consumers：消息和数据消费者，订阅topic并处理其发布的消息的过程叫做consumers。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="安装运行"&gt;&lt;a href="#%e5%ae%89%e8%a3%85%e8%bf%90%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;安装运行
+&lt;/h2&gt;&lt;p&gt;官网地址：http://kafka.apache.org/downloads&lt;/p&gt;
+&lt;h3 id="1-软件环境"&gt;&lt;a href="#1-%e8%bd%af%e4%bb%b6%e7%8e%af%e5%a2%83" class="header-anchor"&gt;&lt;/a&gt;1. 软件环境
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;CenOS7/Ubuntu 虚拟机三台。&lt;/li&gt;
+&lt;li&gt;已经搭建好的zookeeper集群。&lt;/li&gt;
+&lt;li&gt;软件版本：kafka_2.12-2.2.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="2-安装步骤"&gt;&lt;a href="#2-%e5%ae%89%e8%a3%85%e6%ad%a5%e9%aa%a4" class="header-anchor"&gt;&lt;/a&gt;2. 安装步骤
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;下载官方二进制包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://mirrors.tuna.tsinghua.edu.cn/apache/kafka/2.2.0/kafka_2.12-2.2.0.tgz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img alt="1558545503830" class="gallery-image" data-flex-basis="970px" data-flex-grow="404" height="207" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1.png" srcset="https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1_hu_8b1a81d2557e3051.png 800w, https://www.lingcoder.com/p/kafka-cluster-install-and-config/img1.png 837w" width="837"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解压&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -zxvf kafka_2.12-2.2.0.tgz -C /usr/local/
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;修改配置文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;vim /usr/local/kafka_2.12-2.2.0/config/server.properties
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 不可重复&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这是这台虚拟机上的值，在另外两台虚拟机上应该是2或者3，&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这个值是唯一的，每台虚拟机或者叫服务器不能相同&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;broker.id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 填写本机ip&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;listeners&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;PLAINTEXT://192.168.137.200:9092&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;log.retention.hours&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;24&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 新增下面三项&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;message.max.byte&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;5242880&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;default.replication.factor&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;replica.fetch.max.bytes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;5242880&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 设置zookeeper的连接端口,新版本的kafka不再使用zookeeper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 而是通过brokerlist的配置让producer直接连接broker&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 这个brokerlist可以配置多个，只要有一个能连接上，就可以让producer获取道集群中的其他broker的信息,绕过了zookeeper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;zookeeper.connect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="3-启动运行"&gt;&lt;a href="#3-%e5%90%af%e5%8a%a8%e8%bf%90%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;3. 启动运行
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 进入kafka的bin目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/kafka_2.12-2.2.0/bin/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 启动kafka&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./kafka-server-start.sh -daemon ../config/server.properties
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;检测是否启动成功&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;jps
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img alt="1558551474814" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="../images/1558551474814.png"&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="4-验证是否创建成功"&gt;&lt;a href="#4-%e9%aa%8c%e8%af%81%e6%98%af%e5%90%a6%e5%88%9b%e5%bb%ba%e6%88%90%e5%8a%9f" class="header-anchor"&gt;&lt;/a&gt;4. 验证是否创建成功
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;创建 topic&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bas" data-lang="bas"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="o"&gt;./&lt;/span&gt;&lt;span class="vg"&gt;kafka&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="vg"&gt;topics&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vg"&gt;sh&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="vg"&gt;create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="vg"&gt;zookeeper&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="mf"&gt;192.168.137.1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="il"&gt;2181&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="vg"&gt;replication&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="vg"&gt;factor&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="il"&gt;2&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="vg"&gt;partitions&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="il"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="vg"&gt;topic&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="vg"&gt;my&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="vg"&gt;topic&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;参数解释：&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;&lt;code&gt;--replication-factor 2&lt;/code&gt; // 复制两份
+&lt;code&gt;--partitions 1&lt;/code&gt; // 创建1个分区
+&lt;code&gt;--topic&lt;/code&gt; // 主题为my-topic
+&lt;code&gt;-- --zookeeper&lt;/code&gt; // 此处为为zookeeper监听的地址&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;创建生产者 producer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# IP地址可以写brokerlist中的任意一个&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./kafka-console-producer.sh --broker-list 192.168.137.200:9092 --topic my-topic
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;此时，console处于阻塞状态，可以直接输入数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建消费者 consumer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 要切换到另一台虚拟机的shell界面输入以下命令&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./kafka-console-consumer.sh --bootstrap-server 192.168.137.100:9092 --topic my-topic --from-beginning
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;显示所有topic&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./kafka-topics.sh --list --zookeeper 192.168.137.1:2181
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="5-常用配置详解"&gt;&lt;a href="#5-%e5%b8%b8%e7%94%a8%e9%85%8d%e7%bd%ae%e8%af%a6%e8%a7%a3" class="header-anchor"&gt;&lt;/a&gt;5. 常用配置详解
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;broker配置参数&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;参数&lt;/th&gt;
+ &lt;th&gt;默认值&lt;/th&gt;
+ &lt;th&gt;描述&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;broker.id&lt;/td&gt;
+ &lt;td&gt;-1&lt;/td&gt;
+ &lt;td&gt;每一个boker都有一个唯一的id作为它们的名字。当该服务器的IP地址发生改变时，broker.id没有变化，则不会影响consumers的消息情况&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;port&lt;/td&gt;
+ &lt;td&gt;9092&lt;/td&gt;
+ &lt;td&gt;broker server服务端口&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;host.name&lt;/td&gt;
+ &lt;td&gt;&amp;quot;&amp;quot;&lt;/td&gt;
+ &lt;td&gt;broker的主机地址，若是设置了，那么会绑定到这个地址上，若是没有，会绑定到所有的接口上，并将其中之一发送到ZK&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.dirs&lt;/td&gt;
+ &lt;td&gt;/tmp/kafka-logs&lt;/td&gt;
+ &lt;td&gt;kafka数据的存放地址，多个地址的话用逗号分割,多个目录分布在不同磁盘上可以提高读写性能 /data/kafka-logs-1，/data/kafka-logs-2&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;message.max.bytes&lt;/td&gt;
+ &lt;td&gt;1000012&lt;/td&gt;
+ &lt;td&gt;表示消息体的最大大小，单位是字节&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;num.network.threads&lt;/td&gt;
+ &lt;td&gt;3&lt;/td&gt;
+ &lt;td&gt;broker处理消息的最大线程数，一般情况下数量为cpu核数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;num.io.threads&lt;/td&gt;
+ &lt;td&gt;8&lt;/td&gt;
+ &lt;td&gt;处理IO的线程数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.flush.interval.messages&lt;/td&gt;
+ &lt;td&gt;Long.MaxValue&lt;/td&gt;
+ &lt;td&gt;在数据被写入到硬盘和消费者可用前最大累积的消息的数量&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.flush.interval.ms&lt;/td&gt;
+ &lt;td&gt;Long.MaxValue&lt;/td&gt;
+ &lt;td&gt;在数据被写入到硬盘前的最大时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.flush.scheduler.interval.ms&lt;/td&gt;
+ &lt;td&gt;Long.MaxValue&lt;/td&gt;
+ &lt;td&gt;检查数据是否要写入到硬盘的时间间隔。&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.retention.hours&lt;/td&gt;
+ &lt;td&gt;168 (24*7)&lt;/td&gt;
+ &lt;td&gt;控制一个log保留多长个小时&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.retention.bytes&lt;/td&gt;
+ &lt;td&gt;-1&lt;/td&gt;
+ &lt;td&gt;控制log文件最大尺寸&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.cleaner.enable&lt;/td&gt;
+ &lt;td&gt;false&lt;/td&gt;
+ &lt;td&gt;是否log cleaning&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.cleanup.policy&lt;/td&gt;
+ &lt;td&gt;delete&lt;/td&gt;
+ &lt;td&gt;delete还是compat.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.segment.bytes&lt;/td&gt;
+ &lt;td&gt;1073741824&lt;/td&gt;
+ &lt;td&gt;单一的log segment文件大小&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;log.roll.hours&lt;/td&gt;
+ &lt;td&gt;168&lt;/td&gt;
+ &lt;td&gt;开始一个新的log文件片段的最大时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;background.threads&lt;/td&gt;
+ &lt;td&gt;10&lt;/td&gt;
+ &lt;td&gt;后台线程序&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;num.partitions&lt;/td&gt;
+ &lt;td&gt;1&lt;/td&gt;
+ &lt;td&gt;默认分区数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;socket.send.buffer.bytes&lt;/td&gt;
+ &lt;td&gt;102400&lt;/td&gt;
+ &lt;td&gt;socket SO_SNDBUFF参数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;socket.receive.buffer.bytes&lt;/td&gt;
+ &lt;td&gt;102400&lt;/td&gt;
+ &lt;td&gt;socket SO_RCVBUFF参数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;zookeeper.connect&lt;/td&gt;
+ &lt;td&gt;&lt;/td&gt;
+ &lt;td&gt;指定zookeeper连接字符串， 格式如hostname:port/chroot。chroot是一个namespace&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;zookeeper.connection.timeout.ms&lt;/td&gt;
+ &lt;td&gt;6000&lt;/td&gt;
+ &lt;td&gt;指定客户端连接zookeeper的最大超时时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;zookeeper.session.timeout.ms&lt;/td&gt;
+ &lt;td&gt;6000&lt;/td&gt;
+ &lt;td&gt;连接zk的session超时时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;zookeeper.sync.time.ms&lt;/td&gt;
+ &lt;td&gt;2000&lt;/td&gt;
+ &lt;td&gt;zk follower落后于zk leader的最长时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;-high-level consumer的配置参数&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;参数&lt;/th&gt;
+ &lt;th&gt;默认值&lt;/th&gt;
+ &lt;th&gt;描述&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;groupid&lt;/td&gt;
+ &lt;td&gt;groupid&lt;/td&gt;
+ &lt;td&gt;一个字符串用来指示一组consumer所在的组&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;socket.timeout.ms&lt;/td&gt;
+ &lt;td&gt;30000&lt;/td&gt;
+ &lt;td&gt;socket超时时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;socket.buffersize&lt;/td&gt;
+ &lt;td&gt;64*1024&lt;/td&gt;
+ &lt;td&gt;socket receive buffer&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;fetch.size&lt;/td&gt;
+ &lt;td&gt;300 * 1024&lt;/td&gt;
+ &lt;td&gt;控制在一个请求中获取的消息的字节数。 这个参数在0.8.x中由fetch.message.max.bytes,fetch.min.bytes取代&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;backoff.increment.ms&lt;/td&gt;
+ &lt;td&gt;1000&lt;/td&gt;
+ &lt;td&gt;这个参数避免在没有新数据的情况下重复频繁的拉数据。 如果拉到空数据，则多推后这个时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;queued.max.message.chunks&lt;/td&gt;
+ &lt;td&gt;2&lt;/td&gt;
+ &lt;td&gt;high level consumer内部缓存拉回来的消息到一个队列中。 这个值控制这个队列的大小&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;auto.commit.enable&lt;/td&gt;
+ &lt;td&gt;true&lt;/td&gt;
+ &lt;td&gt;如果true,consumer定期地往zookeeper写入每个分区的offset&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;auto.commit.interval.ms&lt;/td&gt;
+ &lt;td&gt;10000&lt;/td&gt;
+ &lt;td&gt;往zookeeper上写offset的频率&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;auto.offset.reset&lt;/td&gt;
+ &lt;td&gt;largest&lt;/td&gt;
+ &lt;td&gt;如果offset出了返回，则 smallest: 自动设置reset到最小的offset. largest : 自动设置offset到最大的offset. 其它值不允许，会抛出异常.&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;consumer.timeout.ms&lt;/td&gt;
+ &lt;td&gt;-1&lt;/td&gt;
+ &lt;td&gt;默认-1,consumer在没有新消息时无限期的block。如果设置一个正值， 一个超时异常会抛出&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;rebalance.retries.max&lt;/td&gt;
+ &lt;td&gt;4&lt;/td&gt;
+ &lt;td&gt;rebalance时的最大尝试次数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;producer的配置参数&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;参数&lt;/th&gt;
+ &lt;th&gt;默认值&lt;/th&gt;
+ &lt;th&gt;描述&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;producer.type&lt;/td&gt;
+ &lt;td&gt;sync&lt;/td&gt;
+ &lt;td&gt;指定消息发送是同步还是异步。异步asyc成批发送用kafka.producer.AyncProducer， 同步sync用kafka.producer.SyncProducer&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;metadata.broker.list&lt;/td&gt;
+ &lt;td&gt;boker list&lt;/td&gt;
+ &lt;td&gt;使用这个参数传入boker和分区的静态信息，如host1:port1,host2:port2, 这个可以是全部boker的一部分&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;compression.codec&lt;/td&gt;
+ &lt;td&gt;NoCompressionCodec&lt;/td&gt;
+ &lt;td&gt;消息压缩，默认不压缩&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;compressed.topics&lt;/td&gt;
+ &lt;td&gt;null&lt;/td&gt;
+ &lt;td&gt;在设置了压缩的情况下，可以指定特定的topic压缩，未指定则全部压缩&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;message.send.max.retries&lt;/td&gt;
+ &lt;td&gt;3&lt;/td&gt;
+ &lt;td&gt;消息发送最大尝试次数&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;retry.backoff.ms&lt;/td&gt;
+ &lt;td&gt;300&lt;/td&gt;
+ &lt;td&gt;每次尝试增加的额外的间隔时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;topic.metadata.refresh.interval.ms&lt;/td&gt;
+ &lt;td&gt;600000&lt;/td&gt;
+ &lt;td&gt;定期的获取元数据的时间。当分区丢失，leader不可用时producer也会主动获取元数据，如果为0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;queue.buffering.max.ms&lt;/td&gt;
+ &lt;td&gt;5000&lt;/td&gt;
+ &lt;td&gt;在producer queue的缓存的数据最大时间，仅仅for asyc&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;queue.buffering.max.message&lt;/td&gt;
+ &lt;td&gt;10000&lt;/td&gt;
+ &lt;td&gt;producer 缓存的消息的最大数量，仅仅for asyc&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;queue.enqueue.timeout.ms&lt;/td&gt;
+ &lt;td&gt;-1&lt;/td&gt;
+ &lt;td&gt;0当queue满时丢掉，负值是queue满时block,正值是queue满时block相应的时间，仅仅for asyc&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;batch.num.messages&lt;/td&gt;
+ &lt;td&gt;200&lt;/td&gt;
+ &lt;td&gt;一批消息的数量，仅仅for asyc&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;request.required.acks&lt;/td&gt;
+ &lt;td&gt;0&lt;/td&gt;
+ &lt;td&gt;0表示producer无需等待leader的确认，1代表需要leader确认写入它的本地log并立即确认，-1代表所有的备份都完成后确认。 仅仅for sync&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;request.timeout.ms&lt;/td&gt;
+ &lt;td&gt;10000&lt;/td&gt;
+ &lt;td&gt;确认超时时间&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="kafka-manager-搭建"&gt;&lt;a href="#kafka-manager-%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Kafka-manager 搭建
+&lt;/h2&gt;&lt;p&gt;下载地址:https://github.com/yahoo/kafka-manager/releases&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 在线下载&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://github.com/yahoo/kafka-manager/archive/2.0.0.2.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 解压到 /usr/local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -zxvf 2.0.0.2.tar.gz -C /usr/local
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 修改配置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;vim /usr/local/kafka-manager-2.0.0.2/conf/application.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;编辑配置文件 application.conf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-properties" data-lang="properties"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## 注释这一行，下面添加一行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# kafka-manager.zkhosts=&amp;#34;kafka-manager-zookeeper:2181&amp;#34; &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;## 根据自己的zookeeper重新配置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="na"&gt;kafka-manager.zkhosts&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;192.168.137.1:2181,192.168.137.1:2182,192.168.137.1:2183&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="err"&gt; &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;启动 Kafka-manager&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 切换到bin目录&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/kafka-manager-2.0.0.2/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 执行生成zip部署文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./sbt clean dist
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 打包结束后,提取zip文件并解压到/usr/local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;unzip /usr/local/kafka-manager-2.0.0.2/target/universal/kafka-manager-2.0.0.2.zip
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 移动到/usr/local/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mv kafka-manager-2.0.0.2 /usr/local/kafka-manager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 启动项目 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# -Dhttp.port，指定端口,默认端口 9000 &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# -Dconfig.file=conf/application.conf 指定配置文件:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 切换到目录,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /usr/local/kafka-manager/bin
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 方式1 简单启动&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./bin/kafka-manager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 方式2 指定配置,端口,后台启动&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;nohup ./kafka-manager -Dconfig.file&lt;span class="o"&gt;=&lt;/span&gt;../conf/application.conf -Dhttp.port&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;9000&lt;/span&gt; &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>

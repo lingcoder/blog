@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Uniswap V3 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/uniswap-v3/</link><description>Recent content in Uniswap V3 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 03 May 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/uniswap-v3/index.xml" rel="self" type="application/rss+xml"/><item><title>PancakeSwap V3 合约架构深度解析</title><link>https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/</link><pubDate>Sun, 03 May 2026 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/cover.svg" alt="Featured image of post PancakeSwap V3 合约架构深度解析" /&gt;&lt;h2 id="前言为什么要再看一次-v3"&gt;&lt;a href="#%e5%89%8d%e8%a8%80%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e5%86%8d%e7%9c%8b%e4%b8%80%e6%ac%a1-v3" class="header-anchor"&gt;&lt;/a&gt;前言:为什么要再看一次 V3?
+&lt;/h2&gt;&lt;p&gt;如果你只用过 Uniswap / PancakeSwap 的前端,大概率会有这样的体感:V2 时代往池子里&amp;quot;丢两个币&amp;quot;就完事了;到了 V3,要选 fee tier、要拉价格区间、还有&amp;quot;超出区间就不再做市&amp;quot;这种反直觉的提示。&lt;/p&gt;
+&lt;p&gt;这背后的根本变化叫&lt;strong&gt;集中流动性(Concentrated Liquidity)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;V2&lt;/strong&gt; 用 &lt;code&gt;x * y = k&lt;/code&gt; 把流动性均匀铺在 &lt;code&gt;(0, +∞)&lt;/code&gt; 全价格区间。结果是大部分资金都待在 BTC=$1 或 BTC=$10M 这种永远不会成交的地方&amp;quot;陪跑&amp;quot;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;V3&lt;/strong&gt; 让 LP 自己选区间,比如 &lt;code&gt;[USDC=0.999, USDC=1.001]&lt;/code&gt;。同样 1 万美元,集中在窄区间里能提供的有效流动性可能是全区间做市的几百倍。资金效率上去了,代价是合约复杂度暴涨。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这套机制落到合约里,就变成了:Pool 要按 &lt;strong&gt;tick&lt;/strong&gt;(离散价格刻度)管理流动性、要在 swap 时&lt;strong&gt;逐 tick 跨越&lt;/strong&gt;、要给每个 LP 仓位记录独立的&lt;strong&gt;手续费快照&lt;/strong&gt;。直接读 V3 的 Pool 合约,很容易在一堆 &lt;code&gt;sqrtPriceX96&lt;/code&gt;、&lt;code&gt;tickBitmap&lt;/code&gt;、&lt;code&gt;feeGrowthInside&lt;/code&gt; 里迷失方向。&lt;/p&gt;
+&lt;p&gt;这篇文章想做的事:把 PancakeSwap V3 的合约按&amp;quot;项目结构 → 层次 → 核心流程 → 设计模式&amp;quot;过一遍,顺手把那些&amp;quot;咒语级名词&amp;quot;翻译成人话,重点说清楚两个最容易被忽略的点——&lt;strong&gt;NonfungiblePositionManager 与 Pool 的聚合仓位关系&lt;/strong&gt;,以及&lt;strong&gt;回调模式为什么这么设计&lt;/strong&gt;。&lt;/p&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;PancakeSwap V3 在 AMM 核心上是 Uniswap V3 的 fork,大部分逻辑是通用的;少数差异(费率档位、原生挖矿、Farm Booster)我会单独标出来。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="一项目结构"&gt;&lt;a href="#%e4%b8%80%e9%a1%b9%e7%9b%ae%e7%bb%93%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;一、项目结构
+&lt;/h2&gt;&lt;p&gt;PancakeSwap V3 的合约代码分布在几个独立的 project 里,各司其职:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;projects/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── v3-core/ # 核心池合约(AMM 引擎)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── v3-periphery/ # 外围合约(NFT 仓位管理、流动性管理)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├── router/ # 路由合约(交易聚合、多跳)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└── masterchef-v3/ # 流动性挖矿合约
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;为什么要拆这么散?一句话:&lt;strong&gt;v3-core 是绝对不能改、不能升级的部分&lt;/strong&gt;。它是所有外围合约信任的基石,一旦升级就要重新部署所有池、迁移所有流动性。所以 Uniswap / PancakeSwap 都把 core 锁得死死的(连接口都很 minimal),然后把&amp;quot;用户友好&amp;quot;的逻辑——比如 NFT 化、滑点检查、多跳路由、池初始化——全部下沉到可替换的 periphery 层。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;v3-periphery&lt;/code&gt; 容易被遗漏,但它承载了普通用户最常打交道的 &lt;code&gt;NonfungiblePositionManager&lt;/code&gt;——所有 LP 仓位都是通过它铸造成 NFT 的。Core 的 Pool 本身只认&amp;quot;聚合仓位&amp;quot;,根本不关心 NFT。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二合约层次架构"&gt;&lt;a href="#%e4%ba%8c%e5%90%88%e7%ba%a6%e5%b1%82%e6%ac%a1%e6%9e%b6%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;二、合约层次架构
+&lt;/h2&gt;&lt;p&gt;完整的调用层次如下:&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ User([用户 / 前端])
+ Router["SmartRouter&lt;br/&gt;交易路由"]
+ MC["MasterChefV3&lt;br/&gt;挖矿质押"]
+ Quoter["QuoterV2&lt;br/&gt;报价"]
+ PM["NonfungiblePositionManager&lt;br/&gt;NFT 仓位管理"]
+ Pool["PancakeV3Pool&lt;br/&gt;核心 AMM 池"]
+ Factory["PancakeV3Factory&lt;br/&gt;池注册表"]
+ Deployer["PancakeV3PoolDeployer&lt;br/&gt;CREATE2 部署"]
+
+ User --&gt; Router
+ User --&gt; MC
+ User --&gt; Quoter
+ MC -. NFT.safeTransfer .-&gt; PM
+ Router --&gt; Pool
+ PM --&gt; Pool
+ Quoter --&gt; Pool
+ Pool --&gt; Factory
+ Factory --&gt; Deployer
+
+ classDef user fill:#fef3c7,stroke:#d97706,color:#000
+ classDef entry fill:#dbeafe,stroke:#2563eb,color:#000
+ classDef pos fill:#fce7f3,stroke:#db2777,color:#000
+ classDef pool fill:#ede9fe,stroke:#7c3aed,color:#000
+ classDef factory fill:#dcfce7,stroke:#16a34a,color:#000
+
+ class User user
+ class Router,MC,Quoter entry
+ class PM pos
+ class Pool pool
+ class Factory,Deployer factory&lt;/pre&gt;&lt;p&gt;&lt;code&gt;PancakeV3Pool&lt;/code&gt; 内部维护的核心状态:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-text" data-lang="text"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Slot0: sqrtPriceX96, tick, observationIndex, feeProtocol, unlocked
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ticks: mapping(int24 =&amp;gt; Tick.Info)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tickBitmap: mapping(int16 =&amp;gt; uint256) // O(1) 找下一个已初始化 tick
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;positions: mapping(bytes32 =&amp;gt; Position.Info) // 聚合仓位
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;observations: Oracle[65535] // 历史价格,用于 TWAP
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;liquidity: uint128 // 全局活跃流动性
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;feeGrowthGlobal0/1: uint256 (Q128.128) // 单调累加的手续费增长
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;每一层的职责一句话总结:&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;层级&lt;/th&gt;
+ &lt;th&gt;合约&lt;/th&gt;
+ &lt;th&gt;职责&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;入口&lt;/td&gt;
+ &lt;td&gt;SmartRouter / MasterChefV3 / QuoterV2&lt;/td&gt;
+ &lt;td&gt;用户操作的入口,聚合多池路由、质押、报价&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;仓位&lt;/td&gt;
+ &lt;td&gt;NonfungiblePositionManager&lt;/td&gt;
+ &lt;td&gt;把 LP 仓位 NFT 化,管理用户的份额与待领手续费&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;核心&lt;/td&gt;
+ &lt;td&gt;PancakeV3Pool&lt;/td&gt;
+ &lt;td&gt;单个交易对的 AMM 引擎,处理 swap / mint / burn / collect&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;工厂&lt;/td&gt;
+ &lt;td&gt;PancakeV3Factory&lt;/td&gt;
+ &lt;td&gt;创建池、维护 fee tier 与 tickSpacing 映射&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;部署&lt;/td&gt;
+ &lt;td&gt;PancakeV3PoolDeployer&lt;/td&gt;
+ &lt;td&gt;通过 CREATE2 确定性部署 Pool&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="三核心合约详解"&gt;&lt;a href="#%e4%b8%89%e6%a0%b8%e5%bf%83%e5%90%88%e7%ba%a6%e8%af%a6%e8%a7%a3" class="header-anchor"&gt;&lt;/a&gt;三、核心合约详解
+&lt;/h2&gt;&lt;h3 id="31-factory--pooldeployer为什么要拆成两个"&gt;&lt;a href="#31-factory--pooldeployer%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e6%8b%86%e6%88%90%e4%b8%a4%e4%b8%aa" class="header-anchor"&gt;&lt;/a&gt;3.1 Factory + PoolDeployer:为什么要拆成两个?
+&lt;/h3&gt;&lt;p&gt;V3 把&amp;quot;池的部署&amp;quot;从 Factory 中剥离出来,单独放在 PoolDeployer。这是个工程决定,根源在于以太坊的合约 bytecode 上限(EIP-170,约 24KB)。&lt;/p&gt;
+&lt;p&gt;PancakeV3Pool 的 bytecode 已经接近上限了。如果 Factory 里直接 &lt;code&gt;new PancakeV3Pool(...)&lt;/code&gt;,Pool 的完整 bytecode 会被嵌进 Factory 的 bytecode,Factory 自己直接爆体积。拆分后:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Factory&lt;/strong&gt; 只负责:校验参数、记录 &lt;code&gt;getPool&lt;/code&gt; 映射、调用 PoolDeployer。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PoolDeployer&lt;/strong&gt; 只负责:把构造参数写入 storage → CREATE2 部署 Pool → Pool 构造函数从 PoolDeployer 读取参数 → 清空 storage。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为什么 Pool 不直接从构造参数取?因为 CREATE2 要求 &lt;strong&gt;bytecode 完全一致&lt;/strong&gt;(地址 = &lt;code&gt;keccak256(0xff, deployer, salt, keccak256(bytecode))&lt;/code&gt;),如果把 token 地址塞到构造参数里,每个 Pool 的 bytecode 就不一样了。所以 Pool 的构造函数是无参的,从外部 storage 读——这是一个非常有意思的&amp;quot;曲线救国&amp;quot;。&lt;/p&gt;
+&lt;p&gt;最终效果:&lt;code&gt;salt = keccak256(token0, token1, fee)&lt;/code&gt;,Pool 的地址在部署前就可以&lt;strong&gt;离线算出&lt;/strong&gt;。这也是为什么 Periphery 合约里到处看到 &lt;code&gt;PoolAddress.computeAddress(...)&lt;/code&gt;——根本不需要查 Factory,直接算就完事了,省一次 SLOAD。&lt;/p&gt;
+&lt;h3 id="32-pancakev3pool核心数据结构"&gt;&lt;a href="#32-pancakev3pool%e6%a0%b8%e5%bf%83%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84" class="header-anchor"&gt;&lt;/a&gt;3.2 PancakeV3Pool:核心数据结构
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// 全局热点状态,塞进一个 storage slot
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="nc"&gt;Slot0&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint160&lt;/span&gt; &lt;span class="n"&gt;sqrtPriceX96&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 当前价格(平方根表示, Q64.96)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int24&lt;/span&gt; &lt;span class="n"&gt;tick&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 当前 tick
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint16&lt;/span&gt; &lt;span class="n"&gt;observationIndex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint16&lt;/span&gt; &lt;span class="n"&gt;observationCardinality&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint16&lt;/span&gt; &lt;span class="n"&gt;observationCardinalityNext&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint8&lt;/span&gt; &lt;span class="n"&gt;feeProtocol&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;unlocked&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 重入锁
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int24&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Tick&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Info&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;ticks&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 每个 tick 的元信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;int16&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;tickBitmap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// O(1) 查找下一个已初始化 tick
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;mapping&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bytes32&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Position&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Info&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;positions&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// key = keccak(owner, tickLower, tickUpper)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;Slot0&lt;/code&gt; 把所有&amp;quot;每次 swap 都要读&amp;quot;的字段塞进了&lt;strong&gt;一个 256-bit 槽&lt;/strong&gt;(&lt;code&gt;160 + 24 + 16 + 16 + 16 + 8 + 8 = 248&lt;/code&gt;,刚好压得进去)。这样 swap 路径上读这些字段的成本从 N 次 SLOAD 降到 1 次。这种&amp;quot;压槽&amp;quot;是 V3 抠 gas 的代表手法,几乎每个核心结构体都做了这件事。&lt;/p&gt;
+&lt;h4 id="tick-是什么为什么用-sqrtprice"&gt;&lt;a href="#tick-%e6%98%af%e4%bb%80%e4%b9%88%e4%b8%ba%e4%bb%80%e4%b9%88%e7%94%a8-sqrtprice" class="header-anchor"&gt;&lt;/a&gt;Tick 是什么?为什么用 sqrt(price)?
+&lt;/h4&gt;&lt;p&gt;V3 把价格离散化成 tick,关系是:&lt;/p&gt;
+&lt;p&gt;$$
+\text{price}(i) = 1.0001^i, \quad i \in \mathbb{Z}
+$$&lt;/p&gt;
+&lt;p&gt;也就是说每个 tick 之间正好差 1 个基点(0.01%)。&lt;code&gt;tick = 0&lt;/code&gt; 对应价格 1,&lt;code&gt;tick = 6932&lt;/code&gt; 大约对应 2,&lt;code&gt;tick = -6932&lt;/code&gt; 大约对应 0.5。tick 是&lt;strong&gt;整数&lt;/strong&gt;,这一点很重要——所有 tick 边界比较都是整数比较,极度便宜。&lt;/p&gt;
+&lt;p&gt;那为什么 &lt;code&gt;slot0&lt;/code&gt; 里存的不是 price,而是 &lt;code&gt;sqrtPriceX96&lt;/code&gt;?因为 V3 的核心公式涉及 √price 的差分:&lt;/p&gt;
+&lt;p&gt;$$
+\Delta \sqrt{P} = \frac{\Delta y}{L}, \qquad \Delta \frac{1}{\sqrt{P}} = \frac{\Delta x}{L}
+$$&lt;/p&gt;
+&lt;p&gt;其中 L 是流动性。如果存 price,每次 swap 都要做开方,gas 直接劝退。直接存 √price,所有运算都是加减乘除。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;X96&lt;/code&gt; 是 Q64.96 定点数:&lt;strong&gt;整数部分 64 bit,小数部分 96 bit&lt;/strong&gt;,合起来 160 bit,正好塞进 &lt;code&gt;uint160&lt;/code&gt;。换算到普通价格:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;realPrice = (sqrtPriceX96 / 2**96) ** 2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;第一次读到 &lt;code&gt;sqrtPriceX96&lt;/code&gt; 这个名字的时候我也懵过几分钟,把它翻译成&amp;quot;用定点数表示的 √price&amp;quot;立刻就清楚了。&lt;/p&gt;
+&lt;h3 id="33-nonfungiblepositionmanagernft-化的仓位管理"&gt;&lt;a href="#33-nonfungiblepositionmanagernft-%e5%8c%96%e7%9a%84%e4%bb%93%e4%bd%8d%e7%ae%a1%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;3.3 NonfungiblePositionManager:NFT 化的仓位管理
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;struct&lt;/span&gt; &lt;span class="nc"&gt;Position&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint96&lt;/span&gt; &lt;span class="n"&gt;nonce&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// permit nonce
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;address&lt;/span&gt; &lt;span class="n"&gt;operator&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 授权操作者
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint80&lt;/span&gt; &lt;span class="n"&gt;poolId&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 池 ID(指向 _poolIdToPoolKey)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int24&lt;/span&gt; &lt;span class="n"&gt;tickLower&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;int24&lt;/span&gt; &lt;span class="n"&gt;tickUpper&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint128&lt;/span&gt; &lt;span class="n"&gt;liquidity&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 该 NFT 的流动性份额
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;feeGrowthInside0LastX128&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 上次快照
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint256&lt;/span&gt; &lt;span class="n"&gt;feeGrowthInside1LastX128&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint128&lt;/span&gt; &lt;span class="n"&gt;tokensOwed0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 待领取的手续费
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kt"&gt;uint128&lt;/span&gt; &lt;span class="n"&gt;tokensOwed1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这里有个&lt;strong&gt;关键设计&lt;/strong&gt;:在 Pool 的 &lt;code&gt;positions&lt;/code&gt; 映射里,所有通过同一个 PositionManager 来的用户仓位,会按 &lt;code&gt;(PositionManager 地址, tickLower, tickUpper)&lt;/code&gt; &lt;strong&gt;聚合成一个仓位&lt;/strong&gt;;每个 NFT 只在 PositionManager 自己的 &lt;code&gt;_positions[tokenId]&lt;/code&gt; 里记录份额和上次的 &lt;code&gt;feeGrowthInside&lt;/code&gt; 快照。&lt;/p&gt;
+&lt;p&gt;这是 V3 最值得单独拎出来讲的一处设计,下面第五节会展开。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四核心流程时序"&gt;&lt;a href="#%e5%9b%9b%e6%a0%b8%e5%bf%83%e6%b5%81%e7%a8%8b%e6%97%b6%e5%ba%8f" class="header-anchor"&gt;&lt;/a&gt;四、核心流程时序
+&lt;/h2&gt;&lt;h3 id="41-创建池"&gt;&lt;a href="#41-%e5%88%9b%e5%bb%ba%e6%b1%a0" class="header-anchor"&gt;&lt;/a&gt;4.1 创建池
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户 → Factory.createPool(tokenA, tokenB, fee)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 校验: tokenA != tokenB、fee tier 已启用、池未存在
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ Factory → PoolDeployer.deploy(factory, token0, token1, fee, tickSpacing)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 写 Parameters 到 storage
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ CREATE2 部署 PancakeV3Pool(salt = keccak256(token0, token1, fee))
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ Pool 构造函数从 PoolDeployer.parameters() 读取参数
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ 清除 Parameters
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 写双向映射 getPool[token0][token1][fee] = pool
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ emit PoolCreated
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;值得注意的是,&lt;code&gt;createPool&lt;/code&gt; 之后池&lt;strong&gt;还没有被初始化&lt;/strong&gt;——&lt;code&gt;slot0.sqrtPriceX96 = 0&lt;/code&gt;,任何 swap / mint 都会 revert。需要 Periphery 的 &lt;code&gt;PoolInitializer.createAndInitializePoolIfNecessary()&lt;/code&gt; 来设定初始价格,或者直接调用 &lt;code&gt;Pool.initialize(sqrtPriceX96)&lt;/code&gt;。第一个调用方决定了池的开盘价,也因此&lt;strong&gt;开池后的第一笔 mint 通常需要项目方先动手&lt;/strong&gt;,防止套利者按操控价开池。&lt;/p&gt;
+&lt;h3 id="42-添加流动性mint"&gt;&lt;a href="#42-%e6%b7%bb%e5%8a%a0%e6%b5%81%e5%8a%a8%e6%80%a7mint" class="header-anchor"&gt;&lt;/a&gt;4.2 添加流动性(Mint)
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户 → NonfungiblePositionManager.mint(params)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ addLiquidity() [LiquidityManagement.sol]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 计算 pool 地址(CREATE2)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 读 pool.slot0() 获取当前价格
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ LiquidityAmounts.getLiquidityForAmounts() 算出 liquidity
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ Pool.mint(address(this), tickLower, tickUpper, liquidity, callbackData)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ _modifyPosition() → _updatePosition()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ │ └─ 更新 Pool.positions 中的【聚合仓位】
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ callback: pancakeV3MintCallback(amount0, amount1, data)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ verifyCallback() 校验回调来源
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ pay(token, payer=用户, recipient=Pool, amount)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ _mint(recipient, tokenId++) // 铸造 ERC721
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 缓存 poolId(_poolIds + _poolIdToPoolKey)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 读 Pool 聚合仓位的 feeGrowthInside 作为快照
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ 把 Position 存到 _positions[tokenId]
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ emit IncreaseLiquidity(tokenId, liquidity, amount0, amount1)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这里要重点说一下 V3 标志性的&lt;strong&gt;回调收款模式&lt;/strong&gt;。Pool 是先记账(更新 &lt;code&gt;liquidity&lt;/code&gt;、&lt;code&gt;positions&lt;/code&gt;)、再回调让调用方付款、最后用 &lt;code&gt;balanceBefore&lt;/code&gt; / &lt;code&gt;balanceAfter&lt;/code&gt; 校验确实收到钱。&lt;/p&gt;
+&lt;p&gt;为什么不先收钱再记账?因为先收钱意味着用户必须在调用前把代币 &lt;code&gt;approve&lt;/code&gt; 给 Pool,然后 Pool 在 mint 里 &lt;code&gt;transferFrom&lt;/code&gt; 用户。这套流程在 V2 也用过,但有两个问题:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;需要两步交易&lt;/strong&gt;(approve + mint),用户体验差。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pool 必须信任用户授权额度的合理性&lt;/strong&gt;,而 Pool 是个永生合约,授权一旦给出基本不会撤回——这是钓鱼攻击最爱的入口。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;回调模式把支付逻辑外包给调用者(通常是 Periphery 合约),Pool 只在事后校验&amp;quot;我余额是不是真的多了 X&amp;quot;。这样:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pool 自己&lt;strong&gt;不需要任何 approve&lt;/strong&gt;,授权链断在 Periphery 处。&lt;/li&gt;
+&lt;li&gt;调用方可以是任何合约,包括 flash mint(借出来再还回去),原生支持闪电贷语义。&lt;/li&gt;
+&lt;li&gt;多步操作可以原子地组合在一次 callback 里(比如 swap-and-mint)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;代价是:&lt;strong&gt;Pool 必须能识别&amp;quot;调用者是不是合法的&amp;quot;&lt;/strong&gt;——这通过 &lt;code&gt;verifyCallback()&lt;/code&gt; 完成,本质是再算一次 &lt;code&gt;PoolAddress.computeAddress(...)&lt;/code&gt; 比对 &lt;code&gt;msg.sender&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id="43-交换swap-最核心的路径"&gt;&lt;a href="#43-%e4%ba%a4%e6%8d%a2swap-%e6%9c%80%e6%a0%b8%e5%bf%83%e7%9a%84%e8%b7%af%e5%be%84" class="header-anchor"&gt;&lt;/a&gt;4.3 交换(Swap)—— 最核心的路径
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;span class="lnt"&gt;18
+&lt;/span&gt;&lt;span class="lnt"&gt;19
+&lt;/span&gt;&lt;span class="lnt"&gt;20
+&lt;/span&gt;&lt;span class="lnt"&gt;21
+&lt;/span&gt;&lt;span class="lnt"&gt;22
+&lt;/span&gt;&lt;span class="lnt"&gt;23
+&lt;/span&gt;&lt;span class="lnt"&gt;24
+&lt;/span&gt;&lt;span class="lnt"&gt;25
+&lt;/span&gt;&lt;span class="lnt"&gt;26
+&lt;/span&gt;&lt;span class="lnt"&gt;27
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户 → SmartRouter.exactInputSingle(params)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ V3SwapRouter.exactInputInternal()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 解析 path: tokenIn / tokenOut / fee
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 确定方向 zeroForOne = tokenIn &amp;lt; tokenOut
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ Pool.swap(recipient, zeroForOne, amountSpecified, sqrtPriceLimitX96, data)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ lock() 重入锁
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ LmPool.accumulateReward() // 若开启挖矿
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ while 循环(逐 tick 跨越):
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ tickBitmap.nextInitializedTickWithinOneWord() 找下一个 tick
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ SwapMath.computeSwapStep() 算本步 amountIn/Out/fee
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 扣协议费,累加 feeGrowthGlobal
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 如果到达 tick 边界:
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ │ ├─ LmPool.crossLmTick() // 若开启挖矿
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ │ └─ ticks.cross() 跨越 tick、更新流动性
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ 直到 amountSpecified 用尽或撞到价格上限
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 更新 slot0(sqrtPrice、tick、observation)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 更新全局 liquidity
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 先把 output token 转给 recipient
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ callback: pancakeV3SwapCallback(amount0, amount1, data)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ Router 把 input token 打进 Pool
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 校验 Pool 余额确实增加
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ emit Swap
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="一个具体例子跨-tick-是怎么发生的"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e5%85%b7%e4%bd%93%e4%be%8b%e5%ad%90%e8%b7%a8-tick-%e6%98%af%e6%80%8e%e4%b9%88%e5%8f%91%e7%94%9f%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;一个具体例子:跨 tick 是怎么发生的?
+&lt;/h4&gt;&lt;p&gt;假设当前 ETH/USDC 池价格 P = 2000,&lt;code&gt;tick = 76012&lt;/code&gt;,池里只有两个流动性区间:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;LP-A: 在 &lt;code&gt;[1900, 2100]&lt;/code&gt; 区间,liquidity = 1000&lt;/li&gt;
+&lt;li&gt;LP-B: 在 &lt;code&gt;[1950, 2050]&lt;/code&gt; 区间,liquidity = 500&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当价格在 2000 时,&lt;strong&gt;两个区间都覆盖当前价格&lt;/strong&gt;,池的活跃流动性 &lt;code&gt;liquidity = 1500&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;现在有人 swap 卖 USDC 买 ETH,价格上涨。Pool 的 while 循环大致这么走:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;第 1 步&lt;/strong&gt;:从 P=2000 涨到下一个 tick 边界 tick(2050)。这一步用 &lt;code&gt;liquidity=1500&lt;/code&gt; 计算需要多少 USDC 输入、能换多少 ETH 输出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨越 2050&lt;/strong&gt;:LP-B 的上界,流动性减少 500。Pool 调用 &lt;code&gt;ticks.cross()&lt;/code&gt;,更新 &lt;code&gt;liquidity = 1000&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;第 2 步&lt;/strong&gt;:从 P=2050 继续涨,这次只用 &lt;code&gt;liquidity=1000&lt;/code&gt; 算。如果用户的输入还没花完,继续往上走。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跨越 2100&lt;/strong&gt;:LP-A 的上界,流动性再减 1000,变成 0。&lt;strong&gt;这意味着池子在更高价格上没有任何做市了&lt;/strong&gt;——再想买 ETH 只能换更高价的池或别的路径。&lt;/li&gt;
+&lt;li&gt;如果用户的 &lt;code&gt;amountSpecified&lt;/code&gt; 还没用完,但 &lt;code&gt;liquidity = 0&lt;/code&gt;,swap 就在这里停住,剩余的 input 退还。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这就是为什么 V3 的 LP 必须&lt;strong&gt;主动管理价格区间&lt;/strong&gt;:价格穿出区间,你的流动性就&amp;quot;下班&amp;quot;了——不再赚手续费,而且仓位会变成单边币(穿出上界变成纯 token0,穿出下界变成纯 token1)。&lt;/p&gt;
+&lt;h4 id="跨-tick-的-gas-代价"&gt;&lt;a href="#%e8%b7%a8-tick-%e7%9a%84-gas-%e4%bb%a3%e4%bb%b7" class="header-anchor"&gt;&lt;/a&gt;跨 tick 的 gas 代价
+&lt;/h4&gt;&lt;p&gt;每跨越一个已初始化的 tick,大约要多花 20k gas(一次 SSTORE 反转 tickBitmap + 读写 ticks.Info)。所以&lt;strong&gt;密集做市的池子在大额 swap 时会比稀疏池贵很多&lt;/strong&gt;。这也是为什么你会在区块浏览器上看到一些 V3 swap 的 gas 飙到 30 万以上——那都是跨了十几个 tick 的大单。&lt;/p&gt;
+&lt;h3 id="44-流动性挖矿masterchef-v3"&gt;&lt;a href="#44-%e6%b5%81%e5%8a%a8%e6%80%a7%e6%8c%96%e7%9f%bfmasterchef-v3" class="header-anchor"&gt;&lt;/a&gt;4.4 流动性挖矿(MasterChef V3)
+&lt;/h3&gt;&lt;p&gt;PancakeSwap V3 与 Uniswap V3 最显著的差异之一,是&lt;strong&gt;原生挖矿支持&lt;/strong&gt;。Uniswap V3 的官方激励是个外挂合约(Staker),靠着读 NFT 上链事件来分配奖励;PancakeSwap V3 直接在 Pool 内部预留了 hook 调用 &lt;code&gt;LMPool&lt;/code&gt;,让挖矿和 swap 在同一笔交易里更新。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;质押(Deposit)&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户 → NFT.safeTransferFrom(user, MasterChefV3, tokenId)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ MasterChefV3.onERC721Received()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 读 NFT 的 (token0, token1, fee, liquidity, ticks)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ 找对应的 pid
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ LMPool.accumulateReward()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ updateLiquidityOperation()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 更新 position.liquidity
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ ├─ 通过 FarmBooster 算 boostLiquidity(1x ~ 2x)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │ └─ LMPool.updatePosition(tickLower, tickUpper, liquidityDelta)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ emit Deposit
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;收割(Harvest)&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;用户 → MasterChefV3.harvest(tokenId, to)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ LMPool.accumulateReward()
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ LMPool.getRewardGrowthInside(tickLower, tickUpper)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ├─ reward = (rewardGrowthDelta * boostLiquidity) / Q128
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; └─ CAKE.safeTransfer(to, reward)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意 reward 的算法和手续费是同构的:都是&amp;quot;区间内增长 × 流动性份额&amp;quot;,只不过一个累加 fee,一个累加 CAKE。理解了 &lt;code&gt;feeGrowthInside&lt;/code&gt;,&lt;code&gt;rewardGrowthInside&lt;/code&gt; 就是免费的副产品。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Boost 机制&lt;/strong&gt;(PancakeSwap 独有):FarmBooster 根据用户持有的 veCAKE 数量,把有效流动性放大到最高 2 倍。这是个软锁仓激励——你想要更高的挖矿收益,就得长期锁 CAKE。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="五聚合仓位设计v3-的精髓"&gt;&lt;a href="#%e4%ba%94%e8%81%9a%e5%90%88%e4%bb%93%e4%bd%8d%e8%ae%be%e8%ae%a1v3-%e7%9a%84%e7%b2%be%e9%ab%93" class="header-anchor"&gt;&lt;/a&gt;五、聚合仓位设计:V3 的精髓
+&lt;/h2&gt;&lt;p&gt;这是整个 V3 体系里最值得单独拎出来讲的一处。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;span class="lnt"&gt;14
+&lt;/span&gt;&lt;span class="lnt"&gt;15
+&lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Pool.positions[key] ——【聚合仓位,全局共享】
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;┌──────────────────────────────────────────┐
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ key = keccak256(PositionManager 地址, │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ tickLower, tickUpper) │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ liquidity = 所有 NFT 流动性之和 │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ feeGrowthInside = 累计手续费增长 │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ tokensOwed0/1 = (聚合层不实际使用) │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└──────────────────────────────────────────┘
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;PositionManager._positions[tokenId] ——【个体仓位,NFT 私有】
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;┌──────────────────────────────────────────┐
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ liquidity = 该 NFT 的份额 │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ feeGrowthInsideLast = 上次快照值 │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ tokensOwed0/1 = 待领取手续费 │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;│ poolId → (token0, token1, fee) │
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└──────────────────────────────────────────┘
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="一个具体例子"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e5%85%b7%e4%bd%93%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;一个具体例子
+&lt;/h4&gt;&lt;p&gt;假设 Alice 和 Bob 都通过 PositionManager 在同一个区间 &lt;code&gt;[1900, 2100]&lt;/code&gt; 做市:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Alice mint:liquidity = 100&lt;/li&gt;
+&lt;li&gt;Bob mint:liquidity = 200&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pool 端只看到&lt;strong&gt;一个&lt;/strong&gt;位于该区间的仓位,&lt;code&gt;liquidity = 300&lt;/code&gt;。Pool 不知道 Alice 是谁,也不知道 Bob 是谁。&lt;/p&gt;
+&lt;p&gt;这时发生了一笔 swap,该区间累计产生 9 USDC 手续费。Pool 把这笔费用按&amp;quot;区间内的总流动性&amp;quot;折算成 &lt;code&gt;feeGrowthInside&lt;/code&gt; 的增量,假设增量是 &lt;code&gt;+ΔF&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;Alice 来 collect 时:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;她的 &lt;code&gt;feeGrowthInsideLast&lt;/code&gt; 是 mint 时的快照。&lt;/li&gt;
+&lt;li&gt;当前 &lt;code&gt;feeGrowthInside&lt;/code&gt; 比她的快照多了 &lt;code&gt;ΔF&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;她应得 = &lt;code&gt;ΔF × 100 / 2^128 = 3 USDC&lt;/code&gt;(对应她占 1/3 的流动性份额)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bob 同理拿到 6 USDC。&lt;strong&gt;Pool 端没有任何&amp;quot;分账&amp;quot;逻辑&lt;/strong&gt;——所有的份额结算全部下放到 PositionManager,在用户来交互时一次性算出来。&lt;/p&gt;
+&lt;h4 id="为什么这么设计"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e4%b9%88%e8%ae%be%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;为什么这么设计?
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;省 gas&lt;/strong&gt;。Pool 只关心&amp;quot;每个区间总共有多少流动性&amp;quot;,不需要知道有几个 LP。无论 1 个还是 1000 个 LP 同区间做市,Pool 端的存储成本完全一样。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结算延迟到读取时&lt;/strong&gt;。每个 NFT 的待领手续费 = &lt;code&gt;(当前 feeGrowthInside − 上次快照) × liquidity&lt;/code&gt;。用户没操作时,合约&lt;strong&gt;完全不需要&lt;/strong&gt;为他更新状态——所有&amp;quot;利息&amp;quot;都是用户下次交互时一次性结算的。这是把&amp;quot;懒计算&amp;quot;用到极致。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;份额化与可组合性&lt;/strong&gt;。NFT 化让仓位可以被转让、抵押、再封装(MasterChefV3 直接接收 NFT 来做加权挖矿就是个例子)。如果 Pool 端按用户分账,这一切都做不了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;理解了这个设计,你会发现 V3 的 Mint 流程里&amp;quot;先读 Pool 聚合仓位的 &lt;code&gt;feeGrowthInside&lt;/code&gt; 作为快照,再写到 NFT 自己的 &lt;code&gt;_positions&lt;/code&gt;&amp;ldquo;那一步——它就是在记下&amp;quot;我这次进场时世界长什么样&amp;rdquo;,方便下次出场时算差值。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六关键设计模式"&gt;&lt;a href="#%e5%85%ad%e5%85%b3%e9%94%ae%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;六、关键设计模式
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;模式&lt;/th&gt;
+ &lt;th&gt;应用&lt;/th&gt;
+ &lt;th&gt;解决的问题&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;工厂 + CREATE2&lt;/td&gt;
+ &lt;td&gt;PoolDeployer 用 salt 确定性部署 Pool&lt;/td&gt;
+ &lt;td&gt;池地址离线可算,绕开 bytecode 24KB 上限&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;回调收款&lt;/td&gt;
+ &lt;td&gt;Mint / Swap / Flash 都用 callback&lt;/td&gt;
+ &lt;td&gt;Pool 不需要 approve,授权链断在 Periphery,天然支持闪电贷&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;重入锁&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;slot0.unlocked&lt;/code&gt;,塞在热点槽里&lt;/td&gt;
+ &lt;td&gt;Pool 级互斥,零额外 SLOAD 成本&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Tick Bitmap&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;mapping(int16 =&amp;gt; uint256)&lt;/code&gt;&lt;/td&gt;
+ &lt;td&gt;一个 word 覆盖 256 个 tick,O(1) 找下一个已初始化 tick&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Oracle 累加器&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;observations&lt;/code&gt; 环形数组&lt;/td&gt;
+ &lt;td&gt;记录 &lt;code&gt;tick * time&lt;/code&gt; 累加和,任意时间窗口的 TWAP 是减法&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Boost&lt;/td&gt;
+ &lt;td&gt;FarmBooster 动态调节 1x~2x&lt;/td&gt;
+ &lt;td&gt;给 veCAKE 长期锁仓者激励&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;Fee Growth 全局累加&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;feeGrowthGlobalX128&lt;/code&gt; 单调递增&lt;/td&gt;
+ &lt;td&gt;按&amp;quot;区间内累加差值 × 流动性&amp;quot;分账,延迟结算&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;聚合仓位&lt;/td&gt;
+ &lt;td&gt;PositionManager 在 Pool 端只占一个 position&lt;/td&gt;
+ &lt;td&gt;LP 数量与 Pool 存储成本解耦&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id="关于-oracle-累加器多说一句"&gt;&lt;a href="#%e5%85%b3%e4%ba%8e-oracle-%e7%b4%af%e5%8a%a0%e5%99%a8%e5%a4%9a%e8%af%b4%e4%b8%80%e5%8f%a5" class="header-anchor"&gt;&lt;/a&gt;关于 Oracle 累加器多说一句
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;observations&lt;/code&gt; 数组里存的不是某一时刻的价格,而是 &lt;strong&gt;tick 的时间积分&lt;/strong&gt; &lt;code&gt;tickCumulative = ∫ tick dt&lt;/code&gt;。计算 [t1, t2] 区间的 TWAP,只需要:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;twapTick = (cumulative(t2) - cumulative(t1)) / (t2 - t1)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;twapPrice = 1.0001 ** twapTick
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;两次查询、一次减法、一次除法,就拿到任意窗口的均价。这种&amp;quot;前缀和差分&amp;quot;的 trick 在 DeFi 里被反复使用,记住它你能看懂大半个生态的预言机实现。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="七踩坑提醒--常见误区"&gt;&lt;a href="#%e4%b8%83%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92--%e5%b8%b8%e8%a7%81%e8%af%af%e5%8c%ba" class="header-anchor"&gt;&lt;/a&gt;七、踩坑提醒 / 常见误区
+&lt;/h2&gt;&lt;p&gt;整理几个我自己读这套合约时被绊到、或者看到别人栽的坑:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tickLower / tickUpper&lt;/code&gt; 必须是 &lt;code&gt;tickSpacing&lt;/code&gt; 的倍数&lt;/strong&gt;。每个 fee tier 有自己的 &lt;code&gt;tickSpacing&lt;/code&gt;(0.01% → 1, 0.05% → 10, 0.25% → 50, 1% → 200)。直接传任意 tick 会 revert。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;liquidity&lt;/code&gt; 不是&amp;quot;我存了多少钱&amp;quot;&lt;/strong&gt;,而是一个抽象量,大致是 &lt;code&gt;√(x * y)&lt;/code&gt; 的某种归一化。同样的 &lt;code&gt;liquidity&lt;/code&gt; 在窄区间消耗的代币远少于宽区间。前端报的&amp;quot;$value&amp;quot; 是它根据当前价反算出来的。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;burn()&lt;/code&gt; 不会把代币转给你&lt;/strong&gt;——它只是把流动性从 Pool 里&amp;quot;出账&amp;quot;到你的 &lt;code&gt;tokensOwed&lt;/code&gt;。要拿到币必须再调一次 &lt;code&gt;collect()&lt;/code&gt;。这是 V3 一个反直觉的两步设计。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手续费是单独累加的,不是自动复投&lt;/strong&gt;。LP 想要复投,要主动 &lt;code&gt;collect&lt;/code&gt; 之后再 &lt;code&gt;increaseLiquidity&lt;/code&gt;。不少前端会把这个流程包成一键,但合约层面是两步。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;swap&lt;/code&gt; 的 &lt;code&gt;amountSpecified&lt;/code&gt; 是有符号数&lt;/strong&gt;:正数表示精确输入(exactIn),负数表示精确输出(exactOut)。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Periphery 上的 deadline / slippage 是 Periphery 加的,Core 没有&lt;/strong&gt;。直接对着 Pool 调 swap 是没有滑点保护的——这就是为什么大家都通过 Router 走。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NFT 转给 MasterChefV3 之后,你不能直接 collect 手续费&lt;/strong&gt;了。手续费的归属逻辑被 MasterChefV3 接管,要通过它的接口去取。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pool 的 feeProtocol 是协议费&lt;/strong&gt;,不是 LP 手续费。它从 swap 收的 fee 里再切一刀(默认为 0,治理可改),只有打开后才会进 protocolFees 累加器。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id="八数据流总结"&gt;&lt;a href="#%e5%85%ab%e6%95%b0%e6%8d%ae%e6%b5%81%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;八、数据流总结
+&lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Token 流 : 用户 → Router → Pool ↔ NonfungiblePositionManager
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;奖励流 : Receiver → MasterChefV3 → 用户(CAKE)
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;信息流 : Pool.tick / tickBitmap / position → LMPool → MasterChefV3
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;报价流 : QuoterV2 → Pool.swap(用 revert 捕获结果,不实际成交)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Quoter 的报价机制值得单独提一下:它直接调 &lt;code&gt;Pool.swap()&lt;/code&gt;,但在自己的 callback 里 &lt;code&gt;revert&lt;/code&gt; 抛出计算结果——既不修改状态也不需要任何代币授权,&lt;strong&gt;白嫖了 Pool 的全部计算逻辑做模拟&lt;/strong&gt;。这是在 EVM 上做&amp;quot;只读模拟&amp;quot;的标准技巧之一,放在 V3 这种逻辑复杂的池子上特别划算(否则前端要自己重新实现 SwapMath,极易出 bug)。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="九附录数学速查"&gt;&lt;a href="#%e4%b9%9d%e9%99%84%e5%bd%95%e6%95%b0%e5%ad%a6%e9%80%9f%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;九、附录:数学速查
+&lt;/h2&gt;&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th&gt;名词&lt;/th&gt;
+ &lt;th&gt;公式 / 说明&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td&gt;tick → price&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;price = 1.0001 ^ tick&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;price → tick&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;tick = log(price) / log(1.0001)&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;sqrtPriceX96&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;sqrtPriceX96 = sqrt(price) * 2^96&lt;/code&gt;(Q64.96 定点数)&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;真实价格&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;price = (sqrtPriceX96 / 2^96) ^ 2&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;区间内代币关系&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;Δ√P = Δy / L&lt;/code&gt;,&lt;code&gt;Δ(1/√P) = Δx / L&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;feeGrowthInside&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;feeGrowthGlobal − feeGrowthBelow(tickLower) − feeGrowthAbove(tickUpper)&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;LP 应得手续费&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;(feeGrowthInside_now − feeGrowthInside_snapshot) × liquidity / 2^128&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td&gt;TWAP&lt;/td&gt;
+ &lt;td&gt;&lt;code&gt;(tickCumulative(t2) − tickCumulative(t1)) / (t2 − t1)&lt;/code&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;Q64.96&lt;/code&gt;:整数部分 64 bit、小数部分 96 bit,合计 160 bit,正好放进 &lt;code&gt;uint160&lt;/code&gt;。&lt;code&gt;feeGrowth&lt;/code&gt; / &lt;code&gt;rewardGrowth&lt;/code&gt; 用的是 &lt;code&gt;Q128.128&lt;/code&gt;(&lt;code&gt;uint256&lt;/code&gt;)——因为它要承载更长时间的累加,精度需求更高。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="结语"&gt;&lt;a href="#%e7%bb%93%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;结语
+&lt;/h2&gt;&lt;p&gt;PancakeSwap V3 的合约体系并不算&amp;quot;难懂&amp;quot;,但很&lt;strong&gt;致密&lt;/strong&gt;——几乎每一处设计都是为了在&amp;quot;集中流动性&amp;quot;这个核心命题下,把 gas 抠到极致、把状态压到最小。如果只看一遍 Pool,你会觉得它复杂;但当你理解了:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Factory / Deployer 拆分是为了绕开 bytecode 限制;&lt;/li&gt;
+&lt;li&gt;Slot0 的压槽是为了把 swap 路径上的 SLOAD 压到 1 次;&lt;/li&gt;
+&lt;li&gt;聚合仓位是为了让 LP 数量与 Pool 存储成本解耦;&lt;/li&gt;
+&lt;li&gt;回调模式是为了让 Pool 不必信任任何调用方却仍能正确收款;&lt;/li&gt;
+&lt;li&gt;feeGrowth / tickCumulative 都是同一种&amp;quot;前缀和差分&amp;quot;思想;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;你会发现整个架构其实非常一致——所有看似奇怪的拆分,都是在回答同一个问题:&lt;strong&gt;怎么在以太坊的 gas 预算下,把一个连续函数的做市逻辑跑起来。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;下一篇打算单独写 &lt;strong&gt;tick / tickBitmap / liquidityNet 是怎么把&amp;quot;集中流动性&amp;quot;在链上落地的&lt;/strong&gt;,以及 SwapMath 那段循环每一步到底在算什么——把数学和 Solidity 一一对上。&lt;/p&gt;
+&lt;p&gt;如果这篇有讲不清楚的地方,欢迎在评论区或邮件指出。&lt;/p&gt;</description></item></channel></rss>
