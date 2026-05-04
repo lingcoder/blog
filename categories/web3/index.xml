@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Web3 区块链 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/web3/</link><description>Recent content in Web3 区块链 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 03 May 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/web3/index.xml" rel="self" type="application/rss+xml"/><item><title>PancakeSwap V3 深度解析（下）：合约篇</title><link>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</link><pubDate>Sun, 03 May 2026 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-contracts/cover.svg" alt="Featured image of post PancakeSwap V3 深度解析（下）：合约篇" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;本文是「PancakeSwap V3 深度解析」系列的&lt;strong&gt;下篇——合约篇&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-protocol/" &gt;上篇&lt;/a&gt;讲了 V3 的协议设计：&lt;strong&gt;集中流动性、tick 离散化、NFT 仓位、TWAP 预言机&lt;/strong&gt;，以及 PancakeSwap
-在协议层独有的 4 处改动（0.25% 费率档、LMPool 协议级挖矿 hook、FarmBooster + veCAKE、License 时间线）。&lt;/p&gt;
+在协议层独有的 3 处改动（0.25% 费率档、LMPool 协议级挖矿 hook、FarmBooster + veCAKE）。&lt;/p&gt;
 &lt;p&gt;本文把这些协议设计&lt;strong&gt;落到合约源码&lt;/strong&gt;：V3 fork 共有的合约设计是怎么实现的、PancakeSwap 在合约层加了哪些东西、那些&amp;quot;咒语级名词&amp;quot;
 &lt;code&gt;sqrtPriceX96&lt;/code&gt; / &lt;code&gt;tickBitmap&lt;/code&gt; / &lt;code&gt;feeGrowthInside&lt;/code&gt; 翻译成人话到底是什么意思。重点说清楚两件事——*
 &lt;em&gt;NonfungiblePositionManager 与 Pool 的聚合仓位关系&lt;/em&gt;*，以及&lt;strong&gt;回调收款模式为什么这么设计&lt;/strong&gt;。&lt;/p&gt;
@@ -845,13 +845,17 @@ Solidity 一一对上。&lt;/p&gt;
 &lt;/h2&gt;&lt;p&gt;PancakeSwap V3 和 Uniswap V3 的关系经常被简化成一句&amp;quot;前者是后者的 fork&amp;quot;——这话一半对一半不对。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;协议设计上，PancakeSwap V3 确实继承自 Uniswap V3&lt;/strong&gt;：同样的集中流动性、同样的 tick 离散化、同样的 NFT 仓位、同样的 TWAP
 预言机。这些东西先讲清楚，再来谈细节。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;但 PancakeSwap V3 不是简单复制粘贴&lt;/strong&gt;——它在协议层做了 4 处实质性扩展：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;但 PancakeSwap V3 不是简单复制粘贴&lt;/strong&gt;——它在协议层做了 3 处实质性扩展：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;费率档位不同&lt;/strong&gt;：&lt;code&gt;0.01% / 0.05% / 0.25% / 1.00%&lt;/code&gt;（Uniswap 是 0.30% 不是 0.25%），&lt;code&gt;tickSpacing&lt;/code&gt; 也跟着不同&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;挖矿是协议级 hook，不是外挂&lt;/strong&gt;：Pool 合约内部预留 &lt;code&gt;LMPool&lt;/code&gt; 调用，与 swap 在同一笔交易里更新奖励&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;FarmBooster + veCAKE&lt;/strong&gt;：基于 veCAKE 锁仓量给挖矿 1x ~ 2x 加权，Uniswap 完全没有&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;License 时间线&lt;/strong&gt;：Uniswap V3 上线时是 BSL（2 年内禁止商用 fork），PancakeSwap V3 是 BSL 到期后才合规 fork 并改造&lt;/li&gt;
 &lt;/ol&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;顺带一提的背景：Uniswap V3 上线时是 BSL（2 年内禁止商用 fork），PancakeSwap V3 是 BSL 到期后才合规 fork 并改造——这是商务/合规层面的事，不算协议扩展。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
 &lt;p&gt;本文是「PancakeSwap V3 深度解析」系列的&lt;strong&gt;上篇——协议篇&lt;/strong&gt;，讲清楚 V3 是什么、为什么这么设计、LP 怎么用，以 PancakeSwap V3
 为讲解载体，会随时标出哪些是 V3 共性、哪些是 PancakeSwap 独有。下篇会拆 PancakeSwap V3 的合约源码。&lt;/p&gt;
 
