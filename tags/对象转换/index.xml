@@ -176,7 +176,8 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;⚠️ 用 Lombok 的话&lt;strong&gt;必须加&lt;/strong&gt; &lt;code&gt;lombok-mapstruct-binding&lt;/code&gt;——否则 Lombok 生成的 getter/setter 在 MapStruct 跑 APT 时还看不到，会编译失败。&lt;/p&gt;
+ &lt;p&gt;⚠️ 用 Lombok 的话&lt;strong&gt;必须加&lt;/strong&gt; &lt;code&gt;lombok-mapstruct-binding&lt;/code&gt;——否则 Lombok 生成的 getter/setter 在 MapStruct 跑 APT
+时还看不到，会编译失败。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h3 id="2-写映射接口"&gt;&lt;a href="#2-%e5%86%99%e6%98%a0%e5%b0%84%e6%8e%a5%e5%8f%a3" class="header-anchor"&gt;&lt;/a&gt;2. 写映射接口
@@ -581,7 +582,8 @@
 &lt;li&gt;&lt;strong&gt;生成的代码要每次 build 一次&lt;/strong&gt;——IDE 看不见 &lt;code&gt;UserMapperImpl&lt;/code&gt; 是因为没编译过；Rebuild Project 一下&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;接口方法不要互相覆盖&lt;/strong&gt;——同一个接口里两个方法签名相同，MapStruct 不知道生成哪个&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;uses = ...&lt;/code&gt; 的转换器要可被注入&lt;/strong&gt;——自定义转换器需要 &lt;code&gt;@Component&lt;/code&gt; 才能在 spring 模式下工作&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;空集合 vs null&lt;/strong&gt;：默认源为 null 会返回 null，&lt;strong&gt;很多业务希望返回空集合&lt;/strong&gt;——加 &lt;code&gt;nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;空集合 vs null&lt;/strong&gt;：默认源为 null 会返回 null，&lt;strong&gt;很多业务希望返回空集合&lt;/strong&gt;——加
+&lt;code&gt;nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不要在转换器里写复杂业务&lt;/strong&gt;——转换器应该是纯映射，不要做 DB 查询或 RPC 调用，否则 MapStruct 的&amp;quot;性能 + 简洁&amp;quot;双优势就崩了&lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr&gt;

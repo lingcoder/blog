@@ -627,7 +627,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;public&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;Optional&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;User&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;findUser&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Long&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;字段用 &lt;code&gt;Optional&lt;/code&gt; 浪费内存（包装类）；参数用 &lt;code&gt;Optional&lt;/code&gt; 让调用方多一次包装动作，得不偿失——&lt;strong&gt;直接接受可空参数 + 内部 &lt;code&gt;Optional.ofNullable&lt;/code&gt; 处理&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;字段用 &lt;code&gt;Optional&lt;/code&gt; 浪费内存（包装类）；参数用 &lt;code&gt;Optional&lt;/code&gt; 让调用方多一次包装动作，得不偿失——&lt;strong&gt;直接接受可空参数 +
+内部 &lt;code&gt;Optional.ofNullable&lt;/code&gt; 处理&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六踩坑提醒"&gt;&lt;a href="#%e5%85%ad%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;六、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-stream-不能复用"&gt;&lt;a href="#1-stream-%e4%b8%8d%e8%83%bd%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;1. Stream 不能复用
@@ -736,7 +737,8 @@ peek 会执行，但语义上 peek 就只是&amp;quot;调试用的旁路&amp;quo
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Stream + Lambda 不是写法升级，是范式转移——让 Java 从『循环 + 临时变量』变成『声明式管道』，写起来像 SQL，读起来像描述意图。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Stream + Lambda 不是写法升级，是范式转移——让 Java 从『循环 + 临时变量』变成『声明式管道』，写起来像 SQL，读起来像描述意图。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条：&lt;/p&gt;

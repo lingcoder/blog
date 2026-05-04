@@ -129,8 +129,11 @@
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
  &gt;EIP-2255&lt;/a&gt;: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
- &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS 私钥加密存储；普通 EOA 钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
- &gt;Web3 Secret Storage&lt;/a&gt;（业内俗称 Keystore V3）。&lt;/li&gt;
+ &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS
+私钥加密存储；普通 EOA
+钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
+ &gt;Web3 Secret Storage&lt;/a&gt;
+（业内俗称 Keystore V3）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
  &gt;EIP-2612&lt;/a&gt;: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
@@ -343,7 +346,8 @@
 &lt;h3 id="36-安全最佳实践跨生态"&gt;&lt;a href="#36-%e5%ae%89%e5%85%a8%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%e8%b7%a8%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;3.6 安全最佳实践（跨生态）
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
- &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;（ConsenSys，事实标准）&lt;/li&gt;
+ &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;
+（ConsenSys，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
  &gt;Solana Security Best Practices&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://swcregistry.io/" target="_blank" rel="noopener"
@@ -707,7 +711,8 @@ DeepLink&lt;/li&gt;
 &lt;h4 id="web3-开发包"&gt;&lt;a href="#web3-%e5%bc%80%e5%8f%91%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Web3 开发包
 &lt;/h4&gt;
  &lt;blockquote&gt;
- &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在 Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
+ &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在
+Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -730,7 +735,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_core" target="_blank" rel="noopener"
  &gt;reown_core&lt;/a&gt;: Reown 协议核心&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/walletconnect_flutter_v2" target="_blank" rel="noopener"
- &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被 reown_* 取代，新项目用 reown）&lt;/li&gt;
+ &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被
+reown_* 取代，新项目用 reown）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -739,9 +745,11 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana" target="_blank" rel="noopener"
  &gt;solana&lt;/a&gt; / &lt;a class="link" href="https://pub.dev/packages/solana_web3" target="_blank" rel="noopener"
  &gt;solana_web3&lt;/a&gt;: Solana 开发库&lt;/li&gt;
-&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC + 自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
+&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC +
+自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
  &gt;bip32&lt;/a&gt; + &lt;a class="link" href="https://pub.dev/packages/pointycastle" target="_blank" rel="noopener"
- &gt;pointycastle&lt;/a&gt;），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
+ &gt;pointycastle&lt;/a&gt;
+），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -766,7 +774,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
  &gt;local_auth&lt;/a&gt;: 生物认证（指纹 / 面容，官方包，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
- &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore 安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
+ &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore
+安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/biometric_storage" target="_blank" rel="noopener"
  &gt;biometric_storage&lt;/a&gt;: 生物识别保护下的安全存储&lt;/li&gt;
 &lt;/ul&gt;
@@ -932,7 +941,8 @@ DeepLink&lt;/li&gt;
 &lt;h2 id="6-钱包工程相关术语"&gt;&lt;a href="#6-%e9%92%b1%e5%8c%85%e5%b7%a5%e7%a8%8b%e7%9b%b8%e5%85%b3%e6%9c%af%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;6. 钱包工程相关术语
 &lt;/h2&gt;
  &lt;blockquote&gt;
- &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与 Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
+ &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与
+Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h3 id="61-钱包形态"&gt;&lt;a href="#61-%e9%92%b1%e5%8c%85%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;6.1 钱包形态
@@ -1072,7 +1082,8 @@ DeepLink&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;每一个&amp;quot;你的身份&amp;quot;，&lt;strong&gt;实际上都是某个公司租给你的&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;DID（Decentralized Identifier，去中心化身份标识）&lt;/strong&gt; 就是要解决这件事——&lt;strong&gt;让用户真正拥有自己的身份&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是&lt;strong&gt;数字身份的范式转移&lt;/strong&gt;——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
+&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是**数字身份的范式转移
+**——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 DID 的结构、几种主流实现方法、可验证凭证的玩法、工程上的意义。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一did-长什么样"&gt;&lt;a href="#%e4%b8%80did-%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7" class="header-anchor"&gt;&lt;/a&gt;一、DID 长什么样
@@ -1350,7 +1361,8 @@ DeepLink&lt;/li&gt;
 &lt;h2 id="七工程上的挑战"&gt;&lt;a href="#%e4%b8%83%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e6%8c%91%e6%88%98" class="header-anchor"&gt;&lt;/a&gt;七、工程上的挑战
 &lt;/h2&gt;&lt;p&gt;DID + VC 想象很美，工程上挑战不少：&lt;/p&gt;
 &lt;h3 id="1-用户体验"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c" class="header-anchor"&gt;&lt;/a&gt;1. 用户体验
-&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如 Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如
+Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
 &lt;h3 id="2-私钥丢了怎么办"&gt;&lt;a href="#2-%e7%a7%81%e9%92%a5%e4%b8%a2%e4%ba%86%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;2. 私钥丢了怎么办
 &lt;/h3&gt;&lt;p&gt;DID 完全去中心化的代价——&lt;strong&gt;没有&amp;quot;找回密码&amp;quot;&lt;/strong&gt;。私钥丢失就身份永久丢失。社交恢复（social recovery）、多签等机制是部分解决方案。&lt;/p&gt;
 &lt;h3 id="3-撤销机制"&gt;&lt;a href="#3-%e6%92%a4%e9%94%80%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 撤销机制
@@ -1827,7 +1839,8 @@ DeepLink&lt;/li&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如 Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如
+Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七踩坑提醒"&gt;&lt;a href="#%e4%b8%83%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;七、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-不要用-estimate-当-view"&gt;&lt;a href="#1-%e4%b8%8d%e8%a6%81%e7%94%a8-estimate-%e5%bd%93-view" class="header-anchor"&gt;&lt;/a&gt;1. 不要用 estimate 当 view
@@ -1848,7 +1861,8 @@ DeepLink&lt;/li&gt;
 &lt;h3 id="3-estimategas-也不会扣-gas"&gt;&lt;a href="#3-estimategas-%e4%b9%9f%e4%b8%8d%e4%bc%9a%e6%89%a3-gas" class="header-anchor"&gt;&lt;/a&gt;3. estimateGas 也不会扣 gas
 &lt;/h3&gt;&lt;p&gt;即便 estimateGas 模拟时显示用了 200,000 gas——&lt;strong&gt;调用方不付钱&lt;/strong&gt;。但 RPC 提供商可能按调用次数收费/限流。&lt;/p&gt;
 &lt;h3 id="4-block-参数的语义"&gt;&lt;a href="#4-block-%e5%8f%82%e6%95%b0%e7%9a%84%e8%af%ad%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;4. block 参数的语义
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;
+时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
 &lt;h3 id="5-archive-node-才支持历史-block-call"&gt;&lt;a href="#5-archive-node-%e6%89%8d%e6%94%af%e6%8c%81%e5%8e%86%e5%8f%b2-block-call" class="header-anchor"&gt;&lt;/a&gt;5. archive node 才支持历史 block call
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -1860,7 +1874,8 @@ DeepLink&lt;/li&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;非 archive 节点只保留最近 128 block 的状态——历史 block call 会失败。&lt;/p&gt;
 &lt;h3 id="6-模拟环境和真实差异"&gt;&lt;a href="#6-%e6%a8%a1%e6%8b%9f%e7%8e%af%e5%a2%83%e5%92%8c%e7%9c%9f%e5%ae%9e%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;6. 模拟环境和真实差异
-&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate 给的 gas 可能不准。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate
+给的 gas 可能不准。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八常见-web3-库的封装"&gt;&lt;a href="#%e5%85%ab%e5%b8%b8%e8%a7%81-web3-%e5%ba%93%e7%9a%84%e5%b0%81%e8%a3%85" class="header-anchor"&gt;&lt;/a&gt;八、常见 Web3 库的封装
 &lt;/h2&gt;&lt;table&gt;

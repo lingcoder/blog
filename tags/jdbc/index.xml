@@ -293,7 +293,8 @@
 &lt;/div&gt;&lt;p&gt;Spring Boot 启动时会扫描所有 jar 的 &lt;code&gt;spring.factories&lt;/code&gt;，按 key 加载对应类——&lt;strong&gt;这就是 starter 自动装配的本质&lt;/strong&gt;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;Spring Boot 2.7 后逐步迁移到 &lt;code&gt;META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports&lt;/code&gt;，理由是按&amp;quot;接口名 = 文件名&amp;quot;的方式更清晰。&lt;/p&gt;
+ &lt;p&gt;Spring Boot 2.7 后逐步迁移到 &lt;code&gt;META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports&lt;/code&gt;
+，理由是按&amp;quot;接口名 = 文件名&amp;quot;的方式更清晰。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;总结这几套 SPI 的演进：&lt;/p&gt;
@@ -406,9 +407,11 @@
 &lt;h3 id="3-实现类必须-public-无参构造器"&gt;&lt;a href="#3-%e5%ae%9e%e7%8e%b0%e7%b1%bb%e5%bf%85%e9%a1%bb-public-%e6%97%a0%e5%8f%82%e6%9e%84%e9%80%a0%e5%99%a8" class="header-anchor"&gt;&lt;/a&gt;3. 实现类必须 public 无参构造器
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;AbstractXxxFactory&lt;/code&gt; 这种抽象类、private 构造器、没有无参构造器都加载失败。&lt;/p&gt;
 &lt;h3 id="4-类加载器隔离"&gt;&lt;a href="#4-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e5%99%a8%e9%9a%94%e7%a6%bb" class="header-anchor"&gt;&lt;/a&gt;4. 类加载器隔离
-&lt;/h3&gt;&lt;p&gt;容器化部署时，框架代码可能用不同的 ClassLoader——&lt;code&gt;ServiceLoader.load(Class)&lt;/code&gt; 默认用调用线程的 ContextClassLoader，复杂场景要显式指定。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;容器化部署时，框架代码可能用不同的 ClassLoader——&lt;code&gt;ServiceLoader.load(Class)&lt;/code&gt; 默认用调用线程的
+ContextClassLoader，复杂场景要显式指定。&lt;/p&gt;
 &lt;h3 id="5-spi-失败静默"&gt;&lt;a href="#5-spi-%e5%a4%b1%e8%b4%a5%e9%9d%99%e9%bb%98" class="header-anchor"&gt;&lt;/a&gt;5. SPI 失败静默
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ServiceLoader&lt;/code&gt; 加载失败默认&lt;strong&gt;抛出 &lt;code&gt;ServiceConfigurationError&lt;/code&gt;&lt;/strong&gt;，但&lt;strong&gt;异常往往被框架吞了&lt;/strong&gt;。生产排查时需要打开 SPI 加载的 DEBUG 日志。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;ServiceLoader&lt;/code&gt; 加载失败默认&lt;strong&gt;抛出 &lt;code&gt;ServiceConfigurationError&lt;/code&gt;&lt;/strong&gt;，但&lt;strong&gt;异常往往被框架吞了&lt;/strong&gt;。生产排查时需要打开 SPI 加载的
+DEBUG 日志。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="九什么场景该自己用-spi"&gt;&lt;a href="#%e4%b9%9d%e4%bb%80%e4%b9%88%e5%9c%ba%e6%99%af%e8%af%a5%e8%87%aa%e5%b7%b1%e7%94%a8-spi" class="header-anchor"&gt;&lt;/a&gt;九、什么场景该自己用 SPI
 &lt;/h2&gt;&lt;p&gt;不要为了&amp;quot;看起来高级&amp;quot;而用 SPI——&lt;strong&gt;只有真正需要&amp;quot;框架代码不知道实现，但运行时能加载&amp;quot;时才值得&lt;/strong&gt;：&lt;/p&gt;

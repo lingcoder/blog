@@ -184,7 +184,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;优先用 snsapi_base&lt;/strong&gt;——拿到 openid 后查自己业务库即可，多数场景够用。&lt;strong&gt;只有真要展示用户头像昵称时才用 snsapi_userinfo&lt;/strong&gt;——它会弹一个授权页打断流程。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优先用 snsapi_base&lt;/strong&gt;——拿到 openid 后查自己业务库即可，多数场景够用。&lt;strong&gt;只有真要展示用户头像昵称时才用 snsapi_userinfo&lt;/strong&gt;
+——它会弹一个授权页打断流程。&lt;/p&gt;
 &lt;h3 id="接入要求"&gt;&lt;a href="#%e6%8e%a5%e5%85%a5%e8%a6%81%e6%b1%82" class="header-anchor"&gt;&lt;/a&gt;接入要求
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;服务号&lt;/strong&gt;（订阅号没有 OAuth 接口）&lt;/li&gt;
@@ -418,7 +419,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;PC 网站用开放平台 OAuth；H5 微信内用公众号 OAuth；想顺带涨粉用『关注公众号即登录』。三者底层协议都是微信生态，但接入门槛、体验、营销价值差别很大。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**PC 网站用开放平台 OAuth；H5 微信内用公众号 OAuth；想顺带涨粉用『关注公众号即登录』。三者底层协议都是微信生态，但接入门槛、体验、营销价值差别很大。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程上记住几条：&lt;/p&gt;

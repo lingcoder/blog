@@ -7,7 +7,8 @@
 &lt;li&gt;ERC-2981 解决了版税问题&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;新人看到这些数字号就头疼——&lt;strong&gt;每个具体在做什么？哪些重要哪些次要？&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;本文给一份&lt;strong&gt;能查的清单&lt;/strong&gt;——按用途分类，每个标准用一段讲清楚是什么、为什么重要、典型用法。&lt;strong&gt;适合放到 Notion / Obsidian 里&lt;/strong&gt;作为日常查询。&lt;/p&gt;
+&lt;p&gt;本文给一份&lt;strong&gt;能查的清单&lt;/strong&gt;——按用途分类，每个标准用一段讲清楚是什么、为什么重要、典型用法。&lt;strong&gt;适合放到 Notion / Obsidian 里&lt;/strong&gt;
+作为日常查询。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一erc-vs-eip"&gt;&lt;a href="#%e4%b8%80erc-vs-eip" class="header-anchor"&gt;&lt;/a&gt;一、ERC vs EIP
 &lt;/h2&gt;&lt;p&gt;先把概念分清：&lt;/p&gt;
@@ -287,9 +288,13 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;好处&lt;/strong&gt;：费用更可预测、ETH 经济学进入通缩。&lt;/p&gt;
 &lt;h3 id="eip-1283--2200--2929gas-调整"&gt;&lt;a href="#eip-1283--2200--2929gas-%e8%b0%83%e6%95%b4" class="header-anchor"&gt;&lt;/a&gt;EIP-1283 / 2200 / 2929：Gas 调整
-&lt;/h3&gt;&lt;p&gt;历史上多次调整 SSTORE / SLOAD 的 Gas 成本，主要影响合约 gas 估算与底层操作成本。&lt;strong&gt;经典副作用&lt;/strong&gt;是 EIP-2929（Berlin，2021-04）抬高 SLOAD/CALL 成本后，依赖固定 2300 gas 的 &lt;code&gt;transfer&lt;/code&gt; / &lt;code&gt;send&lt;/code&gt; 在接收方为合约时不再可靠——这是真实改变了应用层的可用性，并不只是&amp;quot;算 gas 时数字变了&amp;quot;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;历史上多次调整 SSTORE / SLOAD 的 Gas 成本，主要影响合约 gas 估算与底层操作成本。&lt;strong&gt;经典副作用&lt;/strong&gt;是
+EIP-2929（Berlin，2021-04）抬高 SLOAD/CALL 成本后，依赖固定 2300 gas 的 &lt;code&gt;transfer&lt;/code&gt; / &lt;code&gt;send&lt;/code&gt;
+在接收方为合约时不再可靠——这是真实改变了应用层的可用性，并不只是&amp;quot;算 gas 时数字变了&amp;quot;。&lt;/p&gt;
 &lt;h3 id="eip-3074--eip-7702让-eoa-也能批量执行"&gt;&lt;a href="#eip-3074--eip-7702%e8%ae%a9-eoa-%e4%b9%9f%e8%83%bd%e6%89%b9%e9%87%8f%e6%89%a7%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;EIP-3074 / EIP-7702：让 EOA 也能&amp;quot;批量执行&amp;quot;
-&lt;/h3&gt;&lt;p&gt;让 EOA 也能像智能账户一样&amp;quot;批量执行&amp;quot;。&lt;strong&gt;EIP-3074&lt;/strong&gt;（AUTH / AUTHCALL）方向几次评审后被放弃，由更轻量的 &lt;strong&gt;EIP-7702&lt;/strong&gt; 取代——后者已随 &lt;strong&gt;Pectra 升级（2025-05）上线主网&lt;/strong&gt;。EIP-7702 让 EOA 在一笔交易内&amp;quot;临时&amp;quot;挂上一段合约代码，从而原子地批量调用、付费代付（gas sponsor）、与 ERC-4337 形成互补。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;让 EOA 也能像智能账户一样&amp;quot;批量执行&amp;quot;。&lt;strong&gt;EIP-3074&lt;/strong&gt;（AUTH / AUTHCALL）方向几次评审后被放弃，由更轻量的 &lt;strong&gt;EIP-7702&lt;/strong&gt; 取代——后者已随
+&lt;strong&gt;Pectra 升级（2025-05）上线主网&lt;/strong&gt;。EIP-7702 让 EOA 在一笔交易内&amp;quot;临时&amp;quot;挂上一段合约代码，从而原子地批量调用、付费代付（gas
+sponsor）、与 ERC-4337 形成互补。&lt;/p&gt;
 &lt;h3 id="eip-4844proto-danksharding2024-年上线"&gt;&lt;a href="#eip-4844proto-danksharding2024-%e5%b9%b4%e4%b8%8a%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;EIP-4844：Proto-Danksharding（2024 年上线）
 &lt;/h3&gt;
  &lt;blockquote&gt;

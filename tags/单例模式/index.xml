@@ -101,7 +101,7 @@
 &lt;/div&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;其他&lt;/strong&gt;：&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id="3--双重检测锁式dcl"&gt;&lt;a href="#3--%e5%8f%8c%e9%87%8d%e6%a3%80%e6%b5%8b%e9%94%81%e5%bc%8fdcl" class="header-anchor"&gt;&lt;/a&gt;3. 双重检测锁式（DCL）
+&lt;h4 id="3-双重检测锁式dcl"&gt;&lt;a href="#3-%e5%8f%8c%e9%87%8d%e6%a3%80%e6%b5%8b%e9%94%81%e5%bc%8fdcl" class="header-anchor"&gt;&lt;/a&gt;3. 双重检测锁式（DCL）
 &lt;/h4&gt;
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;描述&lt;/strong&gt;: 将同步内容放到 if 内部，提高效率，仅第一次未创建时需要同步。&lt;/p&gt;
@@ -109,7 +109,9 @@
  &lt;/blockquote&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;关键点&lt;/strong&gt;: &lt;code&gt;instance&lt;/code&gt; &lt;strong&gt;必须声明为 &lt;code&gt;volatile&lt;/code&gt;&lt;/strong&gt;——否则 JVM 在 &lt;code&gt;new&lt;/code&gt; 的字节码层面可能发生指令重排（先分配引用、再初始化对象），导致另一个线程拿到一个尚未构造完成的对象。这是 DCL 在 JDK 1.5 之前不可靠的根源。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;关键点&lt;/strong&gt;: &lt;code&gt;instance&lt;/code&gt; &lt;strong&gt;必须声明为 &lt;code&gt;volatile&lt;/code&gt;&lt;/strong&gt;——否则 JVM 在 &lt;code&gt;new&lt;/code&gt;
+的字节码层面可能发生指令重排（先分配引用、再初始化对象），导致另一个线程拿到一个尚未构造完成的对象。这是 DCL 在 JDK 1.5
+之前不可靠的根源。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 
@@ -160,7 +162,8 @@
 &lt;/div&gt;&lt;h4 id="4--静态内部类式"&gt;&lt;a href="#4--%e9%9d%99%e6%80%81%e5%86%85%e9%83%a8%e7%b1%bb%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;4. 静态内部类式
 &lt;/h4&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;描述&lt;/strong&gt;: 外部类没有静态属性，静态内部类只在被调用时才会加载——&lt;strong&gt;类加载的初始化由 JVM 通过 ClassLoader 的类初始化锁保证线程安全&lt;/strong&gt;（JLS §12.4.2）；&lt;code&gt;static final&lt;/code&gt; 保证内存中只有一个实例且引用不可变。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;描述&lt;/strong&gt;: 外部类没有静态属性，静态内部类只在被调用时才会加载——**类加载的初始化由 JVM 通过 ClassLoader 的类初始化锁保证线程安全
+**（JLS §12.4.2）；&lt;code&gt;static final&lt;/code&gt; 保证内存中只有一个实例且引用不可变。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 
@@ -213,8 +216,10 @@
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;描述&lt;/strong&gt;: 枚举本身就是单例模式。由 JVM 从根本上提供保障——&lt;strong&gt;反射和反序列化都打不破&lt;/strong&gt;：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;反射&lt;/strong&gt;：&lt;code&gt;Constructor.newInstance()&lt;/code&gt; 检测到目标是枚举类型时，直接抛 &lt;code&gt;IllegalArgumentException(&amp;quot;Cannot reflectively create enum objects&amp;quot;)&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;反序列化&lt;/strong&gt;：枚举的反序列化由 JVM 走特殊路径（&lt;code&gt;Enum.valueOf&lt;/code&gt;），永远返回同一实例，根本不调用任何 &lt;code&gt;readObject&lt;/code&gt; / &lt;code&gt;readResolve&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反射&lt;/strong&gt;：&lt;code&gt;Constructor.newInstance()&lt;/code&gt; 检测到目标是枚举类型时，直接抛
+&lt;code&gt;IllegalArgumentException(&amp;quot;Cannot reflectively create enum objects&amp;quot;)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;反序列化&lt;/strong&gt;：枚举的反序列化由 JVM 走特殊路径（&lt;code&gt;Enum.valueOf&lt;/code&gt;），永远返回同一实例，根本不调用任何 &lt;code&gt;readObject&lt;/code&gt; /
+&lt;code&gt;readResolve&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
  &lt;/blockquote&gt;

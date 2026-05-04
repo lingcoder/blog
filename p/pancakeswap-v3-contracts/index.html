@@ -92,22 +92,22 @@ Uniswap / PancakeSwap 都把 core 锁得死死的（连接口都很 minimal）�
 </span><span class=lnt>17
 </span><span class=lnt>18
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-solidity data-lang=solidity><span class=line><span class=cl><span class=kd>function</span> <span class=nf>swap</span><span class=p>(...)</span> <span class=k>external</span> <span class=k>override</span> <span class=k>returns</span> <span class=p>(...)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=c1>// ...
-</span></span></span><span class=line><span class=cl>    <span class=n>IPancakeV3LmPool</span> <span class=n>_lmPool</span> <span class=o>=</span> <span class=n>lmPool</span><span class=p>;</span>            <span class=c1>// 池绑定的挖矿合约
-</span></span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=kt>address</span><span class=p>(</span><span class=n>_lmPool</span><span class=p>)</span> <span class=o>!=</span> <span class=kt>address</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>        <span class=n>_lmPool</span><span class=p>.</span><span class=n>accumulateReward</span><span class=p>(</span><span class=kt>uint32</span><span class=p>(</span><span class=nb>block</span><span class=p>.</span><span class=nb>timestamp</span><span class=p>));</span>   <span class=c1>// ← 累加奖励
-</span></span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=n>IPancakeV3LmPool</span> <span class=n>_lmPool</span> <span class=o>=</span> <span class=n>lmPool</span><span class=p>;</span>            <span class=c1>// 池绑定的挖矿合约
+</span></span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=kt>address</span><span class=p>(</span><span class=n>_lmPool</span><span class=p>)</span> <span class=o>!=</span> <span class=kt>address</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=n>_lmPool</span><span class=p>.</span><span class=n>accumulateReward</span><span class=p>(</span><span class=kt>uint32</span><span class=p>(</span><span class=nb>block</span><span class=p>.</span><span class=nb>timestamp</span><span class=p>));</span>   <span class=c1>// ← 累加奖励
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>    <span class=c1>// ... while loop 跨 tick
-</span></span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>state</span><span class=p>.</span><span class=n>liquidity</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>        <span class=c1>// ...
-</span></span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>step</span><span class=p>.</span><span class=n>initialized</span><span class=p>)</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=kt>address</span><span class=p>(</span><span class=n>_lmPool</span><span class=p>)</span> <span class=o>!=</span> <span class=kt>address</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>                <span class=n>_lmPool</span><span class=p>.</span><span class=n>crossLmTick</span><span class=p>(</span><span class=n>step</span><span class=p>.</span><span class=n>tickNext</span><span class=p>,</span> <span class=n>zeroForOne</span><span class=p>);</span>  <span class=c1>// ← 跨 tick 时通知
-</span></span></span><span class=line><span class=cl>            <span class=p>}</span>
-</span></span><span class=line><span class=cl>            <span class=c1>// ... ticks.cross()
-</span></span></span><span class=line><span class=cl>        <span class=p>}</span>
-</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// ... while loop 跨 tick
+</span></span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=n>state</span><span class=p>.</span><span class=n>liquidity</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=c1>// ...
+</span></span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=n>step</span><span class=p>.</span><span class=n>initialized</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=kt>address</span><span class=p>(</span><span class=n>_lmPool</span><span class=p>)</span> <span class=o>!=</span> <span class=kt>address</span><span class=p>(</span><span class=mi>0</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=n>_lmPool</span><span class=p>.</span><span class=n>crossLmTick</span><span class=p>(</span><span class=n>step</span><span class=p>.</span><span class=n>tickNext</span><span class=p>,</span> <span class=n>zeroForOne</span><span class=p>);</span>  <span class=c1>// ← 跨 tick 时通知
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=c1>// ... ticks.cross()
+</span></span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></td></tr></table></div></div><p>Uniswap V3 的 <code>UniswapV3Pool.swap()</code> 完全不知道挖矿——这两行 hook 是 PancakeSwap 在 core 里加的协议级改动。代价是每次 swap
 多 5-10k gas，收益是挖矿状态与 Pool 状态在同一笔交易里同步更新，没有第三方监听延迟。</p><h3 id=32-多了-pancakev3lmpool-合约><a href=#32-%e5%a4%9a%e4%ba%86-pancakev3lmpool-%e5%90%88%e7%ba%a6 class=header-anchor></a>3.2 多了 PancakeV3LmPool 合约</h3><p>每个 PancakeV3Pool 部署时，会通过 <code>LmPoolDeployer</code> 同时部署一个 <code>PancakeV3LmPool</code> 实例，与 Pool <strong>1:1 绑定</strong>。这个合约维护：</p><ul><li>每个 tick 的 <code>rewardGrowthOutside</code></li><li>全局 <code>rewardGrowthGlobal</code></li><li>当前 reward rate（每秒释放多少 CAKE）</li></ul><p><strong>Uniswap V3 没有对应合约</strong>——它的 <code>UniswapV3Staker</code> 是独立合约，每个 NFT 在 stake 时单独记账，Pool 完全不感知。</p><h3 id=33-masterchefv3-vs-uniswapv3staker><a href=#33-masterchefv3-vs-uniswapv3staker class=header-anchor></a>3.3 MasterChefV3 vs UniswapV3Staker</h3><div class=table-wrapper><table><thead><tr><th style=text-align:left></th><th style=text-align:left>UniswapV3Staker</th><th style=text-align:left>MasterChefV3</th></tr></thead><tbody><tr><td style=text-align:left>与 Pool 的关系</td><td style=text-align:left>完全外挂，Pool 不感知</td><td style=text-align:left>通过 LmPool 与 Pool 在 swap 路径上同步</td></tr><tr><td style=text-align:left>奖励来源</td><td style=text-align:left>任何 ERC20（项目方注入）</td><td style=text-align:left>主要是 CAKE，由协议挖矿释放</td></tr><tr><td style=text-align:left>Boost</td><td style=text-align:left>没有</td><td style=text-align:left>FarmBooster 1x~2x（基于 veCAKE）</td></tr><tr><td style=text-align:left>Stake 形式</td><td style=text-align:left>把 NFT 锁进合约</td><td style=text-align:left>NFT.safeTransferFrom 给 MasterChef</td></tr><tr><td style=text-align:left>奖励计算</td><td style=text-align:left>stake 时记快照，unstake 时算差值</td><td style=text-align:left>每次 swap 同步累加，collect 时算差值</td></tr></tbody></table></div><p>差异的根因是上篇讲过的"协议级 hook vs 外挂"——MasterChefV3 能在 swap 路径上同步累加，因为 Pool 主动调用
@@ -118,9 +118,9 @@ FarmBooster，把 raw liquidity 放大成 boostLiquidity。Uniswap V3 没有任�
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-solidity data-lang=solidity><span class=line><span class=cl><span class=c1>// PancakeV3Factory 构造函数
-</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>100</span><span class=p>]</span>   <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>     <span class=c1>// 0.01% (与 Uniswap 相同)
-</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>500</span><span class=p>]</span>   <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>    <span class=c1>// 0.05% (与 Uniswap 相同)
-</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>2500</span><span class=p>]</span>  <span class=o>=</span> <span class=mi>50</span><span class=p>;</span>    <span class=c1>// 0.25% (Uniswap 是 3000 / 60)
+</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>100</span><span class=p>]</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>     <span class=c1>// 0.01% (与 Uniswap 相同)
+</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>500</span><span class=p>]</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>    <span class=c1>// 0.05% (与 Uniswap 相同)
+</span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>2500</span><span class=p>]</span> <span class=o>=</span> <span class=mi>50</span><span class=p>;</span>    <span class=c1>// 0.25% (Uniswap 是 3000 / 60)
 </span></span></span><span class=line><span class=cl><span class=n>feeAmountTickSpacing</span><span class=p>[</span><span class=mi>10000</span><span class=p>]</span> <span class=o>=</span> <span class=mi>200</span><span class=p>;</span>   <span class=c1>// 1.00% (与 Uniswap 相同)
 </span></span></span></code></pre></td></tr></table></div></div><p>注意 Uniswap V3 后来通过治理也加过 0.01% 档，但 0.30% 一直在，PancakeSwap 没有 0.30% 而是 0.25%——这导致<strong>两套池的 fee tier
 完全不能相互替代</strong>。</p><h3 id=36-命名--前缀差异仅-rename><a href=#36-%e5%91%bd%e5%90%8d--%e5%89%8d%e7%bc%80%e5%b7%ae%e5%bc%82%e4%bb%85-rename class=header-anchor></a>3.6 命名 / 前缀差异（仅 rename）</h3><p>合约名都从 <code>UniswapV3*</code> 改为 <code>PancakeV3*</code>，callback 函数名相应改为 <code>pancakeV3MintCallback</code> / <code>pancakeV3SwapCallback</code> /
@@ -146,7 +146,7 @@ Pool 的构造函数是无参的，从外部 storage 读——这是一个非常
 </span><span class=lnt>14
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-solidity data-lang=solidity><span class=line><span class=cl><span class=c1>// 全局热点状态，塞进一个 storage slot
 </span></span></span><span class=line><span class=cl><span class=kd>struct</span> <span class=nc>Slot0</span> <span class=p>{</span>
-</span></span><span class=line><span class=cl>    <span class=kt>uint160</span> <span class=n>sqrtPriceX96</span><span class=p>;</span>             <span class=c1>// 当前价格（平方根表示, Q64.96）
+</span></span><span class=line><span class=cl>   <span class=kt>uint160</span> <span class=n>sqrtPriceX96</span><span class=p>;</span>             <span class=c1>// 当前价格（平方根表示, Q64.96）
 </span></span></span><span class=line><span class=cl>    <span class=kt>int24</span>   <span class=n>tick</span><span class=p>;</span>                     <span class=c1>// 当前 tick
 </span></span></span><span class=line><span class=cl>    <span class=kt>uint16</span>  <span class=n>observationIndex</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=kt>uint16</span>  <span class=n>observationCardinality</span><span class=p>;</span>
@@ -181,7 +181,7 @@ $$</p><p>其中 L 是流动性。如果存 price，每次 swap 都要做开方�
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-solidity data-lang=solidity><span class=line><span class=cl><span class=kd>struct</span> <span class=nc>Position</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>    <span class=kt>uint96</span>  <span class=n>nonce</span><span class=p>;</span>                       <span class=c1>// permit nonce
 </span></span></span><span class=line><span class=cl>    <span class=kt>address</span> <span class=n>operator</span><span class=p>;</span>                    <span class=c1>// 授权操作者
-</span></span></span><span class=line><span class=cl>    <span class=kt>uint80</span>  <span class=n>poolId</span><span class=p>;</span>                      <span class=c1>// 池 ID（指向 _poolIdToPoolKey）
+</span></span></span><span class=line><span class=cl>   <span class=kt>uint80</span> <span class=n>poolId</span><span class=p>;</span>                      <span class=c1>// 池 ID（指向 _poolIdToPoolKey）
 </span></span></span><span class=line><span class=cl>    <span class=kt>int24</span>   <span class=n>tickLower</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=kt>int24</span>   <span class=n>tickUpper</span><span class=p>;</span>
 </span></span><span class=line><span class=cl>    <span class=kt>uint128</span> <span class=n>liquidity</span><span class=p>;</span>                   <span class=c1>// 该 NFT 的流动性份额

@@ -408,7 +408,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;NFT 性质的 token 永远 amount = 1。&lt;/p&gt;
 &lt;h3 id="3-metadata-占位符兼容"&gt;&lt;a href="#3-metadata-%e5%8d%a0%e4%bd%8d%e7%ac%a6%e5%85%bc%e5%ae%b9" class="header-anchor"&gt;&lt;/a&gt;3. metadata 占位符兼容
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;{id}&lt;/code&gt; 占位符是 ERC-1155 标准里规定的——&lt;strong&gt;实际平台支持参差不齐&lt;/strong&gt;。OpenSea / 区块链浏览器多数支持，但小钱包可能不识别——保险起见每个 id 单独配 URI。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;{id}&lt;/code&gt; 占位符是 ERC-1155 标准里规定的——&lt;strong&gt;实际平台支持参差不齐&lt;/strong&gt;。OpenSea / 区块链浏览器多数支持，但小钱包可能不识别——保险起见每个
+id 单独配 URI。&lt;/p&gt;
 &lt;h3 id="4-不要混用模型"&gt;&lt;a href="#4-%e4%b8%8d%e8%a6%81%e6%b7%b7%e7%94%a8%e6%a8%a1%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;4. 不要混用模型
 &lt;/h3&gt;&lt;p&gt;同一个项目里&lt;strong&gt;要么用 ERC-721 要么用 ERC-1155&lt;/strong&gt;，不要在一个集合里两种都发。买家会困惑：&lt;/p&gt;
 &lt;ul&gt;

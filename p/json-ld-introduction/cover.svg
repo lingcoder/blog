@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5DAEDF"/>
-          <stop offset="1" stop-color="#A0D4E8"/>
-      </linearGradient>
-      <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFC845"/>
-          <stop offset="1" stop-color="#A8782A"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5DAEDF"/>
+            <stop offset="1" stop-color="#A0D4E8"/>
+        </linearGradient>
+        <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFC845"/>
+            <stop offset="1" stop-color="#A8782A"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="350" fill="url(#sky)"/>
 
@@ -35,7 +35,7 @@
         <ellipse cx="780" cy="340" rx="50" ry="20"/>
         <ellipse cx="1000" cy="340" rx="55" ry="22"/>
         <ellipse cx="1140" cy="338" rx="50" ry="20"/>
-  </g>
+    </g>
 
     <!-- Sunflower field background -->
     <rect y="350" width="1200" height="280" fill="url(#field)"/>

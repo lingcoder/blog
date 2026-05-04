@@ -345,7 +345,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;不要随机分流&lt;/strong&gt;——要确定性 hash，避免同一用户在实验间被反复切换。生产推荐用 Guava &lt;code&gt;Hashing.murmur3_32()&lt;/code&gt; 等分布更均匀的 hash 替代 &lt;code&gt;String.hashCode()&lt;/code&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;不要随机分流&lt;/strong&gt;——要确定性 hash，避免同一用户在实验间被反复切换。生产推荐用 Guava &lt;code&gt;Hashing.murmur3_32()&lt;/code&gt; 等分布更均匀的
+hash 替代 &lt;code&gt;String.hashCode()&lt;/code&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八典型陷阱清单"&gt;&lt;a href="#%e5%85%ab%e5%85%b8%e5%9e%8b%e9%99%b7%e9%98%b1%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、典型陷阱清单
 &lt;/h2&gt;&lt;h3 id="1-指标聚合时的-simpson-悖论"&gt;&lt;a href="#1-%e6%8c%87%e6%a0%87%e8%81%9a%e5%90%88%e6%97%b6%e7%9a%84-simpson-%e6%82%96%e8%ae%ba" class="header-anchor"&gt;&lt;/a&gt;1. 指标聚合时的 Simpson 悖论

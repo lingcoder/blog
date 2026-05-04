@@ -87,7 +87,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; (独立验证，无需 Prover)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，&lt;strong&gt;用 hash 的不可预测性替代真实的随机交互&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，**用 hash 的不可预测性替代真实的随机交互
+**。&lt;/p&gt;
 &lt;p&gt;NIZK 是区块链应用 ZKP 的基础。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四zk-snark高效的-nizk"&gt;&lt;a href="#%e5%9b%9bzk-snark%e9%ab%98%e6%95%88%e7%9a%84-nizk" class="header-anchor"&gt;&lt;/a&gt;四、zk-SNARK：高效的 NIZK
@@ -266,7 +267,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;h3 id="2-证明体积小但验证仍要-gas"&gt;&lt;a href="#2-%e8%af%81%e6%98%8e%e4%bd%93%e7%a7%af%e5%b0%8f%e4%bd%86%e9%aa%8c%e8%af%81%e4%bb%8d%e8%a6%81-gas" class="header-anchor"&gt;&lt;/a&gt;2. 证明体积小，但验证仍要 Gas
 &lt;/h3&gt;&lt;p&gt;zk-SNARK 验证大约 200-500K gas——比传统验证贵，但比 Optimistic Rollup 的&amp;quot;挑战 + 仲裁&amp;quot;安全得多。&lt;/p&gt;
 &lt;h3 id="3-trusted-setup-风险"&gt;&lt;a href="#3-trusted-setup-%e9%a3%8e%e9%99%a9" class="header-anchor"&gt;&lt;/a&gt;3. Trusted Setup 风险
-&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;
+。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
 &lt;h3 id="4-电路开发门槛高"&gt;&lt;a href="#4-%e7%94%b5%e8%b7%af%e5%bc%80%e5%8f%91%e9%97%a8%e6%a7%9b%e9%ab%98" class="header-anchor"&gt;&lt;/a&gt;4. 电路开发门槛高
 &lt;/h3&gt;&lt;p&gt;写电路是一种新范式——和写普通代码差别很大。&lt;strong&gt;需要的 bug 排查能力、性能调优能力都不同&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="5-工具链还在演进"&gt;&lt;a href="#5-%e5%b7%a5%e5%85%b7%e9%93%be%e8%bf%98%e5%9c%a8%e6%bc%94%e8%bf%9b" class="header-anchor"&gt;&lt;/a&gt;5. 工具链还在演进

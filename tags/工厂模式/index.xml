@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工厂模式 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link><description>Recent content in 工厂模式 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 12 Jul 2018 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml"/><item><title>设计模式漫谈：四种「工厂」到底有什么区别</title><link>https://www.lingcoder.com/p/design-patterns-four-factories/</link><pubDate>Thu, 12 Jul 2018 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/design-patterns-four-factories/</guid><description>&lt;img src="https://www.lingcoder.com/p/design-patterns-four-factories/cover.svg" alt="Featured image of post 设计模式漫谈：四种「工厂」到底有什么区别" /&gt;&lt;p&gt;很多人聊&amp;quot;工厂模式&amp;quot;时会下意识地说&amp;quot;工厂模式嘛，就是 &lt;code&gt;XxxFactory.create()&lt;/code&gt;&amp;quot;——可一旦有人追问&amp;quot;那简单工厂、静态工厂、工厂方法、抽象工厂到底有啥区别？&amp;quot;，往往就答不上来了。&lt;/p&gt;
-&lt;p&gt;这四个词长得像，但实际上&lt;strong&gt;只有两个属于 GoF 23 种正统设计模式&lt;/strong&gt;，剩下两个是工程实践里大家叫顺嘴的&amp;quot;非正式说法&amp;quot;。今天我们就把它们一次性捋清楚。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>工厂模式 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link><description>Recent content in 工厂模式 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 12 Jul 2018 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml"/><item><title>设计模式漫谈：四种「工厂」到底有什么区别</title><link>https://www.lingcoder.com/p/design-patterns-four-factories/</link><pubDate>Thu, 12 Jul 2018 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/design-patterns-four-factories/</guid><description>&lt;img src="https://www.lingcoder.com/p/design-patterns-four-factories/cover.svg" alt="Featured image of post 设计模式漫谈：四种「工厂」到底有什么区别" /&gt;&lt;p&gt;很多人聊&amp;quot;工厂模式&amp;quot;时会下意识地说&amp;quot;工厂模式嘛，就是 &lt;code&gt;XxxFactory.create()&lt;/code&gt;&amp;quot;——可一旦有人追问&amp;quot;
+那简单工厂、静态工厂、工厂方法、抽象工厂到底有啥区别？&amp;quot;，往往就答不上来了。&lt;/p&gt;
+&lt;p&gt;这四个词长得像，但实际上&lt;strong&gt;只有两个属于 GoF 23 种正统设计模式&lt;/strong&gt;，剩下两个是工程实践里大家叫顺嘴的&amp;quot;非正式说法&amp;quot;
+。今天我们就把它们一次性捋清楚。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="先从一个让人头大的例子说起"&gt;&lt;a href="#%e5%85%88%e4%bb%8e%e4%b8%80%e4%b8%aa%e8%ae%a9%e4%ba%ba%e5%a4%b4%e5%a4%a7%e7%9a%84%e4%be%8b%e5%ad%90%e8%af%b4%e8%b5%b7" class="header-anchor"&gt;&lt;/a&gt;先从一个让人头大的例子说起
 &lt;/h2&gt;&lt;p&gt;假设我们要做一个发送通知的功能，有三种渠道：短信、邮件、推送。最直觉的写法是：&lt;/p&gt;
@@ -169,7 +171,8 @@
 &lt;h3 id="为什么推荐它"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%8e%a8%e8%8d%90%e5%ae%83" class="header-anchor"&gt;&lt;/a&gt;为什么推荐它
 &lt;/h3&gt;&lt;p&gt;相比 &lt;code&gt;new&lt;/code&gt; 构造器，静态工厂方法有四个真正有价值的优点：&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;方法可以有名字&lt;/strong&gt;——&lt;code&gt;Color.fromHex(&amp;quot;#FF0000&amp;quot;)&lt;/code&gt; 比 &lt;code&gt;new Color(255, 0, 0)&lt;/code&gt; 表达力强得多。一个类想要&amp;quot;多种构造方式&amp;quot;时，构造器只能靠参数列表区分，名字不够用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法可以有名字&lt;/strong&gt;——&lt;code&gt;Color.fromHex(&amp;quot;#FF0000&amp;quot;)&lt;/code&gt; 比 &lt;code&gt;new Color(255, 0, 0)&lt;/code&gt; 表达力强得多。一个类想要&amp;quot;多种构造方式&amp;rdquo;
+时，构造器只能靠参数列表区分，名字不够用。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不必每次都创建新对象&lt;/strong&gt;——可以缓存、可以复用。&lt;code&gt;Integer.valueOf&lt;/code&gt; 和单例都是这个原理。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;可以返回子类型甚至接口类型&lt;/strong&gt;——隐藏具体实现，调用方只面向接口编程。&lt;code&gt;Files.newInputStream&lt;/code&gt; 就是个例子。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;返回类型可以根据参数动态决定&lt;/strong&gt;——&lt;code&gt;EnumSet.of(...)&lt;/code&gt; 会根据元素数量返回 &lt;code&gt;RegularEnumSet&lt;/code&gt; 或 &lt;code&gt;JumboEnumSet&lt;/code&gt;，调用方不感知。&lt;/li&gt;
@@ -177,7 +180,8 @@
 &lt;h3 id="它的代价"&gt;&lt;a href="#%e5%ae%83%e7%9a%84%e4%bb%a3%e4%bb%b7" class="header-anchor"&gt;&lt;/a&gt;它的代价
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;类如果没有 &lt;code&gt;public&lt;/code&gt; 构造器，就不能被子类继承&lt;/strong&gt;——这其实有时是好事（强制组合优于继承）。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;静态工厂方法和普通静态方法在 IDE 里不易区分&lt;/strong&gt;，所以业界约定了一组命名习惯：&lt;code&gt;of&lt;/code&gt; / &lt;code&gt;valueOf&lt;/code&gt; / &lt;code&gt;from&lt;/code&gt; / &lt;code&gt;getInstance&lt;/code&gt; / &lt;code&gt;newInstance&lt;/code&gt; / &lt;code&gt;create&lt;/code&gt;。看到这些名字，老司机就知道这是个工厂。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;静态工厂方法和普通静态方法在 IDE 里不易区分&lt;/strong&gt;，所以业界约定了一组命名习惯：&lt;code&gt;of&lt;/code&gt; / &lt;code&gt;valueOf&lt;/code&gt; / &lt;code&gt;from&lt;/code&gt; / &lt;code&gt;getInstance&lt;/code&gt; /
+&lt;code&gt;newInstance&lt;/code&gt; / &lt;code&gt;create&lt;/code&gt;。看到这些名字，老司机就知道这是个工厂。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="三工厂方法factory-method-gof-正统"&gt;&lt;a href="#%e4%b8%89%e5%b7%a5%e5%8e%82%e6%96%b9%e6%b3%95factory-method-gof-%e6%ad%a3%e7%bb%9f" class="header-anchor"&gt;&lt;/a&gt;三、工厂方法（Factory Method）—— GoF 正统
@@ -289,7 +293,7 @@
 &lt;p&gt;这就是开闭原则的真正落地。代价是类的数量翻倍，所以只在&amp;quot;扩展性收益 &amp;gt; 类爆炸成本&amp;quot;时才值得用。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四抽象工厂abstract-factory-gof-正统"&gt;&lt;a href="#%e5%9b%9b%e6%8a%bd%e8%b1%a1%e5%b7%a5%e5%8e%82abstract-factory-gof-%e6%ad%a3%e7%bb%9f" class="header-anchor"&gt;&lt;/a&gt;四、抽象工厂（Abstract Factory）—— GoF 正统
-&lt;/h2&gt;&lt;p&gt;工厂方法解决的是&amp;quot;一种产品有多种实现&amp;rdquo;。&lt;strong&gt;当一个场景里同时有多种产品，且这些产品需要&amp;quot;配套使用&amp;quot;时&lt;/strong&gt;，就需要抽象工厂。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;工厂方法解决的是&amp;quot;一种产品有多种实现&amp;quot;。&lt;strong&gt;当一个场景里同时有多种产品，且这些产品需要&amp;quot;配套使用&amp;quot;时&lt;/strong&gt;，就需要抽象工厂。&lt;/p&gt;
 &lt;h3 id="经典场景跨平台-ui"&gt;&lt;a href="#%e7%bb%8f%e5%85%b8%e5%9c%ba%e6%99%af%e8%b7%a8%e5%b9%b3%e5%8f%b0-ui" class="header-anchor"&gt;&lt;/a&gt;经典场景：跨平台 UI
 &lt;/h3&gt;&lt;p&gt;假设我们做一个跨平台 GUI 库，要支持 Windows 和 Mac，每个平台都有自己的 &lt;code&gt;Button&lt;/code&gt; 和 &lt;code&gt;Checkbox&lt;/code&gt;：&lt;/p&gt;
 &lt;table&gt;
@@ -470,7 +474,8 @@
 &lt;li&gt;&lt;strong&gt;类型会持续扩展、且希望&amp;quot;加新类型不动老代码&amp;quot;&lt;/strong&gt;：用工厂方法，配合 IoC 容器或 SPI 机制。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;要支持&amp;quot;多套互不相容的实现族&amp;quot;&lt;/strong&gt;：才考虑抽象工厂。它的复杂度不低，没真实需求别上。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;一个常被忽略的现实是——&lt;strong&gt;Spring/Guice 这类 IoC 容器，本身就是一个超级抽象工厂&lt;/strong&gt;。在用 Spring 的项目里，绝大多数&amp;quot;工厂模式&amp;quot;的需求其实可以通过 &lt;code&gt;@Bean&lt;/code&gt; + &lt;code&gt;@Qualifier&lt;/code&gt; 或 &lt;code&gt;Map&amp;lt;String, XxxStrategy&amp;gt;&lt;/code&gt; 注入直接解决，不必手写工厂类。&lt;/p&gt;
+&lt;p&gt;一个常被忽略的现实是——&lt;strong&gt;Spring/Guice 这类 IoC 容器，本身就是一个超级抽象工厂&lt;/strong&gt;。在用 Spring 的项目里，绝大多数&amp;quot;工厂模式&amp;quot;
+的需求其实可以通过 &lt;code&gt;@Bean&lt;/code&gt; + &lt;code&gt;@Qualifier&lt;/code&gt; 或 &lt;code&gt;Map&amp;lt;String, XxxStrategy&amp;gt;&lt;/code&gt; 注入直接解决，不必手写工厂类。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把四个工厂的本质用一句话压缩：&lt;/p&gt;

@@ -12,7 +12,8 @@
 &lt;li&gt;异常处理逻辑要重新设计&lt;/li&gt;
 &lt;li&gt;ThreadLocal、Spring Security context 全部不见了&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Reactor 不是『async 的语法糖』——它是另一种编程范式&lt;/strong&gt;。本文用最少的概念把 Reactor 讲清楚：核心思想、Mono / Flux、操作符、调度器、和典型陷阱。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reactor 不是『async 的语法糖』——它是另一种编程范式&lt;/strong&gt;。本文用最少的概念把 Reactor 讲清楚：核心思想、Mono /
+Flux、操作符、调度器、和典型陷阱。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一为什么需要响应式"&gt;&lt;a href="#%e4%b8%80%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%93%8d%e5%ba%94%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;一、为什么需要响应式
 &lt;/h2&gt;&lt;p&gt;传统 Spring MVC 的线程模型是&lt;strong&gt;一请求一线程&lt;/strong&gt;：&lt;/p&gt;
@@ -491,7 +492,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Reactor 不是『async 包装』，是『让你以&amp;quot;数据流&amp;quot;思维重写程序』——核心收益在 IO 密集、高并发场景，但要付出整条链路全异步的代价。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Reactor 不是『async 包装』，是『让你以&amp;quot;数据流&amp;quot;思维重写程序』——核心收益在 IO 密集、高并发场景，但要付出整条链路全异步的代价。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

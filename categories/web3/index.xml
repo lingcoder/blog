@@ -155,22 +155,22 @@ Uniswap / PancakeSwap 都把 core 锁得死死的（连接口都很 minimal）�
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nf"&gt;swap&lt;/span&gt;&lt;span class="p"&gt;(...)&lt;/span&gt; &lt;span class="k"&gt;external&lt;/span&gt; &lt;span class="k"&gt;override&lt;/span&gt; &lt;span class="k"&gt;returns&lt;/span&gt; &lt;span class="p"&gt;(...)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ...
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;IPancakeV3LmPool&lt;/span&gt; &lt;span class="n"&gt;_lmPool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lmPool&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 池绑定的挖矿合约
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;accumulateReward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint32&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;block&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;timestamp&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt; &lt;span class="c1"&gt;// ← 累加奖励
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;IPancakeV3LmPool&lt;/span&gt; &lt;span class="n"&gt;_lmPool&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lmPool&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// 池绑定的挖矿合约
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;accumulateReward&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint32&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;block&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;timestamp&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt; &lt;span class="c1"&gt;// ← 累加奖励
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ... while loop 跨 tick
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;liquidity&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ...
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;initialized&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;crossLmTick&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tickNext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;zeroForOne&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ← 跨 tick 时通知
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// ... ticks.cross()
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ... while loop 跨 tick
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;liquidity&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ...
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;initialized&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kt"&gt;address&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;_lmPool&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;crossLmTick&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;step&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tickNext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;zeroForOne&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ← 跨 tick 时通知
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ... ticks.cross()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -853,7 +853,8 @@ Solidity 一一对上。&lt;/p&gt;
 &lt;/ol&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;顺带一提的背景：Uniswap V3 上线时是 BSL（2 年内禁止商用 fork），PancakeSwap V3 是 BSL 到期后才合规 fork 并改造——这是商务/合规层面的事，不算协议扩展。&lt;/p&gt;
+ &lt;p&gt;顺带一提的背景：Uniswap V3 上线时是 BSL（2 年内禁止商用 fork），PancakeSwap V3 是 BSL 到期后才合规 fork
+并改造——这是商务/合规层面的事，不算协议扩展。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;本文是「PancakeSwap V3 深度解析」系列的&lt;strong&gt;上篇——协议篇&lt;/strong&gt;，讲清楚 V3 是什么、为什么这么设计、LP 怎么用，以 PancakeSwap V3
@@ -939,7 +940,8 @@ Solidity 一一对上。&lt;/p&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;PancakeSwap 把中间档从 0.30% 调到 0.25%，并且配套 tickSpacing=50。这小幅让利给 trader，叠加 PancakeSwap 在 BNB Chain 上的低
-gas 成本，主流 BNB token 池子大多集中在这一档。&lt;strong&gt;做跨 DEX 聚合 / 路径搜索时要注意&lt;/strong&gt;——PancakeSwap 0.25% 档和 Uniswap 0.30% 档
+gas 成本，主流 BNB token 池子大多集中在这一档。&lt;strong&gt;做跨 DEX 聚合 / 路径搜索时要注意&lt;/strong&gt;——PancakeSwap 0.25% 档和 Uniswap 0.30%
+档
 &lt;strong&gt;不是同一档&lt;/strong&gt;，聚合器配置或自实现路径时不能简单地把它们当作等价 fee tier。（顺带一提：两个协议的池子本来就是独立合约、流动性不互通，
 价格只通过套利者在链下慢慢趋同。）&lt;/p&gt;
 &lt;p&gt;低费率适合稳定币对——价格变化小、tickSpacing 也小；高费率适合波动大的资产——粗 tick 节省 Gas。&lt;/p&gt;
@@ -1231,7 +1233,8 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;ERC-2981 解决了版税问题&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;新人看到这些数字号就头疼——&lt;strong&gt;每个具体在做什么？哪些重要哪些次要？&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;本文给一份&lt;strong&gt;能查的清单&lt;/strong&gt;——按用途分类，每个标准用一段讲清楚是什么、为什么重要、典型用法。&lt;strong&gt;适合放到 Notion / Obsidian 里&lt;/strong&gt;作为日常查询。&lt;/p&gt;
+&lt;p&gt;本文给一份&lt;strong&gt;能查的清单&lt;/strong&gt;——按用途分类，每个标准用一段讲清楚是什么、为什么重要、典型用法。&lt;strong&gt;适合放到 Notion / Obsidian 里&lt;/strong&gt;
+作为日常查询。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一erc-vs-eip"&gt;&lt;a href="#%e4%b8%80erc-vs-eip" class="header-anchor"&gt;&lt;/a&gt;一、ERC vs EIP
 &lt;/h2&gt;&lt;p&gt;先把概念分清：&lt;/p&gt;
@@ -1511,9 +1514,13 @@ boost 系数。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;好处&lt;/strong&gt;：费用更可预测、ETH 经济学进入通缩。&lt;/p&gt;
 &lt;h3 id="eip-1283--2200--2929gas-调整"&gt;&lt;a href="#eip-1283--2200--2929gas-%e8%b0%83%e6%95%b4" class="header-anchor"&gt;&lt;/a&gt;EIP-1283 / 2200 / 2929：Gas 调整
-&lt;/h3&gt;&lt;p&gt;历史上多次调整 SSTORE / SLOAD 的 Gas 成本，主要影响合约 gas 估算与底层操作成本。&lt;strong&gt;经典副作用&lt;/strong&gt;是 EIP-2929（Berlin，2021-04）抬高 SLOAD/CALL 成本后，依赖固定 2300 gas 的 &lt;code&gt;transfer&lt;/code&gt; / &lt;code&gt;send&lt;/code&gt; 在接收方为合约时不再可靠——这是真实改变了应用层的可用性，并不只是&amp;quot;算 gas 时数字变了&amp;quot;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;历史上多次调整 SSTORE / SLOAD 的 Gas 成本，主要影响合约 gas 估算与底层操作成本。&lt;strong&gt;经典副作用&lt;/strong&gt;是
+EIP-2929（Berlin，2021-04）抬高 SLOAD/CALL 成本后，依赖固定 2300 gas 的 &lt;code&gt;transfer&lt;/code&gt; / &lt;code&gt;send&lt;/code&gt;
+在接收方为合约时不再可靠——这是真实改变了应用层的可用性，并不只是&amp;quot;算 gas 时数字变了&amp;quot;。&lt;/p&gt;
 &lt;h3 id="eip-3074--eip-7702让-eoa-也能批量执行"&gt;&lt;a href="#eip-3074--eip-7702%e8%ae%a9-eoa-%e4%b9%9f%e8%83%bd%e6%89%b9%e9%87%8f%e6%89%a7%e8%a1%8c" class="header-anchor"&gt;&lt;/a&gt;EIP-3074 / EIP-7702：让 EOA 也能&amp;quot;批量执行&amp;quot;
-&lt;/h3&gt;&lt;p&gt;让 EOA 也能像智能账户一样&amp;quot;批量执行&amp;quot;。&lt;strong&gt;EIP-3074&lt;/strong&gt;（AUTH / AUTHCALL）方向几次评审后被放弃，由更轻量的 &lt;strong&gt;EIP-7702&lt;/strong&gt; 取代——后者已随 &lt;strong&gt;Pectra 升级（2025-05）上线主网&lt;/strong&gt;。EIP-7702 让 EOA 在一笔交易内&amp;quot;临时&amp;quot;挂上一段合约代码，从而原子地批量调用、付费代付（gas sponsor）、与 ERC-4337 形成互补。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;让 EOA 也能像智能账户一样&amp;quot;批量执行&amp;quot;。&lt;strong&gt;EIP-3074&lt;/strong&gt;（AUTH / AUTHCALL）方向几次评审后被放弃，由更轻量的 &lt;strong&gt;EIP-7702&lt;/strong&gt; 取代——后者已随
+&lt;strong&gt;Pectra 升级（2025-05）上线主网&lt;/strong&gt;。EIP-7702 让 EOA 在一笔交易内&amp;quot;临时&amp;quot;挂上一段合约代码，从而原子地批量调用、付费代付（gas
+sponsor）、与 ERC-4337 形成互补。&lt;/p&gt;
 &lt;h3 id="eip-4844proto-danksharding2024-年上线"&gt;&lt;a href="#eip-4844proto-danksharding2024-%e5%b9%b4%e4%b8%8a%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;EIP-4844：Proto-Danksharding（2024 年上线）
 &lt;/h3&gt;
  &lt;blockquote&gt;
@@ -1821,8 +1828,10 @@ boost 系数。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六预言机compound-的命门"&gt;&lt;a href="#%e5%85%ad%e9%a2%84%e8%a8%80%e6%9c%bacompound-%e7%9a%84%e5%91%bd%e9%97%a8" class="header-anchor"&gt;&lt;/a&gt;六、预言机：Compound 的命门
 &lt;/h2&gt;&lt;p&gt;所有借贷决策都依赖&lt;strong&gt;资产价格&lt;/strong&gt;——清算判断、抵押率计算都要价格输入。&lt;/p&gt;
-&lt;p&gt;Compound 早期使用 &lt;strong&gt;Open Price Feed&lt;/strong&gt;——以 &lt;strong&gt;Coinbase Pro&lt;/strong&gt;（后改名 Coinbase Exchange）作为主要签名报价方，配合 Uniswap V2 TWAP 做防御。设计预期是接入更多 reporter，但实际上 Coinbase 长期是唯一稳定上报的数据源。&lt;/p&gt;
-&lt;p&gt;但&lt;strong&gt;预言机被攻击的案例不少&lt;/strong&gt;——经典案例是 2020 年 11 月 26 日 &lt;strong&gt;DAI 在 Coinbase Pro 价格异常飙升&lt;/strong&gt;，导致 Compound 上约 &lt;strong&gt;8900 万美元&lt;/strong&gt;的资产被异常清算。这是 DeFi 借贷协议&lt;strong&gt;永远的 risk&lt;/strong&gt;——单源预言机一旦被推、被异常波动，整个清算系统就被绑架。&lt;/p&gt;
+&lt;p&gt;Compound 早期使用 &lt;strong&gt;Open Price Feed&lt;/strong&gt;——以 &lt;strong&gt;Coinbase Pro&lt;/strong&gt;（后改名 Coinbase Exchange）作为主要签名报价方，配合 Uniswap V2
+TWAP 做防御。设计预期是接入更多 reporter，但实际上 Coinbase 长期是唯一稳定上报的数据源。&lt;/p&gt;
+&lt;p&gt;但&lt;strong&gt;预言机被攻击的案例不少&lt;/strong&gt;——经典案例是 2020 年 11 月 26 日 &lt;strong&gt;DAI 在 Coinbase Pro 价格异常飙升&lt;/strong&gt;，导致 Compound 上约 *
+&lt;em&gt;8900 万美元&lt;strong&gt;的资产被异常清算。这是 DeFi 借贷协议&lt;/strong&gt;永远的 risk&lt;/em&gt;*——单源预言机一旦被推、被异常波动，整个清算系统就被绑架。&lt;/p&gt;
 &lt;p&gt;V3 之后 Compound 全面切到 &lt;strong&gt;Chainlink&lt;/strong&gt; 等专业预言机——&lt;strong&gt;多源 + 时间加权 + 偏离阈值&lt;/strong&gt; 多重保护，把这类风险显著降低。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七ctoken-vs-atoken-vs-dtoken"&gt;&lt;a href="#%e4%b8%83ctoken-vs-atoken-vs-dtoken" class="header-anchor"&gt;&lt;/a&gt;七、cToken vs aToken vs dToken
@@ -1906,7 +1915,8 @@ boost 系数。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十一对开发者的启发"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%af%b9%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e5%90%af%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;十一、对开发者的启发
 &lt;/h2&gt;&lt;p&gt;读 Compound 源码（&lt;a class="link" href="https://github.com/compound-finance/compound-protocol" target="_blank" rel="noopener"
- &gt;github.com/compound-finance/compound-protocol&lt;/a&gt;）能学到很多：&lt;/p&gt;
+ &gt;github.com/compound-finance/compound-protocol&lt;/a&gt;
+）能学到很多：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;CToken.sol&lt;/strong&gt;：cToken 实现，&lt;strong&gt;学习&amp;quot;代币化金融头寸&amp;quot;的范式&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Comptroller.sol&lt;/strong&gt;：协议核心控制器，&lt;strong&gt;学习如何用单合约管理多市场&lt;/strong&gt;&lt;/li&gt;
@@ -1920,7 +1930,8 @@ boost 系数。&lt;/p&gt;
 &lt;/h2&gt;&lt;p&gt;把 Compound 的价值压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Compound 不只是一个借贷协议——它是 DeFi 的『结构性创新者』，定义了池化借贷、算法利率、流动性挖矿等几乎所有 DeFi 沿用至今的范式。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Compound 不只是一个借贷协议——它是 DeFi 的『结构性创新者』，定义了池化借贷、算法利率、流动性挖矿等几乎所有 DeFi 沿用至今的范式。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;理解它的几个关键：&lt;/p&gt;
@@ -1933,7 +1944,8 @@ boost 系数。&lt;/p&gt;
 &lt;/ul&gt;
 &lt;p&gt;如果你做 DeFi 借贷类项目——&lt;strong&gt;绝不要 fork Compound 就上线&lt;/strong&gt;。要理解每一行代码、每一个参数的含义。Compound 的代码值得反复研读——
 &lt;strong&gt;是 DeFi 工程师值得花时间啃的源码之一&lt;/strong&gt;。&lt;/p&gt;</description></item><item><title>OpenZeppelin Contracts 5.0 的关键变化</title><link>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</link><pubDate>Thu, 07 Aug 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</guid><description>&lt;img src="https://www.lingcoder.com/p/openzeppelin-5-major-changes/cover.svg" alt="Featured image of post OpenZeppelin Contracts 5.0 的关键变化" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… &lt;strong&gt;几乎每个生产级合约项目都依赖它&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… *
+&lt;em&gt;几乎每个生产级合约项目都依赖它&lt;/em&gt;*。&lt;/p&gt;
 &lt;p&gt;2023 年 10 月发布的 &lt;strong&gt;5.0&lt;/strong&gt; 是它自 4.0 之后最大的一次主版本升级——&lt;strong&gt;不只是 bug 修复&lt;/strong&gt;，而是对 API、安全模型、模块组织的全面重塑。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 5.0 的核心变化、升级要踩的坑、新特性的工程价值。&lt;/p&gt;
 &lt;hr&gt;
@@ -1971,7 +1983,8 @@ boost 系数。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;为什么改？——&lt;strong&gt;因为 &lt;code&gt;msg.sender&lt;/code&gt; 在 deployer 用 factory 模式时往往不是真实的 owner&lt;/strong&gt;。强制显式传 owner，**避免&amp;quot;工厂部署却把 owner 设成工厂&amp;quot;**这类隐蔽 bug。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;为什么改？——&lt;strong&gt;因为 &lt;code&gt;msg.sender&lt;/code&gt; 在 deployer 用 factory 模式时往往不是真实的 owner&lt;/strong&gt;。强制显式传 owner，**避免&amp;quot;工厂部署却把
+owner 设成工厂&amp;quot;**这类隐蔽 bug。&lt;/p&gt;
 &lt;p&gt;升级时所有 Ownable 的子合约构造函数都要改。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三accesscontrol-的角色管理变了"&gt;&lt;a href="#%e4%b8%89accesscontrol-%e7%9a%84%e8%a7%92%e8%89%b2%e7%ae%a1%e7%90%86%e5%8f%98%e4%ba%86" class="header-anchor"&gt;&lt;/a&gt;三、AccessControl 的角色管理变了
@@ -2069,7 +2082,8 @@ boost 系数。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;这是必须做的——&lt;strong&gt;否则 implementation 合约本身可能被外部直接 init&lt;/strong&gt;（Parity Wallet 2017 年就因为这个被 self-destruct，14 万 ETH 永久冻结）。5.x 的 &lt;code&gt;Initializable&lt;/code&gt; 加了更严格的检查。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;这是必须做的——&lt;strong&gt;否则 implementation 合约本身可能被外部直接 init&lt;/strong&gt;（Parity Wallet 2017 年就因为这个被 self-destruct，14 万
+ETH 永久冻结）。5.x 的 &lt;code&gt;Initializable&lt;/code&gt; 加了更严格的检查。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七新增模块"&gt;&lt;a href="#%e4%b8%83%e6%96%b0%e5%a2%9e%e6%a8%a1%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;七、新增模块
 &lt;/h2&gt;&lt;h3 id="multicall"&gt;&lt;a href="#multicall" class="header-anchor"&gt;&lt;/a&gt;Multicall
@@ -2116,7 +2130,8 @@ boost 系数。&lt;/p&gt;
 &lt;/h3&gt;&lt;p&gt;支持 meta-transaction（用户不付 Gas，relayer 代发）。&lt;/p&gt;
 &lt;h3 id="erc-7201-命名空间存储namespaced-storage"&gt;&lt;a href="#erc-7201-%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4%e5%ad%98%e5%82%a8namespaced-storage" class="header-anchor"&gt;&lt;/a&gt;ERC-7201 命名空间存储（Namespaced Storage）
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;contracts-upgradeable&lt;/code&gt; 包里全面改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
- &gt;ERC-7201&lt;/a&gt; 命名空间存储布局，&lt;strong&gt;取代原来的 &lt;code&gt;__gap&lt;/code&gt; 模式&lt;/strong&gt;：&lt;/p&gt;
+ &gt;ERC-7201&lt;/a&gt; 命名空间存储布局，*
+&lt;em&gt;取代原来的 &lt;code&gt;__gap&lt;/code&gt; 模式&lt;/em&gt;*：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -2133,7 +2148,8 @@ boost 系数。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每个合约的 storage 字段被收进一个独立 struct，slot 由 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生——&lt;strong&gt;升级加字段不再受顺序约束&lt;/strong&gt;，老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移过来要小心 storage layout 兼容。这是 5.x 在升级合约存储模型上最大的改动。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每个合约的 storage 字段被收进一个独立 struct，slot 由 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生——&lt;strong&gt;升级加字段不再受顺序约束&lt;/strong&gt;，老项目从
+&lt;code&gt;__gap&lt;/code&gt; 模式迁移过来要小心 storage layout 兼容。这是 5.x 在升级合约存储模型上最大的改动。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八删除的东西"&gt;&lt;a href="#%e5%85%ab%e5%88%a0%e9%99%a4%e7%9a%84%e4%b8%9c%e8%a5%bf" class="header-anchor"&gt;&lt;/a&gt;八、删除的东西
 &lt;/h2&gt;&lt;h3 id="1-一些低使用率的工具"&gt;&lt;a href="#1-%e4%b8%80%e4%ba%9b%e4%bd%8e%e4%bd%bf%e7%94%a8%e7%8e%87%e7%9a%84%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;1. 一些低使用率的工具
@@ -2195,7 +2211,9 @@ boost 系数。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十安全增强"&gt;&lt;a href="#%e5%8d%81%e5%ae%89%e5%85%a8%e5%a2%9e%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;十、安全增强
 &lt;/h2&gt;&lt;h3 id="1-更严格的-reentrancy-检查"&gt;&lt;a href="#1-%e6%9b%b4%e4%b8%a5%e6%a0%bc%e7%9a%84-reentrancy-%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;1. 更严格的 reentrancy 检查
-&lt;/h3&gt;&lt;p&gt;5.0 的 &lt;code&gt;ReentrancyGuard&lt;/code&gt; 仍是普通 storage 实现（5.0 发布时 EIP-1153 transient storage 还未上链；EIP-1153 随 Cancun 升级在 2024-03 才上线主网）。&lt;strong&gt;5.1（2024-10）之后&lt;/strong&gt;新增了独立的 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt; 合约——基于 EIP-1153 transient storage，gas 显著降低（普通版热槽约 5000 gas，transient 版约 200 gas）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;5.0 的 &lt;code&gt;ReentrancyGuard&lt;/code&gt; 仍是普通 storage 实现（5.0 发布时 EIP-1153 transient storage 还未上链；EIP-1153 随 Cancun 升级在
+2024-03 才上线主网）。&lt;strong&gt;5.1（2024-10）之后&lt;/strong&gt;新增了独立的 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt; 合约——基于 EIP-1153 transient
+storage，gas 显著降低（普通版热槽约 5000 gas，transient 版约 200 gas）。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -2292,7 +2310,8 @@ boost 系数。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="4-reentrancyguard-默认启用"&gt;&lt;a href="#4-reentrancyguard-%e9%bb%98%e8%ae%a4%e5%90%af%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;4. ReentrancyGuard 默认启用
-&lt;/h3&gt;&lt;p&gt;任何接收/转账函数加 &lt;code&gt;nonReentrant&lt;/code&gt;——&lt;strong&gt;5.1+ 优先用 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt;（transient storage 版，每次开销约 200 gas），5.0 用普通版（gas 量级与 4.x 同）&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;任何接收/转账函数加 &lt;code&gt;nonReentrant&lt;/code&gt;——&lt;strong&gt;5.1+ 优先用 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt;（transient storage 版，每次开销约 200
+gas），5.0 用普通版（gas 量级与 4.x 同）&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="5-关注-eip-712-签名"&gt;&lt;a href="#5-%e5%85%b3%e6%b3%a8-eip-712-%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;5. 关注 EIP-712 签名
 &lt;/h3&gt;&lt;p&gt;权限调用 / 用户授权 / meta-tx——签名相关都用 OpenZeppelin 的 EIP-712 实现，别自己造。&lt;/p&gt;
 &lt;hr&gt;
@@ -2454,8 +2473,11 @@ boost 系数。&lt;/p&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
  &gt;EIP-2255&lt;/a&gt;: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
- &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS 私钥加密存储；普通 EOA 钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
- &gt;Web3 Secret Storage&lt;/a&gt;（业内俗称 Keystore V3）。&lt;/li&gt;
+ &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS
+私钥加密存储；普通 EOA
+钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
+ &gt;Web3 Secret Storage&lt;/a&gt;
+（业内俗称 Keystore V3）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
  &gt;EIP-2612&lt;/a&gt;: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
@@ -2668,7 +2690,8 @@ boost 系数。&lt;/p&gt;
 &lt;h3 id="36-安全最佳实践跨生态"&gt;&lt;a href="#36-%e5%ae%89%e5%85%a8%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%e8%b7%a8%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;3.6 安全最佳实践（跨生态）
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
- &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;（ConsenSys，事实标准）&lt;/li&gt;
+ &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;
+（ConsenSys，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
  &gt;Solana Security Best Practices&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://swcregistry.io/" target="_blank" rel="noopener"
@@ -3032,7 +3055,8 @@ DeepLink&lt;/li&gt;
 &lt;h4 id="web3-开发包"&gt;&lt;a href="#web3-%e5%bc%80%e5%8f%91%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Web3 开发包
 &lt;/h4&gt;
  &lt;blockquote&gt;
- &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在 Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
+ &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在
+Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -3055,7 +3079,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_core" target="_blank" rel="noopener"
  &gt;reown_core&lt;/a&gt;: Reown 协议核心&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/walletconnect_flutter_v2" target="_blank" rel="noopener"
- &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被 reown_* 取代，新项目用 reown）&lt;/li&gt;
+ &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被
+reown_* 取代，新项目用 reown）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -3064,9 +3089,11 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana" target="_blank" rel="noopener"
  &gt;solana&lt;/a&gt; / &lt;a class="link" href="https://pub.dev/packages/solana_web3" target="_blank" rel="noopener"
  &gt;solana_web3&lt;/a&gt;: Solana 开发库&lt;/li&gt;
-&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC + 自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
+&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC +
+自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
  &gt;bip32&lt;/a&gt; + &lt;a class="link" href="https://pub.dev/packages/pointycastle" target="_blank" rel="noopener"
- &gt;pointycastle&lt;/a&gt;），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
+ &gt;pointycastle&lt;/a&gt;
+），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -3091,7 +3118,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
  &gt;local_auth&lt;/a&gt;: 生物认证（指纹 / 面容，官方包，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
- &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore 安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
+ &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore
+安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/biometric_storage" target="_blank" rel="noopener"
  &gt;biometric_storage&lt;/a&gt;: 生物识别保护下的安全存储&lt;/li&gt;
 &lt;/ul&gt;
@@ -3257,7 +3285,8 @@ DeepLink&lt;/li&gt;
 &lt;h2 id="6-钱包工程相关术语"&gt;&lt;a href="#6-%e9%92%b1%e5%8c%85%e5%b7%a5%e7%a8%8b%e7%9b%b8%e5%85%b3%e6%9c%af%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;6. 钱包工程相关术语
 &lt;/h2&gt;
  &lt;blockquote&gt;
- &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与 Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
+ &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与
+Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h3 id="61-钱包形态"&gt;&lt;a href="#61-%e9%92%b1%e5%8c%85%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;6.1 钱包形态
@@ -3397,7 +3426,8 @@ DeepLink&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;每一个&amp;quot;你的身份&amp;quot;，&lt;strong&gt;实际上都是某个公司租给你的&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;DID（Decentralized Identifier，去中心化身份标识）&lt;/strong&gt; 就是要解决这件事——&lt;strong&gt;让用户真正拥有自己的身份&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是&lt;strong&gt;数字身份的范式转移&lt;/strong&gt;——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
+&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是**数字身份的范式转移
+**——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 DID 的结构、几种主流实现方法、可验证凭证的玩法、工程上的意义。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一did-长什么样"&gt;&lt;a href="#%e4%b8%80did-%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7" class="header-anchor"&gt;&lt;/a&gt;一、DID 长什么样
@@ -3675,7 +3705,8 @@ DeepLink&lt;/li&gt;
 &lt;h2 id="七工程上的挑战"&gt;&lt;a href="#%e4%b8%83%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e6%8c%91%e6%88%98" class="header-anchor"&gt;&lt;/a&gt;七、工程上的挑战
 &lt;/h2&gt;&lt;p&gt;DID + VC 想象很美，工程上挑战不少：&lt;/p&gt;
 &lt;h3 id="1-用户体验"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c" class="header-anchor"&gt;&lt;/a&gt;1. 用户体验
-&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如 Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如
+Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
 &lt;h3 id="2-私钥丢了怎么办"&gt;&lt;a href="#2-%e7%a7%81%e9%92%a5%e4%b8%a2%e4%ba%86%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;2. 私钥丢了怎么办
 &lt;/h3&gt;&lt;p&gt;DID 完全去中心化的代价——&lt;strong&gt;没有&amp;quot;找回密码&amp;quot;&lt;/strong&gt;。私钥丢失就身份永久丢失。社交恢复（social recovery）、多签等机制是部分解决方案。&lt;/p&gt;
 &lt;h3 id="3-撤销机制"&gt;&lt;a href="#3-%e6%92%a4%e9%94%80%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 撤销机制
@@ -3731,43 +3762,56 @@ DeepLink&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;DID 不是&amp;quot;现在就用&amp;quot;的技术——但它是&lt;strong&gt;值得每个工程师认知的未来基础设施&lt;/strong&gt;。10 年后再回头看，这一定是数字身份史上的关键节点。&lt;/p&gt;</description></item><item><title>币圈故事：CZ 与币安的发迹之路</title><link>https://www.lingcoder.com/p/cz-binance-rise-story/</link><pubDate>Thu, 30 Jan 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/cz-binance-rise-story/</guid><description>&lt;img src="https://www.lingcoder.com/p/cz-binance-rise-story/cover.svg" alt="Featured image of post 币圈故事：CZ 与币安的发迹之路" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;币圈不缺故事，但要论跌宕离奇，CZ 的人生大概排得上前几名。&lt;/p&gt;
-&lt;p&gt;他在 6 年里把币安从一个十一个人的小公司做成全球最大的加密交易所，自己身价一度过六百亿美元。然后在 46 岁那年，他穿着囚服走进美国联邦监狱，成为加密行业里服刑级别最高的 CEO。&lt;/p&gt;
-&lt;p&gt;这篇不谈商业经验，也不分析他做对什么、做错什么。就当是一篇人物速写——把这位&amp;quot;币圈一哥&amp;quot;从加拿大油站打工到迪拜豪宅、又从豪宅走进 Lompoc 监狱的故事，按时间顺序讲一讲。&lt;/p&gt;
+&lt;p&gt;他在 6 年里把币安从一个十一个人的小公司做成全球最大的加密交易所，自己身价一度过六百亿美元。然后在 46
+岁那年，他穿着囚服走进美国联邦监狱，成为加密行业里服刑级别最高的 CEO。&lt;/p&gt;
+&lt;p&gt;这篇不谈商业经验，也不分析他做对什么、做错什么。就当是一篇人物速写——把这位&amp;quot;币圈一哥&amp;quot;从加拿大油站打工到迪拜豪宅、又从豪宅走进
+Lompoc 监狱的故事，按时间顺序讲一讲。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一从江苏到温哥华"&gt;&lt;a href="#%e4%b8%80%e4%bb%8e%e6%b1%9f%e8%8b%8f%e5%88%b0%e6%b8%a9%e5%93%a5%e5%8d%8e" class="header-anchor"&gt;&lt;/a&gt;一、从江苏到温哥华
-&lt;/h2&gt;&lt;p&gt;CZ 1977 年出生在江苏连云港。父亲是大学讲师，母亲是中学老师，典型的体制内知识分子家庭。八十年代末家里出过一些事，1989 年举家移民加拿大温哥华。&lt;/p&gt;
-&lt;p&gt;他自己后来在采访里聊起这段经历，常常一句带过——但从一个江苏小城讲师之家落地 BC 省，第一代华人移民的辛苦其实写在每个细节里。父亲一边在 UBC 读博、一边打零工；CZ 12 岁就开始送报纸，再大一点就去加油站、麦当劳值夜班。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;CZ 1977 年出生在江苏连云港。父亲是大学讲师，母亲是中学老师，典型的体制内知识分子家庭。八十年代末家里出过一些事，1989
+年举家移民加拿大温哥华。&lt;/p&gt;
+&lt;p&gt;他自己后来在采访里聊起这段经历，常常一句带过——但从一个江苏小城讲师之家落地 BC 省，第一代华人移民的辛苦其实写在每个细节里。父亲一边在
+UBC 读博、一边打零工；CZ 12 岁就开始送报纸，再大一点就去加油站、麦当劳值夜班。&lt;/p&gt;
 &lt;p&gt;他讲过一个画面：在麦当劳后厨炸鸡块的时候，背英文单词。这种&amp;quot;在油锅前背 GRE&amp;quot;的画面后来被很多人传起来，但他自己讲的时候没什么戏剧性，就是日常。&lt;/p&gt;
-&lt;p&gt;这段日子留给他两样东西。一是英文好到了母语水平——他后来面对全球用户的英文采访能从头到尾不打草稿。二是对&amp;quot;赚钱&amp;quot;这件事完全没有滤镜——他知道一块钱具体是怎么挣到手的。&lt;/p&gt;
+&lt;p&gt;这段日子留给他两样东西。一是英文好到了母语水平——他后来面对全球用户的英文采访能从头到尾不打草稿。二是对&amp;quot;赚钱&amp;quot;
+这件事完全没有滤镜——他知道一块钱具体是怎么挣到手的。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="二麦吉尔东京彭博上海"&gt;&lt;a href="#%e4%ba%8c%e9%ba%a6%e5%90%89%e5%b0%94%e4%b8%9c%e4%ba%ac%e5%bd%ad%e5%8d%9a%e4%b8%8a%e6%b5%b7" class="header-anchor"&gt;&lt;/a&gt;二、麦吉尔、东京、彭博、上海
 &lt;/h2&gt;&lt;p&gt;本科他读的是麦吉尔大学计算机系。毕业第一份工作有点出人意料——东京证券交易所，给日本最大证交所写撮合引擎代码。&lt;/p&gt;
 &lt;p&gt;那一年他 23 岁。&lt;/p&gt;
-&lt;p&gt;之后又跳到彭博（Bloomberg），做股票期货的交易系统，做了 4 年。2005 年回上海创业，开了家叫 Fusion Systems 的公司，专门给券商做高频交易撮合。又干了 8 年。&lt;/p&gt;
+&lt;p&gt;之后又跳到彭博（Bloomberg），做股票期货的交易系统，做了 4 年。2005 年回上海创业，开了家叫 Fusion Systems 的公司，专门给券商做高频交易撮合。又干了
+8 年。&lt;/p&gt;
 &lt;p&gt;到 2013 年的时候，他已经是个写了十几年金融交易系统的工程师。这种背景在当时的币圈是稀缺品——那会儿大多数加密交易所都用着东拼西凑的开源代码，他知道一个机构级的撮合系统应该长什么样。&lt;/p&gt;
 &lt;p&gt;故事的真正开始，就在这一年。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三卖掉房子去买比特币"&gt;&lt;a href="#%e4%b8%89%e5%8d%96%e6%8e%89%e6%88%bf%e5%ad%90%e5%8e%bb%e4%b9%b0%e6%af%94%e7%89%b9%e5%b8%81" class="header-anchor"&gt;&lt;/a&gt;三、卖掉房子去买比特币
-&lt;/h2&gt;&lt;p&gt;2013 年的某天，朋友 Bobby Lee（莱特币创始人 Charlie Lee 的哥哥，那时是 BTCC 的 CEO）跟他聊起比特币。CZ 回去研究了几天，做了一个让所有朋友都觉得他疯了的决定：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;2013 年的某天，朋友 Bobby Lee（莱特币创始人 Charlie Lee 的哥哥，那时是 BTCC 的 CEO）跟他聊起比特币。CZ
+回去研究了几天，做了一个让所有朋友都觉得他疯了的决定：&lt;/p&gt;
 &lt;p&gt;把上海的房子卖了，换成比特币。&lt;/p&gt;
 &lt;p&gt;那时一枚 BTC 大约 600 美元。卖完房没多久，BTC 一路跌到 200 美元。账面亏了 70%。&lt;/p&gt;
-&lt;p&gt;很多人在这种时候会割肉、会怀疑、会找各种理由说服自己撤。CZ 没有。他反而辞掉了 Fusion Systems 的工作，去 Blockchain.info 做 VP——主动把自己绑在了&amp;quot;加密&amp;quot;这条船上。&lt;/p&gt;
+&lt;p&gt;很多人在这种时候会割肉、会怀疑、会找各种理由说服自己撤。CZ 没有。他反而辞掉了 Fusion Systems 的工作，去 Blockchain.info 做
+VP——主动把自己绑在了&amp;quot;加密&amp;quot;这条船上。&lt;/p&gt;
 &lt;p&gt;后来他对采访者说过一句话：&amp;ldquo;我做完那个决定就睡着了，从那天起就再没纠结过。&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;听起来有点像鸡汤，但十年之后回头看——这种&amp;quot;决定一次就不再回头&amp;quot;的劲儿，可能确实是他和大多数人不一样的地方。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四在-okcoin-待的那-6-个月"&gt;&lt;a href="#%e5%9b%9b%e5%9c%a8-okcoin-%e5%be%85%e7%9a%84%e9%82%a3-6-%e4%b8%aa%e6%9c%88" class="header-anchor"&gt;&lt;/a&gt;四、在 OKCoin 待的那 6 个月
 &lt;/h2&gt;&lt;p&gt;2014 年，CZ 加入 OKCoin（徐明星的中国交易所），任 CTO。&lt;/p&gt;
 &lt;p&gt;这段履历他在公开场合很少展开。只待了 6 个月就走了。圈内传过几个版本——理念不合、内部混乱、价值观差异——他自己从没公开评论过任何一种。&lt;/p&gt;
-&lt;p&gt;但有件事很清楚：从 OKCoin 出来的时候，他已经知道自己想做什么了——一家&amp;quot;工程上不丢人、运营上不糊弄、面向全球而不是只面向中国&amp;quot;的加密交易所。&lt;/p&gt;
+&lt;p&gt;但有件事很清楚：从 OKCoin 出来的时候，他已经知道自己想做什么了——一家&amp;quot;工程上不丢人、运营上不糊弄、面向全球而不是只面向中国&amp;quot;
+的加密交易所。&lt;/p&gt;
 &lt;p&gt;那时距离币安诞生还有三年。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五2017-年-7-月30-天造一个交易所"&gt;&lt;a href="#%e4%ba%942017-%e5%b9%b4-7-%e6%9c%8830-%e5%a4%a9%e9%80%a0%e4%b8%80%e4%b8%aa%e4%ba%a4%e6%98%93%e6%89%80" class="header-anchor"&gt;&lt;/a&gt;五、2017 年 7 月：30 天造一个交易所
-&lt;/h2&gt;&lt;p&gt;2017 年 6 月，CZ 在上海办公室里召集了 11 个人，宣布要做币安。一个月后，2017 年 7 月 14 日，币安主网就上线了。从想法到上线，30 天。&lt;/p&gt;
-&lt;p&gt;启动资金来自 ICO——一份 8 页的白皮书，承诺&amp;quot;全球最先进的加密交易所&amp;quot;，募集了 1500 万美元。BNB 当时的 ICO 价格是 0.15 美元一个——这个数字后来会反复出现在各种&amp;quot;早期投资者赚了多少倍&amp;quot;的段子里。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;2017 年 6 月，CZ 在上海办公室里召集了 11 个人，宣布要做币安。一个月后，2017 年 7 月 14 日，币安主网就上线了。从想法到上线，30
+天。&lt;/p&gt;
+&lt;p&gt;启动资金来自 ICO——一份 8 页的白皮书，承诺&amp;quot;全球最先进的加密交易所&amp;quot;，募集了 1500 万美元。BNB 当时的 ICO 价格是 0.15
+美元一个——这个数字后来会反复出现在各种&amp;quot;早期投资者赚了多少倍&amp;quot;的段子里。&lt;/p&gt;
 &lt;p&gt;币安刚上线那阵几乎没人注意。OKCoin、火币、Bittrex、Poloniex、Kraken 这些老牌交易所占据了所有热度。但接下来几个月，币安做对了三件事：&lt;/p&gt;
-&lt;p&gt;第一件，撮合引擎是 CZ 亲自带队写的。号称每秒能处理 140 万订单。这事一开始没人在意，直到 2017 年 9 月 ICO 大爆发——其他交易所开始天天宕机，而币安没卡过。&amp;ldquo;币安不卡&amp;quot;这个口碑就是这么传开的。&lt;/p&gt;
+&lt;p&gt;第一件，撮合引擎是 CZ 亲自带队写的。号称每秒能处理 140 万订单。这事一开始没人在意，直到 2017 年 9 月 ICO
+大爆发——其他交易所开始天天宕机，而币安没卡过。&amp;ldquo;币安不卡&amp;quot;这个口碑就是这么传开的。&lt;/p&gt;
 &lt;p&gt;第二件，上币速度极快。别人审三个月，币安两周。在那个&amp;quot;任何代码都能 ICO&amp;quot;的疯狂年代，速度等于流量。&lt;/p&gt;
-&lt;p&gt;第三件，BNB 的飞轮设计——用 BNB 抵手续费打 5 折、季度回购销毁、未来上自己公链。这套机制在当时还很新颖，让早期 BNB 持有者有了实实在在的拿币动机。&lt;/p&gt;
+&lt;p&gt;第三件，BNB 的飞轮设计——用 BNB 抵手续费打 5 折、季度回购销毁、未来上自己公链。这套机制在当时还很新颖，让早期 BNB
+持有者有了实实在在的拿币动机。&lt;/p&gt;
 &lt;p&gt;后来 BNB 价格从 0.15 美元一路涨到 2021 年最高 690 美元——4600 倍。这是另一个故事了。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六9-月-4-日大撤退"&gt;&lt;a href="#%e5%85%ad9-%e6%9c%88-4-%e6%97%a5%e5%a4%a7%e6%92%a4%e9%80%80" class="header-anchor"&gt;&lt;/a&gt;六、9 月 4 日大撤退
@@ -3778,10 +3822,12 @@ DeepLink&lt;/li&gt;
 &lt;hr&gt;
 &lt;h2 id="七safu-与-7000-个比特币"&gt;&lt;a href="#%e4%b8%83safu-%e4%b8%8e-7000-%e4%b8%aa%e6%af%94%e7%89%b9%e5%b8%81" class="header-anchor"&gt;&lt;/a&gt;七、SAFU 与 7000 个比特币
 &lt;/h2&gt;&lt;p&gt;2019 年 5 月 7 日，黑客通过钓鱼攻破了币安的热钱包，一次盗走 7000 个比特币——大约 4000 万美元。&lt;/p&gt;
-&lt;p&gt;接下来 24 小时，CZ 做了几件事。第一时间在推特上把事情完整披露——攻击向量、损失金额、用户影响，一项不落。然后宣布用 SAFU（Secure Asset Fund for Users，币安从手续费里提取 10% 建立的安全基金）全额赔付——所有用户损失 0。又把提币暂停了一周做安全审计，事后还公开了完整的复盘报告。&lt;/p&gt;
+&lt;p&gt;接下来 24 小时，CZ 做了几件事。第一时间在推特上把事情完整披露——攻击向量、损失金额、用户影响，一项不落。然后宣布用 SAFU（Secure
+Asset Fund for Users，币安从手续费里提取 10% 建立的安全基金）全额赔付——所有用户损失 0。又把提币暂停了一周做安全审计，事后还公开了完整的复盘报告。&lt;/p&gt;
 &lt;p&gt;事件刚发生没多久，他在推特上调侃了一句：&amp;ldquo;我们建议大家洗个澡&amp;rdquo;——意思是黑客如果还盯着推特看，就没必要再动手了。这条推文后来被币圈玩成了梗。&lt;/p&gt;
 &lt;p&gt;让所有人意外的是，币安经过这次被盗，市占率不降反升。&lt;/p&gt;
-&lt;p&gt;原因不复杂——加密行业里之前从没有一家交易所敢&amp;quot;被盗后全额赔付 + 完整披露&amp;rdquo;。SAFU 这个词从此在圈里变成了一个动词。&amp;ldquo;那个交易所有没有 SAFU&amp;quot;成了用户判断交易所安全性的硬指标。&lt;/p&gt;
+&lt;p&gt;原因不复杂——加密行业里之前从没有一家交易所敢&amp;quot;被盗后全额赔付 + 完整披露&amp;rdquo;。SAFU 这个词从此在圈里变成了一个动词。&amp;ldquo;那个交易所有没有
+SAFU&amp;quot;成了用户判断交易所安全性的硬指标。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八江湖里的人"&gt;&lt;a href="#%e5%85%ab%e6%b1%9f%e6%b9%96%e9%87%8c%e7%9a%84%e4%ba%ba" class="header-anchor"&gt;&lt;/a&gt;八、江湖里的人
 &lt;/h2&gt;&lt;p&gt;币圈的&amp;quot;江湖&amp;quot;从来不只是商业竞争——人和人之间的恩怨也是另一个维度的故事。&lt;/p&gt;
@@ -3794,10 +3840,13 @@ DeepLink&lt;/li&gt;
 &lt;p&gt;他这辈子真正&amp;quot;撕过&amp;quot;的对手，其实只有一个：SBF。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="九一条推文和-ftx-的崩盘"&gt;&lt;a href="#%e4%b9%9d%e4%b8%80%e6%9d%a1%e6%8e%a8%e6%96%87%e5%92%8c-ftx-%e7%9a%84%e5%b4%a9%e7%9b%98" class="header-anchor"&gt;&lt;/a&gt;九、一条推文和 FTX 的崩盘
-&lt;/h2&gt;&lt;p&gt;2022 年 11 月 2 日，加密媒体 CoinDesk 发了一篇调查报道，指出 FTX 的姊妹基金 Alameda Research 资产负债表上绝大部分资产是 FTX 自己发行的 FTT 代币。这篇报道在圈内引起了第一波质疑，但远没到致命的程度。&lt;/p&gt;
-&lt;p&gt;四天后，CZ 在推特上发了一段话。大意是：去年币安退出 FTX 股权时拿到了大约 21 亿美元，包括 BUSD 和 FTT；鉴于最近的一些信息，币安决定卖掉手里所有剩下的 FTT。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;2022 年 11 月 2 日，加密媒体 CoinDesk 发了一篇调查报道，指出 FTX 的姊妹基金 Alameda Research 资产负债表上绝大部分资产是
+FTX 自己发行的 FTT 代币。这篇报道在圈内引起了第一波质疑，但远没到致命的程度。&lt;/p&gt;
+&lt;p&gt;四天后，CZ 在推特上发了一段话。大意是：去年币安退出 FTX 股权时拿到了大约 21 亿美元，包括 BUSD 和 FTT；鉴于最近的一些信息，币安决定卖掉手里所有剩下的
+FTT。&lt;/p&gt;
 &lt;p&gt;这条推文 6 小时内引发了链上挤兑。FTT 从 22 美元跌到 4 美元，用户疯狂从 FTX 提币，48 小时里 FTX 流动性枯竭。&lt;/p&gt;
-&lt;p&gt;11 月 8 日，FTX 主动找到币安求救——CZ 公开宣布有意收购，但 24 小时尽调之后果断放弃。三天后，FTX 申请破产。SBF 几个月后被起诉、被定罪、最终被判 25 年。&lt;/p&gt;
+&lt;p&gt;11 月 8 日，FTX 主动找到币安求救——CZ 公开宣布有意收购，但 24 小时尽调之后果断放弃。三天后，FTX 申请破产。SBF 几个月后被起诉、被定罪、最终被判
+25 年。&lt;/p&gt;
 &lt;p&gt;这件事后来在加密历史上有一种简化的说法：&amp;ldquo;CZ 用一条推文干掉了一个 320 亿美元的对手。&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;事实当然比这复杂——FTX 自己内部的窟窿才是根本原因，CZ 的推文只是把还在挤泡沫的那根针扎进去。但那条推文的时机和措辞，确实可以放进任何一本公关教材里讨论。&lt;/p&gt;
 &lt;p&gt;FTX 倒下后，币安成了短期内全球唯一被信任的大交易所，市占率冲到了 70% 以上。CZ 那时候大概是他人生最高光的一段时间。&lt;/p&gt;
@@ -3806,10 +3855,12 @@ DeepLink&lt;/li&gt;
 &lt;/h2&gt;&lt;p&gt;但高光也没维持多久。FTX 倒台之后，美国监管下定了决心要收拾整个加密行业，币安作为新的&amp;quot;行业老大&amp;quot;，自然成了第一目标。&lt;/p&gt;
 &lt;p&gt;2023 年 6 月，SEC 起诉币安和 CZ 个人。紧接着 CFTC、DOJ、IRS、OFAC 一起跟进——指控涉及反洗钱失败、违反对俄/伊朗/朝鲜的制裁、无照货币传输。&lt;/p&gt;
 &lt;p&gt;谈判持续了 5 个月。&lt;/p&gt;
-&lt;p&gt;2023 年 11 月 21 日，结果出炉：币安公司认罪，支付 43 亿美元罚款——加密史上最大的单笔罚款，也是美国司法部历史上前几大企业罚款之一。CZ 个人也认罪，承认没有实施有效的反洗钱项目。当天他辞去 CEO，由前阿布扎比金融监管官员 Richard Teng 接任。&lt;/p&gt;
+&lt;p&gt;2023 年 11 月 21 日，结果出炉：币安公司认罪，支付 43 亿美元罚款——加密史上最大的单笔罚款，也是美国司法部历史上前几大企业罚款之一。CZ
+个人也认罪，承认没有实施有效的反洗钱项目。当天他辞去 CEO，由前阿布扎比金融监管官员 Richard Teng 接任。&lt;/p&gt;
 &lt;p&gt;CZ 在认罪当天发了一条推文：&amp;ldquo;Today I stepped down as CEO of Binance. Admittedly, it was not easy to let go emotionally.&amp;rdquo;&lt;/p&gt;
 &lt;p&gt;故事如果到这里结束，多半还能算&amp;quot;花钱消灾、全身而退&amp;quot;——但事情没完。&lt;/p&gt;
-&lt;p&gt;2024 年 4 月 30 日，西雅图联邦法院。法官 Richard Jones 在听完所有陈述、收到全球各路朋友（前美国政府高官、商业巨头、慈善组织）写来的求情信之后，判 CZ 4 个月联邦监狱——量刑超出了检方建议。&lt;/p&gt;
+&lt;p&gt;2024 年 4 月 30 日，西雅图联邦法院。法官 Richard Jones 在听完所有陈述、收到全球各路朋友（前美国政府高官、商业巨头、慈善组织）写来的求情信之后，判
+CZ 4 个月联邦监狱——量刑超出了检方建议。&lt;/p&gt;
 &lt;p&gt;检方原本只建议罚款加缓刑。法官选择了监禁，理由是要&amp;quot;传达一个明确信号：金融犯罪即使是最富有的被告也要付代价&amp;quot;。&lt;/p&gt;
 &lt;p&gt;2024 年 6 月 4 日，CZ 走进了加州 Lompoc 联邦监狱低安全级别营。狱友里有白领诈骗犯、毒品贩子、移民违规者。&lt;/p&gt;
 &lt;p&gt;他在狱里读了一堆书，后来在 X 上列过书单——《孙子兵法》《沉思录》《Atomic Habits》还有几本传记。&lt;/p&gt;
@@ -3818,7 +3869,9 @@ DeepLink&lt;/li&gt;
 &lt;hr&gt;
 &lt;h2 id="十一出狱之后"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%87%ba%e7%8b%b1%e4%b9%8b%e5%90%8e" class="header-anchor"&gt;&lt;/a&gt;十一、出狱之后
 &lt;/h2&gt;&lt;p&gt;按和解协议，CZ 永久不能再担任币安的任何管理岗位——但他仍然是币安最大股东，持股估计在 90% 以上。&lt;/p&gt;
-&lt;p&gt;出狱之后他做了几件事。X 账号活了过来，粉丝从 800 万涨到 1000 万出头，每条推文都是币圈热点。个人投资方面，把原来的 Binance Labs 改名 YZi Labs，继续投早期 Web3 项目。慈善方面，他自己创立了一个叫 Giggle Academy 的免费在线教育平台，承诺把&amp;quot;绝大部分财富&amp;quot;投入慈善。&lt;/p&gt;
+&lt;p&gt;出狱之后他做了几件事。X 账号活了过来，粉丝从 800 万涨到 1000 万出头，每条推文都是币圈热点。个人投资方面，把原来的 Binance
+Labs 改名 YZi Labs，继续投早期 Web3 项目。慈善方面，他自己创立了一个叫 Giggle Academy 的免费在线教育平台，承诺把&amp;quot;
+绝大部分财富&amp;quot;投入慈善。&lt;/p&gt;
 &lt;p&gt;公开亮相也没停过——大会演讲、采访、行业论坛——依然是这个行业最有影响力的声音之一。&lt;/p&gt;
 &lt;p&gt;BNB 在他出狱后又涨了一波。市场显然在用钱表态：CZ 还在，币安就还在。&lt;/p&gt;
 &lt;hr&gt;
@@ -3826,11 +3879,13 @@ DeepLink&lt;/li&gt;
 &lt;/h2&gt;&lt;p&gt;走完这一圈，再看 CZ 这个人。&lt;/p&gt;
 &lt;p&gt;他不是一个完美的英雄。43 亿美元罚款的认罪书写得清清楚楚——币安在他任 CEO 期间存在系统性的合规失败，他自己也认了。&lt;/p&gt;
 &lt;p&gt;他也不是一个简单的反派。SAFU、储备证明（PoR）、危机中的诚实披露——这些他给加密行业留下来的东西是真的，被同行普遍学过去。&lt;/p&gt;
-&lt;p&gt;更不是什么&amp;quot;工程师创业典范&amp;quot;——这种简化的标签配不上他的复杂。一个能在 600 美元 all in 比特币、48 小时跨国搬服务器、用一条推文压垮一个 320 亿美元对手、又能在一份 43 亿美元罚单上认罪入狱的人——他的画像里有理性、有疯狂、有运气、有担当、也有教训。&lt;/p&gt;
+&lt;p&gt;更不是什么&amp;quot;工程师创业典范&amp;quot;——这种简化的标签配不上他的复杂。一个能在 600 美元 all in 比特币、48 小时跨国搬服务器、用一条推文压垮一个
+320 亿美元对手、又能在一份 43 亿美元罚单上认罪入狱的人——他的画像里有理性、有疯狂、有运气、有担当、也有教训。&lt;/p&gt;
 &lt;p&gt;加密行业接下来的十年还会有新故事。但很难再有第二个 CZ。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="后记"&gt;&lt;a href="#%e5%90%8e%e8%ae%b0" class="header-anchor"&gt;&lt;/a&gt;后记
-&lt;/h2&gt;&lt;p&gt;写这篇文章时（2025 年 1 月），CZ 已出狱 4 个月，币安在 Richard Teng 治下仍是全球第一大加密交易所，BNB 价格徘徊在历史高位附近。SBF 在新泽西联邦监狱服刑——还有 22 年。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;写这篇文章时（2025 年 1 月），CZ 已出狱 4 个月，币安在 Richard Teng 治下仍是全球第一大加密交易所，BNB 价格徘徊在历史高位附近。SBF
+在新泽西联邦监狱服刑——还有 22 年。&lt;/p&gt;
 &lt;p&gt;故事还远没结束。&lt;/p&gt;</description></item><item><title>不可变的合约如何「升级」？聊聊 Solidity 合约升级模式</title><link>https://www.lingcoder.com/p/solidity-contract-upgrade-patterns/</link><pubDate>Mon, 02 Sep 2024 20:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/solidity-contract-upgrade-patterns/</guid><description>&lt;img src="https://www.lingcoder.com/p/solidity-contract-upgrade-patterns/cover.svg" alt="Featured image of post 不可变的合约如何「升级」？聊聊 Solidity 合约升级模式" /&gt;&lt;h2 id="一个让所有以太坊新手都困惑的悖论"&gt;&lt;a href="#%e4%b8%80%e4%b8%aa%e8%ae%a9%e6%89%80%e6%9c%89%e4%bb%a5%e5%a4%aa%e5%9d%8a%e6%96%b0%e6%89%8b%e9%83%bd%e5%9b%b0%e6%83%91%e7%9a%84%e6%82%96%e8%ae%ba" class="header-anchor"&gt;&lt;/a&gt;一个让所有以太坊新手都困惑的悖论
 &lt;/h2&gt;&lt;p&gt;智能合约最被反复强调的特性，是 &lt;strong&gt;不可变（immutable）&lt;/strong&gt;——代码部署上链之后，一行都不能改。&lt;/p&gt;
 &lt;p&gt;但你只要在生产里跑过几个月就会发现一个现实：&lt;/p&gt;
@@ -3864,7 +3919,8 @@ DeepLink&lt;/li&gt;
 &lt;h3 id="一句话理解-delegatecall"&gt;&lt;a href="#%e4%b8%80%e5%8f%a5%e8%af%9d%e7%90%86%e8%a7%a3-delegatecall" class="header-anchor"&gt;&lt;/a&gt;一句话理解 &lt;code&gt;delegatecall&lt;/code&gt;
 &lt;/h3&gt;&lt;p&gt;普通调用 &lt;code&gt;call&lt;/code&gt;：&lt;strong&gt;用别人的代码、操作别人的存储&lt;/strong&gt;。
 &lt;code&gt;delegatecall&lt;/code&gt;：&lt;strong&gt;用别人的代码、操作自己的存储&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;也就是说，合约 A 通过 &lt;code&gt;delegatecall&lt;/code&gt; 调合约 B 的某个函数时，执行的是 B 的字节码，但 &lt;code&gt;msg.sender&lt;/code&gt;、&lt;code&gt;msg.value&lt;/code&gt;、&lt;strong&gt;所有存储读写都发生在 A 上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;也就是说，合约 A 通过 &lt;code&gt;delegatecall&lt;/code&gt; 调合约 B 的某个函数时，执行的是 B 的字节码，但 &lt;code&gt;msg.sender&lt;/code&gt;、&lt;code&gt;msg.value&lt;/code&gt;、&lt;strong&gt;所有存储读写都发生在
+A 上&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;这就给了我们一个大胆的想法——&lt;/p&gt;
 
  &lt;blockquote&gt;
@@ -3992,8 +4048,12 @@ DeepLink&lt;/li&gt;
 &lt;h3 id="storage-gap-习惯openzeppelin-4x-时代的做法"&gt;&lt;a href="#storage-gap-%e4%b9%a0%e6%83%afopenzeppelin-4x-%e6%97%b6%e4%bb%a3%e7%9a%84%e5%81%9a%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;Storage Gap 习惯（OpenZeppelin 4.x 时代的做法）
 &lt;/h3&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;时效性更新&lt;/strong&gt;：本节描述的 &lt;code&gt;__gap&lt;/code&gt; 模式是 OpenZeppelin 4.x 的标准做法。&lt;strong&gt;OpenZeppelin 5.0（2023-10）起的 &lt;code&gt;contracts-upgradeable&lt;/code&gt; 包已经改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
- &gt;ERC-7201 命名空间存储&lt;/a&gt;（Namespaced Storage Layout）&lt;/strong&gt;——每个合约的 storage 字段被收进一个独立 struct，slot 从 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生，&lt;strong&gt;升级加字段不再受顺序约束，也不再需要预留 &lt;code&gt;__gap&lt;/code&gt;&lt;/strong&gt;。新项目应该直接用 ERC-7201；老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移到 ERC-7201 时要小心 storage layout 兼容。下面这段 &lt;code&gt;__gap&lt;/code&gt; 写法仍然适用于 4.x 的基类继承场景（与 4.x 升级链路向后兼容）。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;时效性更新&lt;/strong&gt;：本节描述的 &lt;code&gt;__gap&lt;/code&gt; 模式是 OpenZeppelin 4.x 的标准做法。&lt;strong&gt;OpenZeppelin
+5.0（2023-10）起的 &lt;code&gt;contracts-upgradeable&lt;/code&gt; 包已经改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
+ &gt;ERC-7201 命名空间存储&lt;/a&gt;
+（Namespaced Storage Layout）&lt;/strong&gt;——每个合约的 storage 字段被收进一个独立 struct，slot 从 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生，*
+*升级加字段不再受顺序约束，也不再需要预留 &lt;code&gt;__gap&lt;/code&gt;**。新项目应该直接用 ERC-7201；老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移到 ERC-7201 时要小心
+storage layout 兼容。下面这段 &lt;code&gt;__gap&lt;/code&gt; 写法仍然适用于 4.x 的基类继承场景（与 4.x 升级链路向后兼容）。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;为了给未来&amp;quot;末尾追加&amp;quot;留余地，可继承的基类里通常会预留一段空槽：&lt;/p&gt;
@@ -4064,9 +4124,11 @@ DeepLink&lt;/li&gt;
 &lt;/h3&gt;&lt;p&gt;存储布局错位的检查靠人肉是不现实的——升级链路必须有自动化校验把这个关。具体工具按你用的栈选：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Hardhat 栈&lt;/strong&gt;：&lt;a class="link" href="https://github.com/OpenZeppelin/openzeppelin-upgrades" target="_blank" rel="noopener"
- &gt;OpenZeppelin Upgrades Plugin&lt;/a&gt;（&lt;code&gt;@openzeppelin/hardhat-upgrades&lt;/code&gt;）——升级前自动比对两版合约的存储布局，不兼容直接报错挡住。&lt;/li&gt;
+ &gt;OpenZeppelin Upgrades Plugin&lt;/a&gt;（
+&lt;code&gt;@openzeppelin/hardhat-upgrades&lt;/code&gt;）——升级前自动比对两版合约的存储布局，不兼容直接报错挡住。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Foundry 栈&lt;/strong&gt;：&lt;a class="link" href="https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades" target="_blank" rel="noopener"
- &gt;openzeppelin-foundry-upgrades&lt;/a&gt;，或者直接 &lt;code&gt;forge inspect &amp;lt;Contract&amp;gt; storageLayout&lt;/code&gt; 把新旧两版的 storage layout 输出成 JSON，在 CI 里做 diff。&lt;/li&gt;
+ &gt;openzeppelin-foundry-upgrades&lt;/a&gt;，或者直接
+&lt;code&gt;forge inspect &amp;lt;Contract&amp;gt; storageLayout&lt;/code&gt; 把新旧两版的 storage layout 输出成 JSON，在 CI 里做 diff。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;更通用&lt;/strong&gt;：&lt;a class="link" href="https://github.com/crytic/slither" target="_blank" rel="noopener"
  &gt;Slither&lt;/a&gt; 的 &lt;code&gt;slither-check-upgradeability&lt;/code&gt; 也能做静态布局比对。&lt;/li&gt;
 &lt;/ul&gt;
@@ -4117,7 +4179,8 @@ DeepLink&lt;/li&gt;
 &lt;/div&gt;&lt;p&gt;这样一来：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Proxy 极度精简&lt;/strong&gt;，只有一个 fallback，Gas 最省&lt;/li&gt;
-&lt;li&gt;升级权限由 Logic 控制——这意味着 &lt;strong&gt;如果你升级到一个忘了写 &lt;code&gt;upgradeTo&lt;/code&gt; 的新 Logic，合约就永远没法再升级了&lt;/strong&gt;（一种&amp;quot;自爆开关&amp;quot;）&lt;/li&gt;
+&lt;li&gt;升级权限由 Logic 控制——这意味着 &lt;strong&gt;如果你升级到一个忘了写 &lt;code&gt;upgradeTo&lt;/code&gt; 的新 Logic，合约就永远没法再升级了&lt;/strong&gt;（一种&amp;quot;
+自爆开关&amp;quot;）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;OpenZeppelin 现在更推荐 UUPS，但前提是开发者必须严格遵守&amp;quot;新版本永远要继承 &lt;code&gt;UUPSUpgradeable&lt;/code&gt;&amp;ldquo;的规范，否则可能误锁死。&lt;/p&gt;
 &lt;h3 id="3-beacon-proxy信标代理"&gt;&lt;a href="#3-beacon-proxy%e4%bf%a1%e6%a0%87%e4%bb%a3%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;3. Beacon Proxy（信标代理）
@@ -4135,7 +4198,8 @@ DeepLink&lt;/li&gt;
  P2 -.delegatecall.-&gt; Logic
  P3 -.delegatecall.-&gt; Logic
 
- Beacon -. 指向 .-&gt; Logic&lt;/pre&gt;&lt;p&gt;所有 Proxy 都从 Beacon 读&amp;quot;当前 Logic 地址&amp;quot;。&lt;strong&gt;升级时只改 Beacon 一处，所有 Proxy 同时生效&lt;/strong&gt;。代价是每次调用多一次跨合约读地址的 Gas。&lt;/p&gt;
+ Beacon -. 指向 .-&gt; Logic&lt;/pre&gt;&lt;p&gt;所有 Proxy 都从 Beacon 读&amp;quot;当前 Logic 地址&amp;quot;。&lt;strong&gt;升级时只改 Beacon 一处，所有 Proxy 同时生效&lt;/strong&gt;。代价是每次调用多一次跨合约读地址的
+Gas。&lt;/p&gt;
 &lt;table&gt;
  &lt;thead&gt;
  &lt;tr&gt;
@@ -4168,7 +4232,8 @@ DeepLink&lt;/li&gt;
 &lt;/table&gt;
 &lt;hr&gt;
 &lt;h2 id="五更激进的方案diamondeip-2535"&gt;&lt;a href="#%e4%ba%94%e6%9b%b4%e6%bf%80%e8%bf%9b%e7%9a%84%e6%96%b9%e6%a1%88diamondeip-2535" class="header-anchor"&gt;&lt;/a&gt;五、更激进的方案：Diamond（EIP-2535）
-&lt;/h2&gt;&lt;p&gt;EVM 对单个合约的字节码大小有 &lt;strong&gt;24KB 的硬上限&lt;/strong&gt;（EIP-170）。当协议复杂到一个 Logic 合约塞不下时，前面那些&amp;quot;单 Logic&amp;quot;的代理模式就不够用了。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;EVM 对单个合约的字节码大小有 &lt;strong&gt;24KB 的硬上限&lt;/strong&gt;（EIP-170）。当协议复杂到一个 Logic 合约塞不下时，前面那些&amp;quot;单 Logic&amp;quot;
+的代理模式就不够用了。&lt;/p&gt;
 &lt;p&gt;Diamond 模式的思路是——&lt;strong&gt;一个 Proxy（Diamond），多个 Logic（Facet）&lt;/strong&gt;，按函数选择器路由。&lt;/p&gt;
 &lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TB
  User([用户调用])
@@ -4182,12 +4247,15 @@ DeepLink&lt;/li&gt;
  Diamond -- delegatecall --&gt; F1
  Diamond -- delegatecall --&gt; F2
  Diamond -- delegatecall --&gt; F3
- Diamond -- delegatecall --&gt; F4&lt;/pre&gt;&lt;p&gt;每个 Facet 只实现一部分函数，Diamond 内部维护一张 &lt;code&gt;selector → facet address&lt;/code&gt; 的路由表，调用进来时查表然后 &lt;code&gt;delegatecall&lt;/code&gt;。升级时可以&lt;strong&gt;按 facet 增、删、换&lt;/strong&gt;，粒度比单 Logic 细得多。&lt;/p&gt;
-&lt;p&gt;代价是复杂度陡升——存储布局要按&amp;quot;Diamond Storage&amp;quot;的命名空间约定写、调试链路更长、对应工具链不如 OZ 主流模式成熟。&lt;strong&gt;不是协议规模真的超过单合约能力，不要轻易上 Diamond&lt;/strong&gt;（Aavegotchi 是公认上得最成功的案例之一）。&lt;/p&gt;
+ Diamond -- delegatecall --&gt; F4&lt;/pre&gt;&lt;p&gt;每个 Facet 只实现一部分函数，Diamond 内部维护一张 &lt;code&gt;selector → facet address&lt;/code&gt; 的路由表，调用进来时查表然后 &lt;code&gt;delegatecall&lt;/code&gt;
+。升级时可以&lt;strong&gt;按 facet 增、删、换&lt;/strong&gt;，粒度比单 Logic 细得多。&lt;/p&gt;
+&lt;p&gt;代价是复杂度陡升——存储布局要按&amp;quot;Diamond Storage&amp;quot;的命名空间约定写、调试链路更长、对应工具链不如 OZ 主流模式成熟。*
+&lt;em&gt;不是协议规模真的超过单合约能力，不要轻易上 Diamond&lt;/em&gt;*（Aavegotchi 是公认上得最成功的案例之一）。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六不能忽略的工程细节"&gt;&lt;a href="#%e5%85%ad%e4%b8%8d%e8%83%bd%e5%bf%bd%e7%95%a5%e7%9a%84%e5%b7%a5%e7%a8%8b%e7%bb%86%e8%8a%82" class="header-anchor"&gt;&lt;/a&gt;六、不能忽略的工程细节
 &lt;/h2&gt;&lt;h3 id="1-没有-constructor只有-initializer"&gt;&lt;a href="#1-%e6%b2%a1%e6%9c%89-constructor%e5%8f%aa%e6%9c%89-initializer" class="header-anchor"&gt;&lt;/a&gt;1. 没有 constructor，只有 initializer
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;constructor&lt;/code&gt; 在合约部署时执行，&lt;strong&gt;只对 Logic 自己的存储生效，不会写到 Proxy 的存储&lt;/strong&gt;。所以可升级合约的初始化必须放在一个普通函数里，靠&lt;strong&gt;只能调用一次&lt;/strong&gt;的修饰符保护：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;constructor&lt;/code&gt; 在合约部署时执行，&lt;strong&gt;只对 Logic 自己的存储生效，不会写到 Proxy 的存储&lt;/strong&gt;。所以可升级合约的初始化必须放在一个普通函数里，靠
+&lt;strong&gt;只能调用一次&lt;/strong&gt;的修饰符保护：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -4216,7 +4284,8 @@ DeepLink&lt;/li&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;OpenZeppelin 提供了 &lt;code&gt;Initializable&lt;/code&gt; 基类，标准做法是用 &lt;code&gt;initializer&lt;/code&gt; 修饰符。&lt;/p&gt;
 &lt;h3 id="2-部署后立刻调用-initializer"&gt;&lt;a href="#2-%e9%83%a8%e7%bd%b2%e5%90%8e%e7%ab%8b%e5%88%bb%e8%b0%83%e7%94%a8-initializer" class="header-anchor"&gt;&lt;/a&gt;2. 部署后立刻调用 initializer
-&lt;/h3&gt;&lt;p&gt;如果部署完 Logic 不立刻初始化，&lt;strong&gt;任何人都可以抢先调一次 &lt;code&gt;initialize&lt;/code&gt; 把自己设成 owner&lt;/strong&gt;。这种漏洞历史上发生过多次。脚本部署 Proxy 时要用 &lt;code&gt;atomicallyDeployAndInitialize&lt;/code&gt; 之类的封装，把&amp;quot;部署 + 初始化&amp;quot;放进同一个交易。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;如果部署完 Logic 不立刻初始化，&lt;strong&gt;任何人都可以抢先调一次 &lt;code&gt;initialize&lt;/code&gt; 把自己设成 owner&lt;/strong&gt;。这种漏洞历史上发生过多次。脚本部署
+Proxy 时要用 &lt;code&gt;atomicallyDeployAndInitialize&lt;/code&gt; 之类的封装，把&amp;quot;部署 + 初始化&amp;quot;放进同一个交易。&lt;/p&gt;
 &lt;h3 id="3-升级权限--协议生死开关"&gt;&lt;a href="#3-%e5%8d%87%e7%ba%a7%e6%9d%83%e9%99%90--%e5%8d%8f%e8%ae%ae%e7%94%9f%e6%ad%bb%e5%bc%80%e5%85%b3" class="header-anchor"&gt;&lt;/a&gt;3. 升级权限 = 协议生死开关
 &lt;/h3&gt;&lt;p&gt;控制 &lt;code&gt;upgrade&lt;/code&gt; 的私钥，等于&lt;strong&gt;握有协议的全部资金权&lt;/strong&gt;。任何成熟协议都会用：&lt;/p&gt;
 &lt;ul&gt;
@@ -4233,7 +4302,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;审计的难度被放大&lt;/strong&gt;：用户审计了今天的代码，明天升级后等于审了个寂寞。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;形式化验证、不可变指标都失效&lt;/strong&gt;：协议的安全保证从&amp;quot;代码&amp;quot;层退化为&amp;quot;运营方信誉 + 治理流程&amp;quot;层。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以业界有一种相反的声音：&lt;strong&gt;真正成熟的协议应当逐步放弃可升级性&lt;/strong&gt;。Uniswap V2/V3 的核心合约就是不可升级的——它的迭代靠&amp;quot;部署新协议、用户自愿迁移&amp;quot;完成，代价高，但换来了最强的信任。&lt;/p&gt;
+&lt;p&gt;所以业界有一种相反的声音：&lt;strong&gt;真正成熟的协议应当逐步放弃可升级性&lt;/strong&gt;。Uniswap V2/V3 的核心合约就是不可升级的——它的迭代靠&amp;quot;
+部署新协议、用户自愿迁移&amp;quot;完成，代价高，但换来了最强的信任。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;作为协议设计者，你需要问自己：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
@@ -4271,7 +4341,8 @@ DeepLink&lt;/li&gt;
 
  &lt;/blockquote&gt;</description></item><item><title>OpenSea Seaport 协议详解</title><link>https://www.lingcoder.com/p/opensea-seaport-protocol/</link><pubDate>Tue, 20 Aug 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/opensea-seaport-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/opensea-seaport-protocol/cover.svg" alt="Featured image of post OpenSea Seaport 协议详解" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;OpenSea 长期是 NFT 市场的头部平台——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了 NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了
+NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;多对多交易&lt;/strong&gt;：一笔订单能涉及多种资产、多个发送方、多个接收方&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;极致 Gas 优化&lt;/strong&gt;：单次撮合成本比 Wyvern 低 35%&lt;/li&gt;
@@ -4540,7 +4611,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Seaport 1.6&lt;/strong&gt;：原生支持 ERC-2981 版税&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;未来&lt;/strong&gt;：跨链交易、链下撮合 + 链上结算&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Seaport 协议本身&lt;strong&gt;完全开源（MIT 协议）&lt;/strong&gt;——任何项目都能直接用，不绑定 OpenSea。Blur、LooksRare 等竞争对手都在用 Seaport 或它的衍生版。&lt;/p&gt;
+&lt;p&gt;Seaport 协议本身&lt;strong&gt;完全开源（MIT 协议）&lt;/strong&gt;——任何项目都能直接用，不绑定 OpenSea。Blur、LooksRare 等竞争对手都在用 Seaport
+或它的衍生版。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十一对开发者的意义"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%af%b9%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e6%84%8f%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;十一、对开发者的意义
 &lt;/h2&gt;&lt;p&gt;如果你做 NFT 相关产品：&lt;/p&gt;
@@ -4561,7 +4633,8 @@ DeepLink&lt;/li&gt;
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Seaport 用『offer / consideration』的对称模型 + Conduit 共享授权 + Zone 可扩展裁判，把 NFT 交易的灵活性和 Gas 效率推到了新的高度。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Seaport 用『offer / consideration』的对称模型 + Conduit 共享授权 + Zone 可扩展裁判，把 NFT 交易的灵活性和 Gas
+效率推到了新的高度。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;
@@ -4661,7 +4734,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; (独立验证，无需 Prover)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，&lt;strong&gt;用 hash 的不可预测性替代真实的随机交互&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，**用 hash 的不可预测性替代真实的随机交互
+**。&lt;/p&gt;
 &lt;p&gt;NIZK 是区块链应用 ZKP 的基础。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四zk-snark高效的-nizk"&gt;&lt;a href="#%e5%9b%9bzk-snark%e9%ab%98%e6%95%88%e7%9a%84-nizk" class="header-anchor"&gt;&lt;/a&gt;四、zk-SNARK：高效的 NIZK
@@ -4840,7 +4914,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;h3 id="2-证明体积小但验证仍要-gas"&gt;&lt;a href="#2-%e8%af%81%e6%98%8e%e4%bd%93%e7%a7%af%e5%b0%8f%e4%bd%86%e9%aa%8c%e8%af%81%e4%bb%8d%e8%a6%81-gas" class="header-anchor"&gt;&lt;/a&gt;2. 证明体积小，但验证仍要 Gas
 &lt;/h3&gt;&lt;p&gt;zk-SNARK 验证大约 200-500K gas——比传统验证贵，但比 Optimistic Rollup 的&amp;quot;挑战 + 仲裁&amp;quot;安全得多。&lt;/p&gt;
 &lt;h3 id="3-trusted-setup-风险"&gt;&lt;a href="#3-trusted-setup-%e9%a3%8e%e9%99%a9" class="header-anchor"&gt;&lt;/a&gt;3. Trusted Setup 风险
-&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;
+。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
 &lt;h3 id="4-电路开发门槛高"&gt;&lt;a href="#4-%e7%94%b5%e8%b7%af%e5%bc%80%e5%8f%91%e9%97%a8%e6%a7%9b%e9%ab%98" class="header-anchor"&gt;&lt;/a&gt;4. 电路开发门槛高
 &lt;/h3&gt;&lt;p&gt;写电路是一种新范式——和写普通代码差别很大。&lt;strong&gt;需要的 bug 排查能力、性能调优能力都不同&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="5-工具链还在演进"&gt;&lt;a href="#5-%e5%b7%a5%e5%85%b7%e9%93%be%e8%bf%98%e5%9c%a8%e6%bc%94%e8%bf%9b" class="header-anchor"&gt;&lt;/a&gt;5. 工具链还在演进
@@ -5337,7 +5412,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如 Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如
+Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七踩坑提醒"&gt;&lt;a href="#%e4%b8%83%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;七、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-不要用-estimate-当-view"&gt;&lt;a href="#1-%e4%b8%8d%e8%a6%81%e7%94%a8-estimate-%e5%bd%93-view" class="header-anchor"&gt;&lt;/a&gt;1. 不要用 estimate 当 view
@@ -5358,7 +5434,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;h3 id="3-estimategas-也不会扣-gas"&gt;&lt;a href="#3-estimategas-%e4%b9%9f%e4%b8%8d%e4%bc%9a%e6%89%a3-gas" class="header-anchor"&gt;&lt;/a&gt;3. estimateGas 也不会扣 gas
 &lt;/h3&gt;&lt;p&gt;即便 estimateGas 模拟时显示用了 200,000 gas——&lt;strong&gt;调用方不付钱&lt;/strong&gt;。但 RPC 提供商可能按调用次数收费/限流。&lt;/p&gt;
 &lt;h3 id="4-block-参数的语义"&gt;&lt;a href="#4-block-%e5%8f%82%e6%95%b0%e7%9a%84%e8%af%ad%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;4. block 参数的语义
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;
+时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
 &lt;h3 id="5-archive-node-才支持历史-block-call"&gt;&lt;a href="#5-archive-node-%e6%89%8d%e6%94%af%e6%8c%81%e5%8e%86%e5%8f%b2-block-call" class="header-anchor"&gt;&lt;/a&gt;5. archive node 才支持历史 block call
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -5370,7 +5447,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;非 archive 节点只保留最近 128 block 的状态——历史 block call 会失败。&lt;/p&gt;
 &lt;h3 id="6-模拟环境和真实差异"&gt;&lt;a href="#6-%e6%a8%a1%e6%8b%9f%e7%8e%af%e5%a2%83%e5%92%8c%e7%9c%9f%e5%ae%9e%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;6. 模拟环境和真实差异
-&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate 给的 gas 可能不准。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate
+给的 gas 可能不准。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八常见-web3-库的封装"&gt;&lt;a href="#%e5%85%ab%e5%b8%b8%e8%a7%81-web3-%e5%ba%93%e7%9a%84%e5%b0%81%e8%a3%85" class="header-anchor"&gt;&lt;/a&gt;八、常见 Web3 库的封装
 &lt;/h2&gt;&lt;table&gt;
@@ -5835,7 +5913,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;NFT 性质的 token 永远 amount = 1。&lt;/p&gt;
 &lt;h3 id="3-metadata-占位符兼容"&gt;&lt;a href="#3-metadata-%e5%8d%a0%e4%bd%8d%e7%ac%a6%e5%85%bc%e5%ae%b9" class="header-anchor"&gt;&lt;/a&gt;3. metadata 占位符兼容
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;{id}&lt;/code&gt; 占位符是 ERC-1155 标准里规定的——&lt;strong&gt;实际平台支持参差不齐&lt;/strong&gt;。OpenSea / 区块链浏览器多数支持，但小钱包可能不识别——保险起见每个 id 单独配 URI。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;{id}&lt;/code&gt; 占位符是 ERC-1155 标准里规定的——&lt;strong&gt;实际平台支持参差不齐&lt;/strong&gt;。OpenSea / 区块链浏览器多数支持，但小钱包可能不识别——保险起见每个
+id 单独配 URI。&lt;/p&gt;
 &lt;h3 id="4-不要混用模型"&gt;&lt;a href="#4-%e4%b8%8d%e8%a6%81%e6%b7%b7%e7%94%a8%e6%a8%a1%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;4. 不要混用模型
 &lt;/h3&gt;&lt;p&gt;同一个项目里&lt;strong&gt;要么用 ERC-721 要么用 ERC-1155&lt;/strong&gt;，不要在一个集合里两种都发。买家会困惑：&lt;/p&gt;
 &lt;ul&gt;
@@ -5946,7 +6025,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;callcode&lt;/code&gt; 已经被官方标记为 deprecated（功能被 delegatecall 替代），实战中几乎不用。重点是 &lt;strong&gt;call / delegatecall / staticcall&lt;/strong&gt; 三种。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;callcode&lt;/code&gt; 已经被官方标记为 deprecated（功能被 delegatecall 替代），实战中几乎不用。重点是 &lt;strong&gt;call / delegatecall /
+staticcall&lt;/strong&gt; 三种。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="二call最朴素的远程调用"&gt;&lt;a href="#%e4%ba%8ccall%e6%9c%80%e6%9c%b4%e7%b4%a0%e7%9a%84%e8%bf%9c%e7%a8%8b%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;二、call：最朴素的&amp;quot;远程调用&amp;quot;
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -6136,7 +6216,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="为什么重要"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%87%8d%e8%a6%81" class="header-anchor"&gt;&lt;/a&gt;为什么重要
-&lt;/h3&gt;&lt;p&gt;没有 staticcall 之前，要&amp;quot;安全地查询别人的合约&amp;quot;非常麻烦——对方合约可能在 view 函数里偷偷改状态（虽然不该）。staticcall &lt;strong&gt;从 EVM 层面强制只读&lt;/strong&gt;——这是一个安全保障。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;没有 staticcall 之前，要&amp;quot;安全地查询别人的合约&amp;quot;非常麻烦——对方合约可能在 view 函数里偷偷改状态（虽然不该）。staticcall &lt;strong&gt;从
+EVM 层面强制只读&lt;/strong&gt;——这是一个安全保障。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五callcode已弃用"&gt;&lt;a href="#%e4%ba%94callcode%e5%b7%b2%e5%bc%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;五、callcode：已弃用
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -6147,7 +6228,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;callcode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 已 deprecated
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;callcode 是 delegatecall 的早期版本，&lt;strong&gt;唯一区别是 msg.sender 不会保留为原始调用者&lt;/strong&gt;——这通常是个 bug 而不是 feature。所以 Solidity 0.5.0 之后 callcode 被禁用，全部用 delegatecall。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;callcode 是 delegatecall 的早期版本，&lt;strong&gt;唯一区别是 msg.sender 不会保留为原始调用者&lt;/strong&gt;——这通常是个 bug 而不是 feature。所以
+Solidity 0.5.0 之后 callcode 被禁用，全部用 delegatecall。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;新代码里永远不要写 callcode&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六四种调用的决策树"&gt;&lt;a href="#%e5%85%ad%e5%9b%9b%e7%a7%8d%e8%b0%83%e7%94%a8%e7%9a%84%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;六、四种调用的&amp;quot;决策树&amp;quot;
@@ -6204,7 +6286,9 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 现代不推荐
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;transfer&lt;/code&gt; 一直限制 2300 gas（这点从 Solidity 引入 transfer 时就如此）。真正让它频繁出问题的是 &lt;strong&gt;EIP-2929（Berlin 升级，2021-04）&lt;/strong&gt;——抬高了 SLOAD/CALL 等状态访问的 gas 成本，接收方 fallback 里很多原本能跑过的操作再也挤不进 2300 gas，导致 OOG。现代写法：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;transfer&lt;/code&gt; 一直限制 2300 gas（这点从 Solidity 引入 transfer 时就如此）。真正让它频繁出问题的是 &lt;strong&gt;EIP-2929（Berlin
+升级，2021-04）&lt;/strong&gt;——抬高了 SLOAD/CALL 等状态访问的 gas 成本，接收方 fallback 里很多原本能跑过的操作再也挤不进 2300 gas，导致
+OOG。现代写法：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -6278,11 +6362,15 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="九几个真实案例"&gt;&lt;a href="#%e4%b9%9d%e5%87%a0%e4%b8%aa%e7%9c%9f%e5%ae%9e%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;九、几个真实案例
 &lt;/h2&gt;&lt;h3 id="案例-1parity-wallet-的-14-万-eth2017"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-1parity-wallet-%e7%9a%84-14-%e4%b8%87-eth2017" class="header-anchor"&gt;&lt;/a&gt;案例 1：Parity Wallet 的 14 万 ETH（2017）
-&lt;/h3&gt;&lt;p&gt;Parity 的多签钱包用 delegatecall 委托给一个共享 Library。攻击者发现可以&lt;strong&gt;直接调用 Library 的 init 函数把自己设成 owner&lt;/strong&gt;——再调用 kill 函数，整个 Library 自毁，所有依赖它的钱包永久无法转账。&lt;/p&gt;
-&lt;p&gt;教训：&lt;strong&gt;delegatecall 目标合约的所有 public/external 函数都要审慎设计&lt;/strong&gt;——public 入口被外部直接调用 + delegatecall 同时滥用，就是这种灾难。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Parity 的多签钱包用 delegatecall 委托给一个共享 Library。攻击者发现可以&lt;strong&gt;直接调用 Library 的 init 函数把自己设成 owner&lt;/strong&gt;
+——再调用 kill 函数，整个 Library 自毁，所有依赖它的钱包永久无法转账。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;delegatecall 目标合约的所有 public/external 函数都要审慎设计&lt;/strong&gt;——public 入口被外部直接调用 + delegatecall
+同时滥用，就是这种灾难。&lt;/p&gt;
 &lt;h3 id="案例-2audius-治理攻击2022"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-2audius-%e6%b2%bb%e7%90%86%e6%94%bb%e5%87%bb2022" class="header-anchor"&gt;&lt;/a&gt;案例 2：Audius 治理攻击（2022）
-&lt;/h3&gt;&lt;p&gt;Audius 协议合约存在 &lt;strong&gt;storage collision + initialize 未保护&lt;/strong&gt;双重 bug——存储槽布局错位让攻击者可以重新调用 &lt;code&gt;initialize&lt;/code&gt; 把自己设为治理 guardian，然后&lt;strong&gt;通过提交并自我通过的恶意治理提案&lt;/strong&gt;转走社区池里约 1860 万 AUDIO（约 600 万美元）。&lt;/p&gt;
-&lt;p&gt;教训：&lt;strong&gt;proxy 模式下，所有可升级合约的 initialize 必须加 &lt;code&gt;initializer&lt;/code&gt; 修饰符防止重复调用，并且基类与子类的 storage 布局必须严格对齐&lt;/strong&gt;——这两个 bug 任何一个不出，攻击都成立不了。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Audius 协议合约存在 &lt;strong&gt;storage collision + initialize 未保护&lt;/strong&gt;双重 bug——存储槽布局错位让攻击者可以重新调用 &lt;code&gt;initialize&lt;/code&gt;
+把自己设为治理 guardian，然后&lt;strong&gt;通过提交并自我通过的恶意治理提案&lt;/strong&gt;转走社区池里约 1860 万 AUDIO（约 600 万美元）。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;proxy 模式下，所有可升级合约的 initialize 必须加 &lt;code&gt;initializer&lt;/code&gt; 修饰符防止重复调用，并且基类与子类的 storage
+布局必须严格对齐&lt;/strong&gt;——这两个 bug 任何一个不出，攻击都成立不了。&lt;/p&gt;
 &lt;h3 id="案例-3the-dao2016"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-3the-dao2016" class="header-anchor"&gt;&lt;/a&gt;案例 3：The DAO（2016）
 &lt;/h3&gt;&lt;p&gt;经典重入——&lt;code&gt;call&lt;/code&gt; 触发的外部调用导致重新进入合约，余额还没扣就被反复提款。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;调用外部前先改自己的状态&lt;/strong&gt;（Checks-Effects-Interactions 模式）。&lt;/p&gt;

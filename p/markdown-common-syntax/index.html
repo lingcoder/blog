@@ -157,7 +157,8 @@
     B -->|是| C[执行]
     B -->|否| D[跳过]
     C --> E[结束]
-    D --> E</pre><p>Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 <code>flowchart</code>、<code>sequenceDiagram</code>、<code>classDiagram</code> 三种。</p><h3 id=时序图示例><a href=#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b class=header-anchor></a>时序图示例</h3><pre class=mermaid style=visibility:hidden>sequenceDiagram
+    D --> E</pre><p>Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 <code>flowchart</code>、<code>sequenceDiagram</code>、
+<code>classDiagram</code> 三种。</p><h3 id=时序图示例><a href=#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b class=header-anchor></a>时序图示例</h3><pre class=mermaid style=visibility:hidden>sequenceDiagram
     Client->>Server: HTTP 请求
     Server->>DB: 查询
     DB-->>Server: 结果
@@ -349,7 +350,9 @@
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>```bash
 </span></span><span class=line><span class=cl>hugo server -D
-</span></span></code></pre></td></tr></table></div></div><p>实时看渲染效果，比每次 push 上线快得多。</p><h3 id=lint-工具><a href=#lint-%e5%b7%a5%e5%85%b7 class=header-anchor></a>Lint 工具</h3><p><a class=link href=https://github.com/DavidAnson/markdownlint target=_blank rel=noopener>markdownlint</a> 可以检查格式——空行、标题层级、列表缩进——保持风格一致。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback 的（Mermaid、KaTeX 都行）。</strong></p></blockquote><p>留几条作为"硬性规范&rdquo;：</p><ol><li><strong>代码块永远标语言</strong></li><li><strong>图片永远写 alt 描述</strong></li><li><strong>中英文之间留空格</strong></li><li><strong>标题层级不超过 4 级</strong></li><li><strong>任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢</strong></li></ol><p>最后——<strong>Markdown 不是设计文档语言，是写作语言</strong>。它的所有特性都为"专注内容"服务。当你开始想"这个怎么用 Markdown 表达"，先问一下"这个真的需要表达吗"。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/markdown/>Markdown</a>
+</span></span></code></pre></td></tr></table></div></div><p>实时看渲染效果，比每次 push 上线快得多。</p><h3 id=lint-工具><a href=#lint-%e5%b7%a5%e5%85%b7 class=header-anchor></a>Lint 工具</h3><p><a class=link href=https://github.com/DavidAnson/markdownlint target=_blank rel=noopener>markdownlint</a> 可以检查格式——空行、标题层级、列表缩进——保持风格一致。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback
+的（Mermaid、KaTeX 都行）。</strong></p></blockquote><p>留几条作为"硬性规范&rdquo;：</p><ol><li><strong>代码块永远标语言</strong></li><li><strong>图片永远写 alt 描述</strong></li><li><strong>中英文之间留空格</strong></li><li><strong>标题层级不超过 4 级</strong></li><li><strong>任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢</strong></li></ol><p>最后——<strong>Markdown 不是设计文档语言，是写作语言</strong>。它的所有特性都为"专注内容"服务。当你开始想"这个怎么用 Markdown 表达"
+，先问一下"这个真的需要表达吗"。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/markdown/>Markdown</a>
 <a href=/tags/%E5%86%99%E4%BD%9C/>写作</a>
 <a href=/tags/%E5%8D%9A%E5%AE%A2/>博客</a>
 <a href=/tags/%E6%8A%80%E6%9C%AF%E5%86%99%E4%BD%9C/>技术写作</a></section><section class="article-copyright inline-meta"><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>

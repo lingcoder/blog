@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#3D5878"/>
-          <stop offset="1" stop-color="#A8C0D0"/>
-      </linearGradient>
-      <linearGradient id="peak" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFFFFF"/>
-          <stop offset="0.4" stop-color="#D8DCE8"/>
-          <stop offset="1" stop-color="#5C7088"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3D5878"/>
+            <stop offset="1" stop-color="#A8C0D0"/>
+        </linearGradient>
+        <linearGradient id="peak" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFFFFF"/>
+            <stop offset="0.4" stop-color="#D8DCE8"/>
+            <stop offset="1" stop-color="#5C7088"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="450" fill="url(#sky)"/>
 
@@ -23,7 +23,7 @@
         <polygon points="520,200 532,250 508,250"/>
         <polygon points="780,180 793,235 767,235"/>
         <polygon points="1040,200 1052,245 1028,245"/>
-  </g>
+    </g>
 
     <!-- Foreground hill -->
     <path d="M 0 400 Q 200 350 400 380 Q 600 340 800 370 Q 1000 340 1200 370 L 1200 470 L 0 470 Z" fill="#5C7860"
@@ -96,7 +96,7 @@
         <path d="M 100 540 L 100 525 M 105 540 L 108 528 M 110 540 L 113 532"/>
         <path d="M 500 555 L 500 540 M 505 555 L 508 543" stroke="#3D5818" stroke-width="2"/>
         <path d="M 1000 555 L 1000 540" stroke="#3D5818" stroke-width="2"/>
-  </g>
+    </g>
 
     <text x="60" y="615" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

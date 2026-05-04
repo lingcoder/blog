@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>二维码登录 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%99%BB%E5%BD%95/</link><description>Recent content in 二维码登录 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 21 Feb 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%99%BB%E5%BD%95/index.xml" rel="self" type="application/rss+xml"/><item><title>扫码登录的完整设计</title><link>https://www.lingcoder.com/p/qr-code-login-flow/</link><pubDate>Fri, 21 Feb 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/qr-code-login-flow/</guid><description>&lt;img src="https://www.lingcoder.com/p/qr-code-login-flow/cover.svg" alt="Featured image of post 扫码登录的完整设计" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;PC 浏览器扫手机端二维码自动登录——12306、知乎、京东、网易邮箱、微信网页版……这种交互在国内已经是标配。&lt;/p&gt;
-&lt;p&gt;它看着简单——但背后是一套涉及前端轮询、后端状态机、长连接、安全控制的&lt;strong&gt;完整设计&lt;/strong&gt;。&lt;strong&gt;新人接这块时常常忽略关键细节&lt;/strong&gt;，做出来要么不安全、要么体验差。&lt;/p&gt;
+&lt;p&gt;它看着简单——但背后是一套涉及前端轮询、后端状态机、长连接、安全控制的&lt;strong&gt;完整设计&lt;/strong&gt;。&lt;strong&gt;新人接这块时常常忽略关键细节&lt;/strong&gt;
+，做出来要么不安全、要么体验差。&lt;/p&gt;
 &lt;p&gt;本文从协议、状态机、API 设计、安全考虑几个层面把扫码登录讲清楚。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一整体流程"&gt;&lt;a href="#%e4%b8%80%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b" class="header-anchor"&gt;&lt;/a&gt;一、整体流程

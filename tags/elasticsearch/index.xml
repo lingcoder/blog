@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Elasticsearch on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/elasticsearch/</link><description>Recent content in Elasticsearch on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 25 Sep 2021 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml"/><item><title>Spring 集成 Elasticsearch 的三种姿势与选型</title><link>https://www.lingcoder.com/p/spring-elasticsearch-integration/</link><pubDate>Sat, 25 Sep 2021 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-elasticsearch-integration/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-elasticsearch-integration/cover.svg" alt="Featured image of post Spring 集成 Elasticsearch 的三种姿势与选型" /&gt;&lt;h2 id="为什么这件事比看起来复杂"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e4%bb%b6%e4%ba%8b%e6%af%94%e7%9c%8b%e8%b5%b7%e6%9d%a5%e5%a4%8d%e6%9d%82" class="header-anchor"&gt;&lt;/a&gt;为什么这件事比看起来复杂
-&lt;/h2&gt;&lt;p&gt;接 Elasticsearch 这件事，乍一看就是&amp;quot;加个依赖、写两行代码&amp;quot;。真做起来你会发现——&lt;strong&gt;ES 的 Java 客户端在 7.x → 8.x 之间发生过断崖式变化&lt;/strong&gt;：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;接 Elasticsearch 这件事，乍一看就是&amp;quot;加个依赖、写两行代码&amp;quot;。真做起来你会发现——**ES 的 Java 客户端在 7.x → 8.x 之间发生过断崖式变化
+**：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;7.x 时代主推 &lt;code&gt;RestHighLevelClient&lt;/code&gt;，但&lt;strong&gt;它在 7.15 被官方标记为 deprecated&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;8.x 提供了全新的 &lt;code&gt;ElasticsearchClient&lt;/code&gt;（基于 Java API Client）&lt;/li&gt;
 &lt;li&gt;Spring Data Elasticsearch 在不同版本间也跟着切换底层&lt;/li&gt;
 &lt;li&gt;还有 ES 7 → 8 的 mapping 兼容、&lt;code&gt;_doc&lt;/code&gt; type 移除等历史包袱&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;很多博客文章给的代码例子混杂着 5.x、6.x、7.x、8.x 的写法，新人照着写常常踩到 deprecation 警告或者根本跑不起来。本文把这件事的现状捋清楚——&lt;strong&gt;给出一份适用于 ES 8.x + Spring Boot 3.x 的指南&lt;/strong&gt;，同时讲一下迁移和共存。&lt;/p&gt;
+&lt;p&gt;很多博客文章给的代码例子混杂着 5.x、6.x、7.x、8.x 的写法，新人照着写常常踩到 deprecation 警告或者根本跑不起来。本文把这件事的现状捋清楚——
+&lt;strong&gt;给出一份适用于 ES 8.x + Spring Boot 3.x 的指南&lt;/strong&gt;，同时讲一下迁移和共存。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三种-java-接-es-的方式"&gt;&lt;a href="#%e4%b8%89%e7%a7%8d-java-%e6%8e%a5-es-%e7%9a%84%e6%96%b9%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;三种 Java 接 ES 的方式
 &lt;/h2&gt;&lt;table&gt;
@@ -342,7 +344,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;但这是临时过渡，不是长期方案&lt;/strong&gt;——当你的 ES 集群升到 8.x，&lt;code&gt;RestHighLevelClient&lt;/code&gt; 在 8.x 上能跑但不再有新功能、不再适配新版查询能力。&lt;strong&gt;新写代码不要再用它&lt;/strong&gt;，老代码遇到要改的时候顺手迁到 Java API Client。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;但这是临时过渡，不是长期方案&lt;/strong&gt;——当你的 ES 集群升到 8.x，&lt;code&gt;RestHighLevelClient&lt;/code&gt; 在 8.x 上能跑但不再有新功能、不再适配新版查询能力。
+&lt;strong&gt;新写代码不要再用它&lt;/strong&gt;，老代码遇到要改的时候顺手迁到 Java API Client。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="几个工程上的关键决策"&gt;&lt;a href="#%e5%87%a0%e4%b8%aa%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e5%85%b3%e9%94%ae%e5%86%b3%e7%ad%96" class="header-anchor"&gt;&lt;/a&gt;几个工程上的关键决策
 &lt;/h2&gt;&lt;h3 id="1-什么时候用-spring-data-es什么时候直接用-java-api-client"&gt;&lt;a href="#1-%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e7%94%a8-spring-data-es%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e7%9b%b4%e6%8e%a5%e7%94%a8-java-api-client" class="header-anchor"&gt;&lt;/a&gt;1. 什么时候用 Spring Data ES，什么时候直接用 Java API Client
@@ -431,7 +434,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;动态推断会把&amp;quot;看似数字的字符串&amp;quot;识别成 long，把&amp;quot;中文字段&amp;quot;识别成 text 但用错分词器，&lt;strong&gt;到生产环境出问题再改 mapping 就晚了&lt;/strong&gt;
+——ES 不允许修改字段类型，只能 reindex。&lt;/p&gt;
 &lt;h3 id="3-中文分词ik-不是默认装的"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8dik-%e4%b8%8d%e6%98%af%e9%bb%98%e8%ae%a4%e8%a3%85%e7%9a%84" class="header-anchor"&gt;&lt;/a&gt;3. 中文分词：IK 不是默认装的
 &lt;/h3&gt;&lt;p&gt;ES 默认分词器对中文按字切分，多数全文检索场景下不适用。生产环境必须装 ik 分词器：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -447,8 +451,10 @@
 &lt;/div&gt;
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;维护方变化&lt;/strong&gt;：原 &lt;a class="link" href="https://github.com/medcl/elasticsearch-analysis-ik" target="_blank" rel="noopener"
- &gt;&lt;code&gt;medcl/elasticsearch-analysis-ik&lt;/code&gt;&lt;/a&gt; 在 ES 8.x 后期已不再积极维护，主线维护已迁至 &lt;a class="link" href="https://github.com/infinilabs/analysis-ik" target="_blank" rel="noopener"
- &gt;&lt;code&gt;infinilabs/analysis-ik&lt;/code&gt;&lt;/a&gt;。新装请优先用 infinilabs 仓库的 release，能更快跟上新 ES 版本。&lt;/p&gt;
+ &gt;&lt;code&gt;medcl/elasticsearch-analysis-ik&lt;/code&gt;&lt;/a&gt; 在 ES 8.x
+后期已不再积极维护，主线维护已迁至 &lt;a class="link" href="https://github.com/infinilabs/analysis-ik" target="_blank" rel="noopener"
+ &gt;&lt;code&gt;infinilabs/analysis-ik&lt;/code&gt;&lt;/a&gt;。新装请优先用
+infinilabs 仓库的 release，能更快跟上新 ES 版本。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;然后字段映射里指定 &lt;code&gt;analyzer = &amp;quot;ik_max_word&amp;quot;&lt;/code&gt;（写入用最细切，搜索用 &lt;code&gt;ik_smart&lt;/code&gt; 粗切）：&lt;/p&gt;
@@ -548,7 +554,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;ES 8.x 时代，Java 业务接 ES 的标准答案是：CRUD 用 Spring Data ES，复杂查询用 Java API Client，老代码里的 RestHighLevelClient 慢慢替换掉。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;ES 8.x 时代，Java 业务接 ES 的标准答案是：CRUD 用 Spring Data ES，复杂查询用 Java API Client，老代码里的
+RestHighLevelClient 慢慢替换掉。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程上多记几条铁律：&lt;/p&gt;

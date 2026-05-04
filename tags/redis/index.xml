@@ -349,7 +349,8 @@
 &lt;/h3&gt;&lt;p&gt;某创业公司 0 限流上线，凌晨被脚本攻击——一晚发出 8 万条短信，&lt;strong&gt;短信通道账户余额清零&lt;/strong&gt;，第二天用户登录时发不出短信。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;任何对外发短信的接口必须先有限流&lt;/strong&gt;，哪怕是日活 10 的小项目。&lt;/p&gt;
 &lt;h3 id="事故-2验证码被复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-2%e9%aa%8c%e8%af%81%e7%a0%81%e8%a2%ab%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 2：验证码被复用
-&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;，刷出几千个假账号。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;
+，刷出几千个假账号。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;验证码是一次性的，校验后立刻 &lt;code&gt;DEL&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="事故-3跨场景复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-3%e8%b7%a8%e5%9c%ba%e6%99%af%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 3：跨场景复用
 &lt;/h3&gt;&lt;p&gt;登录场景和找回密码用同一个 Redis key。攻击者通过&amp;quot;找回密码&amp;quot;功能拿到验证码，&lt;strong&gt;直接拿来登录目标账号&lt;/strong&gt;——因为后端没区分。&lt;/p&gt;
@@ -481,7 +482,8 @@
 &lt;li&gt;&lt;strong&gt;场景必须隔离，不要跨业务复用 key&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把这三条做对，再叠加多维限流和人机校验，你的验证码系统就基本不会被薅羊毛了。&lt;/p&gt;</description></item><item><title>JetCache 实战：Spring 项目里的多级缓存利器</title><link>https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/</link><pubDate>Fri, 15 Apr 2022 17:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/</guid><description>&lt;img src="https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/cover.svg" alt="Featured image of post JetCache 实战：Spring 项目里的多级缓存利器" /&gt;&lt;h2 id="为什么-spring-cache-不够用"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-spring-cache-%e4%b8%8d%e5%a4%9f%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;为什么 Spring Cache 不够用
-&lt;/h2&gt;&lt;p&gt;Spring Cache (&lt;code&gt;@Cacheable&lt;/code&gt;/&lt;code&gt;@CacheEvict&lt;/code&gt;) 是个好抽象——把&amp;quot;读数据先看缓存&amp;quot;这件事用注解优雅地表达出来。但用过的人都知道，它有几个&lt;strong&gt;和生产场景对不上&lt;/strong&gt;的硬伤：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Spring Cache (&lt;code&gt;@Cacheable&lt;/code&gt;/&lt;code&gt;@CacheEvict&lt;/code&gt;) 是个好抽象——把&amp;quot;读数据先看缓存&amp;quot;这件事用注解优雅地表达出来。但用过的人都知道，它有几个
+&lt;strong&gt;和生产场景对不上&lt;/strong&gt;的硬伤：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;不支持过期时间&lt;/strong&gt;——原生 &lt;code&gt;@Cacheable&lt;/code&gt; 没法在注解上指定 TTL，要么改全局配置，要么自定义 &lt;code&gt;CacheManager&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不支持多级缓存&lt;/strong&gt;——你要么全 Caffeine，要么全 Redis，没法&amp;quot;先查 Caffeine 再查 Redis&amp;quot;&lt;/li&gt;
@@ -699,7 +701,8 @@
 &lt;/div&gt;&lt;p&gt;&lt;code&gt;cacheNullValue = true&lt;/code&gt; 让&amp;quot;DB 返回 null&amp;quot;也被缓存，&lt;strong&gt;短时间内连续查不存在的 key 不会重复打 DB&lt;/strong&gt;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;注意：缓存 null 的 TTL 通常应该比正常数据短一些，避免数据从无到有时延迟太久才被前端看到。可以两个 &lt;code&gt;@Cached&lt;/code&gt; 分开缓存，或者 TTL 设短点。&lt;/p&gt;
+ &lt;p&gt;注意：缓存 null 的 TTL 通常应该比正常数据短一些，避免数据从无到有时延迟太久才被前端看到。可以两个 &lt;code&gt;@Cached&lt;/code&gt; 分开缓存，或者
+TTL 设短点。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -784,7 +787,8 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;&lt;code&gt;broadcastChannel&lt;/code&gt; 与 &lt;code&gt;syncLocal: true&lt;/code&gt; 缺一不可&lt;/strong&gt;——只配 broadcastChannel 不开 syncLocal，本地 Caffeine 不会订阅广播，跨 JVM 失效不生效。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;&lt;code&gt;broadcastChannel&lt;/code&gt; 与 &lt;code&gt;syncLocal: true&lt;/code&gt; 缺一不可&lt;/strong&gt;——只配 broadcastChannel 不开 syncLocal，本地 Caffeine 不会订阅广播，跨
+JVM 失效不生效。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;每次 &lt;code&gt;@CacheInvalidate&lt;/code&gt; 触发时：&lt;/p&gt;
@@ -818,11 +822,13 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hotConfig: | 321 | 95.20% | 80.00% | 300 | 21
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;把这个表周期性吐到监控系统（Prometheus / SkyWalking / 日志大盘），&lt;strong&gt;直接定位&amp;quot;哪个 cache 命中率低&amp;quot;&lt;/strong&gt;——通常意味着 TTL 太短、key 设计有问题、或者业务实际并不重复。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;把这个表周期性吐到监控系统（Prometheus / SkyWalking / 日志大盘），&lt;strong&gt;直接定位&amp;quot;哪个 cache 命中率低&amp;quot;&lt;/strong&gt;——通常意味着 TTL 太短、key
+设计有问题、或者业务实际并不重复。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八踩坑提醒"&gt;&lt;a href="#%e5%85%ab%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;八、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-keyconvertor-必须配"&gt;&lt;a href="#1-keyconvertor-%e5%bf%85%e9%a1%bb%e9%85%8d" class="header-anchor"&gt;&lt;/a&gt;1. &lt;code&gt;keyConvertor&lt;/code&gt; 必须配
-&lt;/h3&gt;&lt;p&gt;不配的话默认用对象的 &lt;code&gt;toString()&lt;/code&gt; 当 key——&lt;strong&gt;对象 hash 变了 key 就不一样&lt;/strong&gt;，缓存命中率瞬间归零。&lt;code&gt;jackson&lt;/code&gt; / &lt;code&gt;fastjson2&lt;/code&gt; 是常见选择。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;不配的话默认用对象的 &lt;code&gt;toString()&lt;/code&gt; 当 key——&lt;strong&gt;对象 hash 变了 key 就不一样&lt;/strong&gt;，缓存命中率瞬间归零。&lt;code&gt;jackson&lt;/code&gt; / &lt;code&gt;fastjson2&lt;/code&gt;
+是常见选择。&lt;/p&gt;
 &lt;h3 id="2-序列化版本兼容"&gt;&lt;a href="#2-%e5%ba%8f%e5%88%97%e5%8c%96%e7%89%88%e6%9c%ac%e5%85%bc%e5%ae%b9" class="header-anchor"&gt;&lt;/a&gt;2. 序列化版本兼容
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;valueEncoder: java&lt;/code&gt; 用 JDK 序列化，&lt;strong&gt;类字段加减会直接破坏序列化兼容&lt;/strong&gt;。生产推荐 &lt;code&gt;kryo&lt;/code&gt; 或 &lt;code&gt;jackson&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -846,7 +852,8 @@
 &lt;h3 id="5-注解和方法签名"&gt;&lt;a href="#5-%e6%b3%a8%e8%a7%a3%e5%92%8c%e6%96%b9%e6%b3%95%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;5. 注解和方法签名
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;@Cached&lt;/code&gt; 的 key 不要写成 &lt;code&gt;#user.id&lt;/code&gt;——&lt;code&gt;null&lt;/code&gt; 时会 NPE。用 SpEL 的安全访问：&lt;code&gt;'#user?.id'&lt;/code&gt;。&lt;/p&gt;
 &lt;h3 id="6-不缓存-list复杂对象"&gt;&lt;a href="#6-%e4%b8%8d%e7%bc%93%e5%ad%98-list%e5%a4%8d%e6%9d%82%e5%af%b9%e8%b1%a1" class="header-anchor"&gt;&lt;/a&gt;6. 不缓存 List&amp;lt;复杂对象&amp;gt;
-&lt;/h3&gt;&lt;p&gt;复杂对象列表序列化反序列化都是开销，&lt;strong&gt;多个细粒度 cache 比一个大 cache 性能好&lt;/strong&gt;。把&amp;quot;分页结果&amp;quot;缓存当反例——分页参数一变就 miss，命中率极低。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;复杂对象列表序列化反序列化都是开销，&lt;strong&gt;多个细粒度 cache 比一个大 cache 性能好&lt;/strong&gt;。把&amp;quot;分页结果&amp;quot;缓存当反例——分页参数一变就
+miss，命中率极低。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="九和其他方案对比"&gt;&lt;a href="#%e4%b9%9d%e5%92%8c%e5%85%b6%e4%bb%96%e6%96%b9%e6%a1%88%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;九、和其他方案对比
 &lt;/h2&gt;&lt;table&gt;
@@ -964,7 +971,9 @@
 &lt;p&gt;把这些吃透，缓存这层就基本不会再出大事故了。&lt;/p&gt;</description></item><item><title>Redis安装和高可用集群搭建</title><link>https://www.lingcoder.com/p/redis-install-and-config/</link><pubDate>Mon, 13 Jan 2020 20:48:02 +0800</pubDate><guid>https://www.lingcoder.com/p/redis-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/redis-install-and-config/cover.jpg" alt="Featured image of post Redis安装和高可用集群搭建" /&gt;&lt;h1 id="redis安装和高可用集群搭建"&gt;&lt;a href="#redis%e5%ae%89%e8%a3%85%e5%92%8c%e9%ab%98%e5%8f%af%e7%94%a8%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Redis安装和高可用集群搭建
 &lt;/h1&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;版本说明（2026 年补）&lt;/strong&gt;：本文基于 Redis 5.0.5（2019 年版本）。Redis 7 起新增 ACL、客户端缓存、Function、多部分 AOF、cluster-allow-replica-migration 等特性；Redis 8 已发布。新搭集群建议直接用 7.x/8.x 并参考新版文档，下面命令在 7.x 上仍可跑通，但 &lt;code&gt;redis.conf&lt;/code&gt; 的若干默认值已变更（如 &lt;code&gt;protected-mode&lt;/code&gt;、&lt;code&gt;maxmemory-policy&lt;/code&gt; 默认仍为 &lt;code&gt;noeviction&lt;/code&gt;）。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;版本说明（2026 年补）&lt;/strong&gt;：本文基于 Redis 5.0.5（2019 年版本）。Redis 7 起新增 ACL、客户端缓存、Function、多部分
+AOF、cluster-allow-replica-migration 等特性；Redis 8 已发布。新搭集群建议直接用 7.x/8.x 并参考新版文档，下面命令在 7.x
+上仍可跑通，但 &lt;code&gt;redis.conf&lt;/code&gt; 的若干默认值已变更（如 &lt;code&gt;protected-mode&lt;/code&gt;、&lt;code&gt;maxmemory-policy&lt;/code&gt; 默认仍为 &lt;code&gt;noeviction&lt;/code&gt;）。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h2 id="安装步骤"&gt;&lt;a href="#%e5%ae%89%e8%a3%85%e6%ad%a5%e9%aa%a4" class="header-anchor"&gt;&lt;/a&gt;安装步骤
@@ -1200,7 +1209,8 @@
 &lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id="集群搭建"&gt;&lt;a href="#%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;集群搭建
-&lt;/h2&gt;&lt;p&gt;Redis Cluster 创建集群最低 3 个 master 节点（可以无 slave，仅用于学习测试）；&lt;strong&gt;生产推荐至少 3 主 3 从（共 6 节点）&lt;/strong&gt;——下面 &lt;code&gt;--cluster-replicas 1&lt;/code&gt; 命令也要求节点总数为偶数且每主至少 1 从。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Redis Cluster 创建集群最低 3 个 master 节点（可以无 slave，仅用于学习测试）；&lt;strong&gt;生产推荐至少 3 主 3 从（共 6 节点）&lt;/strong&gt;——下面
+&lt;code&gt;--cluster-replicas 1&lt;/code&gt; 命令也要求节点总数为偶数且每主至少 1 从。&lt;/p&gt;
 &lt;p&gt;按照生产3台机器部署,每台2个实例。 可以把上面redis.conf 文件复制一份，涉及端口 6379 的地方修改端口为6380。另外2台同样操作。&lt;/p&gt;
 &lt;p&gt;举例&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -1320,7 +1330,8 @@
 &lt;li&gt;&lt;strong&gt;接口幂等&lt;/strong&gt;：用户连点两次，怎么保证只处理一次？&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;资源独占&lt;/strong&gt;：同一个用户、同一个文件，同时只能由一个请求修改？&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;进程内的锁帮不了你，因为它们彼此根本不知道对方存在。要在跨进程、跨机器的环境里&amp;quot;约定一个谁能进谁不能进&amp;quot;，就需要一个&lt;strong&gt;所有节点都信任的第三方&lt;/strong&gt;——Redis 是最常见的选择。&lt;/p&gt;
+&lt;p&gt;进程内的锁帮不了你，因为它们彼此根本不知道对方存在。要在跨进程、跨机器的环境里&amp;quot;约定一个谁能进谁不能进&amp;quot;，就需要一个*
+&lt;em&gt;所有节点都信任的第三方&lt;/em&gt;*——Redis 是最常见的选择。&lt;/p&gt;
 &lt;p&gt;但 Redis 分布式锁这件事，看着简单，做对极难。下面我们从最朴素的写法一路演进，把每个版本里&amp;quot;看似能用其实不行&amp;quot;的坑摊开。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="姿势一setnx--expire错误示范"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%b8%80setnx--expire%e9%94%99%e8%af%af%e7%a4%ba%e8%8c%83" class="header-anchor"&gt;&lt;/a&gt;姿势一：&lt;code&gt;SETNX&lt;/code&gt; + &lt;code&gt;EXPIRE&lt;/code&gt;（错误示范）
@@ -1355,7 +1366,8 @@
  &lt;p&gt;&lt;code&gt;SETNX&lt;/code&gt; 和 &lt;code&gt;EXPIRE&lt;/code&gt; 是两条命令，不是原子操作。&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;如果在 &lt;code&gt;SETNX&lt;/code&gt; 成功之后、&lt;code&gt;EXPIRE&lt;/code&gt; 之前进程崩了、网络抖了、Redis 主从切换了，那这把锁就&lt;strong&gt;永远没有过期时间&lt;/strong&gt;——所有后续请求都会被它挡住，直到运维手动删 key。&lt;/p&gt;
+&lt;p&gt;如果在 &lt;code&gt;SETNX&lt;/code&gt; 成功之后、&lt;code&gt;EXPIRE&lt;/code&gt; 之前进程崩了、网络抖了、Redis 主从切换了，那这把锁就&lt;strong&gt;永远没有过期时间&lt;/strong&gt;
+——所有后续请求都会被它挡住，直到运维手动删 key。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="姿势二set-key-value-nx-ex-一条命令搞定"&gt;&lt;a href="#%e5%a7%bf%e5%8a%bf%e4%ba%8cset-key-value-nx-ex-%e4%b8%80%e6%9d%a1%e5%91%bd%e4%bb%a4%e6%90%9e%e5%ae%9a" class="header-anchor"&gt;&lt;/a&gt;姿势二：&lt;code&gt;SET key value NX EX&lt;/code&gt; 一条命令搞定
 &lt;/h2&gt;&lt;p&gt;Redis 2.6.12 之后，&lt;code&gt;SET&lt;/code&gt; 命令支持了原子的 &lt;code&gt;NX&lt;/code&gt; + &lt;code&gt;EX&lt;/code&gt; 选项，这就是真正可用的&amp;quot;上锁&amp;quot;操作：&lt;/p&gt;
@@ -1531,7 +1543,10 @@
 &lt;p&gt;业务侧能做到&amp;quot;加锁就像 &lt;code&gt;synchronized&lt;/code&gt; 一样自然&amp;quot;，这正是它的价值。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;⚠️ &lt;strong&gt;看门狗的关键陷阱&lt;/strong&gt;：看门狗只在你&lt;strong&gt;不显式指定 &lt;code&gt;leaseTime&lt;/code&gt;&lt;/strong&gt; 时才会启用——也就是 &lt;code&gt;lock.lock()&lt;/code&gt; / &lt;code&gt;lock.lock(-1, ...)&lt;/code&gt; / &lt;code&gt;tryLock(waitTime, unit)&lt;/code&gt;。一旦你调用 &lt;code&gt;lock(leaseTime, unit)&lt;/code&gt; 或 &lt;code&gt;tryLock(waitTime, leaseTime, unit)&lt;/code&gt; 显式传了 &lt;code&gt;leaseTime&lt;/code&gt;，&lt;strong&gt;看门狗会被关闭&lt;/strong&gt;，锁到期后直接释放，不再续期。这是初学者最容易踩的坑——看着代码&amp;quot;用了 Redisson 应该有看门狗&amp;quot;，实际锁早就过期了。&lt;/p&gt;
+ &lt;p&gt;⚠️ &lt;strong&gt;看门狗的关键陷阱&lt;/strong&gt;：看门狗只在你&lt;strong&gt;不显式指定 &lt;code&gt;leaseTime&lt;/code&gt;&lt;/strong&gt; 时才会启用——也就是 &lt;code&gt;lock.lock()&lt;/code&gt; /
+&lt;code&gt;lock.lock(-1, ...)&lt;/code&gt; / &lt;code&gt;tryLock(waitTime, unit)&lt;/code&gt;。一旦你调用 &lt;code&gt;lock(leaseTime, unit)&lt;/code&gt; 或
+&lt;code&gt;tryLock(waitTime, leaseTime, unit)&lt;/code&gt; 显式传了 &lt;code&gt;leaseTime&lt;/code&gt;，&lt;strong&gt;看门狗会被关闭&lt;/strong&gt;
+，锁到期后直接释放，不再续期。这是初学者最容易踩的坑——看着代码&amp;quot;用了 Redisson 应该有看门狗&amp;quot;，实际锁早就过期了。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -1544,7 +1559,8 @@
 &lt;p&gt;Redis 作者 antirez 为此提出了 &lt;strong&gt;Redlock 算法&lt;/strong&gt;：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;部署 N 个&lt;strong&gt;互相独立&lt;/strong&gt;的 Redis 实例（比如 5 个），客户端尝试在这 N 个实例上&lt;strong&gt;依次加锁&lt;/strong&gt;。只有在 &lt;strong&gt;大多数实例（≥ N/2 + 1）&lt;/strong&gt; 都加锁成功，且总耗时小于锁过期时间，才认为加锁成功。&lt;/p&gt;
+ &lt;p&gt;部署 N 个&lt;strong&gt;互相独立&lt;/strong&gt;的 Redis 实例（比如 5 个），客户端尝试在这 N 个实例上&lt;strong&gt;依次加锁&lt;/strong&gt;。只有在 &lt;strong&gt;大多数实例（≥ N/2 + 1）&lt;/strong&gt;
+都加锁成功，且总耗时小于锁过期时间，才认为加锁成功。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
@@ -1556,12 +1572,14 @@
  Note over Client: 至少 3/5 成功才算获得锁
  Note over Client: 释放时向所有节点发 DEL&lt;/pre&gt;&lt;p&gt;Redisson 也实现了 Redlock：&lt;code&gt;RedissonRedLock&lt;/code&gt;。&lt;/p&gt;
 &lt;h3 id="martin-kleppmann-的反驳"&gt;&lt;a href="#martin-kleppmann-%e7%9a%84%e5%8f%8d%e9%a9%b3" class="header-anchor"&gt;&lt;/a&gt;Martin Kleppmann 的反驳
-&lt;/h3&gt;&lt;p&gt;不过 Redlock 在学界一直有争议。著名分布式系统专家 Martin Kleppmann 写过一篇 &lt;em&gt;&amp;ldquo;How to do distributed locking&amp;rdquo;&lt;/em&gt;，指出 Redlock 在以下场景下并不安全：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;不过 Redlock 在学界一直有争议。著名分布式系统专家 Martin Kleppmann 写过一篇 &lt;em&gt;&amp;ldquo;How to do distributed locking&amp;rdquo;&lt;/em&gt;，指出
+Redlock 在以下场景下并不安全：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;客户端 GC 暂停&lt;/strong&gt;——加锁后业务卡了几秒，锁早过期了，业务以为自己还持有锁继续操作&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;时钟漂移&lt;/strong&gt;——节点之间的系统时钟不一致，过期时间判断会失准&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
+&lt;p&gt;他的结论是：&lt;strong&gt;对正确性要求极高的场景，应该用 ZooKeeper / etcd 这类基于一致性协议的系统&lt;/strong&gt;；Redis 锁更适合&amp;quot;
+性能优先、偶尔失误可接受&amp;quot;的场景。&lt;/p&gt;
 &lt;p&gt;工程上&lt;strong&gt;多数业务场景用 Redisson 单实例锁就足够&lt;/strong&gt;——性能高、用法简单；只有对正确性极敏感的少数场景才上 ZooKeeper。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="各姿势对比"&gt;&lt;a href="#%e5%90%84%e5%a7%bf%e5%8a%bf%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;各姿势对比
@@ -1668,7 +1686,9 @@
 &lt;/div&gt;&lt;p&gt;&lt;code&gt;isHeldByCurrentThread()&lt;/code&gt; 这个判断很重要——避免在某些异常路径下解了不属于自己的锁。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;如果你&lt;strong&gt;确实&lt;/strong&gt;需要&amp;quot;超时强制释放&amp;quot;作为兜底（防止业务永远卡死把锁吃住），就显式传 &lt;code&gt;leaseTime&lt;/code&gt;：&lt;code&gt;lock.tryLock(3, 30, TimeUnit.SECONDS)&lt;/code&gt;。但要清楚这种写法&lt;strong&gt;没有看门狗&lt;/strong&gt;——&lt;code&gt;leaseTime&lt;/code&gt; 必须 ≥ 业务最长执行时间 × 2，否则中途锁掉的风险会回来。&lt;/p&gt;
+ &lt;p&gt;如果你&lt;strong&gt;确实&lt;/strong&gt;需要&amp;quot;超时强制释放&amp;quot;作为兜底（防止业务永远卡死把锁吃住），就显式传 &lt;code&gt;leaseTime&lt;/code&gt;：
+&lt;code&gt;lock.tryLock(3, 30, TimeUnit.SECONDS)&lt;/code&gt;。但要清楚这种写法&lt;strong&gt;没有看门狗&lt;/strong&gt;——&lt;code&gt;leaseTime&lt;/code&gt; 必须 ≥ 业务最长执行时间 ×
+2，否则中途锁掉的风险会回来。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -1686,4 +1706,5 @@
 &lt;li&gt;&lt;strong&gt;极致正确性&lt;/strong&gt;：上 ZooKeeper / etcd&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;学习理解原理&lt;/strong&gt;：把上面六种姿势从头写一遍&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;理解了这些演进，下次再有人问你&amp;quot;Redis 锁怎么用&amp;quot;，你就不会只回一句 &lt;code&gt;SET NX EX&lt;/code&gt; 了——你会先反问：&amp;ldquo;你的业务能容忍偶尔失效吗？锁持有时间可控吗？需要可重入吗？&amp;rdquo;&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;理解了这些演进，下次再有人问你&amp;quot;Redis 锁怎么用&amp;quot;，你就不会只回一句 &lt;code&gt;SET NX EX&lt;/code&gt; 了——你会先反问：&amp;quot;
+你的业务能容忍偶尔失效吗？锁持有时间可控吗？需要可重入吗？&amp;quot;&lt;/p&gt;</description></item></channel></rss>

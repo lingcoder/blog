@@ -204,7 +204,8 @@
 &lt;li&gt;退出时主动释放&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="3-数据中心-id"&gt;&lt;a href="#3-%e6%95%b0%e6%8d%ae%e4%b8%ad%e5%bf%83-id" class="header-anchor"&gt;&lt;/a&gt;3. 数据中心 ID
-&lt;/h3&gt;&lt;p&gt;如上所述 Twitter 原版就把 10 bit 拆成 5+5；如果你的部署只有一个 DC，可以把 datacenter 位让渡给 worker 位，扩展到 1024 台单 DC 节点。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;如上所述 Twitter 原版就把 10 bit 拆成 5+5；如果你的部署只有一个 DC，可以把 datacenter 位让渡给 worker 位，扩展到 1024 台单
+DC 节点。&lt;/p&gt;
 &lt;h3 id="4-序列号回滚"&gt;&lt;a href="#4-%e5%ba%8f%e5%88%97%e5%8f%b7%e5%9b%9e%e6%bb%9a" class="header-anchor"&gt;&lt;/a&gt;4. 序列号回滚
 &lt;/h3&gt;&lt;p&gt;朴素方案每毫秒序列号从 0 开始——&lt;strong&gt;容易在毫秒边界 burst 时浪费&lt;/strong&gt;。改进：&lt;/p&gt;
 &lt;ul&gt;
@@ -385,9 +386,11 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;6
 &lt;/span&gt;&lt;span class="lnt"&gt;7
 &lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; SELECT id, name, age, status FROM user
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;where&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;if&lt;/span&gt; &lt;span class="na"&gt;test=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;name != null&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;AND name = #{name}&lt;span class="nt"&gt;&amp;lt;/if&amp;gt;&lt;/span&gt;
@@ -397,7 +400,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/select&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。&lt;strong&gt;这种重复劳动催生了两个现象级开源项目&lt;/strong&gt;：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。**这种重复劳动催生了两个现象级开源项目
+**：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;通用 Mapper（tk.mybatis）&lt;/strong&gt;：刘增辉（abel533）2014 年开源&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;MyBatis-Plus&lt;/strong&gt;（MP）：苞米豆团队 2016 年开源&lt;/li&gt;
@@ -863,7 +867,8 @@
 
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;新项目优先 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧 &lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧
+&lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -923,7 +928,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用 Mapper。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用
+Mapper。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;不管选哪个，记住几个一致的工程纪律：&lt;/p&gt;
@@ -969,7 +975,8 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;注：示例里用 &lt;code&gt;orders&lt;/code&gt; 而不是 &lt;code&gt;order&lt;/code&gt;——&lt;code&gt;order&lt;/code&gt; 是 SQL 保留字，直接拿来当表名要么报语法错误，要么必须加反引号 &lt;code&gt;`order`&lt;/code&gt;。&lt;/p&gt;
+ &lt;p&gt;注：示例里用 &lt;code&gt;orders&lt;/code&gt; 而不是 &lt;code&gt;order&lt;/code&gt;——&lt;code&gt;order&lt;/code&gt; 是 SQL 保留字，直接拿来当表名要么报语法错误，要么必须加反引号
+&lt;code&gt;`order`&lt;/code&gt;。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;哪种好？两派都各有铁粉，争论起来谁也说服不了谁。本文把两种方案的优劣、适用边界、工程取舍讲清楚——不给标准答案，但讲清楚什么场景该选什么。&lt;/p&gt;
@@ -1016,14 +1023,17 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;千万级数据下，前者比后者快 30%-50% 不是稀奇事。&lt;/p&gt;
 &lt;h4 id="3-id-是单调递增的写入友好"&gt;&lt;a href="#3-id-%e6%98%af%e5%8d%95%e8%b0%83%e9%80%92%e5%a2%9e%e7%9a%84%e5%86%99%e5%85%a5%e5%8f%8b%e5%a5%bd" class="header-anchor"&gt;&lt;/a&gt;3. ID 是单调递增的，写入友好
-&lt;/h4&gt;&lt;p&gt;InnoDB 是按主键聚簇存储的——递增 ID 写入时&lt;strong&gt;永远是 append&lt;/strong&gt;，热点页只有一个。如果用业务编码（不一定单调），写入时容易引发&lt;strong&gt;页分裂&lt;/strong&gt;，影响写性能。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;InnoDB 是按主键聚簇存储的——递增 ID 写入时&lt;strong&gt;永远是 append&lt;/strong&gt;，热点页只有一个。如果用业务编码（不一定单调），写入时容易引发**页分裂
+**，影响写性能。&lt;/p&gt;
 &lt;h4 id="4-不暴露业务信息"&gt;&lt;a href="#4-%e4%b8%8d%e6%9a%b4%e9%9c%b2%e4%b8%9a%e5%8a%a1%e4%bf%a1%e6%81%af" class="header-anchor"&gt;&lt;/a&gt;4. 不暴露业务信息
-&lt;/h4&gt;&lt;p&gt;ID 是个&amp;quot;无意义数字&amp;quot;，不会泄漏业务规模。&lt;code&gt;order.id = 9876543&lt;/code&gt; 攻击者拿到也猜不出实际订单量；但 &lt;code&gt;order.order_no = &amp;quot;ORD-20170315-00001&amp;quot;&lt;/code&gt; 一看就知道当天第几单。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;ID 是个&amp;quot;无意义数字&amp;quot;，不会泄漏业务规模。&lt;code&gt;order.id = 9876543&lt;/code&gt; 攻击者拿到也猜不出实际订单量；但
+&lt;code&gt;order.order_no = &amp;quot;ORD-20170315-00001&amp;quot;&lt;/code&gt; 一看就知道当天第几单。&lt;/p&gt;
 &lt;h3 id="但-id-也不是完美"&gt;&lt;a href="#%e4%bd%86-id-%e4%b9%9f%e4%b8%8d%e6%98%af%e5%ae%8c%e7%be%8e" class="header-anchor"&gt;&lt;/a&gt;但 ID 也不是完美
 &lt;/h3&gt;&lt;h4 id="1-跨库迁移痛"&gt;&lt;a href="#1-%e8%b7%a8%e5%ba%93%e8%bf%81%e7%a7%bb%e7%97%9b" class="header-anchor"&gt;&lt;/a&gt;1. 跨库迁移痛
 &lt;/h4&gt;&lt;p&gt;ID 是数据库自增，&lt;strong&gt;两个库的数据合并时 ID 必然冲突&lt;/strong&gt;——常见做法是用雪花 ID 或一开始就用 UUID。&lt;/p&gt;
 &lt;h4 id="2-读起来不友好"&gt;&lt;a href="#2-%e8%af%bb%e8%b5%b7%e6%9d%a5%e4%b8%8d%e5%8f%8b%e5%a5%bd" class="header-anchor"&gt;&lt;/a&gt;2. 读起来不友好
-&lt;/h4&gt;&lt;p&gt;日志里看到 &lt;code&gt;user_id=12345&lt;/code&gt; 你要去查另一张表才知道是谁。所以&lt;strong&gt;业务对外的 API 通常还是返回 user_no&lt;/strong&gt;——内部 ID + 外部 code 双轨制。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;日志里看到 &lt;code&gt;user_id=12345&lt;/code&gt; 你要去查另一张表才知道是谁。所以&lt;strong&gt;业务对外的 API 通常还是返回 user_no&lt;/strong&gt;——内部 ID + 外部 code
+双轨制。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="二枚举类外键建议用-code"&gt;&lt;a href="#%e4%ba%8c%e6%9e%9a%e4%b8%be%e7%b1%bb%e5%a4%96%e9%94%ae%e5%bb%ba%e8%ae%ae%e7%94%a8-code" class="header-anchor"&gt;&lt;/a&gt;二、枚举类外键：建议用 CODE
 &lt;/h2&gt;&lt;p&gt;订单状态、性别、城市编码这种&amp;quot;指向字典&amp;quot;的外键，&lt;strong&gt;反过来——建议用 CODE 关联&lt;/strong&gt;。&lt;/p&gt;
@@ -1045,7 +1055,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;不用 join 字典表都能看懂&amp;quot;已支付&amp;quot;。&lt;strong&gt;线上排查问题时这个差别非常大&lt;/strong&gt;。&lt;/p&gt;
 &lt;h4 id="2-字典基本不会改"&gt;&lt;a href="#2-%e5%ad%97%e5%85%b8%e5%9f%ba%e6%9c%ac%e4%b8%8d%e4%bc%9a%e6%94%b9" class="header-anchor"&gt;&lt;/a&gt;2. 字典基本不会改
-&lt;/h4&gt;&lt;p&gt;&lt;code&gt;order_status&lt;/code&gt; 这种字典——&lt;code&gt;PAID&lt;/code&gt;、&lt;code&gt;SHIPPED&lt;/code&gt;、&lt;code&gt;COMPLETED&lt;/code&gt;——一旦确定，几乎不会变（业务有变化也是新增，不是修改）。&lt;strong&gt;code 不会改的前提下，ID 的&amp;quot;不变性优势&amp;quot;就消失了&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;order_status&lt;/code&gt; 这种字典——&lt;code&gt;PAID&lt;/code&gt;、&lt;code&gt;SHIPPED&lt;/code&gt;、&lt;code&gt;COMPLETED&lt;/code&gt;——一旦确定，几乎不会变（业务有变化也是新增，不是修改）。&lt;strong&gt;code
+不会改的前提下，ID 的&amp;quot;不变性优势&amp;quot;就消失了&lt;/strong&gt;。&lt;/p&gt;
 &lt;h4 id="3-跨系统一致"&gt;&lt;a href="#3-%e8%b7%a8%e7%b3%bb%e7%bb%9f%e4%b8%80%e8%87%b4" class="header-anchor"&gt;&lt;/a&gt;3. 跨系统一致
 &lt;/h4&gt;&lt;p&gt;字典经常要给前端、第三方对接、数据导出。&lt;strong&gt;&lt;code&gt;PAID&lt;/code&gt; 比 &lt;code&gt;3&lt;/code&gt; 通用得多&lt;/strong&gt;——前端不用维护&amp;quot;3=已支付&amp;quot;的对照表，直接看 code 写逻辑。&lt;/p&gt;
 &lt;h4 id="4-代码层面更清爽"&gt;&lt;a href="#4-%e4%bb%a3%e7%a0%81%e5%b1%82%e9%9d%a2%e6%9b%b4%e6%b8%85%e7%88%bd" class="header-anchor"&gt;&lt;/a&gt;4. 代码层面更清爽
@@ -1084,7 +1095,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;如果用 ID，代码里到处是 &lt;code&gt;status_id == 3&lt;/code&gt; 这种&lt;strong&gt;魔法数字&lt;/strong&gt;，可读性差，加新状态时容易和已有 ID 撞。&lt;/p&gt;
 &lt;h4 id="5-字典表本身也得有"&gt;&lt;a href="#5-%e5%ad%97%e5%85%b8%e8%a1%a8%e6%9c%ac%e8%ba%ab%e4%b9%9f%e5%be%97%e6%9c%89" class="header-anchor"&gt;&lt;/a&gt;5. 字典表本身也得有
-&lt;/h4&gt;&lt;p&gt;国内项目还有种做法是&lt;strong&gt;根本不建字典表，code 直接写在代码枚举里&lt;/strong&gt;。这有它的优势——一致性强、没有&amp;quot;代码和数据库不同步&amp;quot;的问题，但缺点是&lt;strong&gt;修改要发版&lt;/strong&gt;，前端没法动态拉取选项。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;国内项目还有种做法是&lt;strong&gt;根本不建字典表，code 直接写在代码枚举里&lt;/strong&gt;。这有它的优势——一致性强、没有&amp;quot;代码和数据库不同步&amp;quot;的问题，但缺点是
+&lt;strong&gt;修改要发版&lt;/strong&gt;，前端没法动态拉取选项。&lt;/p&gt;
 &lt;p&gt;工程上常见做法：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;简单字典直接代码枚举&lt;/li&gt;
@@ -1143,7 +1155,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;关联类外键用什么主键，CODE 关联问题不大&lt;/strong&gt;。但用 UUID 时务必走 &lt;code&gt;BINARY(16)&lt;/code&gt; 存储而不是 &lt;code&gt;CHAR(36)&lt;/code&gt;——前者只占一半空间且索引性能高得多（不止一倍）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关联类外键用什么主键，CODE 关联问题不大&lt;/strong&gt;。但用 UUID 时务必走 &lt;code&gt;BINARY(16)&lt;/code&gt; 存储而不是 &lt;code&gt;CHAR(36)&lt;/code&gt;
+——前者只占一半空间且索引性能高得多（不止一倍）。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五外键约束要不要加-fk-constraint"&gt;&lt;a href="#%e4%ba%94%e5%a4%96%e9%94%ae%e7%ba%a6%e6%9d%9f%e8%a6%81%e4%b8%8d%e8%a6%81%e5%8a%a0-fk-constraint" class="header-anchor"&gt;&lt;/a&gt;五、外键约束：要不要加 FK constraint
 &lt;/h2&gt;&lt;p&gt;讨论&amp;quot;用 ID 还是 CODE&amp;quot;时，常常顺带聊另一个问题——&lt;strong&gt;要不要在数据库层面建外键约束&lt;/strong&gt;：&lt;/p&gt;
@@ -1187,10 +1200,12 @@
 &lt;hr&gt;
 &lt;h2 id="七一些反例"&gt;&lt;a href="#%e4%b8%83%e4%b8%80%e4%ba%9b%e5%8f%8d%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;七、一些反例
 &lt;/h2&gt;&lt;h3 id="反例-1user_no-当外键"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-1user_no-%e5%bd%93%e5%a4%96%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反例 1：&lt;code&gt;user_no&lt;/code&gt; 当外键
-&lt;/h3&gt;&lt;p&gt;某项目用 &lt;code&gt;U20170315001&lt;/code&gt; 这种用户编号当所有外键。三年后业务并购，要把所有 U 开头的用户改成 A 开头——&lt;strong&gt;全表 update + 全部关联表 update&lt;/strong&gt;，停服 12 小时。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;某项目用 &lt;code&gt;U20170315001&lt;/code&gt; 这种用户编号当所有外键。三年后业务并购，要把所有 U 开头的用户改成 A 开头——&lt;strong&gt;全表 update + 全部关联表
+update&lt;/strong&gt;，停服 12 小时。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;业务编号永远可能改格式&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="反例-2状态用-id"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-2%e7%8a%b6%e6%80%81%e7%94%a8-id" class="header-anchor"&gt;&lt;/a&gt;反例 2：状态用 ID
-&lt;/h3&gt;&lt;p&gt;订单状态字典表里 &lt;code&gt;1=未付款&lt;/code&gt;、&lt;code&gt;2=已付款&lt;/code&gt;、&lt;code&gt;3=已发货&lt;/code&gt;。某天产品提需求：&amp;ldquo;把&amp;rsquo;已付款&amp;rsquo;拆成&amp;rsquo;部分付款&amp;rsquo;和&amp;rsquo;全额付款&amp;rsquo;&amp;quot;。开发以为只要在字典加一条，&lt;strong&gt;结果全代码搜 &lt;code&gt;status_id == 2&lt;/code&gt; 漏改了三处&lt;/strong&gt;——线上有&amp;quot;全额付款的订单被识别为部分付款&amp;rdquo;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;订单状态字典表里 &lt;code&gt;1=未付款&lt;/code&gt;、&lt;code&gt;2=已付款&lt;/code&gt;、&lt;code&gt;3=已发货&lt;/code&gt;。某天产品提需求：&amp;ldquo;把&amp;rsquo;已付款&amp;rsquo;拆成&amp;rsquo;部分付款&amp;rsquo;和&amp;rsquo;全额付款&amp;rsquo;&amp;quot;。开发以为只要在字典加一条，
+&lt;strong&gt;结果全代码搜 &lt;code&gt;status_id == 2&lt;/code&gt; 漏改了三处&lt;/strong&gt;——线上有&amp;quot;全额付款的订单被识别为部分付款&amp;rdquo;。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;枚举用数字 ID 容易让代码里有魔法数字&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="反例-3用业务编码当主键"&gt;&lt;a href="#%e5%8f%8d%e4%be%8b-3%e7%94%a8%e4%b8%9a%e5%8a%a1%e7%bc%96%e7%a0%81%e5%bd%93%e4%b8%bb%e9%94%ae" class="header-anchor"&gt;&lt;/a&gt;反例 3：用业务编码当主键
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;order_no&lt;/code&gt; 设为 &lt;code&gt;order&lt;/code&gt; 表的主键——单字段、有序、看似优雅。但：&lt;/p&gt;

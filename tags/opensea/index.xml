@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>OpenSea on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/opensea/</link><description>Recent content in OpenSea on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 20 Aug 2024 16:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/opensea/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenSea Seaport 协议详解</title><link>https://www.lingcoder.com/p/opensea-seaport-protocol/</link><pubDate>Tue, 20 Aug 2024 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/opensea-seaport-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/opensea-seaport-protocol/cover.svg" alt="Featured image of post OpenSea Seaport 协议详解" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;OpenSea 长期是 NFT 市场的头部平台——但它早期用的是 ProjectWyvern 协议——一个 2018 年的设计，&lt;strong&gt;远不能满足 2022 年的需求&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了 NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;2022 年 5 月 OpenSea 推出全新的 &lt;strong&gt;Seaport 协议&lt;/strong&gt;，并在 2022 年 6 月切换全平台。Seaport 不是&amp;quot;小修小补&amp;quot;——它&lt;strong&gt;完全重新设计了
+NFT 交易的链上模型&lt;/strong&gt;：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;多对多交易&lt;/strong&gt;：一笔订单能涉及多种资产、多个发送方、多个接收方&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;极致 Gas 优化&lt;/strong&gt;：单次撮合成本比 Wyvern 低 35%&lt;/li&gt;
@@ -269,7 +270,8 @@
 &lt;li&gt;&lt;strong&gt;Seaport 1.6&lt;/strong&gt;：原生支持 ERC-2981 版税&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;未来&lt;/strong&gt;：跨链交易、链下撮合 + 链上结算&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Seaport 协议本身&lt;strong&gt;完全开源（MIT 协议）&lt;/strong&gt;——任何项目都能直接用，不绑定 OpenSea。Blur、LooksRare 等竞争对手都在用 Seaport 或它的衍生版。&lt;/p&gt;
+&lt;p&gt;Seaport 协议本身&lt;strong&gt;完全开源（MIT 协议）&lt;/strong&gt;——任何项目都能直接用，不绑定 OpenSea。Blur、LooksRare 等竞争对手都在用 Seaport
+或它的衍生版。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十一对开发者的意义"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%af%b9%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e6%84%8f%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;十一、对开发者的意义
 &lt;/h2&gt;&lt;p&gt;如果你做 NFT 相关产品：&lt;/p&gt;
@@ -290,7 +292,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Seaport 用『offer / consideration』的对称模型 + Conduit 共享授权 + Zone 可扩展裁判，把 NFT 交易的灵活性和 Gas 效率推到了新的高度。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Seaport 用『offer / consideration』的对称模型 + Conduit 共享授权 + Zone 可扩展裁判，把 NFT 交易的灵活性和 Gas
+效率推到了新的高度。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

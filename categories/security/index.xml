@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>安全防护 on 牛哥聊技术</title><link>https://www.lingcoder.com/categories/security/</link><description>Recent content in 安全防护 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 07 Aug 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/categories/security/index.xml" rel="self" type="application/rss+xml"/><item><title>OpenZeppelin Contracts 5.0 的关键变化</title><link>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</link><pubDate>Thu, 07 Aug 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/openzeppelin-5-major-changes/</guid><description>&lt;img src="https://www.lingcoder.com/p/openzeppelin-5-major-changes/cover.svg" alt="Featured image of post OpenZeppelin Contracts 5.0 的关键变化" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… &lt;strong&gt;几乎每个生产级合约项目都依赖它&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;OpenZeppelin Contracts 是 Solidity 生态最广泛使用的标准库——ERC-20、ERC-721、AccessControl、Proxy、Pausable…… *
+&lt;em&gt;几乎每个生产级合约项目都依赖它&lt;/em&gt;*。&lt;/p&gt;
 &lt;p&gt;2023 年 10 月发布的 &lt;strong&gt;5.0&lt;/strong&gt; 是它自 4.0 之后最大的一次主版本升级——&lt;strong&gt;不只是 bug 修复&lt;/strong&gt;，而是对 API、安全模型、模块组织的全面重塑。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 5.0 的核心变化、升级要踩的坑、新特性的工程价值。&lt;/p&gt;
 &lt;hr&gt;
@@ -37,7 +38,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;为什么改？——&lt;strong&gt;因为 &lt;code&gt;msg.sender&lt;/code&gt; 在 deployer 用 factory 模式时往往不是真实的 owner&lt;/strong&gt;。强制显式传 owner，**避免&amp;quot;工厂部署却把 owner 设成工厂&amp;quot;**这类隐蔽 bug。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;为什么改？——&lt;strong&gt;因为 &lt;code&gt;msg.sender&lt;/code&gt; 在 deployer 用 factory 模式时往往不是真实的 owner&lt;/strong&gt;。强制显式传 owner，**避免&amp;quot;工厂部署却把
+owner 设成工厂&amp;quot;**这类隐蔽 bug。&lt;/p&gt;
 &lt;p&gt;升级时所有 Ownable 的子合约构造函数都要改。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三accesscontrol-的角色管理变了"&gt;&lt;a href="#%e4%b8%89accesscontrol-%e7%9a%84%e8%a7%92%e8%89%b2%e7%ae%a1%e7%90%86%e5%8f%98%e4%ba%86" class="header-anchor"&gt;&lt;/a&gt;三、AccessControl 的角色管理变了
@@ -135,7 +137,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;这是必须做的——&lt;strong&gt;否则 implementation 合约本身可能被外部直接 init&lt;/strong&gt;（Parity Wallet 2017 年就因为这个被 self-destruct，14 万 ETH 永久冻结）。5.x 的 &lt;code&gt;Initializable&lt;/code&gt; 加了更严格的检查。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;这是必须做的——&lt;strong&gt;否则 implementation 合约本身可能被外部直接 init&lt;/strong&gt;（Parity Wallet 2017 年就因为这个被 self-destruct，14 万
+ETH 永久冻结）。5.x 的 &lt;code&gt;Initializable&lt;/code&gt; 加了更严格的检查。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七新增模块"&gt;&lt;a href="#%e4%b8%83%e6%96%b0%e5%a2%9e%e6%a8%a1%e5%9d%97" class="header-anchor"&gt;&lt;/a&gt;七、新增模块
 &lt;/h2&gt;&lt;h3 id="multicall"&gt;&lt;a href="#multicall" class="header-anchor"&gt;&lt;/a&gt;Multicall
@@ -182,7 +185,8 @@
 &lt;/h3&gt;&lt;p&gt;支持 meta-transaction（用户不付 Gas，relayer 代发）。&lt;/p&gt;
 &lt;h3 id="erc-7201-命名空间存储namespaced-storage"&gt;&lt;a href="#erc-7201-%e5%91%bd%e5%90%8d%e7%a9%ba%e9%97%b4%e5%ad%98%e5%82%a8namespaced-storage" class="header-anchor"&gt;&lt;/a&gt;ERC-7201 命名空间存储（Namespaced Storage）
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;contracts-upgradeable&lt;/code&gt; 包里全面改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
- &gt;ERC-7201&lt;/a&gt; 命名空间存储布局，&lt;strong&gt;取代原来的 &lt;code&gt;__gap&lt;/code&gt; 模式&lt;/strong&gt;：&lt;/p&gt;
+ &gt;ERC-7201&lt;/a&gt; 命名空间存储布局，*
+&lt;em&gt;取代原来的 &lt;code&gt;__gap&lt;/code&gt; 模式&lt;/em&gt;*：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -199,7 +203,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每个合约的 storage 字段被收进一个独立 struct，slot 由 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生——&lt;strong&gt;升级加字段不再受顺序约束&lt;/strong&gt;，老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移过来要小心 storage layout 兼容。这是 5.x 在升级合约存储模型上最大的改动。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每个合约的 storage 字段被收进一个独立 struct，slot 由 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生——&lt;strong&gt;升级加字段不再受顺序约束&lt;/strong&gt;，老项目从
+&lt;code&gt;__gap&lt;/code&gt; 模式迁移过来要小心 storage layout 兼容。这是 5.x 在升级合约存储模型上最大的改动。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八删除的东西"&gt;&lt;a href="#%e5%85%ab%e5%88%a0%e9%99%a4%e7%9a%84%e4%b8%9c%e8%a5%bf" class="header-anchor"&gt;&lt;/a&gt;八、删除的东西
 &lt;/h2&gt;&lt;h3 id="1-一些低使用率的工具"&gt;&lt;a href="#1-%e4%b8%80%e4%ba%9b%e4%bd%8e%e4%bd%bf%e7%94%a8%e7%8e%87%e7%9a%84%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;1. 一些低使用率的工具
@@ -261,7 +266,9 @@
 &lt;hr&gt;
 &lt;h2 id="十安全增强"&gt;&lt;a href="#%e5%8d%81%e5%ae%89%e5%85%a8%e5%a2%9e%e5%bc%ba" class="header-anchor"&gt;&lt;/a&gt;十、安全增强
 &lt;/h2&gt;&lt;h3 id="1-更严格的-reentrancy-检查"&gt;&lt;a href="#1-%e6%9b%b4%e4%b8%a5%e6%a0%bc%e7%9a%84-reentrancy-%e6%a3%80%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;1. 更严格的 reentrancy 检查
-&lt;/h3&gt;&lt;p&gt;5.0 的 &lt;code&gt;ReentrancyGuard&lt;/code&gt; 仍是普通 storage 实现（5.0 发布时 EIP-1153 transient storage 还未上链；EIP-1153 随 Cancun 升级在 2024-03 才上线主网）。&lt;strong&gt;5.1（2024-10）之后&lt;/strong&gt;新增了独立的 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt; 合约——基于 EIP-1153 transient storage，gas 显著降低（普通版热槽约 5000 gas，transient 版约 200 gas）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;5.0 的 &lt;code&gt;ReentrancyGuard&lt;/code&gt; 仍是普通 storage 实现（5.0 发布时 EIP-1153 transient storage 还未上链；EIP-1153 随 Cancun 升级在
+2024-03 才上线主网）。&lt;strong&gt;5.1（2024-10）之后&lt;/strong&gt;新增了独立的 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt; 合约——基于 EIP-1153 transient
+storage，gas 显著降低（普通版热槽约 5000 gas，transient 版约 200 gas）。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -358,7 +365,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="4-reentrancyguard-默认启用"&gt;&lt;a href="#4-reentrancyguard-%e9%bb%98%e8%ae%a4%e5%90%af%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;4. ReentrancyGuard 默认启用
-&lt;/h3&gt;&lt;p&gt;任何接收/转账函数加 &lt;code&gt;nonReentrant&lt;/code&gt;——&lt;strong&gt;5.1+ 优先用 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt;（transient storage 版，每次开销约 200 gas），5.0 用普通版（gas 量级与 4.x 同）&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;任何接收/转账函数加 &lt;code&gt;nonReentrant&lt;/code&gt;——&lt;strong&gt;5.1+ 优先用 &lt;code&gt;ReentrancyGuardTransient&lt;/code&gt;（transient storage 版，每次开销约 200
+gas），5.0 用普通版（gas 量级与 4.x 同）&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="5-关注-eip-712-签名"&gt;&lt;a href="#5-%e5%85%b3%e6%b3%a8-eip-712-%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;5. 关注 EIP-712 签名
 &lt;/h3&gt;&lt;p&gt;权限调用 / 用户授权 / meta-tx——签名相关都用 OpenZeppelin 的 EIP-712 实现，别自己造。&lt;/p&gt;
 &lt;hr&gt;
@@ -399,7 +407,8 @@
 &lt;/ul&gt;
 &lt;p&gt;每一个&amp;quot;你的身份&amp;quot;，&lt;strong&gt;实际上都是某个公司租给你的&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;DID（Decentralized Identifier，去中心化身份标识）&lt;/strong&gt; 就是要解决这件事——&lt;strong&gt;让用户真正拥有自己的身份&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是&lt;strong&gt;数字身份的范式转移&lt;/strong&gt;——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
+&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是**数字身份的范式转移
+**——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 DID 的结构、几种主流实现方法、可验证凭证的玩法、工程上的意义。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一did-长什么样"&gt;&lt;a href="#%e4%b8%80did-%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7" class="header-anchor"&gt;&lt;/a&gt;一、DID 长什么样
@@ -677,7 +686,8 @@
 &lt;h2 id="七工程上的挑战"&gt;&lt;a href="#%e4%b8%83%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e6%8c%91%e6%88%98" class="header-anchor"&gt;&lt;/a&gt;七、工程上的挑战
 &lt;/h2&gt;&lt;p&gt;DID + VC 想象很美，工程上挑战不少：&lt;/p&gt;
 &lt;h3 id="1-用户体验"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c" class="header-anchor"&gt;&lt;/a&gt;1. 用户体验
-&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如 Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如
+Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
 &lt;h3 id="2-私钥丢了怎么办"&gt;&lt;a href="#2-%e7%a7%81%e9%92%a5%e4%b8%a2%e4%ba%86%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;2. 私钥丢了怎么办
 &lt;/h3&gt;&lt;p&gt;DID 完全去中心化的代价——&lt;strong&gt;没有&amp;quot;找回密码&amp;quot;&lt;/strong&gt;。私钥丢失就身份永久丢失。社交恢复（social recovery）、多签等机制是部分解决方案。&lt;/p&gt;
 &lt;h3 id="3-撤销机制"&gt;&lt;a href="#3-%e6%92%a4%e9%94%80%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 撤销机制
@@ -733,7 +743,8 @@
 &lt;/ul&gt;
 &lt;p&gt;DID 不是&amp;quot;现在就用&amp;quot;的技术——但它是&lt;strong&gt;值得每个工程师认知的未来基础设施&lt;/strong&gt;。10 年后再回头看，这一定是数字身份史上的关键节点。&lt;/p&gt;</description></item><item><title>扫码登录的完整设计</title><link>https://www.lingcoder.com/p/qr-code-login-flow/</link><pubDate>Fri, 21 Feb 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/qr-code-login-flow/</guid><description>&lt;img src="https://www.lingcoder.com/p/qr-code-login-flow/cover.svg" alt="Featured image of post 扫码登录的完整设计" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;PC 浏览器扫手机端二维码自动登录——12306、知乎、京东、网易邮箱、微信网页版……这种交互在国内已经是标配。&lt;/p&gt;
-&lt;p&gt;它看着简单——但背后是一套涉及前端轮询、后端状态机、长连接、安全控制的&lt;strong&gt;完整设计&lt;/strong&gt;。&lt;strong&gt;新人接这块时常常忽略关键细节&lt;/strong&gt;，做出来要么不安全、要么体验差。&lt;/p&gt;
+&lt;p&gt;它看着简单——但背后是一套涉及前端轮询、后端状态机、长连接、安全控制的&lt;strong&gt;完整设计&lt;/strong&gt;。&lt;strong&gt;新人接这块时常常忽略关键细节&lt;/strong&gt;
+，做出来要么不安全、要么体验差。&lt;/p&gt;
 &lt;p&gt;本文从协议、状态机、API 设计、安全考虑几个层面把扫码登录讲清楚。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一整体流程"&gt;&lt;a href="#%e4%b8%80%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b" class="header-anchor"&gt;&lt;/a&gt;一、整体流程
@@ -1636,7 +1647,8 @@
 &lt;h3 id="一句话理解-delegatecall"&gt;&lt;a href="#%e4%b8%80%e5%8f%a5%e8%af%9d%e7%90%86%e8%a7%a3-delegatecall" class="header-anchor"&gt;&lt;/a&gt;一句话理解 &lt;code&gt;delegatecall&lt;/code&gt;
 &lt;/h3&gt;&lt;p&gt;普通调用 &lt;code&gt;call&lt;/code&gt;：&lt;strong&gt;用别人的代码、操作别人的存储&lt;/strong&gt;。
 &lt;code&gt;delegatecall&lt;/code&gt;：&lt;strong&gt;用别人的代码、操作自己的存储&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;也就是说，合约 A 通过 &lt;code&gt;delegatecall&lt;/code&gt; 调合约 B 的某个函数时，执行的是 B 的字节码，但 &lt;code&gt;msg.sender&lt;/code&gt;、&lt;code&gt;msg.value&lt;/code&gt;、&lt;strong&gt;所有存储读写都发生在 A 上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;也就是说，合约 A 通过 &lt;code&gt;delegatecall&lt;/code&gt; 调合约 B 的某个函数时，执行的是 B 的字节码，但 &lt;code&gt;msg.sender&lt;/code&gt;、&lt;code&gt;msg.value&lt;/code&gt;、&lt;strong&gt;所有存储读写都发生在
+A 上&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;这就给了我们一个大胆的想法——&lt;/p&gt;
 
  &lt;blockquote&gt;
@@ -1764,8 +1776,12 @@
 &lt;h3 id="storage-gap-习惯openzeppelin-4x-时代的做法"&gt;&lt;a href="#storage-gap-%e4%b9%a0%e6%83%afopenzeppelin-4x-%e6%97%b6%e4%bb%a3%e7%9a%84%e5%81%9a%e6%b3%95" class="header-anchor"&gt;&lt;/a&gt;Storage Gap 习惯（OpenZeppelin 4.x 时代的做法）
 &lt;/h3&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;时效性更新&lt;/strong&gt;：本节描述的 &lt;code&gt;__gap&lt;/code&gt; 模式是 OpenZeppelin 4.x 的标准做法。&lt;strong&gt;OpenZeppelin 5.0（2023-10）起的 &lt;code&gt;contracts-upgradeable&lt;/code&gt; 包已经改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
- &gt;ERC-7201 命名空间存储&lt;/a&gt;（Namespaced Storage Layout）&lt;/strong&gt;——每个合约的 storage 字段被收进一个独立 struct，slot 从 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生，&lt;strong&gt;升级加字段不再受顺序约束，也不再需要预留 &lt;code&gt;__gap&lt;/code&gt;&lt;/strong&gt;。新项目应该直接用 ERC-7201；老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移到 ERC-7201 时要小心 storage layout 兼容。下面这段 &lt;code&gt;__gap&lt;/code&gt; 写法仍然适用于 4.x 的基类继承场景（与 4.x 升级链路向后兼容）。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;时效性更新&lt;/strong&gt;：本节描述的 &lt;code&gt;__gap&lt;/code&gt; 模式是 OpenZeppelin 4.x 的标准做法。&lt;strong&gt;OpenZeppelin
+5.0（2023-10）起的 &lt;code&gt;contracts-upgradeable&lt;/code&gt; 包已经改用 &lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-7201" target="_blank" rel="noopener"
+ &gt;ERC-7201 命名空间存储&lt;/a&gt;
+（Namespaced Storage Layout）&lt;/strong&gt;——每个合约的 storage 字段被收进一个独立 struct，slot 从 &lt;code&gt;keccak256(namespace) - 1&lt;/code&gt; 派生，*
+*升级加字段不再受顺序约束，也不再需要预留 &lt;code&gt;__gap&lt;/code&gt;**。新项目应该直接用 ERC-7201；老项目从 &lt;code&gt;__gap&lt;/code&gt; 模式迁移到 ERC-7201 时要小心
+storage layout 兼容。下面这段 &lt;code&gt;__gap&lt;/code&gt; 写法仍然适用于 4.x 的基类继承场景（与 4.x 升级链路向后兼容）。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;为了给未来&amp;quot;末尾追加&amp;quot;留余地，可继承的基类里通常会预留一段空槽：&lt;/p&gt;
@@ -1836,9 +1852,11 @@
 &lt;/h3&gt;&lt;p&gt;存储布局错位的检查靠人肉是不现实的——升级链路必须有自动化校验把这个关。具体工具按你用的栈选：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Hardhat 栈&lt;/strong&gt;：&lt;a class="link" href="https://github.com/OpenZeppelin/openzeppelin-upgrades" target="_blank" rel="noopener"
- &gt;OpenZeppelin Upgrades Plugin&lt;/a&gt;（&lt;code&gt;@openzeppelin/hardhat-upgrades&lt;/code&gt;）——升级前自动比对两版合约的存储布局，不兼容直接报错挡住。&lt;/li&gt;
+ &gt;OpenZeppelin Upgrades Plugin&lt;/a&gt;（
+&lt;code&gt;@openzeppelin/hardhat-upgrades&lt;/code&gt;）——升级前自动比对两版合约的存储布局，不兼容直接报错挡住。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Foundry 栈&lt;/strong&gt;：&lt;a class="link" href="https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades" target="_blank" rel="noopener"
- &gt;openzeppelin-foundry-upgrades&lt;/a&gt;，或者直接 &lt;code&gt;forge inspect &amp;lt;Contract&amp;gt; storageLayout&lt;/code&gt; 把新旧两版的 storage layout 输出成 JSON，在 CI 里做 diff。&lt;/li&gt;
+ &gt;openzeppelin-foundry-upgrades&lt;/a&gt;，或者直接
+&lt;code&gt;forge inspect &amp;lt;Contract&amp;gt; storageLayout&lt;/code&gt; 把新旧两版的 storage layout 输出成 JSON，在 CI 里做 diff。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;更通用&lt;/strong&gt;：&lt;a class="link" href="https://github.com/crytic/slither" target="_blank" rel="noopener"
  &gt;Slither&lt;/a&gt; 的 &lt;code&gt;slither-check-upgradeability&lt;/code&gt; 也能做静态布局比对。&lt;/li&gt;
 &lt;/ul&gt;
@@ -1889,7 +1907,8 @@
 &lt;/div&gt;&lt;p&gt;这样一来：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Proxy 极度精简&lt;/strong&gt;，只有一个 fallback，Gas 最省&lt;/li&gt;
-&lt;li&gt;升级权限由 Logic 控制——这意味着 &lt;strong&gt;如果你升级到一个忘了写 &lt;code&gt;upgradeTo&lt;/code&gt; 的新 Logic，合约就永远没法再升级了&lt;/strong&gt;（一种&amp;quot;自爆开关&amp;quot;）&lt;/li&gt;
+&lt;li&gt;升级权限由 Logic 控制——这意味着 &lt;strong&gt;如果你升级到一个忘了写 &lt;code&gt;upgradeTo&lt;/code&gt; 的新 Logic，合约就永远没法再升级了&lt;/strong&gt;（一种&amp;quot;
+自爆开关&amp;quot;）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;OpenZeppelin 现在更推荐 UUPS，但前提是开发者必须严格遵守&amp;quot;新版本永远要继承 &lt;code&gt;UUPSUpgradeable&lt;/code&gt;&amp;ldquo;的规范，否则可能误锁死。&lt;/p&gt;
 &lt;h3 id="3-beacon-proxy信标代理"&gt;&lt;a href="#3-beacon-proxy%e4%bf%a1%e6%a0%87%e4%bb%a3%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;3. Beacon Proxy（信标代理）
@@ -1907,7 +1926,8 @@
  P2 -.delegatecall.-&gt; Logic
  P3 -.delegatecall.-&gt; Logic
 
- Beacon -. 指向 .-&gt; Logic&lt;/pre&gt;&lt;p&gt;所有 Proxy 都从 Beacon 读&amp;quot;当前 Logic 地址&amp;quot;。&lt;strong&gt;升级时只改 Beacon 一处，所有 Proxy 同时生效&lt;/strong&gt;。代价是每次调用多一次跨合约读地址的 Gas。&lt;/p&gt;
+ Beacon -. 指向 .-&gt; Logic&lt;/pre&gt;&lt;p&gt;所有 Proxy 都从 Beacon 读&amp;quot;当前 Logic 地址&amp;quot;。&lt;strong&gt;升级时只改 Beacon 一处，所有 Proxy 同时生效&lt;/strong&gt;。代价是每次调用多一次跨合约读地址的
+Gas。&lt;/p&gt;
 &lt;table&gt;
  &lt;thead&gt;
  &lt;tr&gt;
@@ -1940,7 +1960,8 @@
 &lt;/table&gt;
 &lt;hr&gt;
 &lt;h2 id="五更激进的方案diamondeip-2535"&gt;&lt;a href="#%e4%ba%94%e6%9b%b4%e6%bf%80%e8%bf%9b%e7%9a%84%e6%96%b9%e6%a1%88diamondeip-2535" class="header-anchor"&gt;&lt;/a&gt;五、更激进的方案：Diamond（EIP-2535）
-&lt;/h2&gt;&lt;p&gt;EVM 对单个合约的字节码大小有 &lt;strong&gt;24KB 的硬上限&lt;/strong&gt;（EIP-170）。当协议复杂到一个 Logic 合约塞不下时，前面那些&amp;quot;单 Logic&amp;quot;的代理模式就不够用了。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;EVM 对单个合约的字节码大小有 &lt;strong&gt;24KB 的硬上限&lt;/strong&gt;（EIP-170）。当协议复杂到一个 Logic 合约塞不下时，前面那些&amp;quot;单 Logic&amp;quot;
+的代理模式就不够用了。&lt;/p&gt;
 &lt;p&gt;Diamond 模式的思路是——&lt;strong&gt;一个 Proxy（Diamond），多个 Logic（Facet）&lt;/strong&gt;，按函数选择器路由。&lt;/p&gt;
 &lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TB
  User([用户调用])
@@ -1954,12 +1975,15 @@
  Diamond -- delegatecall --&gt; F1
  Diamond -- delegatecall --&gt; F2
  Diamond -- delegatecall --&gt; F3
- Diamond -- delegatecall --&gt; F4&lt;/pre&gt;&lt;p&gt;每个 Facet 只实现一部分函数，Diamond 内部维护一张 &lt;code&gt;selector → facet address&lt;/code&gt; 的路由表，调用进来时查表然后 &lt;code&gt;delegatecall&lt;/code&gt;。升级时可以&lt;strong&gt;按 facet 增、删、换&lt;/strong&gt;，粒度比单 Logic 细得多。&lt;/p&gt;
-&lt;p&gt;代价是复杂度陡升——存储布局要按&amp;quot;Diamond Storage&amp;quot;的命名空间约定写、调试链路更长、对应工具链不如 OZ 主流模式成熟。&lt;strong&gt;不是协议规模真的超过单合约能力，不要轻易上 Diamond&lt;/strong&gt;（Aavegotchi 是公认上得最成功的案例之一）。&lt;/p&gt;
+ Diamond -- delegatecall --&gt; F4&lt;/pre&gt;&lt;p&gt;每个 Facet 只实现一部分函数，Diamond 内部维护一张 &lt;code&gt;selector → facet address&lt;/code&gt; 的路由表，调用进来时查表然后 &lt;code&gt;delegatecall&lt;/code&gt;
+。升级时可以&lt;strong&gt;按 facet 增、删、换&lt;/strong&gt;，粒度比单 Logic 细得多。&lt;/p&gt;
+&lt;p&gt;代价是复杂度陡升——存储布局要按&amp;quot;Diamond Storage&amp;quot;的命名空间约定写、调试链路更长、对应工具链不如 OZ 主流模式成熟。*
+&lt;em&gt;不是协议规模真的超过单合约能力，不要轻易上 Diamond&lt;/em&gt;*（Aavegotchi 是公认上得最成功的案例之一）。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六不能忽略的工程细节"&gt;&lt;a href="#%e5%85%ad%e4%b8%8d%e8%83%bd%e5%bf%bd%e7%95%a5%e7%9a%84%e5%b7%a5%e7%a8%8b%e7%bb%86%e8%8a%82" class="header-anchor"&gt;&lt;/a&gt;六、不能忽略的工程细节
 &lt;/h2&gt;&lt;h3 id="1-没有-constructor只有-initializer"&gt;&lt;a href="#1-%e6%b2%a1%e6%9c%89-constructor%e5%8f%aa%e6%9c%89-initializer" class="header-anchor"&gt;&lt;/a&gt;1. 没有 constructor，只有 initializer
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;constructor&lt;/code&gt; 在合约部署时执行，&lt;strong&gt;只对 Logic 自己的存储生效，不会写到 Proxy 的存储&lt;/strong&gt;。所以可升级合约的初始化必须放在一个普通函数里，靠&lt;strong&gt;只能调用一次&lt;/strong&gt;的修饰符保护：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;constructor&lt;/code&gt; 在合约部署时执行，&lt;strong&gt;只对 Logic 自己的存储生效，不会写到 Proxy 的存储&lt;/strong&gt;。所以可升级合约的初始化必须放在一个普通函数里，靠
+&lt;strong&gt;只能调用一次&lt;/strong&gt;的修饰符保护：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -1988,7 +2012,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;OpenZeppelin 提供了 &lt;code&gt;Initializable&lt;/code&gt; 基类，标准做法是用 &lt;code&gt;initializer&lt;/code&gt; 修饰符。&lt;/p&gt;
 &lt;h3 id="2-部署后立刻调用-initializer"&gt;&lt;a href="#2-%e9%83%a8%e7%bd%b2%e5%90%8e%e7%ab%8b%e5%88%bb%e8%b0%83%e7%94%a8-initializer" class="header-anchor"&gt;&lt;/a&gt;2. 部署后立刻调用 initializer
-&lt;/h3&gt;&lt;p&gt;如果部署完 Logic 不立刻初始化，&lt;strong&gt;任何人都可以抢先调一次 &lt;code&gt;initialize&lt;/code&gt; 把自己设成 owner&lt;/strong&gt;。这种漏洞历史上发生过多次。脚本部署 Proxy 时要用 &lt;code&gt;atomicallyDeployAndInitialize&lt;/code&gt; 之类的封装，把&amp;quot;部署 + 初始化&amp;quot;放进同一个交易。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;如果部署完 Logic 不立刻初始化，&lt;strong&gt;任何人都可以抢先调一次 &lt;code&gt;initialize&lt;/code&gt; 把自己设成 owner&lt;/strong&gt;。这种漏洞历史上发生过多次。脚本部署
+Proxy 时要用 &lt;code&gt;atomicallyDeployAndInitialize&lt;/code&gt; 之类的封装，把&amp;quot;部署 + 初始化&amp;quot;放进同一个交易。&lt;/p&gt;
 &lt;h3 id="3-升级权限--协议生死开关"&gt;&lt;a href="#3-%e5%8d%87%e7%ba%a7%e6%9d%83%e9%99%90--%e5%8d%8f%e8%ae%ae%e7%94%9f%e6%ad%bb%e5%bc%80%e5%85%b3" class="header-anchor"&gt;&lt;/a&gt;3. 升级权限 = 协议生死开关
 &lt;/h3&gt;&lt;p&gt;控制 &lt;code&gt;upgrade&lt;/code&gt; 的私钥，等于&lt;strong&gt;握有协议的全部资金权&lt;/strong&gt;。任何成熟协议都会用：&lt;/p&gt;
 &lt;ul&gt;
@@ -2005,7 +2030,8 @@
 &lt;li&gt;&lt;strong&gt;审计的难度被放大&lt;/strong&gt;：用户审计了今天的代码，明天升级后等于审了个寂寞。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;形式化验证、不可变指标都失效&lt;/strong&gt;：协议的安全保证从&amp;quot;代码&amp;quot;层退化为&amp;quot;运营方信誉 + 治理流程&amp;quot;层。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;所以业界有一种相反的声音：&lt;strong&gt;真正成熟的协议应当逐步放弃可升级性&lt;/strong&gt;。Uniswap V2/V3 的核心合约就是不可升级的——它的迭代靠&amp;quot;部署新协议、用户自愿迁移&amp;quot;完成，代价高，但换来了最强的信任。&lt;/p&gt;
+&lt;p&gt;所以业界有一种相反的声音：&lt;strong&gt;真正成熟的协议应当逐步放弃可升级性&lt;/strong&gt;。Uniswap V2/V3 的核心合约就是不可升级的——它的迭代靠&amp;quot;
+部署新协议、用户自愿迁移&amp;quot;完成，代价高，但换来了最强的信任。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;作为协议设计者，你需要问自己：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
@@ -2245,7 +2271,8 @@
 &lt;/table&gt;
 &lt;p&gt;差距的几个关键点：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;OAuth2 / OIDC&lt;/strong&gt;：只要你的系统涉及第三方登录、单点登录、服务对接、API 鉴权，&lt;strong&gt;Spring Security 几乎是唯一现实选择&lt;/strong&gt;。Shiro 也能做，但要拼装大量代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OAuth2 / OIDC&lt;/strong&gt;：只要你的系统涉及第三方登录、单点登录、服务对接、API 鉴权，&lt;strong&gt;Spring Security 几乎是唯一现实选择&lt;/strong&gt;。Shiro
+也能做，但要拼装大量代码&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;CSRF / CORS&lt;/strong&gt;：Shiro 不管这些，要自己写过滤器；Spring Security 默认就帮你做好了&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;JWT&lt;/strong&gt;：两者都能做，但 Spring Security 5.x 之后 Resource Server 支持极完善&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Reactive&lt;/strong&gt;：WebFlux 项目根本不要考虑 Shiro&lt;/li&gt;
@@ -2379,9 +2406,11 @@
 &lt;hr&gt;
 &lt;h2 id="四扩展性"&gt;&lt;a href="#%e5%9b%9b%e6%89%a9%e5%b1%95%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;四、扩展性
 &lt;/h2&gt;&lt;h3 id="shiro扩展点少而清晰"&gt;&lt;a href="#shiro%e6%89%a9%e5%b1%95%e7%82%b9%e5%b0%91%e8%80%8c%e6%b8%85%e6%99%b0" class="header-anchor"&gt;&lt;/a&gt;Shiro：扩展点少而清晰
-&lt;/h3&gt;&lt;p&gt;Shiro 把扩展点限定在几个核心接口：&lt;code&gt;Realm&lt;/code&gt;、&lt;code&gt;SessionManager&lt;/code&gt;、&lt;code&gt;Authenticator&lt;/code&gt;、&lt;code&gt;Filter&lt;/code&gt;。要做特殊认证（比如手机验证码登录）只需要自己写个 &lt;code&gt;Token&lt;/code&gt; + 改 &lt;code&gt;Realm&lt;/code&gt;。&lt;strong&gt;扩展边界小、写起来直接&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Shiro 把扩展点限定在几个核心接口：&lt;code&gt;Realm&lt;/code&gt;、&lt;code&gt;SessionManager&lt;/code&gt;、&lt;code&gt;Authenticator&lt;/code&gt;、&lt;code&gt;Filter&lt;/code&gt;。要做特殊认证（比如手机验证码登录）只需要自己写个
+&lt;code&gt;Token&lt;/code&gt; + 改 &lt;code&gt;Realm&lt;/code&gt;。&lt;strong&gt;扩展边界小、写起来直接&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="spring-security扩展点多但有学习曲线"&gt;&lt;a href="#spring-security%e6%89%a9%e5%b1%95%e7%82%b9%e5%a4%9a%e4%bd%86%e6%9c%89%e5%ad%a6%e4%b9%a0%e6%9b%b2%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;Spring Security：扩展点多但有学习曲线
-&lt;/h3&gt;&lt;p&gt;Spring Security 有几十个可扩展点：&lt;code&gt;AuthenticationProvider&lt;/code&gt;、&lt;code&gt;UserDetailsService&lt;/code&gt;、&lt;code&gt;SecurityContextRepository&lt;/code&gt;、&lt;code&gt;AuthenticationEntryPoint&lt;/code&gt;、&lt;code&gt;AccessDeniedHandler&lt;/code&gt;、各种 &lt;code&gt;Filter&lt;/code&gt;……&lt;strong&gt;第一次接它的人会被这么多概念吓到&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Spring Security 有几十个可扩展点：&lt;code&gt;AuthenticationProvider&lt;/code&gt;、&lt;code&gt;UserDetailsService&lt;/code&gt;、&lt;code&gt;SecurityContextRepository&lt;/code&gt;、
+&lt;code&gt;AuthenticationEntryPoint&lt;/code&gt;、&lt;code&gt;AccessDeniedHandler&lt;/code&gt;、各种 &lt;code&gt;Filter&lt;/code&gt;……&lt;strong&gt;第一次接它的人会被这么多概念吓到&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;但一旦熟悉了：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;想要&amp;quot;OAuth2 + 数据库角色 + JWT 接口 + 表单登录&amp;quot;四种方式共存？只是几个 &lt;code&gt;SecurityFilterChain&lt;/code&gt; 的事&lt;/li&gt;
@@ -2427,7 +2456,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;国内 Shiro 用户多，是因为它&lt;strong&gt;早期太&amp;quot;友好&amp;quot;&lt;/strong&gt;——五分钟上手，老项目就用了下来。但近年 Shiro 历史上&lt;strong&gt;爆出过多个 RCE 漏洞&lt;/strong&gt;（CVE-2020-1957、CVE-2020-11989、CVE-2022-32532 等），这是用 Shiro 的项目必须持续关注版本升级的硬性事实。&lt;/p&gt;
+&lt;p&gt;国内 Shiro 用户多，是因为它&lt;strong&gt;早期太&amp;quot;友好&amp;quot;&lt;/strong&gt;——五分钟上手，老项目就用了下来。但近年 Shiro 历史上&lt;strong&gt;爆出过多个 RCE 漏洞&lt;/strong&gt;
+（CVE-2020-1957、CVE-2020-11989、CVE-2022-32532 等），这是用 Shiro 的项目必须持续关注版本升级的硬性事实。&lt;/p&gt;
 &lt;p&gt;Spring Security 漏洞同样有，但&lt;strong&gt;修复响应快、官方推送积极、版本管理跟着 Spring Boot 一起走&lt;/strong&gt;——大型项目更省心。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六性能差距基本不存在"&gt;&lt;a href="#%e5%85%ad%e6%80%a7%e8%83%bd%e5%b7%ae%e8%b7%9d%e5%9f%ba%e6%9c%ac%e4%b8%8d%e5%ad%98%e5%9c%a8" class="header-anchor"&gt;&lt;/a&gt;六、性能差距：基本不存在
@@ -2458,7 +2488,8 @@
 &lt;hr&gt;
 &lt;h2 id="八共存与迁移建议"&gt;&lt;a href="#%e5%85%ab%e5%85%b1%e5%ad%98%e4%b8%8e%e8%bf%81%e7%a7%bb%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;八、共存与迁移建议
 &lt;/h2&gt;&lt;h3 id="共存"&gt;&lt;a href="#%e5%85%b1%e5%ad%98" class="header-anchor"&gt;&lt;/a&gt;共存
-&lt;/h3&gt;&lt;p&gt;老项目用 Shiro，新模块想用 Spring Security——理论上能共存，但&lt;strong&gt;强烈不推荐&lt;/strong&gt;。两套过滤器链同时存在会很混乱，调试链路变长，维护成本极高。&lt;strong&gt;一个项目只用一套&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;老项目用 Shiro，新模块想用 Spring Security——理论上能共存，但&lt;strong&gt;强烈不推荐&lt;/strong&gt;。两套过滤器链同时存在会很混乱，调试链路变长，维护成本极高。
+&lt;strong&gt;一个项目只用一套&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="老项目从-shiro-迁移到-spring-security"&gt;&lt;a href="#%e8%80%81%e9%a1%b9%e7%9b%ae%e4%bb%8e-shiro-%e8%bf%81%e7%a7%bb%e5%88%b0-spring-security" class="header-anchor"&gt;&lt;/a&gt;老项目从 Shiro 迁移到 Spring Security
 &lt;/h3&gt;&lt;p&gt;迁移成本不小，但路径相对固定：&lt;/p&gt;
 &lt;ol&gt;
@@ -2497,7 +2528,8 @@
 &lt;/h3&gt;&lt;p&gt;部分对——Shiro 官方文档质量一般，社区资料质量参差。Spring Security 文档&lt;strong&gt;有官方系统手册 + 大量社区文章&lt;/strong&gt;，反而更容易学。&lt;/p&gt;
 &lt;h3 id="争论-3sa-token-是不是更好的选择"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-3sa-token-%e6%98%af%e4%b8%8d%e6%98%af%e6%9b%b4%e5%a5%bd%e7%9a%84%e9%80%89%e6%8b%a9" class="header-anchor"&gt;&lt;/a&gt;争论 3：Sa-Token 是不是更好的选择？
 &lt;/h3&gt;&lt;p&gt;Sa-Token 是国内开源的轻量框架，API 极简，适合中小项目快速上手。&lt;strong&gt;它的定位更接近 Shiro&lt;/strong&gt;——简单、易用、适合中小项目。&lt;/p&gt;
-&lt;p&gt;但 Sa-Token 的&lt;strong&gt;社区影响力和 Spring Security 不在一个量级&lt;/strong&gt;，团队对接外部系统、招聘新人、跟进安全更新时仍然有差距。&lt;strong&gt;有兴趣可以学，但不要在大型项目里盲目替换主流框架&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;但 Sa-Token 的&lt;strong&gt;社区影响力和 Spring Security 不在一个量级&lt;/strong&gt;，团队对接外部系统、招聘新人、跟进安全更新时仍然有差距。*
+&lt;em&gt;有兴趣可以学，但不要在大型项目里盲目替换主流框架&lt;/em&gt;*。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十决策树"&gt;&lt;a href="#%e5%8d%81%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;十、决策树
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
@@ -2524,7 +2556,8 @@
 &lt;li&gt;&lt;strong&gt;新项目优先 Spring Security&lt;/strong&gt;——尤其涉及 OAuth/SSO 时&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;老项目用 Shiro 稳定运行的，不要折腾&lt;/strong&gt;——但&lt;strong&gt;版本升级要跟住 CVE&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不要两套共存&lt;/strong&gt;——选一个，全量做&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;学权限框架不只是学 API，要学概念&lt;/strong&gt;——用得好的关键是理解 Authentication / Authorization / Filter Chain / Context 这些底层概念&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;学权限框架不只是学 API，要学概念&lt;/strong&gt;——用得好的关键是理解 Authentication / Authorization / Filter Chain / Context
+这些底层概念&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不要把&amp;quot;网上博客对比性能差几毫秒&amp;quot;当选型依据&lt;/strong&gt;——那是噪声&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把这两套之中任意一套用熟，配合好你的业务权限模型，安全这层基本就稳住了。&lt;/p&gt;</description></item><item><title>零知识证明入门——从直觉例子到 zk-Rollup</title><link>https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/</link><pubDate>Wed, 08 Feb 2023 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/</guid><description>&lt;img src="https://www.lingcoder.com/p/intro-to-zero-knowledge-proof/cover.svg" alt="Featured image of post 零知识证明入门——从直觉例子到 zk-Rollup" /&gt;&lt;h2 id="让-zkp-变得直观的一个例子"&gt;&lt;a href="#%e8%ae%a9-zkp-%e5%8f%98%e5%be%97%e7%9b%b4%e8%a7%82%e7%9a%84%e4%b8%80%e4%b8%aa%e4%be%8b%e5%ad%90" class="header-anchor"&gt;&lt;/a&gt;让 ZKP 变得直观的一个例子
@@ -2616,7 +2649,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; (独立验证，无需 Prover)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，&lt;strong&gt;用 hash 的不可预测性替代真实的随机交互&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;NIZK 的关键技术是 &lt;strong&gt;Fiat-Shamir 变换&lt;/strong&gt;——把 Verifier 的随机挑战换成对 Prover 提交的某种 hash，**用 hash 的不可预测性替代真实的随机交互
+**。&lt;/p&gt;
 &lt;p&gt;NIZK 是区块链应用 ZKP 的基础。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四zk-snark高效的-nizk"&gt;&lt;a href="#%e5%9b%9bzk-snark%e9%ab%98%e6%95%88%e7%9a%84-nizk" class="header-anchor"&gt;&lt;/a&gt;四、zk-SNARK：高效的 NIZK
@@ -2795,7 +2829,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;h3 id="2-证明体积小但验证仍要-gas"&gt;&lt;a href="#2-%e8%af%81%e6%98%8e%e4%bd%93%e7%a7%af%e5%b0%8f%e4%bd%86%e9%aa%8c%e8%af%81%e4%bb%8d%e8%a6%81-gas" class="header-anchor"&gt;&lt;/a&gt;2. 证明体积小，但验证仍要 Gas
 &lt;/h3&gt;&lt;p&gt;zk-SNARK 验证大约 200-500K gas——比传统验证贵，但比 Optimistic Rollup 的&amp;quot;挑战 + 仲裁&amp;quot;安全得多。&lt;/p&gt;
 &lt;h3 id="3-trusted-setup-风险"&gt;&lt;a href="#3-trusted-setup-%e9%a3%8e%e9%99%a9" class="header-anchor"&gt;&lt;/a&gt;3. Trusted Setup 风险
-&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;部分 SNARK 方案（Groth16）需要 &lt;strong&gt;trusted setup&lt;/strong&gt;——一组人共同生成参数，&lt;strong&gt;只要有一个参与者诚实，参数就安全&lt;/strong&gt;
+。但这增加了信任成本。Halo2、PLONK、STARK 都不需要。&lt;/p&gt;
 &lt;h3 id="4-电路开发门槛高"&gt;&lt;a href="#4-%e7%94%b5%e8%b7%af%e5%bc%80%e5%8f%91%e9%97%a8%e6%a7%9b%e9%ab%98" class="header-anchor"&gt;&lt;/a&gt;4. 电路开发门槛高
 &lt;/h3&gt;&lt;p&gt;写电路是一种新范式——和写普通代码差别很大。&lt;strong&gt;需要的 bug 排查能力、性能调优能力都不同&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="5-工具链还在演进"&gt;&lt;a href="#5-%e5%b7%a5%e5%85%b7%e9%93%be%e8%bf%98%e5%9c%a8%e6%bc%94%e8%bf%9b" class="header-anchor"&gt;&lt;/a&gt;5. 工具链还在演进
@@ -3220,7 +3255,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/h3&gt;&lt;p&gt;某创业公司 0 限流上线，凌晨被脚本攻击——一晚发出 8 万条短信，&lt;strong&gt;短信通道账户余额清零&lt;/strong&gt;，第二天用户登录时发不出短信。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;任何对外发短信的接口必须先有限流&lt;/strong&gt;，哪怕是日活 10 的小项目。&lt;/p&gt;
 &lt;h3 id="事故-2验证码被复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-2%e9%aa%8c%e8%af%81%e7%a0%81%e8%a2%ab%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 2：验证码被复用
-&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;，刷出几千个假账号。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;
+，刷出几千个假账号。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;验证码是一次性的，校验后立刻 &lt;code&gt;DEL&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="事故-3跨场景复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-3%e8%b7%a8%e5%9c%ba%e6%99%af%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 3：跨场景复用
 &lt;/h3&gt;&lt;p&gt;登录场景和找回密码用同一个 Redis key。攻击者通过&amp;quot;找回密码&amp;quot;功能拿到验证码，&lt;strong&gt;直接拿来登录目标账号&lt;/strong&gt;——因为后端没区分。&lt;/p&gt;
@@ -3522,7 +3558,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案三mybatis-拦截器改写-sql"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e4%b8%89mybatis-%e6%8b%a6%e6%88%aa%e5%99%a8%e6%94%b9%e5%86%99-sql" class="header-anchor"&gt;&lt;/a&gt;方案三：MyBatis 拦截器改写 SQL
-&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL 解析器（Druid / JSqlParser）改写：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL
+解析器（Druid / JSqlParser）改写：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -3611,7 +3648,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案四多租户场景的自动-tenant_id"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e5%9b%9b%e5%a4%9a%e7%a7%9f%e6%88%b7%e5%9c%ba%e6%99%af%e7%9a%84%e8%87%aa%e5%8a%a8-tenant_id" class="header-anchor"&gt;&lt;/a&gt;方案四：多租户场景的&amp;quot;自动 tenant_id&amp;quot;
-&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL 都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL
+都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;MyBatis-Plus 的实现方式：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -4487,7 +4525,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程上几条铁律：&lt;/p&gt;
@@ -4684,7 +4723,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;优先用 snsapi_base&lt;/strong&gt;——拿到 openid 后查自己业务库即可，多数场景够用。&lt;strong&gt;只有真要展示用户头像昵称时才用 snsapi_userinfo&lt;/strong&gt;——它会弹一个授权页打断流程。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优先用 snsapi_base&lt;/strong&gt;——拿到 openid 后查自己业务库即可，多数场景够用。&lt;strong&gt;只有真要展示用户头像昵称时才用 snsapi_userinfo&lt;/strong&gt;
+——它会弹一个授权页打断流程。&lt;/p&gt;
 &lt;h3 id="接入要求"&gt;&lt;a href="#%e6%8e%a5%e5%85%a5%e8%a6%81%e6%b1%82" class="header-anchor"&gt;&lt;/a&gt;接入要求
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;服务号&lt;/strong&gt;（订阅号没有 OAuth 接口）&lt;/li&gt;
@@ -4918,7 +4958,8 @@ of Interactive Proof-Systems》里给出。&lt;/p&gt;
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;PC 网站用开放平台 OAuth；H5 微信内用公众号 OAuth；想顺带涨粉用『关注公众号即登录』。三者底层协议都是微信生态，但接入门槛、体验、营销价值差别很大。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**PC 网站用开放平台 OAuth；H5 微信内用公众号 OAuth；想顺带涨粉用『关注公众号即登录』。三者底层协议都是微信生态，但接入门槛、体验、营销价值差别很大。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程上记住几条：&lt;/p&gt;

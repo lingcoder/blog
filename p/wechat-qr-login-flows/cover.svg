@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#3A4A8C"/>
-          <stop offset="0.5" stop-color="#A85F8A"/>
-          <stop offset="1" stop-color="#FFB570"/>
-    </linearGradient>
-      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#3D5A7C"/>
-          <stop offset="1" stop-color="#1A2A48"/>
-      </linearGradient>
-      <radialGradient id="lampGlow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.95"/>
-          <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3A4A8C"/>
+            <stop offset="0.5" stop-color="#A85F8A"/>
+            <stop offset="1" stop-color="#FFB570"/>
+        </linearGradient>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3D5A7C"/>
+            <stop offset="1" stop-color="#1A2A48"/>
+        </linearGradient>
+        <radialGradient id="lampGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.95"/>
+            <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -55,7 +55,7 @@
     <g fill="#5C4A3D" opacity="0.65">
         <polygon points="900,330 940,320 920,360"/>
         <polygon points="1020,310 1060,300 1040,340"/>
-  </g>
+    </g>
 
     <!-- Lighthouse -->
     <g transform="translate(990,80)">
@@ -78,7 +78,7 @@
         <circle cx="0" cy="-13" r="60" fill="url(#lampGlow)"/>
         <!-- Light beam -->
         <polygon points="0,-13 -200,-200 -200,200" fill="#FFE5A0" opacity="0.18"/>
-  </g>
+    </g>
 
     <!-- Foreground rocks -->
     <ellipse cx="100" cy="555" rx="120" ry="14" fill="#1F1A18"/>

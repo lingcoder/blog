@@ -349,7 +349,8 @@
 &lt;/h3&gt;&lt;p&gt;某创业公司 0 限流上线，凌晨被脚本攻击——一晚发出 8 万条短信，&lt;strong&gt;短信通道账户余额清零&lt;/strong&gt;，第二天用户登录时发不出短信。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;任何对外发短信的接口必须先有限流&lt;/strong&gt;，哪怕是日活 10 的小项目。&lt;/p&gt;
 &lt;h3 id="事故-2验证码被复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-2%e9%aa%8c%e8%af%81%e7%a0%81%e8%a2%ab%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 2：验证码被复用
-&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;，刷出几千个假账号。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;注册接口的验证码校验后没删 key，研发以为&amp;quot;反正 5 分钟会过期&amp;quot;。攻击者发现后&lt;strong&gt;5 分钟内反复用同一验证码注册不同账号&lt;/strong&gt;
+，刷出几千个假账号。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;验证码是一次性的，校验后立刻 &lt;code&gt;DEL&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="事故-3跨场景复用"&gt;&lt;a href="#%e4%ba%8b%e6%95%85-3%e8%b7%a8%e5%9c%ba%e6%99%af%e5%a4%8d%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;事故 3：跨场景复用
 &lt;/h3&gt;&lt;p&gt;登录场景和找回密码用同一个 Redis key。攻击者通过&amp;quot;找回密码&amp;quot;功能拿到验证码，&lt;strong&gt;直接拿来登录目标账号&lt;/strong&gt;——因为后端没区分。&lt;/p&gt;

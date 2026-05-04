@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FF8090"/>
-          <stop offset="0.5" stop-color="#FFB098"/>
-          <stop offset="1" stop-color="#FFE0C0"/>
-      </linearGradient>
-      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFA098"/>
-          <stop offset="1" stop-color="#A06078"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FF8090"/>
+            <stop offset="0.5" stop-color="#FFB098"/>
+            <stop offset="1" stop-color="#FFE0C0"/>
+        </linearGradient>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFA098"/>
+            <stop offset="1" stop-color="#A06078"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -88,7 +88,7 @@
     <g fill="none" stroke="#5C2030" stroke-width="2" stroke-linecap="round">
         <path d="M 850 200 q 6 -7 12 0 q 6 -7 12 0"/>
         <path d="M 920 230 q 5 -6 10 0 q 5 -6 10 0"/>
-  </g>
+    </g>
 
     <text x="60" y="618" fill="#5C2030" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

@@ -8,7 +8,8 @@
 &lt;li&gt;重启 Nacos 后&lt;strong&gt;配置没了&lt;/strong&gt;或者&lt;strong&gt;注册的服务全没了&lt;/strong&gt;——存储模式选错了&lt;/li&gt;
 &lt;li&gt;灰度发布想&amp;quot;只让一台实例生效新配置&amp;quot;，根本做不到&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Nacos 装起来 5 分钟，&lt;strong&gt;用对要几个月经验&lt;/strong&gt;。本文把生产环境的关键决策点讲清楚——&lt;strong&gt;namespace 怎么划、配置怎么组织、监听怎么写对、服务发现怎么用稳&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Nacos 装起来 5 分钟，&lt;strong&gt;用对要几个月经验&lt;/strong&gt;。本文把生产环境的关键决策点讲清楚——**namespace 怎么划、配置怎么组织、监听怎么写对、服务发现怎么用稳
+**。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一nacos-的核心模型"&gt;&lt;a href="#%e4%b8%80nacos-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%a8%a1%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;一、Nacos 的核心模型
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TB
@@ -292,15 +293,19 @@
 &lt;h3 id="心跳与剔除"&gt;&lt;a href="#%e5%bf%83%e8%b7%b3%e4%b8%8e%e5%89%94%e9%99%a4" class="header-anchor"&gt;&lt;/a&gt;心跳与剔除
 &lt;/h3&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;版本差异（重要）&lt;/strong&gt;：下面&amp;quot;5 秒心跳 / 15 秒不健康 / 30 秒剔除&amp;quot;是 &lt;strong&gt;Nacos 1.x（HTTP 短连接）&lt;/strong&gt; 的行为；&lt;strong&gt;Nacos 2.x 起默认改为 gRPC 长连接 + keepalive&lt;/strong&gt;——客户端不再定时发 HTTP 心跳，连接断开即被识别下线，整体响应时延显著缩短（亚秒级）。如果你用的是 2.x（2024 年起的主流版本），心跳模型已经不适用。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;版本差异（重要）&lt;/strong&gt;：下面&amp;quot;5 秒心跳 / 15 秒不健康 / 30 秒剔除&amp;quot;是 &lt;strong&gt;Nacos 1.x（HTTP 短连接）&lt;/strong&gt; 的行为；&lt;strong&gt;Nacos 2.x 起默认改为
+gRPC 长连接 + keepalive&lt;/strong&gt;——客户端不再定时发 HTTP 心跳，连接断开即被识别下线，整体响应时延显著缩短（亚秒级）。如果你用的是
+2.x（2024 年起的主流版本），心跳模型已经不适用。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Nacos 1.x 行为&lt;/strong&gt;：临时实例每 5 秒发心跳，15 秒没心跳变&amp;quot;不健康&amp;quot;，30 秒后剔除——这意味着实例突然 kill 后最长有 30 秒不可用窗口。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Nacos 2.x 行为&lt;/strong&gt;：客户端与 server 维持 gRPC 长连接，server 通过连接状态判断实例存活；连接异常断开（进程崩溃、网络隔离）会立即触发下线事件，避免 30 秒窗口。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nacos 2.x 行为&lt;/strong&gt;：客户端与 server 维持 gRPC 长连接，server 通过连接状态判断实例存活；连接异常断开（进程崩溃、网络隔离）会立即触发下线事件，避免
+30 秒窗口。&lt;/p&gt;
 &lt;p&gt;解决（不论版本都建议）：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;客户端配置健康检查 + 重试&lt;/strong&gt;（OpenFeign / Ribbon / Spring Cloud LoadBalancer）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;实例下线前先调用 &lt;code&gt;Nacos NamingService.deregisterInstance&lt;/code&gt; 优雅注销&lt;/strong&gt;——通常用 Spring Boot 的 &lt;code&gt;ApplicationListener&amp;lt;ContextClosedEvent&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实例下线前先调用 &lt;code&gt;Nacos NamingService.deregisterInstance&lt;/code&gt; 优雅注销&lt;/strong&gt;——通常用 Spring Boot 的
+&lt;code&gt;ApplicationListener&amp;lt;ContextClosedEvent&amp;gt;&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="七生产部署踩过的坑"&gt;&lt;a href="#%e4%b8%83%e7%94%9f%e4%ba%a7%e9%83%a8%e7%bd%b2%e8%b8%a9%e8%bf%87%e7%9a%84%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;七、生产部署：踩过的坑
@@ -385,7 +390,8 @@
 &lt;hr&gt;
 &lt;h2 id="九监控与排查"&gt;&lt;a href="#%e4%b9%9d%e7%9b%91%e6%8e%a7%e4%b8%8e%e6%8e%92%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;九、监控与排查
 &lt;/h2&gt;&lt;h3 id="1-看配置历史"&gt;&lt;a href="#1-%e7%9c%8b%e9%85%8d%e7%bd%ae%e5%8e%86%e5%8f%b2" class="header-anchor"&gt;&lt;/a&gt;1. 看配置历史
-&lt;/h3&gt;&lt;p&gt;Nacos 控制台保留每次变更的历史，&lt;strong&gt;改错了能直接 rollback&lt;/strong&gt;。这是 Nacos 区别于&amp;quot;配置写在 yaml 里 + git&amp;quot; 模式的核心价值——&lt;strong&gt;不需要发版本就能改配置，但同时有审计&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Nacos 控制台保留每次变更的历史，&lt;strong&gt;改错了能直接 rollback&lt;/strong&gt;。这是 Nacos 区别于&amp;quot;配置写在 yaml 里 + git&amp;quot; 模式的核心价值——*
+&lt;em&gt;不需要发版本就能改配置，但同时有审计&lt;/em&gt;*。&lt;/p&gt;
 &lt;h3 id="2-看订阅者"&gt;&lt;a href="#2-%e7%9c%8b%e8%ae%a2%e9%98%85%e8%80%85" class="header-anchor"&gt;&lt;/a&gt;2. 看订阅者
 &lt;/h3&gt;&lt;p&gt;Nacos 控制台 → 配置详情 → &amp;ldquo;订阅者列表&amp;rdquo;，能看到当前哪些实例订阅了这个配置——&lt;strong&gt;调试&amp;quot;为什么我的应用没收到推送&amp;quot;的第一步&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="3-应用侧日志"&gt;&lt;a href="#3-%e5%ba%94%e7%94%a8%e4%be%a7%e6%97%a5%e5%bf%97" class="header-anchor"&gt;&lt;/a&gt;3. 应用侧日志
@@ -422,7 +428,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Nacos 的真正价值不在『配置存哪里』，而在『配置变更能可控、可审计、能秒级生效』——但要让它真正可靠，命名空间、监听机制、集群部署一个都不能省。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Nacos 的真正价值不在『配置存哪里』，而在『配置变更能可控、可审计、能秒级生效』——但要让它真正可靠，命名空间、监听机制、集群部署一个都不能省。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条工程纪律：&lt;/p&gt;
@@ -702,12 +709,14 @@
 &lt;li&gt;&lt;strong&gt;若调用链最终回到调用方所在的同一个接口&lt;/strong&gt;（A 通过 LB 调到 A 自己，又走相同方法），就会形成无限递归 → 栈溢出 / 连接池耗尽&lt;/li&gt;
 &lt;li&gt;调用链路在 trace 里突然多一段，排查困难&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：本服务的内部能力直接走 Bean 调用，&lt;strong&gt;不要通过 FeignClient 绕一圈&lt;/strong&gt;。要复用接口契约可以把 Client 接口和 Controller 实现拆出 SPI 模块共享。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：本服务的内部能力直接走 Bean 调用，&lt;strong&gt;不要通过 FeignClient 绕一圈&lt;/strong&gt;。要复用接口契约可以把 Client 接口和 Controller
+实现拆出 SPI 模块共享。&lt;/p&gt;
 &lt;h3 id="2-eureka--nacos-服务发现的循环"&gt;&lt;a href="#2-eureka--nacos-%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;2. Eureka / Nacos 服务发现的循环
 &lt;/h3&gt;&lt;p&gt;A 启动时连不上 B，B 启动时连不上 A——&lt;strong&gt;注册中心会等到双方都活着才允许调用&lt;/strong&gt;。但如果配置了&amp;quot;启动期健康检查&amp;quot;，就会双方互等。&lt;/p&gt;
 &lt;p&gt;解决：启动期检查只用基础设施（DB、Redis），不要互相检查。&lt;/p&gt;
 &lt;h3 id="3-配置中心的循环"&gt;&lt;a href="#3-%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;3. 配置中心的循环
-&lt;/h3&gt;&lt;p&gt;A 服务启动时要从配置中心拉 B 的地址——但配置中心要先注册到 A 才能正常工作？这种设计是错的。&lt;strong&gt;配置中心应该是最底层无依赖的服务&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;A 服务启动时要从配置中心拉 B 的地址——但配置中心要先注册到 A 才能正常工作？这种设计是错的。**配置中心应该是最底层无依赖的服务
+**。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八一份循环依赖治理清单"&gt;&lt;a href="#%e5%85%ab%e4%b8%80%e4%bb%bd%e5%be%aa%e7%8e%af%e4%be%9d%e8%b5%96%e6%b2%bb%e7%90%86%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、一份&amp;quot;循环依赖&amp;quot;治理清单
 &lt;/h2&gt;&lt;p&gt;发现循环后按这个流程处理：&lt;/p&gt;
@@ -813,7 +822,8 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-java" data-lang="java"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderClient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1001L&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;但底层走的是标准 HTTP——序列化通常是 JSON，传输是文本，每次请求都有完整的 HTTP 头开销。&lt;strong&gt;所以 Feign 的本质就是一个&amp;quot;会的协议&amp;quot;被打包成&amp;quot;省心的姿势&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;但底层走的是标准 HTTP——序列化通常是 JSON，传输是文本，每次请求都有完整的 HTTP 头开销。&lt;strong&gt;所以 Feign 的本质就是一个&amp;quot;会的协议&amp;quot;
+被打包成&amp;quot;省心的姿势&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="dubbo原生-rpc"&gt;&lt;a href="#dubbo%e5%8e%9f%e7%94%9f-rpc" class="header-anchor"&gt;&lt;/a&gt;Dubbo：原生 RPC
 &lt;/h3&gt;&lt;p&gt;Dubbo 是为 RPC 而生的。客户端和服务端都是 Java，&lt;strong&gt;直接通过自定义的二进制协议（Dubbo 协议、Triple 协议等）传输 Java 对象&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -844,7 +854,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;OrderVO&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;orderService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;1001L&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;注意——&lt;strong&gt;两端共享同一个接口&lt;/strong&gt;（Java interface），通过注册中心拉到地址后建立长连接。没有 URL，没有 HTTP 头，序列化默认是 Hessian 或 Kryo（紧凑二进制）。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;注意——&lt;strong&gt;两端共享同一个接口&lt;/strong&gt;（Java interface），通过注册中心拉到地址后建立长连接。没有 URL，没有 HTTP 头，序列化默认是 Hessian
+或 Kryo（紧凑二进制）。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="性能差距到底差多少"&gt;&lt;a href="#%e6%80%a7%e8%83%bd%e5%b7%ae%e8%b7%9d%e5%88%b0%e5%ba%95%e5%b7%ae%e5%a4%9a%e5%b0%91" class="header-anchor"&gt;&lt;/a&gt;性能差距：到底差多少
 &lt;/h2&gt;&lt;p&gt;实测数据（同机房、千兆内网、相同业务复杂度）：&lt;/p&gt;
@@ -943,7 +954,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;Spring Cloud 的强项是&lt;strong&gt;全家桶生态完整&lt;/strong&gt;，Feign 只是其中一环；Dubbo 的强项是&lt;strong&gt;服务治理特性原生且强大&lt;/strong&gt;——做到 Spring Cloud 同等治理能力，需要拼接一堆组件。&lt;/p&gt;
+&lt;p&gt;Spring Cloud 的强项是&lt;strong&gt;全家桶生态完整&lt;/strong&gt;，Feign 只是其中一环；Dubbo 的强项是&lt;strong&gt;服务治理特性原生且强大&lt;/strong&gt;——做到 Spring Cloud
+同等治理能力，需要拼接一堆组件。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="跨语言被低估的因素"&gt;&lt;a href="#%e8%b7%a8%e8%af%ad%e8%a8%80%e8%a2%ab%e4%bd%8e%e4%bc%b0%e7%9a%84%e5%9b%a0%e7%b4%a0" class="header-anchor"&gt;&lt;/a&gt;跨语言：被低估的因素
 &lt;/h2&gt;&lt;p&gt;这是很多团队选型时&lt;strong&gt;最被低估的因素&lt;/strong&gt;。&lt;/p&gt;
@@ -951,7 +963,8 @@
 &lt;li&gt;&lt;strong&gt;Feign 走 HTTP/REST&lt;/strong&gt;：只要对方能发 HTTP 请求，谁都能调。Python、Go、Node 团队对接你的服务零门槛&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Dubbo 默认是 Java-only&lt;/strong&gt;：跨语言要切到 Triple 协议（基于 gRPC），配置和工具链都比 HTTP 复杂&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;如果你的组织是&lt;strong&gt;多语言团队&lt;/strong&gt;——前端 Node、数据团队 Python、运营内部系统是 PHP——选 Feign 几乎没有疑问。强行用 Dubbo 让其他语言对接，会成为长期摩擦。&lt;/p&gt;
+&lt;p&gt;如果你的组织是&lt;strong&gt;多语言团队&lt;/strong&gt;——前端 Node、数据团队 Python、运营内部系统是 PHP——选 Feign 几乎没有疑问。强行用 Dubbo
+让其他语言对接，会成为长期摩擦。&lt;/p&gt;
 &lt;p&gt;如果你的组织&lt;strong&gt;清一色 Java&lt;/strong&gt;，跨语言不是问题，那 Dubbo 的劣势就消失了。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="调试与可观测性"&gt;&lt;a href="#%e8%b0%83%e8%af%95%e4%b8%8e%e5%8f%af%e8%a7%82%e6%b5%8b%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;调试与可观测性
@@ -1052,11 +1065,14 @@
  Perf --&gt;|不敏感| Choice[基于团队熟悉度选]&lt;/pre&gt;&lt;hr&gt;
 &lt;h2 id="一些被反复争论的话题"&gt;&lt;a href="#%e4%b8%80%e4%ba%9b%e8%a2%ab%e5%8f%8d%e5%a4%8d%e4%ba%89%e8%ae%ba%e7%9a%84%e8%af%9d%e9%a2%98" class="header-anchor"&gt;&lt;/a&gt;一些被反复争论的话题
 &lt;/h2&gt;&lt;h3 id="争论-1spring-cloud-已经够强dubbo-没必要"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-1spring-cloud-%e5%b7%b2%e7%bb%8f%e5%a4%9f%e5%bc%badubbo-%e6%b2%a1%e5%bf%85%e8%a6%81" class="header-anchor"&gt;&lt;/a&gt;争论 1：Spring Cloud 已经够强，Dubbo 没必要
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——如果你的业务复杂度还没碰到治理瓶颈，Spring Cloud 完全够。但有些治理特性（多版本、规则路由）原生 Spring Cloud 真的拼不出 Dubbo 那么顺手。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——如果你的业务复杂度还没碰到治理瓶颈，Spring Cloud 完全够。但有些治理特性（多版本、规则路由）原生 Spring Cloud
+真的拼不出 Dubbo 那么顺手。&lt;/p&gt;
 &lt;h3 id="争论-2dubbo-把简单事情复杂化"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-2dubbo-%e6%8a%8a%e7%ae%80%e5%8d%95%e4%ba%8b%e6%83%85%e5%a4%8d%e6%9d%82%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;争论 2：Dubbo 把简单事情复杂化
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——Dubbo 的概念多（Provider/Consumer/Registry/Monitor，加上 Filter/Invoker/Cluster），新人确实一脸懵；但一旦上手，业务代码就和 Feign 一样简洁。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;部分对&lt;/strong&gt;——Dubbo 的概念多（Provider/Consumer/Registry/Monitor，加上 Filter/Invoker/Cluster），新人确实一脸懵；但一旦上手，业务代码就和
+Feign 一样简洁。&lt;/p&gt;
 &lt;h3 id="争论-3现在该用-grpc"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-3%e7%8e%b0%e5%9c%a8%e8%af%a5%e7%94%a8-grpc" class="header-anchor"&gt;&lt;/a&gt;争论 3：现在该用 gRPC
-&lt;/h3&gt;&lt;p&gt;gRPC 是个好选择，性能接近 Dubbo，跨语言天然支持。&lt;strong&gt;但生态在 Java 圈子相对薄弱&lt;/strong&gt;——和 Spring 集成、注册中心选型、可观测性都要自己组装。Triple 协议（Dubbo 3）就是兼容 gRPC 的，意图是把&amp;quot;跨语言 + Dubbo 治理&amp;quot;一并拿下。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;gRPC 是个好选择，性能接近 Dubbo，跨语言天然支持。&lt;strong&gt;但生态在 Java 圈子相对薄弱&lt;/strong&gt;——和 Spring 集成、注册中心选型、可观测性都要自己组装。Triple
+协议（Dubbo 3）就是兼容 gRPC 的，意图是把&amp;quot;跨语言 + Dubbo 治理&amp;quot;一并拿下。&lt;/p&gt;
 &lt;h3 id="争论-4直接用-service-mesh"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-4%e7%9b%b4%e6%8e%a5%e7%94%a8-service-mesh" class="header-anchor"&gt;&lt;/a&gt;争论 4：直接用 Service Mesh
 &lt;/h3&gt;&lt;p&gt;Mesh 把通信和治理下沉到 Sidecar，应用层只用最朴素的 HTTP/gRPC。&lt;strong&gt;理论上是终极方案&lt;/strong&gt;，但运维 K8s + Istio 的复杂度让多数中小团队望而却步。&lt;/p&gt;
 &lt;hr&gt;
@@ -1093,7 +1109,9 @@
 &lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;OpenFeign 让通信变简单，Dubbo 让治理变强大。多数项目应当从 Feign 开始，治理瓶颈真正出现时再选择性引入 Dubbo——而不是反过来。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**OpenFeign 让通信变简单，Dubbo 让治理变强大。多数项目应当从 Feign 开始，治理瓶颈真正出现时再选择性引入 Dubbo——而不是反过来。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;性能、生态、跨语言、调试、团队成本是五个真正影响选型的维度。&lt;strong&gt;别让&amp;quot;哪个性能好&amp;quot;这个伪问题误导你&lt;/strong&gt;——通信协议很少是系统瓶颈，能让团队走得远的选择，永远是简单、可调试、生态完整的那一个。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;性能、生态、跨语言、调试、团队成本是五个真正影响选型的维度。&lt;strong&gt;别让&amp;quot;哪个性能好&amp;quot;这个伪问题误导你&lt;/strong&gt;
+——通信协议很少是系统瓶颈，能让团队走得远的选择，永远是简单、可调试、生态完整的那一个。&lt;/p&gt;</description></item></channel></rss>

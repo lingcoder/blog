@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A8C4E0"/>
-          <stop offset="1" stop-color="#F5E0C0"/>
-      </linearGradient>
-      <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#B5C97C"/>
-          <stop offset="1" stop-color="#7C9650"/>
-      </linearGradient>
-      <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7C9650"/>
-          <stop offset="1" stop-color="#4A6E32"/>
-      </linearGradient>
-      <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5C7E40"/>
-          <stop offset="1" stop-color="#2E4A1F"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A8C4E0"/>
+            <stop offset="1" stop-color="#F5E0C0"/>
+        </linearGradient>
+        <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#B5C97C"/>
+            <stop offset="1" stop-color="#7C9650"/>
+        </linearGradient>
+        <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7C9650"/>
+            <stop offset="1" stop-color="#4A6E32"/>
+        </linearGradient>
+        <linearGradient id="hill3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5C7E40"/>
+            <stop offset="1" stop-color="#2E4A1F"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="350" fill="url(#sky)"/>
 
@@ -70,7 +70,7 @@
         <rect x="20" y="15" width="10" height="20" fill="#5C3A1F"/>
         <rect x="6" y="8" width="8" height="8" fill="#7C5A2A"/>
         <rect x="36" y="8" width="8" height="8" fill="#7C5A2A"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

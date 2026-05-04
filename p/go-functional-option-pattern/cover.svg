@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#1F3A40"/>
-          <stop offset="0.6" stop-color="#5A7E78"/>
-          <stop offset="1" stop-color="#FFD08A"/>
-    </linearGradient>
-      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
-          <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1F3A40"/>
+            <stop offset="0.6" stop-color="#5A7E78"/>
+            <stop offset="1" stop-color="#FFD08A"/>
+        </linearGradient>
+        <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <rect width="1200" height="630" fill="url(#sky)"/>
 
@@ -36,7 +36,7 @@
         <polygon points="980,470 960,370 1000,370 970,310 1010,310 980,260"/>
         <polygon points="1060,460 1040,360 1080,360 1050,300 1090,300 1060,250"/>
         <polygon points="1140,470 1120,370 1160,370 1130,310 1170,310 1140,260"/>
-  </g>
+    </g>
 
     <!-- Front pines (very dark) -->
     <g fill="#0A1816">
@@ -72,7 +72,7 @@
         <rect x="22" y="6" width="3" height="22"/>
         <!-- Tail -->
         <ellipse cx="30" cy="-4" rx="3" ry="6"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#FFE5A0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
           letter-spacing="2">lingcoder.com

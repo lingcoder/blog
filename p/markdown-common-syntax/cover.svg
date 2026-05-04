@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFD8A0"/>
-          <stop offset="1" stop-color="#FFB87C"/>
-      </linearGradient>
-      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7A4A30"/>
-          <stop offset="1" stop-color="#3D2515"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFD8A0"/>
+            <stop offset="1" stop-color="#FFB87C"/>
+        </linearGradient>
+        <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7A4A30"/>
+            <stop offset="1" stop-color="#3D2515"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="320" fill="url(#sky)"/>
 
@@ -54,7 +54,7 @@
         <ellipse cx="900" cy="370" rx="55" ry="3"/>
         <ellipse cx="900" cy="395" rx="42" ry="2.5"/>
         <ellipse cx="900" cy="420" rx="32" ry="2"/>
-  </g>
+    </g>
 
     <!-- Ripples -->
     <g fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5">

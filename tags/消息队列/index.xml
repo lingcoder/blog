@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>消息队列 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</link><description>Recent content in 消息队列 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 23 May 2019 12:20:54 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/index.xml" rel="self" type="application/rss+xml"/><item><title>Kafka 集群搭建</title><link>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</link><pubDate>Thu, 23 May 2019 12:20:54 +0800</pubDate><guid>https://www.lingcoder.com/p/kafka-cluster-install-and-config/</guid><description>&lt;img src="https://www.lingcoder.com/p/kafka-cluster-install-and-config/cover.png" alt="Featured image of post Kafka 集群搭建" /&gt;&lt;h1 id="kafka集群搭建"&gt;&lt;a href="#kafka%e9%9b%86%e7%be%a4%e6%90%ad%e5%bb%ba" class="header-anchor"&gt;&lt;/a&gt;Kafka集群搭建
 &lt;/h1&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;版本说明（2026 年补）&lt;/strong&gt;：本文撰写时使用的是 &lt;code&gt;kafka_2.12-2.2.0&lt;/code&gt;（2019 年发布），属于 ZooKeeper 模式 + 老 Scala producer / high-level consumer 时代。Kafka 自 2.8 引入 KRaft 预览、3.3 GA、&lt;strong&gt;4.0 起强制 KRaft 不再支持 ZooKeeper&lt;/strong&gt;；新 Java consumer 自 0.9 就已替代 high-level consumer。下面 broker 配置中关于&amp;quot;新版本不再使用 zookeeper&amp;quot;的注释、以及 producer / high-level consumer 配置参数表，都是当时旧版本的写法，搭新集群请直接看 KRaft 模式与新 KafkaProducer / KafkaConsumer API。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;版本说明（2026 年补）&lt;/strong&gt;：本文撰写时使用的是 &lt;code&gt;kafka_2.12-2.2.0&lt;/code&gt;（2019 年发布），属于 ZooKeeper 模式 + 老 Scala producer /
+high-level consumer 时代。Kafka 自 2.8 引入 KRaft 预览、3.3 GA、&lt;strong&gt;4.0 起强制 KRaft 不再支持 ZooKeeper&lt;/strong&gt;；新 Java consumer 自
+0.9 就已替代 high-level consumer。下面 broker 配置中关于&amp;quot;新版本不再使用 zookeeper&amp;quot;的注释、以及 producer / high-level
+consumer 配置参数表，都是当时旧版本的写法，搭新集群请直接看 KRaft 模式与新 KafkaProducer / KafkaConsumer API。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h2 id="使用场景"&gt;&lt;a href="#%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;使用场景

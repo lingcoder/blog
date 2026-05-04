@@ -1,97 +1,102 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#9CD0E8"/>
-      <stop offset="1" stop-color="#FFE5C8"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9CD0E8"/>
+            <stop offset="1" stop-color="#FFE5C8"/>
+        </linearGradient>
+    </defs>
 
-  <rect width="1200" height="380" fill="url(#sky)"/>
+    <rect width="1200" height="380" fill="url(#sky)"/>
 
-  <!-- Sun -->
-  <circle cx="900" cy="150" r="50" fill="#FFE5A0" opacity="0.95"/>
-  <circle cx="900" cy="150" r="100" fill="#FFE5A0" opacity="0.2"/>
+    <!-- Sun -->
+    <circle cx="900" cy="150" r="50" fill="#FFE5A0" opacity="0.95"/>
+    <circle cx="900" cy="150" r="100" fill="#FFE5A0" opacity="0.2"/>
 
-  <!-- Soft clouds -->
-  <g fill="#FFFFFF" opacity="0.85">
-    <ellipse cx="200" cy="120" rx="80" ry="22"/>
-    <ellipse cx="240" cy="105" rx="60" ry="18"/>
-    <ellipse cx="500" cy="80" rx="90" ry="24"/>
-    <ellipse cx="540" cy="65" rx="70" ry="20"/>
-    <ellipse cx="1050" cy="200" rx="80" ry="22"/>
-  </g>
-
-  <!-- Distant rolling hills -->
-  <path d="M 0 380 Q 200 320 400 350 Q 600 310 800 350 Q 1000 320 1200 360 L 1200 420 L 0 420 Z" fill="#7CAC68" opacity="0.65"/>
-  <path d="M 0 400 Q 250 350 500 380 Q 750 350 1000 390 Q 1100 380 1200 390 L 1200 460 L 0 460 Z" fill="#5C8C50" opacity="0.85"/>
-
-  <!-- Meadow ground -->
-  <path d="M 0 430 Q 600 410 1200 440 L 1200 630 L 0 630 Z" fill="#8CC068"/>
-  <path d="M 0 510 Q 600 490 1200 520 L 1200 630 L 0 630 Z" fill="#6CA850"/>
-
-  <!-- Stone path -->
-  <path d="M 580 430 Q 600 480 540 540 Q 480 600 400 630 L 720 630 Q 660 580 660 540 Q 680 480 620 430 Z" fill="#C8B898" opacity="0.85"/>
-
-  <!-- Stones in path -->
-  <g fill="#A89878">
-    <ellipse cx="600" cy="470" rx="28" ry="6"/>
-    <ellipse cx="585" cy="510" rx="32" ry="7"/>
-    <ellipse cx="555" cy="555" rx="36" ry="8"/>
-    <ellipse cx="510" cy="600" rx="40" ry="9"/>
-  </g>
-
-  <!-- Foreground flowers -->
-  <g>
-    <g transform="translate(200,560)">
-      <circle r="8" fill="#FFFFFF"/>
-      <circle r="3" fill="#FFD8A0"/>
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.85">
+        <ellipse cx="200" cy="120" rx="80" ry="22"/>
+        <ellipse cx="240" cy="105" rx="60" ry="18"/>
+        <ellipse cx="500" cy="80" rx="90" ry="24"/>
+        <ellipse cx="540" cy="65" rx="70" ry="20"/>
+        <ellipse cx="1050" cy="200" rx="80" ry="22"/>
     </g>
-    <g transform="translate(240,580)">
-      <circle r="7" fill="#FFFFFF"/>
-      <circle r="3" fill="#FFD8A0"/>
-    </g>
-    <g transform="translate(160,600)">
-      <circle r="8" fill="#FFB0C8"/>
-      <circle r="3" fill="#FFE0A0"/>
-    </g>
-    <g transform="translate(900,560)">
-      <circle r="8" fill="#FFB0C8"/>
-      <circle r="3" fill="#FFE0A0"/>
-    </g>
-    <g transform="translate(950,590)">
-      <circle r="7" fill="#E8B0FF"/>
-      <circle r="3" fill="#FFE0A0"/>
-    </g>
-    <g transform="translate(1000,605)">
-      <circle r="8" fill="#FFFFFF"/>
-      <circle r="3" fill="#FFD8A0"/>
-    </g>
-    <g transform="translate(80,580)">
-      <circle r="7" fill="#E8B0FF"/>
-      <circle r="3" fill="#FFE0A0"/>
-    </g>
-  </g>
 
-  <!-- Tree -->
-  <g transform="translate(150,440)">
-    <rect x="-6" y="0" width="12" height="60" fill="#5C3820"/>
-    <circle cx="0" cy="-30" r="50" fill="#5C8C50"/>
-    <circle cx="-25" cy="-15" r="38" fill="#7CAC68"/>
-    <circle cx="25" cy="-20" r="42" fill="#5C8C50"/>
-    <circle cx="0" cy="-50" r="35" fill="#7CAC68"/>
-  </g>
-  <g transform="translate(1080,460)">
-    <rect x="-5" y="0" width="10" height="50" fill="#5C3820"/>
-    <circle cx="0" cy="-20" r="38" fill="#5C8C50"/>
-    <circle cx="-18" cy="-10" r="28" fill="#7CAC68"/>
-    <circle cx="18" cy="-15" r="32" fill="#5C8C50"/>
-  </g>
+    <!-- Distant rolling hills -->
+    <path d="M 0 380 Q 200 320 400 350 Q 600 310 800 350 Q 1000 320 1200 360 L 1200 420 L 0 420 Z" fill="#7CAC68"
+          opacity="0.65"/>
+    <path d="M 0 400 Q 250 350 500 380 Q 750 350 1000 390 Q 1100 380 1200 390 L 1200 460 L 0 460 Z" fill="#5C8C50"
+          opacity="0.85"/>
 
-  <!-- Birds -->
-  <g fill="none" stroke="#3D5A40" stroke-width="2" stroke-linecap="round">
-    <path d="M 380 200 q 6 -7 12 0 q 6 -7 12 0"/>
-    <path d="M 700 230 q 5 -6 10 0 q 5 -6 10 0"/>
-  </g>
+    <!-- Meadow ground -->
+    <path d="M 0 430 Q 600 410 1200 440 L 1200 630 L 0 630 Z" fill="#8CC068"/>
+    <path d="M 0 510 Q 600 490 1200 520 L 1200 630 L 0 630 Z" fill="#6CA850"/>
 
-  <text x="60" y="610" fill="#3D5A20" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85" letter-spacing="2">lingcoder.com</text>
+    <!-- Stone path -->
+    <path d="M 580 430 Q 600 480 540 540 Q 480 600 400 630 L 720 630 Q 660 580 660 540 Q 680 480 620 430 Z"
+          fill="#C8B898" opacity="0.85"/>
+
+    <!-- Stones in path -->
+    <g fill="#A89878">
+        <ellipse cx="600" cy="470" rx="28" ry="6"/>
+        <ellipse cx="585" cy="510" rx="32" ry="7"/>
+        <ellipse cx="555" cy="555" rx="36" ry="8"/>
+        <ellipse cx="510" cy="600" rx="40" ry="9"/>
+    </g>
+
+    <!-- Foreground flowers -->
+    <g>
+        <g transform="translate(200,560)">
+            <circle r="8" fill="#FFFFFF"/>
+            <circle r="3" fill="#FFD8A0"/>
+        </g>
+        <g transform="translate(240,580)">
+            <circle r="7" fill="#FFFFFF"/>
+            <circle r="3" fill="#FFD8A0"/>
+        </g>
+        <g transform="translate(160,600)">
+            <circle r="8" fill="#FFB0C8"/>
+            <circle r="3" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(900,560)">
+            <circle r="8" fill="#FFB0C8"/>
+            <circle r="3" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(950,590)">
+            <circle r="7" fill="#E8B0FF"/>
+            <circle r="3" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(1000,605)">
+            <circle r="8" fill="#FFFFFF"/>
+            <circle r="3" fill="#FFD8A0"/>
+        </g>
+        <g transform="translate(80,580)">
+            <circle r="7" fill="#E8B0FF"/>
+            <circle r="3" fill="#FFE0A0"/>
+        </g>
+    </g>
+
+    <!-- Tree -->
+    <g transform="translate(150,440)">
+        <rect x="-6" y="0" width="12" height="60" fill="#5C3820"/>
+        <circle cx="0" cy="-30" r="50" fill="#5C8C50"/>
+        <circle cx="-25" cy="-15" r="38" fill="#7CAC68"/>
+        <circle cx="25" cy="-20" r="42" fill="#5C8C50"/>
+        <circle cx="0" cy="-50" r="35" fill="#7CAC68"/>
+    </g>
+    <g transform="translate(1080,460)">
+        <rect x="-5" y="0" width="10" height="50" fill="#5C3820"/>
+        <circle cx="0" cy="-20" r="38" fill="#5C8C50"/>
+        <circle cx="-18" cy="-10" r="28" fill="#7CAC68"/>
+        <circle cx="18" cy="-15" r="32" fill="#5C8C50"/>
+    </g>
+
+    <!-- Birds -->
+    <g fill="none" stroke="#3D5A40" stroke-width="2" stroke-linecap="round">
+        <path d="M 380 200 q 6 -7 12 0 q 6 -7 12 0"/>
+        <path d="M 700 230 q 5 -6 10 0 q 5 -6 10 0"/>
+    </g>
+
+    <text x="60" y="610" fill="#3D5A20" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
 </svg>

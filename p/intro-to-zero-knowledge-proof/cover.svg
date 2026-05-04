@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="galaxySky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0A0228"/>
-          <stop offset="0.5" stop-color="#2E1A5C"/>
-          <stop offset="1" stop-color="#5C2D7A"/>
-    </linearGradient>
-      <radialGradient id="milkyWay" cx="0.5" cy="0.3" r="0.6">
-          <stop offset="0" stop-color="#FFE5D8" stop-opacity="0.45"/>
-          <stop offset="1" stop-color="#FFE5D8" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="galaxySky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0A0228"/>
+            <stop offset="0.5" stop-color="#2E1A5C"/>
+            <stop offset="1" stop-color="#5C2D7A"/>
+        </linearGradient>
+        <radialGradient id="milkyWay" cx="0.5" cy="0.3" r="0.6">
+            <stop offset="0" stop-color="#FFE5D8" stop-opacity="0.45"/>
+            <stop offset="1" stop-color="#FFE5D8" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <rect width="1200" height="630" fill="url(#galaxySky)"/>
 
@@ -70,20 +70,20 @@
         <rect x="602" y="555" width="6" height="35"/>
         <rect x="585" y="525" width="6" height="22"/>
         <rect x="609" y="525" width="6" height="22"/>
-  </g>
+    </g>
 
     <!-- Campfire -->
     <g>
         <ellipse cx="650" cy="595" rx="20" ry="6" fill="#FFD085" opacity="0.7"/>
         <polygon points="650,560 644,590 656,590" fill="#FF7C30"/>
         <polygon points="650,565 645,590 655,590" fill="#FFE5A0"/>
-  </g>
+    </g>
 
     <!-- Foreground rocks -->
     <g fill="#150804">
         <ellipse cx="100" cy="615" rx="80" ry="12"/>
         <ellipse cx="1100" cy="615" rx="80" ry="12"/>
-  </g>
+    </g>
 
     <text x="60" y="612" fill="#FFE5D8" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
           letter-spacing="2">lingcoder.com

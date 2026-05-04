@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFE5C8"/>
-          <stop offset="0.5" stop-color="#FFB87A"/>
-          <stop offset="1" stop-color="#FF8A5C"/>
-      </linearGradient>
-      <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#9CC07C"/>
-          <stop offset="1" stop-color="#5A7E3D"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFE5C8"/>
+            <stop offset="0.5" stop-color="#FFB87A"/>
+            <stop offset="1" stop-color="#FF8A5C"/>
+        </linearGradient>
+        <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9CC07C"/>
+            <stop offset="1" stop-color="#5A7E3D"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="320" fill="url(#sky)"/>
 
@@ -59,7 +59,7 @@
         <path d="M 0 460 Q 200 455 400 462 T 800 458 T 1200 462"/>
         <path d="M 0 520 Q 200 515 400 522 T 800 518 T 1200 522"/>
         <path d="M 0 580 Q 200 575 400 582 T 800 578 T 1200 582"/>
-  </g>
+    </g>
 
     <!-- Lonely tree -->
     <g transform="translate(900,440)">
@@ -67,7 +67,7 @@
         <ellipse cx="0" cy="-15" rx="40" ry="35" fill="#3A5C2A"/>
         <ellipse cx="-12" cy="-30" rx="30" ry="25" fill="#5A7E3D"/>
         <ellipse cx="14" cy="-20" rx="28" ry="22" fill="#3A5C2A"/>
-  </g>
+    </g>
 
     <!-- Hay bales -->
     <g fill="#D8B570">
@@ -75,7 +75,7 @@
         <ellipse cx="240" cy="490" rx="28" ry="14" fill="#A88848"/>
         <ellipse cx="320" cy="510" rx="28" ry="20"/>
         <ellipse cx="320" cy="510" rx="28" ry="14" fill="#A88848"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#3A5C2A" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

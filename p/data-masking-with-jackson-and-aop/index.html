@@ -465,7 +465,8 @@
     Sensitive --> Jackson[Jackson 序列化<br>自动脱敏]
     Jackson --> Resp[返回前端]
     
-    Logging[日志记录] --> LogMask[Logback PatternFilter<br>脱敏]</pre><p>每一层都有自己的脱敏机制，VO 上的注解是核心声明，序列化器/AOP/日志过滤器各自落实。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p><strong>数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。</strong></p></blockquote><p>工程上几条铁律：</p><ol><li><strong>永远脱敏 VO，不脱敏 Entity</strong></li><li><strong>接口返回用 Jackson 序列化器，特殊场景用 AOP 兜底</strong></li><li><strong>日志脱敏单独走 Logback Filter</strong></li><li><strong>角色绕过要严格审计</strong></li><li><strong>测试环境通过 Profile 关闭</strong></li></ol><p>把这套做对，业务代码再也不用满地 <code>MaskUtil.maskPhone(...)</code>，新接口加字段也不会漏脱敏。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/jackson/>Jackson</a>
+    Logging[日志记录] --> LogMask[Logback PatternFilter<br>脱敏]</pre><p>每一层都有自己的脱敏机制，VO 上的注解是核心声明，序列化器/AOP/日志过滤器各自落实。</p><hr><h2 id=小结><a href=#%e5%b0%8f%e7%bb%93 class=header-anchor></a>小结</h2><p>把全文压一句：</p><blockquote><p>**数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。
+**</p></blockquote><p>工程上几条铁律：</p><ol><li><strong>永远脱敏 VO，不脱敏 Entity</strong></li><li><strong>接口返回用 Jackson 序列化器，特殊场景用 AOP 兜底</strong></li><li><strong>日志脱敏单独走 Logback Filter</strong></li><li><strong>角色绕过要严格审计</strong></li><li><strong>测试环境通过 Profile 关闭</strong></li></ol><p>把这套做对，业务代码再也不用满地 <code>MaskUtil.maskPhone(...)</code>，新接口加字段也不会漏脱敏。</p></section><footer class="article-meta article-footer"><section class=article-tags><a href=/tags/jackson/>Jackson</a>
 <a href=/tags/aop/>AOP</a>
 <a href=/tags/%E6%95%B0%E6%8D%AE%E8%84%B1%E6%95%8F/>数据脱敏</a>
 <a href=/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3/>自定义注解</a>

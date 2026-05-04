@@ -98,7 +98,9 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;注：&lt;code&gt;scope.fork(...)&lt;/code&gt; 在 Java 21 返回的是 &lt;code&gt;StructuredTaskScope.Subtask&amp;lt;T&amp;gt;&lt;/code&gt;，不是 &lt;code&gt;Future&amp;lt;T&amp;gt;&lt;/code&gt;。&lt;strong&gt;未 &lt;code&gt;join()&lt;/code&gt; 之前直接 &lt;code&gt;Subtask.get()&lt;/code&gt; 会抛 &lt;code&gt;IllegalStateException&lt;/code&gt;&lt;/strong&gt;——必须先 &lt;code&gt;join()&lt;/code&gt; 让所有子任务终止、再 &lt;code&gt;throwIfFailed()&lt;/code&gt; 处理失败、最后才能 &lt;code&gt;get()&lt;/code&gt; 取值。&lt;/p&gt;
+ &lt;p&gt;注：&lt;code&gt;scope.fork(...)&lt;/code&gt; 在 Java 21 返回的是 &lt;code&gt;StructuredTaskScope.Subtask&amp;lt;T&amp;gt;&lt;/code&gt;，不是 &lt;code&gt;Future&amp;lt;T&amp;gt;&lt;/code&gt;。&lt;strong&gt;未 &lt;code&gt;join()&lt;/code&gt;
+之前直接 &lt;code&gt;Subtask.get()&lt;/code&gt; 会抛 &lt;code&gt;IllegalStateException&lt;/code&gt;&lt;/strong&gt;——必须先 &lt;code&gt;join()&lt;/code&gt; 让所有子任务终止、再 &lt;code&gt;throwIfFailed()&lt;/code&gt; 处理失败、最后才能
+&lt;code&gt;get()&lt;/code&gt; 取值。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;让&amp;quot;一组并发任务&amp;quot;有清晰的生命周期——避免 goroutine 泄漏式的反模式。&lt;/p&gt;
@@ -270,13 +272,19 @@
 &lt;h2 id="七生态展望"&gt;&lt;a href="#%e4%b8%83%e7%94%9f%e6%80%81%e5%b1%95%e6%9c%9b" class="header-anchor"&gt;&lt;/a&gt;七、生态展望
 &lt;/h2&gt;&lt;p&gt;几条趋势性判断，2026 年看：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;虚拟线程改变了 Reactive 的位置&lt;/strong&gt;——Java 21+ 让传统 MVC + 虚拟线程在高并发场景接近 WebFlux 的吞吐，多团队从 WebFlux 回到 MVC + 虚拟线程，Reactive 的适用面收窄到流式/背压场景。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Native Image 在特定场景成为主流&lt;/strong&gt;——Serverless 冷启动、CLI 工具、短生命周期 K8s Pod 这类场景里 GraalVM Native Image 已是常见选择；通用业务系统仍用 JVM。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;企业 AI 服务的部署主力仍是 Java&lt;/strong&gt;——Python 主导训练，但模型上线后的高 QPS 推理服务、RAG 中台、Agent 编排，Spring AI、LangChain4j 等 Java 框架在快速吃这块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;虚拟线程改变了 Reactive 的位置&lt;/strong&gt;——Java 21+ 让传统 MVC + 虚拟线程在高并发场景接近 WebFlux 的吞吐，多团队从 WebFlux 回到
+MVC + 虚拟线程，Reactive 的适用面收窄到流式/背压场景。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Native Image 在特定场景成为主流&lt;/strong&gt;——Serverless 冷启动、CLI 工具、短生命周期 K8s Pod 这类场景里 GraalVM Native Image
+已是常见选择；通用业务系统仍用 JVM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;企业 AI 服务的部署主力仍是 Java&lt;/strong&gt;——Python 主导训练，但模型上线后的高 QPS 推理服务、RAG 中台、Agent 编排，Spring
+AI、LangChain4j 等 Java 框架在快速吃这块。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Spring Boot 3 强制 Java 17+&lt;/strong&gt; 让&amp;quot;还在 Java 8/11&amp;quot;的项目数量在 2026 年明显下降。&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Kotlin 在 Android 仍占主导，服务端推进缓慢&lt;/strong&gt;——Java 21/25 已吸收了 Kotlin 大部分语法优势，服务端从 Java 转 Kotlin 的动力变弱。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Kotlin 在 Android 仍占主导，服务端推进缓慢&lt;/strong&gt;——Java 21/25 已吸收了 Kotlin 大部分语法优势，服务端从 Java 转 Kotlin
+的动力变弱。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;至于 Java 还有没有未来——TIOBE 长期前 5（近年常驻第 3-4）、GitHub Octoverse 长期前 5、金融/电信/政府企业市场 90% 仍是 Java、Stack Overflow 调查显示使用率稳定。&lt;strong&gt;生态成熟 + 性能稳定 + 工具完善 + 招聘容易&lt;/strong&gt;这四条没有变。可以预期的几个落地方向：服务端主力（金融、电商、SaaS 后端）、大数据基础设施（Kafka / Flink / Spark / Elasticsearch 都是 JVM）、企业 AI 服务部署。&lt;/p&gt;
+&lt;p&gt;至于 Java 还有没有未来——TIOBE 长期前 5（近年常驻第 3-4）、GitHub Octoverse 长期前 5、金融/电信/政府企业市场 90% 仍是
+Java、Stack Overflow 调查显示使用率稳定。&lt;strong&gt;生态成熟 + 性能稳定 + 工具完善 + 招聘容易&lt;/strong&gt;这四条没有变。可以预期的几个落地方向：服务端主力（金融、电商、SaaS
+后端）、大数据基础设施（Kafka / Flink / Spark / Elasticsearch 都是 JVM）、企业 AI 服务部署。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八给开发者的实战建议"&gt;&lt;a href="#%e5%85%ab%e7%bb%99%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e5%ae%9e%e6%88%98%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;八、给开发者的实战建议
 &lt;/h2&gt;&lt;h3 id="1-升级路径"&gt;&lt;a href="#1-%e5%8d%87%e7%ba%a7%e8%b7%af%e5%be%84" class="header-anchor"&gt;&lt;/a&gt;1. 升级路径
@@ -314,7 +322,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Java 不是『过气』也不是『万能』——它是『稳健、强生态、持续演进』的成熟语言。从 8 到 25，每一步都在补齐缺陷，但保留了向后兼容的稳定性。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Java 不是『过气』也不是『万能』——它是『稳健、强生态、持续演进』的成熟语言。从 8 到 25，每一步都在补齐缺陷，但保留了向后兼容的稳定性。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

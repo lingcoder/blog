@@ -144,8 +144,10 @@
 &lt;hr&gt;
 &lt;h2 id="六预言机compound-的命门"&gt;&lt;a href="#%e5%85%ad%e9%a2%84%e8%a8%80%e6%9c%bacompound-%e7%9a%84%e5%91%bd%e9%97%a8" class="header-anchor"&gt;&lt;/a&gt;六、预言机：Compound 的命门
 &lt;/h2&gt;&lt;p&gt;所有借贷决策都依赖&lt;strong&gt;资产价格&lt;/strong&gt;——清算判断、抵押率计算都要价格输入。&lt;/p&gt;
-&lt;p&gt;Compound 早期使用 &lt;strong&gt;Open Price Feed&lt;/strong&gt;——以 &lt;strong&gt;Coinbase Pro&lt;/strong&gt;（后改名 Coinbase Exchange）作为主要签名报价方，配合 Uniswap V2 TWAP 做防御。设计预期是接入更多 reporter，但实际上 Coinbase 长期是唯一稳定上报的数据源。&lt;/p&gt;
-&lt;p&gt;但&lt;strong&gt;预言机被攻击的案例不少&lt;/strong&gt;——经典案例是 2020 年 11 月 26 日 &lt;strong&gt;DAI 在 Coinbase Pro 价格异常飙升&lt;/strong&gt;，导致 Compound 上约 &lt;strong&gt;8900 万美元&lt;/strong&gt;的资产被异常清算。这是 DeFi 借贷协议&lt;strong&gt;永远的 risk&lt;/strong&gt;——单源预言机一旦被推、被异常波动，整个清算系统就被绑架。&lt;/p&gt;
+&lt;p&gt;Compound 早期使用 &lt;strong&gt;Open Price Feed&lt;/strong&gt;——以 &lt;strong&gt;Coinbase Pro&lt;/strong&gt;（后改名 Coinbase Exchange）作为主要签名报价方，配合 Uniswap V2
+TWAP 做防御。设计预期是接入更多 reporter，但实际上 Coinbase 长期是唯一稳定上报的数据源。&lt;/p&gt;
+&lt;p&gt;但&lt;strong&gt;预言机被攻击的案例不少&lt;/strong&gt;——经典案例是 2020 年 11 月 26 日 &lt;strong&gt;DAI 在 Coinbase Pro 价格异常飙升&lt;/strong&gt;，导致 Compound 上约 *
+&lt;em&gt;8900 万美元&lt;strong&gt;的资产被异常清算。这是 DeFi 借贷协议&lt;/strong&gt;永远的 risk&lt;/em&gt;*——单源预言机一旦被推、被异常波动，整个清算系统就被绑架。&lt;/p&gt;
 &lt;p&gt;V3 之后 Compound 全面切到 &lt;strong&gt;Chainlink&lt;/strong&gt; 等专业预言机——&lt;strong&gt;多源 + 时间加权 + 偏离阈值&lt;/strong&gt; 多重保护，把这类风险显著降低。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七ctoken-vs-atoken-vs-dtoken"&gt;&lt;a href="#%e4%b8%83ctoken-vs-atoken-vs-dtoken" class="header-anchor"&gt;&lt;/a&gt;七、cToken vs aToken vs dToken
@@ -229,7 +231,8 @@
 &lt;hr&gt;
 &lt;h2 id="十一对开发者的启发"&gt;&lt;a href="#%e5%8d%81%e4%b8%80%e5%af%b9%e5%bc%80%e5%8f%91%e8%80%85%e7%9a%84%e5%90%af%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;十一、对开发者的启发
 &lt;/h2&gt;&lt;p&gt;读 Compound 源码（&lt;a class="link" href="https://github.com/compound-finance/compound-protocol" target="_blank" rel="noopener"
- &gt;github.com/compound-finance/compound-protocol&lt;/a&gt;）能学到很多：&lt;/p&gt;
+ &gt;github.com/compound-finance/compound-protocol&lt;/a&gt;
+）能学到很多：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;CToken.sol&lt;/strong&gt;：cToken 实现，&lt;strong&gt;学习&amp;quot;代币化金融头寸&amp;quot;的范式&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Comptroller.sol&lt;/strong&gt;：协议核心控制器，&lt;strong&gt;学习如何用单合约管理多市场&lt;/strong&gt;&lt;/li&gt;
@@ -243,7 +246,8 @@
 &lt;/h2&gt;&lt;p&gt;把 Compound 的价值压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Compound 不只是一个借贷协议——它是 DeFi 的『结构性创新者』，定义了池化借贷、算法利率、流动性挖矿等几乎所有 DeFi 沿用至今的范式。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Compound 不只是一个借贷协议——它是 DeFi 的『结构性创新者』，定义了池化借贷、算法利率、流动性挖矿等几乎所有 DeFi 沿用至今的范式。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;理解它的几个关键：&lt;/p&gt;

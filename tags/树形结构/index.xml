@@ -550,7 +550,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="3-合并单元格的内存瓶颈"&gt;&lt;a href="#3-%e5%90%88%e5%b9%b6%e5%8d%95%e5%85%83%e6%a0%bc%e7%9a%84%e5%86%85%e5%ad%98%e7%93%b6%e9%a2%88" class="header-anchor"&gt;&lt;/a&gt;3. 合并单元格的内存瓶颈
-&lt;/h3&gt;&lt;p&gt;合并单元格的 &lt;code&gt;addMergedRegion&lt;/code&gt; 信息是&lt;strong&gt;全量记录在内存里&lt;/strong&gt;——大量合并会让导出再次膨胀。&lt;strong&gt;几万行 + 大量合并是 EasyExcel 也吃不消的场景&lt;/strong&gt;——这种情况建议改用 CSV 或者拆分多 Sheet。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;合并单元格的 &lt;code&gt;addMergedRegion&lt;/code&gt; 信息是&lt;strong&gt;全量记录在内存里&lt;/strong&gt;——大量合并会让导出再次膨胀。&lt;strong&gt;几万行 + 大量合并是 EasyExcel
+也吃不消的场景&lt;/strong&gt;——这种情况建议改用 CSV 或者拆分多 Sheet。&lt;/p&gt;
 &lt;h3 id="4-异步导出"&gt;&lt;a href="#4-%e5%bc%82%e6%ad%a5%e5%af%bc%e5%87%ba" class="header-anchor"&gt;&lt;/a&gt;4. 异步导出
 &lt;/h3&gt;&lt;p&gt;接口同步返回 30 秒会超时——大数据量必须异步：&lt;/p&gt;
 &lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
@@ -581,7 +582,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;模板里用 &lt;code&gt;{name}&lt;/code&gt; 占位符。&lt;/p&gt;
 &lt;h3 id="2-poi-版本冲突"&gt;&lt;a href="#2-poi-%e7%89%88%e6%9c%ac%e5%86%b2%e7%aa%81" class="header-anchor"&gt;&lt;/a&gt;2. POI 版本冲突
-&lt;/h3&gt;&lt;p&gt;EasyExcel 自带 POI 4.x，如果项目里有其他依赖引入了 POI 3.x，&lt;strong&gt;冲突会让 ClassNotFound&lt;/strong&gt;。用 &lt;code&gt;mvn dependency:tree&lt;/code&gt; 检查并 exclude。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;EasyExcel 自带 POI 4.x，如果项目里有其他依赖引入了 POI 3.x，&lt;strong&gt;冲突会让 ClassNotFound&lt;/strong&gt;。用 &lt;code&gt;mvn dependency:tree&lt;/code&gt; 检查并
+exclude。&lt;/p&gt;
 &lt;h3 id="3-中文表头乱码"&gt;&lt;a href="#3-%e4%b8%ad%e6%96%87%e8%a1%a8%e5%a4%b4%e4%b9%b1%e7%a0%81" class="header-anchor"&gt;&lt;/a&gt;3. 中文表头乱码
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;@ExcelProperty(&amp;quot;中文表头&amp;quot;)&lt;/code&gt; 一般没问题，但&lt;strong&gt;如果中文出现在动态字段&lt;/strong&gt;（比如表头从配置读），要确保字符串编码 UTF-8。&lt;/p&gt;
 &lt;h3 id="4-日期格式"&gt;&lt;a href="#4-%e6%97%a5%e6%9c%9f%e6%a0%bc%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;4. 日期格式
@@ -617,7 +619,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;导出复杂结构 Excel 的核心是『先扁平、再合并、再样式』——EasyExcel 把内存压到极致，写法干净，是 Java 项目里 Excel 导出的最佳选择。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**导出复杂结构 Excel 的核心是『先扁平、再合并、再样式』——EasyExcel 把内存压到极致，写法干净，是 Java 项目里 Excel 导出的最佳选择。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

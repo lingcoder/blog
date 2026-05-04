@@ -421,7 +421,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如 Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;gas cap&lt;/code&gt; 很关键&lt;/strong&gt;——超过节点配置的 gas cap，estimate 会被截断报错（&amp;ldquo;gas required exceeds allowance&amp;rdquo;）。某些复杂交易（比如
+Uniswap 大流动性 swap）可能超 50M gas，被默认 cap 卡住。RPC 提供商如 Alchemy / Infura 也有自己的 cap。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七踩坑提醒"&gt;&lt;a href="#%e4%b8%83%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;七、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-不要用-estimate-当-view"&gt;&lt;a href="#1-%e4%b8%8d%e8%a6%81%e7%94%a8-estimate-%e5%bd%93-view" class="header-anchor"&gt;&lt;/a&gt;1. 不要用 estimate 当 view
@@ -442,7 +443,8 @@
 &lt;h3 id="3-estimategas-也不会扣-gas"&gt;&lt;a href="#3-estimategas-%e4%b9%9f%e4%b8%8d%e4%bc%9a%e6%89%a3-gas" class="header-anchor"&gt;&lt;/a&gt;3. estimateGas 也不会扣 gas
 &lt;/h3&gt;&lt;p&gt;即便 estimateGas 模拟时显示用了 200,000 gas——&lt;strong&gt;调用方不付钱&lt;/strong&gt;。但 RPC 提供商可能按调用次数收费/限流。&lt;/p&gt;
 &lt;h3 id="4-block-参数的语义"&gt;&lt;a href="#4-block-%e5%8f%82%e6%95%b0%e7%9a%84%e8%af%ad%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;4. block 参数的语义
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;&amp;quot;latest&amp;quot;&lt;/code&gt; / &lt;code&gt;&amp;quot;pending&amp;quot;&lt;/code&gt; / 具体 block 号都行。&lt;strong&gt;&lt;code&gt;pending&lt;/code&gt; 包含 mempool 里的未确认交易&lt;/strong&gt;——估算&amp;quot;考虑当前其他人正在打的交易&amp;quot;
+时用 pending。但有些节点 pending 不可用。&lt;/p&gt;
 &lt;h3 id="5-archive-node-才支持历史-block-call"&gt;&lt;a href="#5-archive-node-%e6%89%8d%e6%94%af%e6%8c%81%e5%8e%86%e5%8f%b2-block-call" class="header-anchor"&gt;&lt;/a&gt;5. archive node 才支持历史 block call
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -454,7 +456,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;非 archive 节点只保留最近 128 block 的状态——历史 block call 会失败。&lt;/p&gt;
 &lt;h3 id="6-模拟环境和真实差异"&gt;&lt;a href="#6-%e6%a8%a1%e6%8b%9f%e7%8e%af%e5%a2%83%e5%92%8c%e7%9c%9f%e5%ae%9e%e5%b7%ae%e5%bc%82" class="header-anchor"&gt;&lt;/a&gt;6. 模拟环境和真实差异
-&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate 给的 gas 可能不准。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;estimate 时的 block.timestamp、block.number、coinbase 都和&amp;quot;真上链时&amp;quot;不同——&lt;strong&gt;对这些敏感的合约&lt;/strong&gt;（如时间锁、伪随机），estimate
+给的 gas 可能不准。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八常见-web3-库的封装"&gt;&lt;a href="#%e5%85%ab%e5%b8%b8%e8%a7%81-web3-%e5%ba%93%e7%9a%84%e5%b0%81%e8%a3%85" class="header-anchor"&gt;&lt;/a&gt;八、常见 Web3 库的封装
 &lt;/h2&gt;&lt;table&gt;

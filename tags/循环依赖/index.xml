@@ -268,12 +268,14 @@
 &lt;li&gt;&lt;strong&gt;若调用链最终回到调用方所在的同一个接口&lt;/strong&gt;（A 通过 LB 调到 A 自己，又走相同方法），就会形成无限递归 → 栈溢出 / 连接池耗尽&lt;/li&gt;
 &lt;li&gt;调用链路在 trace 里突然多一段，排查困难&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：本服务的内部能力直接走 Bean 调用，&lt;strong&gt;不要通过 FeignClient 绕一圈&lt;/strong&gt;。要复用接口契约可以把 Client 接口和 Controller 实现拆出 SPI 模块共享。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：本服务的内部能力直接走 Bean 调用，&lt;strong&gt;不要通过 FeignClient 绕一圈&lt;/strong&gt;。要复用接口契约可以把 Client 接口和 Controller
+实现拆出 SPI 模块共享。&lt;/p&gt;
 &lt;h3 id="2-eureka--nacos-服务发现的循环"&gt;&lt;a href="#2-eureka--nacos-%e6%9c%8d%e5%8a%a1%e5%8f%91%e7%8e%b0%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;2. Eureka / Nacos 服务发现的循环
 &lt;/h3&gt;&lt;p&gt;A 启动时连不上 B，B 启动时连不上 A——&lt;strong&gt;注册中心会等到双方都活着才允许调用&lt;/strong&gt;。但如果配置了&amp;quot;启动期健康检查&amp;quot;，就会双方互等。&lt;/p&gt;
 &lt;p&gt;解决：启动期检查只用基础设施（DB、Redis），不要互相检查。&lt;/p&gt;
 &lt;h3 id="3-配置中心的循环"&gt;&lt;a href="#3-%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83%e7%9a%84%e5%be%aa%e7%8e%af" class="header-anchor"&gt;&lt;/a&gt;3. 配置中心的循环
-&lt;/h3&gt;&lt;p&gt;A 服务启动时要从配置中心拉 B 的地址——但配置中心要先注册到 A 才能正常工作？这种设计是错的。&lt;strong&gt;配置中心应该是最底层无依赖的服务&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;A 服务启动时要从配置中心拉 B 的地址——但配置中心要先注册到 A 才能正常工作？这种设计是错的。**配置中心应该是最底层无依赖的服务
+**。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八一份循环依赖治理清单"&gt;&lt;a href="#%e5%85%ab%e4%b8%80%e4%bb%bd%e5%be%aa%e7%8e%af%e4%be%9d%e8%b5%96%e6%b2%bb%e7%90%86%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;八、一份&amp;quot;循环依赖&amp;quot;治理清单
 &lt;/h2&gt;&lt;p&gt;发现循环后按这个流程处理：&lt;/p&gt;

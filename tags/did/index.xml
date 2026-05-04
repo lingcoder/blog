@@ -8,7 +8,8 @@
 &lt;/ul&gt;
 &lt;p&gt;每一个&amp;quot;你的身份&amp;quot;，&lt;strong&gt;实际上都是某个公司租给你的&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;DID（Decentralized Identifier，去中心化身份标识）&lt;/strong&gt; 就是要解决这件事——&lt;strong&gt;让用户真正拥有自己的身份&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是&lt;strong&gt;数字身份的范式转移&lt;/strong&gt;——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
+&lt;p&gt;W3C 在 2022 年发布了 DID 1.0 规范，正式成为推荐标准。配合 &lt;strong&gt;Verifiable Credentials（可验证凭证）&lt;/strong&gt; 规范，DID 是**数字身份的范式转移
+**——不只是 Web3 的玩具，而是有可能重塑互联网身份模型的基础设施。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 DID 的结构、几种主流实现方法、可验证凭证的玩法、工程上的意义。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一did-长什么样"&gt;&lt;a href="#%e4%b8%80did-%e9%95%bf%e4%bb%80%e4%b9%88%e6%a0%b7" class="header-anchor"&gt;&lt;/a&gt;一、DID 长什么样
@@ -286,7 +287,8 @@
 &lt;h2 id="七工程上的挑战"&gt;&lt;a href="#%e4%b8%83%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e6%8c%91%e6%88%98" class="header-anchor"&gt;&lt;/a&gt;七、工程上的挑战
 &lt;/h2&gt;&lt;p&gt;DID + VC 想象很美，工程上挑战不少：&lt;/p&gt;
 &lt;h3 id="1-用户体验"&gt;&lt;a href="#1-%e7%94%a8%e6%88%b7%e4%bd%93%e9%aa%8c" class="header-anchor"&gt;&lt;/a&gt;1. 用户体验
-&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如 Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;普通用户怎么&amp;quot;管理&amp;quot;自己的 DID？&lt;strong&gt;钱包是关键基础设施&lt;/strong&gt;——但 Web3 钱包的体验目前对普通人不友好。需要更人性化的&amp;quot;DID 钱包&amp;quot;产品（如
+Microsoft Authenticator、苹果 Wallet 都在向这个方向走）。&lt;/p&gt;
 &lt;h3 id="2-私钥丢了怎么办"&gt;&lt;a href="#2-%e7%a7%81%e9%92%a5%e4%b8%a2%e4%ba%86%e6%80%8e%e4%b9%88%e5%8a%9e" class="header-anchor"&gt;&lt;/a&gt;2. 私钥丢了怎么办
 &lt;/h3&gt;&lt;p&gt;DID 完全去中心化的代价——&lt;strong&gt;没有&amp;quot;找回密码&amp;quot;&lt;/strong&gt;。私钥丢失就身份永久丢失。社交恢复（social recovery）、多签等机制是部分解决方案。&lt;/p&gt;
 &lt;h3 id="3-撤销机制"&gt;&lt;a href="#3-%e6%92%a4%e9%94%80%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;3. 撤销机制

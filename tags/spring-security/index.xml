@@ -202,7 +202,8 @@
 &lt;/table&gt;
 &lt;p&gt;差距的几个关键点：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;OAuth2 / OIDC&lt;/strong&gt;：只要你的系统涉及第三方登录、单点登录、服务对接、API 鉴权，&lt;strong&gt;Spring Security 几乎是唯一现实选择&lt;/strong&gt;。Shiro 也能做，但要拼装大量代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OAuth2 / OIDC&lt;/strong&gt;：只要你的系统涉及第三方登录、单点登录、服务对接、API 鉴权，&lt;strong&gt;Spring Security 几乎是唯一现实选择&lt;/strong&gt;。Shiro
+也能做，但要拼装大量代码&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;CSRF / CORS&lt;/strong&gt;：Shiro 不管这些，要自己写过滤器；Spring Security 默认就帮你做好了&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;JWT&lt;/strong&gt;：两者都能做，但 Spring Security 5.x 之后 Resource Server 支持极完善&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Reactive&lt;/strong&gt;：WebFlux 项目根本不要考虑 Shiro&lt;/li&gt;
@@ -336,9 +337,11 @@
 &lt;hr&gt;
 &lt;h2 id="四扩展性"&gt;&lt;a href="#%e5%9b%9b%e6%89%a9%e5%b1%95%e6%80%a7" class="header-anchor"&gt;&lt;/a&gt;四、扩展性
 &lt;/h2&gt;&lt;h3 id="shiro扩展点少而清晰"&gt;&lt;a href="#shiro%e6%89%a9%e5%b1%95%e7%82%b9%e5%b0%91%e8%80%8c%e6%b8%85%e6%99%b0" class="header-anchor"&gt;&lt;/a&gt;Shiro：扩展点少而清晰
-&lt;/h3&gt;&lt;p&gt;Shiro 把扩展点限定在几个核心接口：&lt;code&gt;Realm&lt;/code&gt;、&lt;code&gt;SessionManager&lt;/code&gt;、&lt;code&gt;Authenticator&lt;/code&gt;、&lt;code&gt;Filter&lt;/code&gt;。要做特殊认证（比如手机验证码登录）只需要自己写个 &lt;code&gt;Token&lt;/code&gt; + 改 &lt;code&gt;Realm&lt;/code&gt;。&lt;strong&gt;扩展边界小、写起来直接&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Shiro 把扩展点限定在几个核心接口：&lt;code&gt;Realm&lt;/code&gt;、&lt;code&gt;SessionManager&lt;/code&gt;、&lt;code&gt;Authenticator&lt;/code&gt;、&lt;code&gt;Filter&lt;/code&gt;。要做特殊认证（比如手机验证码登录）只需要自己写个
+&lt;code&gt;Token&lt;/code&gt; + 改 &lt;code&gt;Realm&lt;/code&gt;。&lt;strong&gt;扩展边界小、写起来直接&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="spring-security扩展点多但有学习曲线"&gt;&lt;a href="#spring-security%e6%89%a9%e5%b1%95%e7%82%b9%e5%a4%9a%e4%bd%86%e6%9c%89%e5%ad%a6%e4%b9%a0%e6%9b%b2%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;Spring Security：扩展点多但有学习曲线
-&lt;/h3&gt;&lt;p&gt;Spring Security 有几十个可扩展点：&lt;code&gt;AuthenticationProvider&lt;/code&gt;、&lt;code&gt;UserDetailsService&lt;/code&gt;、&lt;code&gt;SecurityContextRepository&lt;/code&gt;、&lt;code&gt;AuthenticationEntryPoint&lt;/code&gt;、&lt;code&gt;AccessDeniedHandler&lt;/code&gt;、各种 &lt;code&gt;Filter&lt;/code&gt;……&lt;strong&gt;第一次接它的人会被这么多概念吓到&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Spring Security 有几十个可扩展点：&lt;code&gt;AuthenticationProvider&lt;/code&gt;、&lt;code&gt;UserDetailsService&lt;/code&gt;、&lt;code&gt;SecurityContextRepository&lt;/code&gt;、
+&lt;code&gt;AuthenticationEntryPoint&lt;/code&gt;、&lt;code&gt;AccessDeniedHandler&lt;/code&gt;、各种 &lt;code&gt;Filter&lt;/code&gt;……&lt;strong&gt;第一次接它的人会被这么多概念吓到&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;但一旦熟悉了：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;想要&amp;quot;OAuth2 + 数据库角色 + JWT 接口 + 表单登录&amp;quot;四种方式共存？只是几个 &lt;code&gt;SecurityFilterChain&lt;/code&gt; 的事&lt;/li&gt;
@@ -384,7 +387,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;国内 Shiro 用户多，是因为它&lt;strong&gt;早期太&amp;quot;友好&amp;quot;&lt;/strong&gt;——五分钟上手，老项目就用了下来。但近年 Shiro 历史上&lt;strong&gt;爆出过多个 RCE 漏洞&lt;/strong&gt;（CVE-2020-1957、CVE-2020-11989、CVE-2022-32532 等），这是用 Shiro 的项目必须持续关注版本升级的硬性事实。&lt;/p&gt;
+&lt;p&gt;国内 Shiro 用户多，是因为它&lt;strong&gt;早期太&amp;quot;友好&amp;quot;&lt;/strong&gt;——五分钟上手，老项目就用了下来。但近年 Shiro 历史上&lt;strong&gt;爆出过多个 RCE 漏洞&lt;/strong&gt;
+（CVE-2020-1957、CVE-2020-11989、CVE-2022-32532 等），这是用 Shiro 的项目必须持续关注版本升级的硬性事实。&lt;/p&gt;
 &lt;p&gt;Spring Security 漏洞同样有，但&lt;strong&gt;修复响应快、官方推送积极、版本管理跟着 Spring Boot 一起走&lt;/strong&gt;——大型项目更省心。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六性能差距基本不存在"&gt;&lt;a href="#%e5%85%ad%e6%80%a7%e8%83%bd%e5%b7%ae%e8%b7%9d%e5%9f%ba%e6%9c%ac%e4%b8%8d%e5%ad%98%e5%9c%a8" class="header-anchor"&gt;&lt;/a&gt;六、性能差距：基本不存在
@@ -415,7 +419,8 @@
 &lt;hr&gt;
 &lt;h2 id="八共存与迁移建议"&gt;&lt;a href="#%e5%85%ab%e5%85%b1%e5%ad%98%e4%b8%8e%e8%bf%81%e7%a7%bb%e5%bb%ba%e8%ae%ae" class="header-anchor"&gt;&lt;/a&gt;八、共存与迁移建议
 &lt;/h2&gt;&lt;h3 id="共存"&gt;&lt;a href="#%e5%85%b1%e5%ad%98" class="header-anchor"&gt;&lt;/a&gt;共存
-&lt;/h3&gt;&lt;p&gt;老项目用 Shiro，新模块想用 Spring Security——理论上能共存，但&lt;strong&gt;强烈不推荐&lt;/strong&gt;。两套过滤器链同时存在会很混乱，调试链路变长，维护成本极高。&lt;strong&gt;一个项目只用一套&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;老项目用 Shiro，新模块想用 Spring Security——理论上能共存，但&lt;strong&gt;强烈不推荐&lt;/strong&gt;。两套过滤器链同时存在会很混乱，调试链路变长，维护成本极高。
+&lt;strong&gt;一个项目只用一套&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="老项目从-shiro-迁移到-spring-security"&gt;&lt;a href="#%e8%80%81%e9%a1%b9%e7%9b%ae%e4%bb%8e-shiro-%e8%bf%81%e7%a7%bb%e5%88%b0-spring-security" class="header-anchor"&gt;&lt;/a&gt;老项目从 Shiro 迁移到 Spring Security
 &lt;/h3&gt;&lt;p&gt;迁移成本不小，但路径相对固定：&lt;/p&gt;
 &lt;ol&gt;
@@ -454,7 +459,8 @@
 &lt;/h3&gt;&lt;p&gt;部分对——Shiro 官方文档质量一般，社区资料质量参差。Spring Security 文档&lt;strong&gt;有官方系统手册 + 大量社区文章&lt;/strong&gt;，反而更容易学。&lt;/p&gt;
 &lt;h3 id="争论-3sa-token-是不是更好的选择"&gt;&lt;a href="#%e4%ba%89%e8%ae%ba-3sa-token-%e6%98%af%e4%b8%8d%e6%98%af%e6%9b%b4%e5%a5%bd%e7%9a%84%e9%80%89%e6%8b%a9" class="header-anchor"&gt;&lt;/a&gt;争论 3：Sa-Token 是不是更好的选择？
 &lt;/h3&gt;&lt;p&gt;Sa-Token 是国内开源的轻量框架，API 极简，适合中小项目快速上手。&lt;strong&gt;它的定位更接近 Shiro&lt;/strong&gt;——简单、易用、适合中小项目。&lt;/p&gt;
-&lt;p&gt;但 Sa-Token 的&lt;strong&gt;社区影响力和 Spring Security 不在一个量级&lt;/strong&gt;，团队对接外部系统、招聘新人、跟进安全更新时仍然有差距。&lt;strong&gt;有兴趣可以学，但不要在大型项目里盲目替换主流框架&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;但 Sa-Token 的&lt;strong&gt;社区影响力和 Spring Security 不在一个量级&lt;/strong&gt;，团队对接外部系统、招聘新人、跟进安全更新时仍然有差距。*
+&lt;em&gt;有兴趣可以学，但不要在大型项目里盲目替换主流框架&lt;/em&gt;*。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="十决策树"&gt;&lt;a href="#%e5%8d%81%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;十、决策树
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
@@ -481,7 +487,8 @@
 &lt;li&gt;&lt;strong&gt;新项目优先 Spring Security&lt;/strong&gt;——尤其涉及 OAuth/SSO 时&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;老项目用 Shiro 稳定运行的，不要折腾&lt;/strong&gt;——但&lt;strong&gt;版本升级要跟住 CVE&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不要两套共存&lt;/strong&gt;——选一个，全量做&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;学权限框架不只是学 API，要学概念&lt;/strong&gt;——用得好的关键是理解 Authentication / Authorization / Filter Chain / Context 这些底层概念&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;学权限框架不只是学 API，要学概念&lt;/strong&gt;——用得好的关键是理解 Authentication / Authorization / Filter Chain / Context
+这些底层概念&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不要把&amp;quot;网上博客对比性能差几毫秒&amp;quot;当选型依据&lt;/strong&gt;——那是噪声&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;把这两套之中任意一套用熟，配合好你的业务权限模型，安全这层基本就稳住了。&lt;/p&gt;</description></item></channel></rss>

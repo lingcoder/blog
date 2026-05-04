@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7C90B0"/>
-          <stop offset="1" stop-color="#D8E0EC"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7C90B0"/>
+            <stop offset="1" stop-color="#D8E0EC"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -54,7 +54,7 @@
         <g transform="translate(180,490)">
             <polygon points="0,0 -28,-70 28,-70 0,-110 -22,-70 22,-70 0,-110" fill="#1F4028"/>
             <polygon points="0,0 -28,-70 28,-70" fill="#FFFFFF" opacity="0.75"/>
-    </g>
+        </g>
         <g transform="translate(280,460)">
             <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
             <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
@@ -87,7 +87,7 @@
             <polygon points="0,0 -22,-55 22,-55 0,-90 -18,-55 18,-55 0,-90" fill="#1F4028"/>
             <polygon points="0,0 -22,-55 22,-55" fill="#FFFFFF" opacity="0.7"/>
         </g>
-  </g>
+    </g>
 
     <!-- Foreground big snowy pine -->
     <g transform="translate(600,560)">

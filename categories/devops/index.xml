@@ -5,8 +5,10 @@
  &lt;p&gt;&lt;strong&gt;配置改了重启了，行为还是老的。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;经验稍丰富的开发会立刻反应过来：&lt;strong&gt;它从别处加载了更高优先级的配置，覆盖了你的修改&lt;/strong&gt;。但这&amp;quot;别处&amp;quot;具体是哪里？覆盖顺序是什么？为什么有些配置改了没生效，有些反而立刻生效？&lt;/p&gt;
-&lt;p&gt;Spring Boot 的配置加载体系在文档里写得相对分散，本文把它&lt;strong&gt;完整拉直说一遍&lt;/strong&gt;——从 &lt;code&gt;application.yml&lt;/code&gt; 到环境变量、从 &lt;code&gt;bootstrap.yml&lt;/code&gt; 到 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt;、从 &lt;code&gt;--server.port=8080&lt;/code&gt; 到 K8s ConfigMap，把所有渠道按优先级排成一张图。&lt;/p&gt;
+&lt;p&gt;经验稍丰富的开发会立刻反应过来：&lt;strong&gt;它从别处加载了更高优先级的配置，覆盖了你的修改&lt;/strong&gt;。但这&amp;quot;别处&amp;quot;
+具体是哪里？覆盖顺序是什么？为什么有些配置改了没生效，有些反而立刻生效？&lt;/p&gt;
+&lt;p&gt;Spring Boot 的配置加载体系在文档里写得相对分散，本文把它&lt;strong&gt;完整拉直说一遍&lt;/strong&gt;——从 &lt;code&gt;application.yml&lt;/code&gt; 到环境变量、从
+&lt;code&gt;bootstrap.yml&lt;/code&gt; 到 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt;、从 &lt;code&gt;--server.port=8080&lt;/code&gt; 到 K8s ConfigMap，把所有渠道按优先级排成一张图。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一spring-boot-配置的位置全集"&gt;&lt;a href="#%e4%b8%80spring-boot-%e9%85%8d%e7%bd%ae%e7%9a%84%e4%bd%8d%e7%bd%ae%e5%85%a8%e9%9b%86" class="header-anchor"&gt;&lt;/a&gt;一、Spring Boot 配置的&amp;quot;位置&amp;quot;全集
 &lt;/h2&gt;&lt;p&gt;Spring Boot 能从这些地方读取配置（&lt;strong&gt;优先级从高到低&lt;/strong&gt;）：&lt;/p&gt;
@@ -184,7 +186,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;namespace&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;prod&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;为什么必须更早加载？因为 Nacos / Apollo / Spring Cloud Config 的客户端要先连上配置中心，才能拉到 &lt;code&gt;application.yml&lt;/code&gt; 里的业务配置——&lt;strong&gt;鸡生蛋、蛋生鸡的问题&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;为什么必须更早加载？因为 Nacos / Apollo / Spring Cloud Config 的客户端要先连上配置中心，才能拉到 &lt;code&gt;application.yml&lt;/code&gt;
+里的业务配置——&lt;strong&gt;鸡生蛋、蛋生鸡的问题&lt;/strong&gt;。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;Spring Cloud 2020.0 之后官方推荐用 &lt;code&gt;spring.config.import&lt;/code&gt; 替代 &lt;code&gt;bootstrap.yml&lt;/code&gt;：&lt;/p&gt;
@@ -205,7 +208,8 @@
  &lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h2 id="六外部化配置12-factor-的最佳实践"&gt;&lt;a href="#%e5%85%ad%e5%a4%96%e9%83%a8%e5%8c%96%e9%85%8d%e7%bd%ae12-factor-%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;六、外部化配置：12-Factor 的最佳实践
-&lt;/h2&gt;&lt;p&gt;12-Factor App 第三条：&amp;ldquo;Store config in the environment&amp;rdquo;——&lt;strong&gt;配置应当从环境而来，而不是写死在代码里&lt;/strong&gt;。Spring Boot 的设计完全贴合这个理念：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;12-Factor App 第三条：&amp;ldquo;Store config in the environment&amp;rdquo;——&lt;strong&gt;配置应当从环境而来，而不是写死在代码里&lt;/strong&gt;。Spring Boot
+的设计完全贴合这个理念：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -444,7 +448,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;部署到容器后工作目录可能不是你以为的位置——&lt;strong&gt;生产路径写绝对路径&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="坑-3环境变量大小写转换"&gt;&lt;a href="#%e5%9d%91-3%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e5%a4%a7%e5%b0%8f%e5%86%99%e8%bd%ac%e6%8d%a2" class="header-anchor"&gt;&lt;/a&gt;坑 3：环境变量大小写转换
-&lt;/h3&gt;&lt;p&gt;YAML 里的 &lt;code&gt;spring.datasource.url&lt;/code&gt; 对应环境变量是 &lt;code&gt;SPRING_DATASOURCE_URL&lt;/code&gt;——&lt;strong&gt;点变下划线、全大写&lt;/strong&gt;。写成 &lt;code&gt;spring.datasource.url&lt;/code&gt; 当环境变量是不会被认到的（虽然 Spring Boot 现在支持驼峰转 kebab，但环境变量必须全大写）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;YAML 里的 &lt;code&gt;spring.datasource.url&lt;/code&gt; 对应环境变量是 &lt;code&gt;SPRING_DATASOURCE_URL&lt;/code&gt;——&lt;strong&gt;点变下划线、全大写&lt;/strong&gt;。写成
+&lt;code&gt;spring.datasource.url&lt;/code&gt; 当环境变量是不会被认到的（虽然 Spring Boot 现在支持驼峰转 kebab，但环境变量必须全大写）。&lt;/p&gt;
 &lt;h3 id="坑-4占位符递归"&gt;&lt;a href="#%e5%9d%91-4%e5%8d%a0%e4%bd%8d%e7%ac%a6%e9%80%92%e5%bd%92" class="header-anchor"&gt;&lt;/a&gt;坑 4：占位符递归
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -517,7 +522,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Spring Boot 配置加载的本质是『多个 PropertySource 按优先级合并』——只要把『谁覆盖谁』这件事弄明白，所有&amp;quot;配置不生效&amp;quot;的问题都能 5 分钟定位。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Spring Boot 配置加载的本质是『多个 PropertySource 按优先级合并』——只要把『谁覆盖谁』这件事弄明白，所有&amp;quot;配置不生效&amp;quot;的问题都能
+5 分钟定位。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条核心规则：&lt;/p&gt;
@@ -644,7 +650,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;但有一个东西扮演了&amp;quot;官方文档站&amp;quot;的角色——&lt;a class="link" href="https://pkg.go.dev" target="_blank" rel="noopener"
  &gt;pkg.go.dev&lt;/a&gt;。它不存代码，&lt;strong&gt;只存文档&lt;/strong&gt;——从你的 Go 源码自动生成。&lt;/p&gt;
-&lt;p&gt;如果你写了一个 Go 库想让人用，&lt;strong&gt;&lt;code&gt;go get&lt;/code&gt; 能拉到不代表你&amp;quot;发布了&amp;quot;&lt;/strong&gt;——pkg.go.dev 上有完整文档、版本列表、示例代码、依赖图，才是 Go 生态意义上的&amp;quot;发布&amp;quot;。&lt;/p&gt;
+&lt;p&gt;如果你写了一个 Go 库想让人用，&lt;strong&gt;&lt;code&gt;go get&lt;/code&gt; 能拉到不代表你&amp;quot;发布了&amp;quot;&lt;/strong&gt;——pkg.go.dev 上有完整文档、版本列表、示例代码、依赖图，才是
+Go 生态意义上的&amp;quot;发布&amp;quot;。&lt;/p&gt;
 &lt;p&gt;本文用我自己的 &lt;a class="link" href="https://github.com/lingcoder/go-fsm" target="_blank" rel="noopener"
  &gt;&lt;code&gt;go-fsm&lt;/code&gt;&lt;/a&gt; 作为例子，把发布流程、文档规范、版本管理讲清楚。&lt;/p&gt;
 &lt;hr&gt;
@@ -764,7 +771,9 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;code&gt;doc.go&lt;/code&gt; 里的 package 注释会成为 pkg.go.dev 主页的描述——&lt;strong&gt;它是用户对你库的第一印象&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="4-readmemd"&gt;&lt;a href="#4-readmemd" class="header-anchor"&gt;&lt;/a&gt;4. README.md
-&lt;/h3&gt;&lt;p&gt;pkg.go.dev 会&lt;strong&gt;同时展示 README 与包级 doc&lt;/strong&gt;——README 显示在首页 Overview 区，包级 doc 显示在 Documentation 区。两者各司其职：README 面向 GitHub / pkg.go.dev 访客做项目介绍，&lt;code&gt;doc.go&lt;/code&gt; 面向 godoc / IDE 跳转做 API 文档。建议把 GitHub 风格的徽章、功能 GIF、安装命令放 README，把 API 用法和 example 放 &lt;code&gt;doc.go&lt;/code&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;pkg.go.dev 会&lt;strong&gt;同时展示 README 与包级 doc&lt;/strong&gt;——README 显示在首页 Overview 区，包级 doc 显示在 Documentation 区。两者各司其职：README
+面向 GitHub / pkg.go.dev 访客做项目介绍，&lt;code&gt;doc.go&lt;/code&gt; 面向 godoc / IDE 跳转做 API 文档。建议把 GitHub 风格的徽章、功能
+GIF、安装命令放 README，把 API 用法和 example 放 &lt;code&gt;doc.go&lt;/code&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三文档规范让-godoc-漂亮"&gt;&lt;a href="#%e4%b8%89%e6%96%87%e6%a1%a3%e8%a7%84%e8%8c%83%e8%ae%a9-godoc-%e6%bc%82%e4%ba%ae" class="header-anchor"&gt;&lt;/a&gt;三、文档规范：让 godoc 漂亮
 &lt;/h2&gt;&lt;p&gt;&lt;code&gt;pkg.go.dev&lt;/code&gt; 的文档完全从 Go 源码注释生成——&lt;strong&gt;注释规范决定文档质量&lt;/strong&gt;。&lt;/p&gt;
@@ -797,13 +806,13 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// FSM is a finite state machine instance.&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kd"&gt;struct&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// New creates a new FSM with the given initial state.&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;New&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;initial&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;State&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;initial&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;initial&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -829,7 +838,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;//
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// Trigger is safe for concurrent use.&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="nx"&gt;FSM&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;Trigger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;Event&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kt"&gt;error&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -879,18 +888,18 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;package&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm_test&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;&amp;#34;github.com/lingcoder/go-fsm&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;github.com/lingcoder/go-fsm&amp;#34;&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kd"&gt;func&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;ExampleFSM_Trigger&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;New&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;On&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;From&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;To&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approved&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nf"&gt;Build&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;:=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fsm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;New&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;		&lt;/span&gt;&lt;span class="nf"&gt;On&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;From&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;pending&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;To&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approved&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;		&lt;/span&gt;&lt;span class="nf"&gt;Build&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Trigger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;fmt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;State&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// Output: approved&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Trigger&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;approve&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="nx"&gt;fmt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;Println&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;State&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;	&lt;/span&gt;&lt;span class="c1"&gt;// Output: approved&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -1024,7 +1033,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;on&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;push&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;v*&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;v*&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;jobs&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;release&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
@@ -1078,7 +1087,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;或访问一次 &lt;code&gt;https://pkg.go.dev/github.com/your/repo@v1.0.0&lt;/code&gt;。&lt;/p&gt;
 &lt;h3 id="2-readme-里的图片不显示"&gt;&lt;a href="#2-readme-%e9%87%8c%e7%9a%84%e5%9b%be%e7%89%87%e4%b8%8d%e6%98%be%e7%a4%ba" class="header-anchor"&gt;&lt;/a&gt;2. README 里的图片不显示
-&lt;/h3&gt;&lt;p&gt;pkg.go.dev &lt;strong&gt;会渲染 README&lt;/strong&gt;，但&lt;strong&gt;不加载相对路径的本地图片&lt;/strong&gt;——&lt;code&gt;![logo](docs/logo.png)&lt;/code&gt; 这种引用在 pkg.go.dev 上看不到。要让图片正常显示：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;pkg.go.dev &lt;strong&gt;会渲染 README&lt;/strong&gt;，但&lt;strong&gt;不加载相对路径的本地图片&lt;/strong&gt;——&lt;code&gt;![logo](docs/logo.png)&lt;/code&gt; 这种引用在 pkg.go.dev
+上看不到。要让图片正常显示：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;用 GitHub raw 的绝对 URL：&lt;code&gt;![logo](https://raw.githubusercontent.com/owner/repo/main/docs/logo.png)&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;或者把图片放在 GitHub Pages / 图床上引用&lt;/li&gt;
@@ -1625,7 +1635,8 @@
  B --&gt;|是| C[执行]
  B --&gt;|否| D[跳过]
  C --&gt; E[结束]
- D --&gt; E&lt;/pre&gt;&lt;p&gt;Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 &lt;code&gt;flowchart&lt;/code&gt;、&lt;code&gt;sequenceDiagram&lt;/code&gt;、&lt;code&gt;classDiagram&lt;/code&gt; 三种。&lt;/p&gt;
+ D --&gt; E&lt;/pre&gt;&lt;p&gt;Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 &lt;code&gt;flowchart&lt;/code&gt;、&lt;code&gt;sequenceDiagram&lt;/code&gt;、
+&lt;code&gt;classDiagram&lt;/code&gt; 三种。&lt;/p&gt;
 &lt;h3 id="时序图示例"&gt;&lt;a href="#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;时序图示例
 &lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
  Client-&gt;&gt;Server: HTTP 请求
@@ -1930,7 +1941,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback 的（Mermaid、KaTeX 都行）。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback
+的（Mermaid、KaTeX 都行）。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;留几条作为&amp;quot;硬性规范&amp;rdquo;：&lt;/p&gt;
@@ -1941,7 +1953,8 @@
 &lt;li&gt;&lt;strong&gt;标题层级不超过 4 级&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;最后——&lt;strong&gt;Markdown 不是设计文档语言，是写作语言&lt;/strong&gt;。它的所有特性都为&amp;quot;专注内容&amp;quot;服务。当你开始想&amp;quot;这个怎么用 Markdown 表达&amp;quot;，先问一下&amp;quot;这个真的需要表达吗&amp;quot;。&lt;/p&gt;</description></item><item><title>Makefile 在现代项目的价值与实践</title><link>https://www.lingcoder.com/p/makefile-for-modern-projects/</link><pubDate>Thu, 22 Oct 2020 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/makefile-for-modern-projects/</guid><description>&lt;img src="https://www.lingcoder.com/p/makefile-for-modern-projects/cover.svg" alt="Featured image of post Makefile 在现代项目的价值与实践" /&gt;&lt;h2 id="为什么每个项目都该有一份-makefile"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%af%8f%e4%b8%aa%e9%a1%b9%e7%9b%ae%e9%83%bd%e8%af%a5%e6%9c%89%e4%b8%80%e4%bb%bd-makefile" class="header-anchor"&gt;&lt;/a&gt;为什么每个项目都该有一份 Makefile
+&lt;p&gt;最后——&lt;strong&gt;Markdown 不是设计文档语言，是写作语言&lt;/strong&gt;。它的所有特性都为&amp;quot;专注内容&amp;quot;服务。当你开始想&amp;quot;这个怎么用 Markdown 表达&amp;quot;
+，先问一下&amp;quot;这个真的需要表达吗&amp;quot;。&lt;/p&gt;</description></item><item><title>Makefile 在现代项目的价值与实践</title><link>https://www.lingcoder.com/p/makefile-for-modern-projects/</link><pubDate>Thu, 22 Oct 2020 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/makefile-for-modern-projects/</guid><description>&lt;img src="https://www.lingcoder.com/p/makefile-for-modern-projects/cover.svg" alt="Featured image of post Makefile 在现代项目的价值与实践" /&gt;&lt;h2 id="为什么每个项目都该有一份-makefile"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e6%af%8f%e4%b8%aa%e9%a1%b9%e7%9b%ae%e9%83%bd%e8%af%a5%e6%9c%89%e4%b8%80%e4%bb%bd-makefile" class="header-anchor"&gt;&lt;/a&gt;为什么每个项目都该有一份 Makefile
 &lt;/h2&gt;&lt;p&gt;很多人以为 Makefile 是 C/C++ 时代的产物——其实它在 &lt;strong&gt;Java / Go / Python / 前端&lt;/strong&gt; 项目里同样好用。&lt;/p&gt;
 &lt;p&gt;它的真正价值不在&amp;quot;编译&amp;quot;，而在&lt;strong&gt;让项目所有日常操作都有&amp;quot;一行命令入口&amp;quot;&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -1962,7 +1975,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make deploy &lt;span class="c1"&gt;# 发布&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;新人入职第一天看一眼 Makefile，就知道这个项目能干啥、怎么开始。&lt;strong&gt;没有 Makefile 的项目，新人靠口口相传或翻 README，效率差得不是一点半点&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;新人入职第一天看一眼 Makefile，就知道这个项目能干啥、怎么开始。**没有 Makefile 的项目，新人靠口口相传或翻 README，效率差得不是一点半点
+**。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 Makefile 的核心语法、现代项目里的写法、和那些容易踩的坑。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一makefile-的最小可用版"&gt;&lt;a href="#%e4%b8%80makefile-%e7%9a%84%e6%9c%80%e5%b0%8f%e5%8f%af%e7%94%a8%e7%89%88" class="header-anchor"&gt;&lt;/a&gt;一、Makefile 的最小可用版
@@ -2050,7 +2064,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;	go build -o bin/app src/main.go
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;意思——&amp;ldquo;build 这个目标依赖 main.go，要执行 &lt;code&gt;go build&lt;/code&gt;&amp;quot;。Make 会比较 main.go 的修改时间和 bin/app 的修改时间——&lt;strong&gt;如果 main.go 没变，重复 &lt;code&gt;make build&lt;/code&gt; 不会重新构建&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;意思——&amp;ldquo;build 这个目标依赖 main.go，要执行 &lt;code&gt;go build&lt;/code&gt;&amp;quot;。Make 会比较 main.go 的修改时间和 bin/app 的修改时间——&lt;strong&gt;如果 main.go
+没变，重复 &lt;code&gt;make build&lt;/code&gt; 不会重新构建&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="2-伪目标phony"&gt;&lt;a href="#2-%e4%bc%aa%e7%9b%ae%e6%a0%87phony" class="header-anchor"&gt;&lt;/a&gt;2. 伪目标（.PHONY）
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -2064,7 +2079,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;	rm -rf bin/
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;.PHONY&lt;/code&gt; 告诉 Make——&lt;strong&gt;这不是一个真实文件，永远执行&lt;/strong&gt;。否则如果项目目录里恰好有个文件叫 &lt;code&gt;clean&lt;/code&gt;，&lt;code&gt;make clean&lt;/code&gt; 会被识别成&amp;quot;clean 文件已存在，无需重做&amp;rdquo;——什么都不做。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;.PHONY&lt;/code&gt; 告诉 Make——&lt;strong&gt;这不是一个真实文件，永远执行&lt;/strong&gt;。否则如果项目目录里恰好有个文件叫 &lt;code&gt;clean&lt;/code&gt;，&lt;code&gt;make clean&lt;/code&gt; 会被识别成&amp;rdquo;
+clean 文件已存在，无需重做&amp;quot;——什么都不做。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;所有&amp;quot;动作型&amp;quot;目标都要加 &lt;code&gt;.PHONY&lt;/code&gt;&lt;/strong&gt;，这是工程纪律。&lt;/p&gt;
 &lt;h3 id="3-变量"&gt;&lt;a href="#3-%e5%8f%98%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;3. 变量
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -2547,7 +2563,8 @@
 &lt;p&gt;&lt;strong&gt;给一个建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;任何项目（不论语言）都该有 Makefile 作为『统一入口』&lt;/strong&gt;——前端项目可以同时保留 package.json scripts，但 &lt;code&gt;make dev&lt;/code&gt; / &lt;code&gt;make test&lt;/code&gt; / &lt;code&gt;make build&lt;/code&gt; 也应该能跑。这让&amp;quot;新人进项目&amp;quot;和&amp;quot;CI 配置&amp;quot;都极简。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;任何项目（不论语言）都该有 Makefile 作为『统一入口』&lt;/strong&gt;——前端项目可以同时保留 package.json scripts，但 &lt;code&gt;make dev&lt;/code&gt; /
+&lt;code&gt;make test&lt;/code&gt; / &lt;code&gt;make build&lt;/code&gt; 也应该能跑。这让&amp;quot;新人进项目&amp;quot;和&amp;quot;CI 配置&amp;quot;都极简。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -3621,8 +3638,10 @@
 &lt;a class="link" href="https://github.com/sitaramc/gitolite" target="_blank" rel="noopener"
  &gt;Gitolite&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;</description></item><item><title>Spring Boot 项目打包：War 与 Jar 的区别和注意事项</title><link>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</link><pubDate>Tue, 30 Oct 2018 17:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/spring-boot-war-vs-jar/</guid><description>&lt;img src="https://www.lingcoder.com/p/spring-boot-war-vs-jar/cover.svg" alt="Featured image of post Spring Boot 项目打包：War 与 Jar 的区别和注意事项" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;新人接触 Spring Boot 时常困惑一个问题——明明同样是 Java Web 项目，为什么有的项目用 &lt;code&gt;mvn package&lt;/code&gt; 出来是个 jar，有的项目却出来一个 war，部署方式还截然不同？&lt;/p&gt;
-&lt;p&gt;答案要从 Spring Boot 的设计哲学说起。&lt;strong&gt;Spring Boot 提倡&amp;quot;内嵌容器、可执行 jar&amp;quot;的方式&lt;/strong&gt;——一个 &lt;code&gt;java -jar app.jar&lt;/code&gt; 就跑起来，再也不用 Tomcat 这样的外部容器。但传统的 Java EE 时代，war 包 + 外部容器才是标准玩法。Spring Boot 也兼容这种做法，让老项目能平滑迁移。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;新人接触 Spring Boot 时常困惑一个问题——明明同样是 Java Web 项目，为什么有的项目用 &lt;code&gt;mvn package&lt;/code&gt; 出来是个 jar，有的项目却出来一个
+war，部署方式还截然不同？&lt;/p&gt;
+&lt;p&gt;答案要从 Spring Boot 的设计哲学说起。&lt;strong&gt;Spring Boot 提倡&amp;quot;内嵌容器、可执行 jar&amp;quot;的方式&lt;/strong&gt;——一个 &lt;code&gt;java -jar app.jar&lt;/code&gt; 就跑起来，再也不用
+Tomcat 这样的外部容器。但传统的 Java EE 时代，war 包 + 外部容器才是标准玩法。Spring Boot 也兼容这种做法，让老项目能平滑迁移。&lt;/p&gt;
 &lt;p&gt;这两种打包方式选错了，轻则启动姿势别扭，重则配置失效、监控失灵。本文把它们的区别、坑、和实操要点一次讲清楚。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="war-与-jar-的本质区别"&gt;&lt;a href="#war-%e4%b8%8e-jar-%e7%9a%84%e6%9c%ac%e8%b4%a8%e5%8c%ba%e5%88%ab" class="header-anchor"&gt;&lt;/a&gt;War 与 Jar 的本质区别
@@ -3701,21 +3720,24 @@
 &lt;/span&gt;&lt;span class="lnt"&gt; 8
 &lt;/span&gt;&lt;span class="lnt"&gt; 9
 &lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;jar&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;build&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugins&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugin&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/plugins&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/build&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;spring-boot-maven-plugin&lt;/code&gt; 的 &lt;code&gt;repackage&lt;/code&gt; 目标会把项目打成&amp;quot;可执行 jar&amp;quot;——里面包含一个特殊的 &lt;code&gt;BOOT-INF/lib/&lt;/code&gt; 装所有依赖，外层有 Spring Boot 自己的 &lt;code&gt;JarLauncher&lt;/code&gt;：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;spring-boot-maven-plugin&lt;/code&gt; 的 &lt;code&gt;repackage&lt;/code&gt; 目标会把项目打成&amp;quot;可执行 jar&amp;quot;——里面包含一个特殊的 &lt;code&gt;BOOT-INF/lib/&lt;/code&gt; 装所有依赖，外层有
+Spring Boot 自己的 &lt;code&gt;JarLauncher&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -3756,9 +3778,11 @@
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;war&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;packaging&amp;gt;&lt;/span&gt;war&lt;span class="nt"&gt;&amp;lt;/packaging&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="2-排除内嵌-tomcat"&gt;&lt;a href="#2-%e6%8e%92%e9%99%a4%e5%86%85%e5%b5%8c-tomcat" class="header-anchor"&gt;&lt;/a&gt;2. 排除内嵌 Tomcat
@@ -3781,9 +3805,11 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;14
 &lt;/span&gt;&lt;span class="lnt"&gt;15
 &lt;/span&gt;&lt;span class="lnt"&gt;16
+&lt;/span&gt;&lt;span class="lnt"&gt;17
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-web&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;exclusions&amp;gt;&lt;/span&gt;
@@ -3795,9 +3821,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 编译用，不打进 war --&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-starter-tomcat&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt; &lt;span class="c"&gt;&amp;lt;!-- 编译用，不打进 war --&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/dependency&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
@@ -3832,7 +3858,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;SpringBootServletInitializer&lt;/code&gt; 会让 war 既能 &lt;code&gt;java -jar&lt;/code&gt; 跑，也能丢进 Tomcat 跑。&lt;strong&gt;保留 &lt;code&gt;main&lt;/code&gt; 方法是个好习惯&lt;/strong&gt;——本地调试还是 &lt;code&gt;java -jar&lt;/code&gt; 最方便。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;SpringBootServletInitializer&lt;/code&gt; 会让 war 既能 &lt;code&gt;java -jar&lt;/code&gt; 跑，也能丢进 Tomcat 跑。&lt;strong&gt;保留 &lt;code&gt;main&lt;/code&gt; 方法是个好习惯&lt;/strong&gt;——本地调试还是
+&lt;code&gt;java -jar&lt;/code&gt; 最方便。&lt;/p&gt;
 &lt;h3 id="4-部署"&gt;&lt;a href="#4-%e9%83%a8%e7%bd%b2" class="header-anchor"&gt;&lt;/a&gt;4. 部署
 &lt;/h3&gt;&lt;p&gt;把生成的 &lt;code&gt;app.war&lt;/code&gt; 拷贝到 &lt;code&gt;$TOMCAT_HOME/webapps/&lt;/code&gt; 下，Tomcat 自动解压并启动：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -3846,16 +3873,20 @@
 &lt;/div&gt;&lt;hr&gt;
 &lt;h2 id="七个最常见的-war-部署坑"&gt;&lt;a href="#%e4%b8%83%e4%b8%aa%e6%9c%80%e5%b8%b8%e8%a7%81%e7%9a%84-war-%e9%83%a8%e7%bd%b2%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;七个最常见的 War 部署坑
 &lt;/h2&gt;&lt;h3 id="坑-1context-path-不一致"&gt;&lt;a href="#%e5%9d%91-1context-path-%e4%b8%8d%e4%b8%80%e8%87%b4" class="header-anchor"&gt;&lt;/a&gt;坑 1：context path 不一致
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 启动时，Spring Boot 默认 context path 是 &lt;code&gt;/&lt;/code&gt;；war 部署到 Tomcat 时，context path 默认是 &lt;strong&gt;war 文件名&lt;/strong&gt;。前端写死接口路径的话，部署完所有请求 404。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 启动时，Spring Boot 默认 context path 是 &lt;code&gt;/&lt;/code&gt;；war 部署到 Tomcat 时，context path 默认是 &lt;strong&gt;war 文件名&lt;/strong&gt;
+。前端写死接口路径的话，部署完所有请求 404。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：要么把 war 重命名为 &lt;code&gt;ROOT.war&lt;/code&gt;（context path = &lt;code&gt;/&lt;/code&gt;），要么前端通过相对路径拼接。&lt;/p&gt;
 &lt;h3 id="坑-2内嵌-tomcat-没排干净"&gt;&lt;a href="#%e5%9d%91-2%e5%86%85%e5%b5%8c-tomcat-%e6%b2%a1%e6%8e%92%e5%b9%b2%e5%87%80" class="header-anchor"&gt;&lt;/a&gt;坑 2：内嵌 Tomcat 没排干净
-&lt;/h3&gt;&lt;p&gt;如果忘了 &lt;code&gt;&amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;&lt;/code&gt;，war 里会带一份 Tomcat。在外部 Tomcat 里跑会出现 ClassLoader 冲突——&lt;code&gt;NoSuchMethodError&lt;/code&gt;、&lt;code&gt;LinkageError&lt;/code&gt; 各种奇葩报错。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;如果忘了 &lt;code&gt;&amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt;&lt;/code&gt;，war 里会带一份 Tomcat。在外部 Tomcat 里跑会出现 ClassLoader 冲突——&lt;code&gt;NoSuchMethodError&lt;/code&gt;、
+&lt;code&gt;LinkageError&lt;/code&gt; 各种奇葩报错。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;mvn dependency:tree&lt;/code&gt; 检查 war 里没有 &lt;code&gt;tomcat-embed-*&lt;/code&gt;。&lt;/p&gt;
 &lt;h3 id="坑-3serverport-配置失效"&gt;&lt;a href="#%e5%9d%91-3serverport-%e9%85%8d%e7%bd%ae%e5%a4%b1%e6%95%88" class="header-anchor"&gt;&lt;/a&gt;坑 3：&lt;code&gt;server.port&lt;/code&gt; 配置失效
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;application.yml&lt;/code&gt; 里的 &lt;code&gt;server.port: 8081&lt;/code&gt; 在 war 部署里完全无效——端口由外部 Tomcat 决定。同理 &lt;code&gt;server.servlet.context-path&lt;/code&gt; 也无效。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;application.yml&lt;/code&gt; 里的 &lt;code&gt;server.port: 8081&lt;/code&gt; 在 war 部署里完全无效——端口由外部 Tomcat 决定。同理
+&lt;code&gt;server.servlet.context-path&lt;/code&gt; 也无效。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：明确知道这些&amp;quot;server.*&amp;ldquo;配置只对内嵌容器生效。&lt;/p&gt;
 &lt;h3 id="坑-4propertysource-找不到外部配置"&gt;&lt;a href="#%e5%9d%91-4propertysource-%e6%89%be%e4%b8%8d%e5%88%b0%e5%a4%96%e9%83%a8%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;坑 4：&lt;code&gt;@PropertySource&lt;/code&gt; 找不到外部配置
-&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 时 Spring Boot 会自动加载 jar 同级目录的 &lt;code&gt;application.yml&lt;/code&gt; 覆盖内置；war 部署时没有&amp;quot;jar 同级目录&amp;quot;这个概念，外部配置要显式放在 Tomcat 的 &lt;code&gt;lib&lt;/code&gt; 或者通过 &lt;code&gt;-Dspring.config.location=&lt;/code&gt; 指定。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;code&gt;java -jar&lt;/code&gt; 时 Spring Boot 会自动加载 jar 同级目录的 &lt;code&gt;application.yml&lt;/code&gt; 覆盖内置；war 部署时没有&amp;quot;jar 同级目录&amp;rdquo;
+这个概念，外部配置要显式放在 Tomcat 的 &lt;code&gt;lib&lt;/code&gt; 或者通过 &lt;code&gt;-Dspring.config.location=&lt;/code&gt; 指定。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -3879,9 +3910,11 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;3
 &lt;/span&gt;&lt;span class="lnt"&gt;4
 &lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;dependency&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.apache.tomcat.embed&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;tomcat-embed-jasper&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;scope&amp;gt;&lt;/span&gt;provided&lt;span class="nt"&gt;&amp;lt;/scope&amp;gt;&lt;/span&gt;
@@ -3890,7 +3923,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：新项目用 Thymeleaf / Freemarker / 前后端分离，远离 JSP。&lt;/p&gt;
 &lt;h3 id="坑-7filter--listener-触发顺序"&gt;&lt;a href="#%e5%9d%91-7filter--listener-%e8%a7%a6%e5%8f%91%e9%a1%ba%e5%ba%8f" class="header-anchor"&gt;&lt;/a&gt;坑 7：Filter / Listener 触发顺序
-&lt;/h3&gt;&lt;p&gt;外部 Tomcat 加载 war 时，&lt;code&gt;@WebFilter&lt;/code&gt; 等注解的扫描机制和 Spring Boot 自带容器有差异。某些 Filter 可能比 Spring 容器还早初始化，导致 &lt;code&gt;@Autowired&lt;/code&gt; 是 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;外部 Tomcat 加载 war 时，&lt;code&gt;@WebFilter&lt;/code&gt; 等注解的扫描机制和 Spring Boot 自带容器有差异。某些 Filter 可能比 Spring 容器还早初始化，导致
+&lt;code&gt;@Autowired&lt;/code&gt; 是 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;对策&lt;/strong&gt;：用 &lt;code&gt;FilterRegistrationBean&lt;/code&gt; 显式注册 Filter，由 Spring 控制生命周期。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="镜像化时代的最佳实践"&gt;&lt;a href="#%e9%95%9c%e5%83%8f%e5%8c%96%e6%97%b6%e4%bb%a3%e7%9a%84%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5" class="header-anchor"&gt;&lt;/a&gt;镜像化时代的最佳实践
@@ -3911,18 +3945,20 @@
 &lt;p&gt;进一步的优化是用 Spring Boot 的 &lt;code&gt;Layered Jar&lt;/code&gt; 把不变的依赖和频繁变化的业务代码分层，加速 Docker 镜像构建：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
-&lt;/span&gt;&lt;span class="lnt"&gt;2
-&lt;/span&gt;&lt;span class="lnt"&gt;3
-&lt;/span&gt;&lt;span class="lnt"&gt;4
-&lt;/span&gt;&lt;span class="lnt"&gt;5
-&lt;/span&gt;&lt;span class="lnt"&gt;6
-&lt;/span&gt;&lt;span class="lnt"&gt;7
-&lt;/span&gt;&lt;span class="lnt"&gt;8
-&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;plugin&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;groupId&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class="nt"&gt;&amp;lt;/groupId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;artifactId&amp;gt;&lt;/span&gt;spring-boot-maven-plugin&lt;span class="nt"&gt;&amp;lt;/artifactId&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;configuration&amp;gt;&lt;/span&gt;
@@ -3953,7 +3989,9 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;版本注意&lt;/strong&gt;：ENTRYPOINT 类路径在 Boot 3.2 处发生过迁移——&lt;strong&gt;Boot 3.2+ 用 &lt;code&gt;org.springframework.boot.loader.launch.JarLauncher&lt;/code&gt;，3.1 及以下是 &lt;code&gt;org.springframework.boot.loader.JarLauncher&lt;/code&gt;&lt;/strong&gt;。两者写错都会启动报 &lt;code&gt;ClassNotFoundException&lt;/code&gt;，按你实际的 Boot 版本选。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;版本注意&lt;/strong&gt;：ENTRYPOINT 类路径在 Boot 3.2 处发生过迁移——&lt;strong&gt;Boot 3.2+
+用 &lt;code&gt;org.springframework.boot.loader.launch.JarLauncher&lt;/code&gt;，3.1 及以下是 &lt;code&gt;org.springframework.boot.loader.JarLauncher&lt;/code&gt;&lt;/strong&gt;
+。两者写错都会启动报 &lt;code&gt;ClassNotFoundException&lt;/code&gt;，按你实际的 Boot 版本选。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -3965,11 +4003,11 @@
  Old --&gt;|没有| Jar2[迁移成 Jar]
  Old --&gt;|有| Reason{为什么用外部 Tomcat?}
  Reason --&gt;|历史习惯| Migrate[评估迁移成本，建议慢慢转 Jar]
- Reason --&gt;|多应用共享容器| Docker[考虑 K8s 替代]
- Reason --&gt;|合规/审计要求| War[继续用 War]
- Reason --&gt;|JSP/老旧依赖| War&lt;/pre&gt;&lt;hr&gt;
+Reason --&gt;|多应用共享容器|Docker[考虑 K8s 替代]
+Reason --&gt;|合规/审计要求|War[继续用 War]
+Reason --&gt;| JSP/老旧依赖|War&lt;/pre&gt;&lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
-&lt;/h2&gt;&lt;p&gt;War 与 Jar 的选择，本质上是&amp;quot;跟着 Java EE 时代的部署模式走，还是跟着云原生的部署模式走&amp;rdquo;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;War 与 Jar 的选择，本质上是&amp;quot;跟着 Java EE 时代的部署模式走，还是跟着云原生的部署模式走&amp;quot;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;给一句决策建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;

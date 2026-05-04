@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Caffeine on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/caffeine/</link><description>Recent content in Caffeine on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 15 Apr 2022 17:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/caffeine/index.xml" rel="self" type="application/rss+xml"/><item><title>JetCache 实战：Spring 项目里的多级缓存利器</title><link>https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/</link><pubDate>Fri, 15 Apr 2022 17:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/</guid><description>&lt;img src="https://www.lingcoder.com/p/jetcache-spring-multi-level-cache/cover.svg" alt="Featured image of post JetCache 实战：Spring 项目里的多级缓存利器" /&gt;&lt;h2 id="为什么-spring-cache-不够用"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88-spring-cache-%e4%b8%8d%e5%a4%9f%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;为什么 Spring Cache 不够用
-&lt;/h2&gt;&lt;p&gt;Spring Cache (&lt;code&gt;@Cacheable&lt;/code&gt;/&lt;code&gt;@CacheEvict&lt;/code&gt;) 是个好抽象——把&amp;quot;读数据先看缓存&amp;quot;这件事用注解优雅地表达出来。但用过的人都知道，它有几个&lt;strong&gt;和生产场景对不上&lt;/strong&gt;的硬伤：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Spring Cache (&lt;code&gt;@Cacheable&lt;/code&gt;/&lt;code&gt;@CacheEvict&lt;/code&gt;) 是个好抽象——把&amp;quot;读数据先看缓存&amp;quot;这件事用注解优雅地表达出来。但用过的人都知道，它有几个
+&lt;strong&gt;和生产场景对不上&lt;/strong&gt;的硬伤：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;不支持过期时间&lt;/strong&gt;——原生 &lt;code&gt;@Cacheable&lt;/code&gt; 没法在注解上指定 TTL，要么改全局配置，要么自定义 &lt;code&gt;CacheManager&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;不支持多级缓存&lt;/strong&gt;——你要么全 Caffeine，要么全 Redis，没法&amp;quot;先查 Caffeine 再查 Redis&amp;quot;&lt;/li&gt;
@@ -217,7 +218,8 @@
 &lt;/div&gt;&lt;p&gt;&lt;code&gt;cacheNullValue = true&lt;/code&gt; 让&amp;quot;DB 返回 null&amp;quot;也被缓存，&lt;strong&gt;短时间内连续查不存在的 key 不会重复打 DB&lt;/strong&gt;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;注意：缓存 null 的 TTL 通常应该比正常数据短一些，避免数据从无到有时延迟太久才被前端看到。可以两个 &lt;code&gt;@Cached&lt;/code&gt; 分开缓存，或者 TTL 设短点。&lt;/p&gt;
+ &lt;p&gt;注意：缓存 null 的 TTL 通常应该比正常数据短一些，避免数据从无到有时延迟太久才被前端看到。可以两个 &lt;code&gt;@Cached&lt;/code&gt; 分开缓存，或者
+TTL 设短点。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -302,7 +304,8 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;&lt;code&gt;broadcastChannel&lt;/code&gt; 与 &lt;code&gt;syncLocal: true&lt;/code&gt; 缺一不可&lt;/strong&gt;——只配 broadcastChannel 不开 syncLocal，本地 Caffeine 不会订阅广播，跨 JVM 失效不生效。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;&lt;code&gt;broadcastChannel&lt;/code&gt; 与 &lt;code&gt;syncLocal: true&lt;/code&gt; 缺一不可&lt;/strong&gt;——只配 broadcastChannel 不开 syncLocal，本地 Caffeine 不会订阅广播，跨
+JVM 失效不生效。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;每次 &lt;code&gt;@CacheInvalidate&lt;/code&gt; 触发时：&lt;/p&gt;
@@ -336,11 +339,13 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;hotConfig: | 321 | 95.20% | 80.00% | 300 | 21
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;把这个表周期性吐到监控系统（Prometheus / SkyWalking / 日志大盘），&lt;strong&gt;直接定位&amp;quot;哪个 cache 命中率低&amp;quot;&lt;/strong&gt;——通常意味着 TTL 太短、key 设计有问题、或者业务实际并不重复。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;把这个表周期性吐到监控系统（Prometheus / SkyWalking / 日志大盘），&lt;strong&gt;直接定位&amp;quot;哪个 cache 命中率低&amp;quot;&lt;/strong&gt;——通常意味着 TTL 太短、key
+设计有问题、或者业务实际并不重复。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="八踩坑提醒"&gt;&lt;a href="#%e5%85%ab%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;八、踩坑提醒
 &lt;/h2&gt;&lt;h3 id="1-keyconvertor-必须配"&gt;&lt;a href="#1-keyconvertor-%e5%bf%85%e9%a1%bb%e9%85%8d" class="header-anchor"&gt;&lt;/a&gt;1. &lt;code&gt;keyConvertor&lt;/code&gt; 必须配
-&lt;/h3&gt;&lt;p&gt;不配的话默认用对象的 &lt;code&gt;toString()&lt;/code&gt; 当 key——&lt;strong&gt;对象 hash 变了 key 就不一样&lt;/strong&gt;，缓存命中率瞬间归零。&lt;code&gt;jackson&lt;/code&gt; / &lt;code&gt;fastjson2&lt;/code&gt; 是常见选择。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;不配的话默认用对象的 &lt;code&gt;toString()&lt;/code&gt; 当 key——&lt;strong&gt;对象 hash 变了 key 就不一样&lt;/strong&gt;，缓存命中率瞬间归零。&lt;code&gt;jackson&lt;/code&gt; / &lt;code&gt;fastjson2&lt;/code&gt;
+是常见选择。&lt;/p&gt;
 &lt;h3 id="2-序列化版本兼容"&gt;&lt;a href="#2-%e5%ba%8f%e5%88%97%e5%8c%96%e7%89%88%e6%9c%ac%e5%85%bc%e5%ae%b9" class="header-anchor"&gt;&lt;/a&gt;2. 序列化版本兼容
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;valueEncoder: java&lt;/code&gt; 用 JDK 序列化，&lt;strong&gt;类字段加减会直接破坏序列化兼容&lt;/strong&gt;。生产推荐 &lt;code&gt;kryo&lt;/code&gt; 或 &lt;code&gt;jackson&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -364,7 +369,8 @@
 &lt;h3 id="5-注解和方法签名"&gt;&lt;a href="#5-%e6%b3%a8%e8%a7%a3%e5%92%8c%e6%96%b9%e6%b3%95%e7%ad%be%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;5. 注解和方法签名
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;@Cached&lt;/code&gt; 的 key 不要写成 &lt;code&gt;#user.id&lt;/code&gt;——&lt;code&gt;null&lt;/code&gt; 时会 NPE。用 SpEL 的安全访问：&lt;code&gt;'#user?.id'&lt;/code&gt;。&lt;/p&gt;
 &lt;h3 id="6-不缓存-list复杂对象"&gt;&lt;a href="#6-%e4%b8%8d%e7%bc%93%e5%ad%98-list%e5%a4%8d%e6%9d%82%e5%af%b9%e8%b1%a1" class="header-anchor"&gt;&lt;/a&gt;6. 不缓存 List&amp;lt;复杂对象&amp;gt;
-&lt;/h3&gt;&lt;p&gt;复杂对象列表序列化反序列化都是开销，&lt;strong&gt;多个细粒度 cache 比一个大 cache 性能好&lt;/strong&gt;。把&amp;quot;分页结果&amp;quot;缓存当反例——分页参数一变就 miss，命中率极低。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;复杂对象列表序列化反序列化都是开销，&lt;strong&gt;多个细粒度 cache 比一个大 cache 性能好&lt;/strong&gt;。把&amp;quot;分页结果&amp;quot;缓存当反例——分页参数一变就
+miss，命中率极低。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="九和其他方案对比"&gt;&lt;a href="#%e4%b9%9d%e5%92%8c%e5%85%b6%e4%bb%96%e6%96%b9%e6%a1%88%e5%af%b9%e6%af%94" class="header-anchor"&gt;&lt;/a&gt;九、和其他方案对比
 &lt;/h2&gt;&lt;table&gt;

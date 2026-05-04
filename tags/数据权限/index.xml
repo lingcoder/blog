@@ -169,7 +169,8 @@
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案三mybatis-拦截器改写-sql"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e4%b8%89mybatis-%e6%8b%a6%e6%88%aa%e5%99%a8%e6%94%b9%e5%86%99-sql" class="header-anchor"&gt;&lt;/a&gt;方案三：MyBatis 拦截器改写 SQL
-&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL 解析器（Druid / JSqlParser）改写：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL
+解析器（Druid / JSqlParser）改写：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -258,7 +259,8 @@
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案四多租户场景的自动-tenant_id"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e5%9b%9b%e5%a4%9a%e7%a7%9f%e6%88%b7%e5%9c%ba%e6%99%af%e7%9a%84%e8%87%aa%e5%8a%a8-tenant_id" class="header-anchor"&gt;&lt;/a&gt;方案四：多租户场景的&amp;quot;自动 tenant_id&amp;quot;
-&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL 都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL
+都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;MyBatis-Plus 的实现方式：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;

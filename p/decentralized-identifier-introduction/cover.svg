@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0A0F2A"/>
-          <stop offset="1" stop-color="#1A2050"/>
-      </linearGradient>
-      <linearGradient id="aurora1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#3CFFCB" stop-opacity="0"/>
-          <stop offset="0.4" stop-color="#3CFFCB" stop-opacity="0.6"/>
-          <stop offset="1" stop-color="#3CFFCB" stop-opacity="0"/>
-    </linearGradient>
-      <linearGradient id="aurora2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A050E0" stop-opacity="0"/>
-          <stop offset="0.5" stop-color="#A050E0" stop-opacity="0.55"/>
-          <stop offset="1" stop-color="#A050E0" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="aurora3" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5C8AFF" stop-opacity="0"/>
-          <stop offset="0.5" stop-color="#5C8AFF" stop-opacity="0.5"/>
-          <stop offset="1" stop-color="#5C8AFF" stop-opacity="0"/>
-      </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0A0F2A"/>
+            <stop offset="1" stop-color="#1A2050"/>
+        </linearGradient>
+        <linearGradient id="aurora1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3CFFCB" stop-opacity="0"/>
+            <stop offset="0.4" stop-color="#3CFFCB" stop-opacity="0.6"/>
+            <stop offset="1" stop-color="#3CFFCB" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="aurora2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A050E0" stop-opacity="0"/>
+            <stop offset="0.5" stop-color="#A050E0" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#A050E0" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="aurora3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5C8AFF" stop-opacity="0"/>
+            <stop offset="0.5" stop-color="#5C8AFF" stop-opacity="0.5"/>
+            <stop offset="1" stop-color="#5C8AFF" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="630" fill="url(#sky)"/>
 
@@ -51,7 +51,7 @@
     <g transform="translate(0,950) scale(1,-1)" opacity="0.35">
         <path d="M 0 50 Q 200 200 400 130 Q 600 60 800 180 Q 1000 100 1200 150 L 1200 450 Q 1000 360 800 410 Q 600 320 400 380 Q 200 460 0 380 Z"
               fill="url(#aurora1)"/>
-  </g>
+    </g>
 
     <!-- Mountains/fjord cliffs -->
     <path d="M 0 470 L 80 360 L 160 410 L 240 330 L 340 420 L 420 350 L 500 460 L 500 480 L 0 480 Z" fill="#0A0F1F"/>
@@ -62,7 +62,7 @@
     <g fill="#FFFFFF" opacity="0.6">
         <polygon points="240,330 250,360 230,360"/>
         <polygon points="940,350 952,378 928,378"/>
-  </g>
+    </g>
 
     <!-- Water ripples -->
     <g fill="none" stroke="#3CFFCB" stroke-opacity="0.25" stroke-width="1.5">
@@ -71,7 +71,7 @@
         <path d="M 900 540 q 30 -5 60 0 t 60 0"/>
         <path d="M 200 590 q 50 -6 100 0 t 100 0"/>
         <path d="M 800 600 q 50 -6 100 0 t 100 0"/>
-  </g>
+    </g>
 
     <text x="60" y="615" fill="#3CFFCB" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

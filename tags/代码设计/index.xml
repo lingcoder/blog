@@ -205,7 +205,8 @@
 &lt;p&gt;&lt;strong&gt;3. AOP 调试链路长&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;stack trace 里多了 &lt;code&gt;CglibProxy&lt;/code&gt;、&lt;code&gt;JdkDynamicAopProxy&lt;/code&gt; 这些层，新人看不懂。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;4. 滥用会让代码难追&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;业务方法签名上看到一堆 &lt;code&gt;@LogTime @Cached @Idempotent @RateLimit @OperationLog @DistributedLock&lt;/code&gt;——不熟悉项目的人&lt;strong&gt;根本不知道每个注解干啥&lt;/strong&gt;，行为变成&amp;quot;看不见的魔法&amp;quot;。&lt;/p&gt;
+&lt;p&gt;业务方法签名上看到一堆 &lt;code&gt;@LogTime @Cached @Idempotent @RateLimit @OperationLog @DistributedLock&lt;/code&gt;——不熟悉项目的人*
+&lt;em&gt;根本不知道每个注解干啥&lt;/em&gt;*，行为变成&amp;quot;看不见的魔法&amp;quot;。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;经验上&lt;/strong&gt;：业务方法上的 AOP 注解多于 3 个就值得复盘，多于 5 个往往是过度设计的信号。&lt;/p&gt;
@@ -298,7 +299,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;这时 listener 在另一个线程跑，&lt;strong&gt;和主业务事务无关&lt;/strong&gt;——常用于&amp;quot;发短信、发 MQ&amp;quot;这类不重要、可重试的副流程。&lt;/p&gt;
 &lt;h3 id="transactionaleventlistener等事务提交后再触发"&gt;&lt;a href="#transactionaleventlistener%e7%ad%89%e4%ba%8b%e5%8a%a1%e6%8f%90%e4%ba%a4%e5%90%8e%e5%86%8d%e8%a7%a6%e5%8f%91" class="header-anchor"&gt;&lt;/a&gt;&lt;code&gt;@TransactionalEventListener&lt;/code&gt;：等事务提交后再触发
-&lt;/h3&gt;&lt;p&gt;最容易踩的坑——&lt;strong&gt;&lt;code&gt;publishEvent&lt;/code&gt; 是在主业务事务提交之前调用的&lt;/strong&gt;（在业务方法内）。所以无论同步还是异步监听器，listener 看到的都是&amp;quot;事务还没提交&amp;quot;的状态——副流程里去查 DB 可能查不到刚写入的数据：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;最容易踩的坑——&lt;strong&gt;&lt;code&gt;publishEvent&lt;/code&gt; 是在主业务事务提交之前调用的&lt;/strong&gt;（在业务方法内）。所以无论同步还是异步监听器，listener
+看到的都是&amp;quot;事务还没提交&amp;quot;的状态——副流程里去查 DB 可能查不到刚写入的数据：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -505,7 +507,8 @@
 &lt;li&gt;或者你滥用了 AOP，把本该是业务的逻辑抽离了&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="2-事件命名"&gt;&lt;a href="#2-%e4%ba%8b%e4%bb%b6%e5%91%bd%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;2. 事件命名
-&lt;/h3&gt;&lt;p&gt;事件名永远是**「实体 + 动作过去时」**：&lt;code&gt;OrderCreatedEvent&lt;/code&gt;、&lt;code&gt;UserRegisteredEvent&lt;/code&gt;、&lt;code&gt;PaymentCompletedEvent&lt;/code&gt;。&lt;strong&gt;不要叫 &lt;code&gt;CreateOrderEvent&lt;/code&gt;&lt;/strong&gt;——前者表示&amp;quot;已发生&amp;quot;，后者像&amp;quot;指令&amp;quot;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;事件名永远是**「实体 + 动作过去时」&lt;strong&gt;：&lt;code&gt;OrderCreatedEvent&lt;/code&gt;、&lt;code&gt;UserRegisteredEvent&lt;/code&gt;、&lt;code&gt;PaymentCompletedEvent&lt;/code&gt;。*
+*不要叫 &lt;code&gt;CreateOrderEvent&lt;/code&gt;&lt;/strong&gt;——前者表示&amp;quot;已发生&amp;quot;，后者像&amp;quot;指令&amp;quot;。&lt;/p&gt;
 &lt;h3 id="3-事件的字段最小化"&gt;&lt;a href="#3-%e4%ba%8b%e4%bb%b6%e7%9a%84%e5%ad%97%e6%ae%b5%e6%9c%80%e5%b0%8f%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;3. 事件的字段最小化
 &lt;/h3&gt;&lt;p&gt;事件载荷只放&amp;quot;必要的标识 + 关键字段&amp;quot;，&lt;strong&gt;不要塞整个对象&lt;/strong&gt;。listener 自己再去查 DB——避免事件载荷过大、同时减少耦合。&lt;/p&gt;
 &lt;h3 id="4-aop-注解必须有业务含义"&gt;&lt;a href="#4-aop-%e6%b3%a8%e8%a7%a3%e5%bf%85%e9%a1%bb%e6%9c%89%e4%b8%9a%e5%8a%a1%e5%90%ab%e4%b9%89" class="header-anchor"&gt;&lt;/a&gt;4. AOP 注解必须有&amp;quot;业务含义&amp;quot;

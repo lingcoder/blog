@@ -370,7 +370,8 @@
  B --&gt;|是| C[执行]
  B --&gt;|否| D[跳过]
  C --&gt; E[结束]
- D --&gt; E&lt;/pre&gt;&lt;p&gt;Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 &lt;code&gt;flowchart&lt;/code&gt;、&lt;code&gt;sequenceDiagram&lt;/code&gt;、&lt;code&gt;classDiagram&lt;/code&gt; 三种。&lt;/p&gt;
+ D --&gt; E&lt;/pre&gt;&lt;p&gt;Mermaid 支持的图类型很多——流程图、时序图、类图、ER 图、甘特图、状态机。日常写技术博客最常用的是 &lt;code&gt;flowchart&lt;/code&gt;、&lt;code&gt;sequenceDiagram&lt;/code&gt;、
+&lt;code&gt;classDiagram&lt;/code&gt; 三种。&lt;/p&gt;
 &lt;h3 id="时序图示例"&gt;&lt;a href="#%e6%97%b6%e5%ba%8f%e5%9b%be%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;时序图示例
 &lt;/h3&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;sequenceDiagram
  Client-&gt;&gt;Server: HTTP 请求
@@ -675,7 +676,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback 的（Mermaid、KaTeX 都行）。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Markdown 看似自由，但写技术博客时风格、扩展、可移植性都要管。能用通用语法就别上扩展，必须用扩展时优先选有 fallback
+的（Mermaid、KaTeX 都行）。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;留几条作为&amp;quot;硬性规范&amp;rdquo;：&lt;/p&gt;
@@ -686,4 +688,5 @@
 &lt;li&gt;&lt;strong&gt;标题层级不超过 4 级&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;任务列表 / 表格对齐符 / 链接相对路径——这些常用语法记牢&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;最后——&lt;strong&gt;Markdown 不是设计文档语言，是写作语言&lt;/strong&gt;。它的所有特性都为&amp;quot;专注内容&amp;quot;服务。当你开始想&amp;quot;这个怎么用 Markdown 表达&amp;quot;，先问一下&amp;quot;这个真的需要表达吗&amp;quot;。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;最后——&lt;strong&gt;Markdown 不是设计文档语言，是写作语言&lt;/strong&gt;。它的所有特性都为&amp;quot;专注内容&amp;quot;服务。当你开始想&amp;quot;这个怎么用 Markdown 表达&amp;quot;
+，先问一下&amp;quot;这个真的需要表达吗&amp;quot;。&lt;/p&gt;</description></item></channel></rss>

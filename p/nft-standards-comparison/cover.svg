@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A8D0E0"/>
-          <stop offset="1" stop-color="#D8E8C0"/>
-      </linearGradient>
-      <linearGradient id="cliff" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5C7240"/>
-          <stop offset="1" stop-color="#2E3D1A"/>
-    </linearGradient>
-      <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFFFFF"/>
-          <stop offset="1" stop-color="#7BB8C8"/>
-      </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A8D0E0"/>
+            <stop offset="1" stop-color="#D8E8C0"/>
+        </linearGradient>
+        <linearGradient id="cliff" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5C7240"/>
+            <stop offset="1" stop-color="#2E3D1A"/>
+        </linearGradient>
+        <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFFFFF"/>
+            <stop offset="1" stop-color="#7BB8C8"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="160" fill="url(#sky)"/>
 
@@ -71,13 +71,13 @@
     <g fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.5">
         <ellipse cx="600" cy="555" rx="200" ry="22" fill="none"/>
         <ellipse cx="600" cy="565" rx="150" ry="14"/>
-  </g>
+    </g>
 
     <!-- Foreground rocks -->
     <g fill="#1A2010">
         <ellipse cx="60" cy="600" rx="100" ry="14"/>
         <ellipse cx="1140" cy="605" rx="100" ry="14"/>
-  </g>
+    </g>
 
     <text x="60" y="618" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

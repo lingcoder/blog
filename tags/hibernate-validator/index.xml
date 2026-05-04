@@ -30,7 +30,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每个 Controller 都重复一遍，手工拼错误消息，堆得密不透风。这种代码&lt;strong&gt;不该出现在业务方法里&lt;/strong&gt;——校验是输入边界的责任，应该在数据进入业务方法前&lt;strong&gt;就被自动拦截&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每个 Controller 都重复一遍，手工拼错误消息，堆得密不透风。这种代码&lt;strong&gt;不该出现在业务方法里&lt;/strong&gt;——校验是输入边界的责任，应该在数据进入业务方法前
+&lt;strong&gt;就被自动拦截&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;Bean Validation（JSR-380）和它的事实标准实现 &lt;strong&gt;Hibernate Validator&lt;/strong&gt; 就是为这件事而生。今天我们把它的常见用法和&amp;quot;骚姿势&amp;quot;过一遍。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="基础常用注解一览"&gt;&lt;a href="#%e5%9f%ba%e7%a1%80%e5%b8%b8%e7%94%a8%e6%b3%a8%e8%a7%a3%e4%b8%80%e8%a7%88" class="header-anchor"&gt;&lt;/a&gt;基础：常用注解一览
@@ -503,7 +504,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;被 &lt;code&gt;@Validated&lt;/code&gt; 标注的类，方法参数上的约束会通过 AOP 自动校验，失败抛 &lt;code&gt;ConstraintViolationException&lt;/code&gt;。这意味着——&lt;strong&gt;业务方法可以放心地把&amp;quot;非法输入&amp;quot;假设成不可能发生&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;被 &lt;code&gt;@Validated&lt;/code&gt; 标注的类，方法参数上的约束会通过 AOP 自动校验，失败抛 &lt;code&gt;ConstraintViolationException&lt;/code&gt;。这意味着——*
+&lt;em&gt;业务方法可以放心地把&amp;quot;非法输入&amp;quot;假设成不可能发生&lt;/em&gt;*。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="骚姿势六错误消息国际化"&gt;&lt;a href="#%e9%aa%9a%e5%a7%bf%e5%8a%bf%e5%85%ad%e9%94%99%e8%af%af%e6%b6%88%e6%81%af%e5%9b%bd%e9%99%85%e5%8c%96" class="header-anchor"&gt;&lt;/a&gt;骚姿势六：错误消息国际化
 &lt;/h2&gt;&lt;p&gt;把 &lt;code&gt;message&lt;/code&gt; 写成 &lt;code&gt;{key}&lt;/code&gt; 形式，Hibernate Validator 会自动从 &lt;code&gt;messages.properties&lt;/code&gt; 读取：&lt;/p&gt;
@@ -583,14 +585,16 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;failFast&lt;/code&gt; 适合批量导入这种&amp;quot;快报快停&amp;quot;的场景；编程式 API 适合规则需要根据上下文动态切换。注解和编程式 API 完全可以混用——80% 用注解、20% 用 API 兜底。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;failFast&lt;/code&gt; 适合批量导入这种&amp;quot;快报快停&amp;quot;的场景；编程式 API 适合规则需要根据上下文动态切换。注解和编程式 API 完全可以混用——80%
+用注解、20% 用 API 兜底。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一些工程上的踩坑提醒"&gt;&lt;a href="#%e4%b8%80%e4%ba%9b%e5%b7%a5%e7%a8%8b%e4%b8%8a%e7%9a%84%e8%b8%a9%e5%9d%91%e6%8f%90%e9%86%92" class="header-anchor"&gt;&lt;/a&gt;一些工程上的踩坑提醒
 &lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;@NotEmpty&lt;/code&gt; ≠ &lt;code&gt;@NotBlank&lt;/code&gt;&lt;/strong&gt;——前者认空白字符串为有效，后者会 trim&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;@Valid&lt;/code&gt; 和 &lt;code&gt;@Validated&lt;/code&gt; 不要混用&lt;/strong&gt;——分组场景必须 &lt;code&gt;@Validated&lt;/code&gt;，嵌套校验只能 &lt;code&gt;@Valid&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;基本类型的 &lt;code&gt;@NotNull&lt;/code&gt; 是没用的&lt;/strong&gt;——&lt;code&gt;int&lt;/code&gt;、&lt;code&gt;long&lt;/code&gt; 这些永远有默认值；要校验&amp;quot;必填&amp;quot;就得用包装类型&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;code&gt;groups&lt;/code&gt; 默认值是 &lt;code&gt;Default.class&lt;/code&gt;&lt;/strong&gt;——不指定 groups 的注解只在不传分组时生效；你给某个注解加了 &lt;code&gt;groups = Update.class&lt;/code&gt;，新增校验时它就&lt;strong&gt;不参与&lt;/strong&gt;了&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;groups&lt;/code&gt; 默认值是 &lt;code&gt;Default.class&lt;/code&gt;&lt;/strong&gt;——不指定 groups 的注解只在不传分组时生效；你给某个注解加了
+&lt;code&gt;groups = Update.class&lt;/code&gt;，新增校验时它就&lt;strong&gt;不参与&lt;/strong&gt;了&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;错误消息别堆业务逻辑&lt;/strong&gt;——消息只描述&amp;quot;为什么不合法&amp;quot;，不要写&amp;quot;请联系管理员&amp;quot;这种和校验无关的话&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;DTO 复用别贪心&lt;/strong&gt;——三种以上场景共用一个 DTO 时，强烈建议拆开，分组校验维护成本会爆炸&lt;/li&gt;
 &lt;/ol&gt;

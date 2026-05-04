@@ -58,9 +58,11 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;写在 for 循环里 &lt;code&gt;f.get()&lt;/code&gt; 时——&lt;strong&gt;第一次 get 拿 A 的结果（3s）→ 然后 B 的（已经完成，立刻返回）→ 然后 C（再等 2s）→ D 已完成 → E 已完成&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;写在 for 循环里 &lt;code&gt;f.get()&lt;/code&gt; 时——&lt;strong&gt;第一次 get 拿 A 的结果（3s）→ 然后 B 的（已经完成，立刻返回）→ 然后 C（再等 2s）→ D 已完成 → E
+已完成&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;总耗时是 &lt;strong&gt;5s&lt;/strong&gt;（最慢的那个）。这没问题。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;但中间 3s ~ 5s 之间 D、E、B 都已经完成了，结果还在原地等 C&lt;/strong&gt;——如果&amp;quot;处理结果&amp;quot;也耗时（比如把结果写 DB），&lt;strong&gt;整个流水线被最慢的任务卡住&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;但中间 3s ~ 5s 之间 D、E、B 都已经完成了，结果还在原地等 C&lt;/strong&gt;——如果&amp;quot;处理结果&amp;quot;也耗时（比如把结果写 DB），**整个流水线被最慢的任务卡住
+**。&lt;/p&gt;
 &lt;p&gt;理想情况是：&lt;strong&gt;谁先完成，就先处理谁的结果&lt;/strong&gt;——而不是按提交顺序傻等。&lt;code&gt;ExecutorCompletionService&lt;/code&gt; 就是为这件事设计的。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一completionservice-是什么"&gt;&lt;a href="#%e4%b8%80completionservice-%e6%98%af%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;一、CompletionService 是什么
@@ -293,7 +295,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;thenApply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;v&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;futures&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;stream&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CompletableFuture&lt;/span&gt;&lt;span class="p"&gt;::&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;collect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;toList&lt;/span&gt;&lt;span class="p"&gt;()));&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;CompletableFuture&lt;/code&gt; 能做更多事——chain / combine / handle 异常 / async。&lt;strong&gt;但它默认是&amp;quot;等所有完成&amp;quot;或&amp;quot;等任意完成&amp;rdquo;&lt;/strong&gt;，没有&amp;quot;按完成顺序逐个处理&amp;quot;的内置语义。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;CompletableFuture&lt;/code&gt; 能做更多事——chain / combine / handle 异常 / async。&lt;strong&gt;但它默认是&amp;quot;等所有完成&amp;quot;或&amp;quot;等任意完成&amp;rdquo;&lt;/strong&gt;，没有&amp;quot;
+按完成顺序逐个处理&amp;quot;的内置语义。&lt;/p&gt;
 &lt;p&gt;要做到&amp;quot;按完成顺序处理&amp;quot;，CompletableFuture 需要这样：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -311,7 +314,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;futures&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;forEach&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;thenAccept&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;handle&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="p"&gt;)));&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;也行——但每个 future 完成时&lt;strong&gt;回调在 ForkJoinPool / 自定义池里执行&lt;/strong&gt;，handle 之间是并发的。如果 handle 本身要按顺序做（写 DB 不能并发），还是 &lt;code&gt;CompletionService&lt;/code&gt; 更适合。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;也行——但每个 future 完成时&lt;strong&gt;回调在 ForkJoinPool / 自定义池里执行&lt;/strong&gt;，handle 之间是并发的。如果 handle 本身要按顺序做（写 DB
+不能并发），还是 &lt;code&gt;CompletionService&lt;/code&gt; 更适合。&lt;/p&gt;
 &lt;table&gt;
  &lt;thead&gt;
  &lt;tr&gt;

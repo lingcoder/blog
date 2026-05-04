@@ -19,7 +19,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make deploy &lt;span class="c1"&gt;# 发布&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;新人入职第一天看一眼 Makefile，就知道这个项目能干啥、怎么开始。&lt;strong&gt;没有 Makefile 的项目，新人靠口口相传或翻 README，效率差得不是一点半点&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;新人入职第一天看一眼 Makefile，就知道这个项目能干啥、怎么开始。**没有 Makefile 的项目，新人靠口口相传或翻 README，效率差得不是一点半点
+**。&lt;/p&gt;
 &lt;p&gt;本文讲清楚 Makefile 的核心语法、现代项目里的写法、和那些容易踩的坑。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一makefile-的最小可用版"&gt;&lt;a href="#%e4%b8%80makefile-%e7%9a%84%e6%9c%80%e5%b0%8f%e5%8f%af%e7%94%a8%e7%89%88" class="header-anchor"&gt;&lt;/a&gt;一、Makefile 的最小可用版
@@ -107,7 +108,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;	go build -o bin/app src/main.go
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;意思——&amp;ldquo;build 这个目标依赖 main.go，要执行 &lt;code&gt;go build&lt;/code&gt;&amp;quot;。Make 会比较 main.go 的修改时间和 bin/app 的修改时间——&lt;strong&gt;如果 main.go 没变，重复 &lt;code&gt;make build&lt;/code&gt; 不会重新构建&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;意思——&amp;ldquo;build 这个目标依赖 main.go，要执行 &lt;code&gt;go build&lt;/code&gt;&amp;quot;。Make 会比较 main.go 的修改时间和 bin/app 的修改时间——&lt;strong&gt;如果 main.go
+没变，重复 &lt;code&gt;make build&lt;/code&gt; 不会重新构建&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="2-伪目标phony"&gt;&lt;a href="#2-%e4%bc%aa%e7%9b%ae%e6%a0%87phony" class="header-anchor"&gt;&lt;/a&gt;2. 伪目标（.PHONY）
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -121,7 +123,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;	rm -rf bin/
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;.PHONY&lt;/code&gt; 告诉 Make——&lt;strong&gt;这不是一个真实文件，永远执行&lt;/strong&gt;。否则如果项目目录里恰好有个文件叫 &lt;code&gt;clean&lt;/code&gt;，&lt;code&gt;make clean&lt;/code&gt; 会被识别成&amp;quot;clean 文件已存在，无需重做&amp;rdquo;——什么都不做。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;.PHONY&lt;/code&gt; 告诉 Make——&lt;strong&gt;这不是一个真实文件，永远执行&lt;/strong&gt;。否则如果项目目录里恰好有个文件叫 &lt;code&gt;clean&lt;/code&gt;，&lt;code&gt;make clean&lt;/code&gt; 会被识别成&amp;rdquo;
+clean 文件已存在，无需重做&amp;quot;——什么都不做。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;所有&amp;quot;动作型&amp;quot;目标都要加 &lt;code&gt;.PHONY&lt;/code&gt;&lt;/strong&gt;，这是工程纪律。&lt;/p&gt;
 &lt;h3 id="3-变量"&gt;&lt;a href="#3-%e5%8f%98%e9%87%8f" class="header-anchor"&gt;&lt;/a&gt;3. 变量
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -604,7 +607,8 @@
 &lt;p&gt;&lt;strong&gt;给一个建议：&lt;/strong&gt;&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;任何项目（不论语言）都该有 Makefile 作为『统一入口』&lt;/strong&gt;——前端项目可以同时保留 package.json scripts，但 &lt;code&gt;make dev&lt;/code&gt; / &lt;code&gt;make test&lt;/code&gt; / &lt;code&gt;make build&lt;/code&gt; 也应该能跑。这让&amp;quot;新人进项目&amp;quot;和&amp;quot;CI 配置&amp;quot;都极简。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;任何项目（不论语言）都该有 Makefile 作为『统一入口』&lt;/strong&gt;——前端项目可以同时保留 package.json scripts，但 &lt;code&gt;make dev&lt;/code&gt; /
+&lt;code&gt;make test&lt;/code&gt; / &lt;code&gt;make build&lt;/code&gt; 也应该能跑。这让&amp;quot;新人进项目&amp;quot;和&amp;quot;CI 配置&amp;quot;都极简。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;

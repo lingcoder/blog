@@ -681,7 +681,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**数据脱敏不该写在业务代码里——它属于『数据展示层』的事。用注解声明字段类型，用 Jackson 序列化器或 AOP 做执行——业务代码只关心业务。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程上几条铁律：&lt;/p&gt;

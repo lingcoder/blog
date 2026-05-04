@@ -32,7 +32,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;return&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nx"&gt;order&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="kc"&gt;nil&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每隔三行就 &lt;code&gt;if err != nil&lt;/code&gt;——很多新手吐槽&amp;quot;丑&amp;quot;。但写过几年 Go 你会发现：&lt;strong&gt;这种&amp;quot;显式错误传递&amp;quot;反而让错误处理路径极其清晰&lt;/strong&gt;——不像异常那样在调用栈里随机冒出。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每隔三行就 &lt;code&gt;if err != nil&lt;/code&gt;——很多新手吐槽&amp;quot;丑&amp;quot;。但写过几年 Go 你会发现：&lt;strong&gt;这种&amp;quot;显式错误传递&amp;quot;反而让错误处理路径极其清晰&lt;/strong&gt;
+——不像异常那样在调用栈里随机冒出。&lt;/p&gt;
 &lt;p&gt;但工程上要做对，几个细节：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;怎么区分错误类型&lt;/strong&gt;？err 都是 string 不利于业务判断&lt;/li&gt;
@@ -592,7 +593,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Go 错误处理的核心是『错误是值，要有类型、有上下文、可断言』——&lt;code&gt;if err != nil&lt;/code&gt; 看着烦，但带上 &lt;code&gt;errors.Is/As/Wrap&lt;/code&gt; 后是 Go 最干净的设计。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Go 错误处理的核心是『错误是值，要有类型、有上下文、可断言』——&lt;code&gt;if err != nil&lt;/code&gt; 看着烦，但带上 &lt;code&gt;errors.Is/As/Wrap&lt;/code&gt; 后是 Go
+最干净的设计。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程实战清单：&lt;/p&gt;

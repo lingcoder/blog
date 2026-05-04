@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFB870"/>
-          <stop offset="0.5" stop-color="#FFD8A8"/>
-          <stop offset="1" stop-color="#E8E0CC"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFB870"/>
+            <stop offset="0.5" stop-color="#FFD8A8"/>
+            <stop offset="1" stop-color="#E8E0CC"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -85,7 +85,7 @@
         <g transform="translate(1080,580)">
             <circle r="3.5" fill="#FFFFFF"/>
         </g>
-  </g>
+    </g>
 
     <text x="60" y="618" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFB37A"/>
-          <stop offset="0.5" stop-color="#FF6B5C"/>
-          <stop offset="1" stop-color="#9C2D5C"/>
-      </linearGradient>
-      <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5C2D58"/>
-          <stop offset="1" stop-color="#1F1638"/>
-    </linearGradient>
-      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stop-color="#FFE085" stop-opacity="0.65"/>
-          <stop offset="1" stop-color="#FFE085" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFB37A"/>
+            <stop offset="0.5" stop-color="#FF6B5C"/>
+            <stop offset="1" stop-color="#9C2D5C"/>
+        </linearGradient>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5C2D58"/>
+            <stop offset="1" stop-color="#1F1638"/>
+        </linearGradient>
+        <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#FFE085" stop-opacity="0.65"/>
+            <stop offset="1" stop-color="#FFE085" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -45,7 +45,7 @@
     <g fill="#0A0214">
         <ellipse cx="180" cy="225" rx="14" ry="22"/>
         <rect x="178" y="224" width="3" height="8"/>
-  </g>
+    </g>
 
     <!-- Sun reflection -->
     <g fill="#FFE3A0" opacity="0.55">
@@ -53,13 +53,13 @@
         <ellipse cx="600" cy="425" rx="60" ry="4"/>
         <ellipse cx="600" cy="450" rx="42" ry="3"/>
         <ellipse cx="600" cy="475" rx="28" ry="2"/>
-  </g>
+    </g>
 
     <!-- Wave hints -->
     <g fill="none" stroke="#FFE3A0" stroke-opacity="0.18" stroke-width="1.5">
         <path d="M 450 530 q 20 -3 40 0 t 40 0 t 40 0"/>
         <path d="M 700 555 q 20 -3 40 0 t 40 0 t 40 0"/>
-  </g>
+    </g>
 
     <!-- Birds -->
     <g fill="none" stroke="#3D1F4A" stroke-width="2" stroke-linecap="round">

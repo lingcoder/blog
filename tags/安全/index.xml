@@ -71,7 +71,8 @@
  &lt;/tr&gt;
  &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;code&gt;callcode&lt;/code&gt; 已经被官方标记为 deprecated（功能被 delegatecall 替代），实战中几乎不用。重点是 &lt;strong&gt;call / delegatecall / staticcall&lt;/strong&gt; 三种。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;callcode&lt;/code&gt; 已经被官方标记为 deprecated（功能被 delegatecall 替代），实战中几乎不用。重点是 &lt;strong&gt;call / delegatecall /
+staticcall&lt;/strong&gt; 三种。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="二call最朴素的远程调用"&gt;&lt;a href="#%e4%ba%8ccall%e6%9c%80%e6%9c%b4%e7%b4%a0%e7%9a%84%e8%bf%9c%e7%a8%8b%e8%b0%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;二、call：最朴素的&amp;quot;远程调用&amp;quot;
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -261,7 +262,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id="为什么重要"&gt;&lt;a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%87%8d%e8%a6%81" class="header-anchor"&gt;&lt;/a&gt;为什么重要
-&lt;/h3&gt;&lt;p&gt;没有 staticcall 之前，要&amp;quot;安全地查询别人的合约&amp;quot;非常麻烦——对方合约可能在 view 函数里偷偷改状态（虽然不该）。staticcall &lt;strong&gt;从 EVM 层面强制只读&lt;/strong&gt;——这是一个安全保障。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;没有 staticcall 之前，要&amp;quot;安全地查询别人的合约&amp;quot;非常麻烦——对方合约可能在 view 函数里偷偷改状态（虽然不该）。staticcall &lt;strong&gt;从
+EVM 层面强制只读&lt;/strong&gt;——这是一个安全保障。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="五callcode已弃用"&gt;&lt;a href="#%e4%ba%94callcode%e5%b7%b2%e5%bc%83%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;五、callcode：已弃用
 &lt;/h2&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -272,7 +274,8 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;callcode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;data&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// 已 deprecated
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;callcode 是 delegatecall 的早期版本，&lt;strong&gt;唯一区别是 msg.sender 不会保留为原始调用者&lt;/strong&gt;——这通常是个 bug 而不是 feature。所以 Solidity 0.5.0 之后 callcode 被禁用，全部用 delegatecall。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;callcode 是 delegatecall 的早期版本，&lt;strong&gt;唯一区别是 msg.sender 不会保留为原始调用者&lt;/strong&gt;——这通常是个 bug 而不是 feature。所以
+Solidity 0.5.0 之后 callcode 被禁用，全部用 delegatecall。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;新代码里永远不要写 callcode&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="六四种调用的决策树"&gt;&lt;a href="#%e5%85%ad%e5%9b%9b%e7%a7%8d%e8%b0%83%e7%94%a8%e7%9a%84%e5%86%b3%e7%ad%96%e6%a0%91" class="header-anchor"&gt;&lt;/a&gt;六、四种调用的&amp;quot;决策树&amp;quot;
@@ -329,7 +332,9 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-solidity" data-lang="solidity"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;recipient&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nb"&gt;transfer&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;amount&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// ❌ 现代不推荐
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;transfer&lt;/code&gt; 一直限制 2300 gas（这点从 Solidity 引入 transfer 时就如此）。真正让它频繁出问题的是 &lt;strong&gt;EIP-2929（Berlin 升级，2021-04）&lt;/strong&gt;——抬高了 SLOAD/CALL 等状态访问的 gas 成本，接收方 fallback 里很多原本能跑过的操作再也挤不进 2300 gas，导致 OOG。现代写法：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;transfer&lt;/code&gt; 一直限制 2300 gas（这点从 Solidity 引入 transfer 时就如此）。真正让它频繁出问题的是 &lt;strong&gt;EIP-2929（Berlin
+升级，2021-04）&lt;/strong&gt;——抬高了 SLOAD/CALL 等状态访问的 gas 成本，接收方 fallback 里很多原本能跑过的操作再也挤不进 2300 gas，导致
+OOG。现代写法：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -403,11 +408,15 @@
 &lt;hr&gt;
 &lt;h2 id="九几个真实案例"&gt;&lt;a href="#%e4%b9%9d%e5%87%a0%e4%b8%aa%e7%9c%9f%e5%ae%9e%e6%a1%88%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;九、几个真实案例
 &lt;/h2&gt;&lt;h3 id="案例-1parity-wallet-的-14-万-eth2017"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-1parity-wallet-%e7%9a%84-14-%e4%b8%87-eth2017" class="header-anchor"&gt;&lt;/a&gt;案例 1：Parity Wallet 的 14 万 ETH（2017）
-&lt;/h3&gt;&lt;p&gt;Parity 的多签钱包用 delegatecall 委托给一个共享 Library。攻击者发现可以&lt;strong&gt;直接调用 Library 的 init 函数把自己设成 owner&lt;/strong&gt;——再调用 kill 函数，整个 Library 自毁，所有依赖它的钱包永久无法转账。&lt;/p&gt;
-&lt;p&gt;教训：&lt;strong&gt;delegatecall 目标合约的所有 public/external 函数都要审慎设计&lt;/strong&gt;——public 入口被外部直接调用 + delegatecall 同时滥用，就是这种灾难。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Parity 的多签钱包用 delegatecall 委托给一个共享 Library。攻击者发现可以&lt;strong&gt;直接调用 Library 的 init 函数把自己设成 owner&lt;/strong&gt;
+——再调用 kill 函数，整个 Library 自毁，所有依赖它的钱包永久无法转账。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;delegatecall 目标合约的所有 public/external 函数都要审慎设计&lt;/strong&gt;——public 入口被外部直接调用 + delegatecall
+同时滥用，就是这种灾难。&lt;/p&gt;
 &lt;h3 id="案例-2audius-治理攻击2022"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-2audius-%e6%b2%bb%e7%90%86%e6%94%bb%e5%87%bb2022" class="header-anchor"&gt;&lt;/a&gt;案例 2：Audius 治理攻击（2022）
-&lt;/h3&gt;&lt;p&gt;Audius 协议合约存在 &lt;strong&gt;storage collision + initialize 未保护&lt;/strong&gt;双重 bug——存储槽布局错位让攻击者可以重新调用 &lt;code&gt;initialize&lt;/code&gt; 把自己设为治理 guardian，然后&lt;strong&gt;通过提交并自我通过的恶意治理提案&lt;/strong&gt;转走社区池里约 1860 万 AUDIO（约 600 万美元）。&lt;/p&gt;
-&lt;p&gt;教训：&lt;strong&gt;proxy 模式下，所有可升级合约的 initialize 必须加 &lt;code&gt;initializer&lt;/code&gt; 修饰符防止重复调用，并且基类与子类的 storage 布局必须严格对齐&lt;/strong&gt;——这两个 bug 任何一个不出，攻击都成立不了。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Audius 协议合约存在 &lt;strong&gt;storage collision + initialize 未保护&lt;/strong&gt;双重 bug——存储槽布局错位让攻击者可以重新调用 &lt;code&gt;initialize&lt;/code&gt;
+把自己设为治理 guardian，然后&lt;strong&gt;通过提交并自我通过的恶意治理提案&lt;/strong&gt;转走社区池里约 1860 万 AUDIO（约 600 万美元）。&lt;/p&gt;
+&lt;p&gt;教训：&lt;strong&gt;proxy 模式下，所有可升级合约的 initialize 必须加 &lt;code&gt;initializer&lt;/code&gt; 修饰符防止重复调用，并且基类与子类的 storage
+布局必须严格对齐&lt;/strong&gt;——这两个 bug 任何一个不出，攻击都成立不了。&lt;/p&gt;
 &lt;h3 id="案例-3the-dao2016"&gt;&lt;a href="#%e6%a1%88%e4%be%8b-3the-dao2016" class="header-anchor"&gt;&lt;/a&gt;案例 3：The DAO（2016）
 &lt;/h3&gt;&lt;p&gt;经典重入——&lt;code&gt;call&lt;/code&gt; 触发的外部调用导致重新进入合约，余额还没扣就被反复提款。&lt;/p&gt;
 &lt;p&gt;教训：&lt;strong&gt;调用外部前先改自己的状态&lt;/strong&gt;（Checks-Effects-Interactions 模式）。&lt;/p&gt;

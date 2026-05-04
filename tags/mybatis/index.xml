@@ -169,7 +169,8 @@
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案三mybatis-拦截器改写-sql"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e4%b8%89mybatis-%e6%8b%a6%e6%88%aa%e5%99%a8%e6%94%b9%e5%86%99-sql" class="header-anchor"&gt;&lt;/a&gt;方案三：MyBatis 拦截器改写 SQL
-&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL 解析器（Druid / JSqlParser）改写：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;更通用的姿势——&lt;strong&gt;直接在 SQL 执行前改写它&lt;/strong&gt;。MyBatis 的 &lt;code&gt;Interceptor&lt;/code&gt; 可以拦截 &lt;code&gt;Executor.query&lt;/code&gt;，拿到原始 SQL 后用 SQL
+解析器（Druid / JSqlParser）改写：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -258,7 +259,8 @@
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="方案四多租户场景的自动-tenant_id"&gt;&lt;a href="#%e6%96%b9%e6%a1%88%e5%9b%9b%e5%a4%9a%e7%a7%9f%e6%88%b7%e5%9c%ba%e6%99%af%e7%9a%84%e8%87%aa%e5%8a%a8-tenant_id" class="header-anchor"&gt;&lt;/a&gt;方案四：多租户场景的&amp;quot;自动 tenant_id&amp;quot;
-&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL 都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;如果你的数据权限本质就是&amp;quot;按租户隔离&amp;quot;，可以更简单——&lt;strong&gt;所有表都加一个 &lt;code&gt;tenant_id&lt;/code&gt; 字段，所有 SQL
+都自动带上 &lt;code&gt;WHERE tenant_id = ?&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;MyBatis-Plus 的实现方式：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -463,9 +465,11 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;6
 &lt;/span&gt;&lt;span class="lnt"&gt;7
 &lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; SELECT id, name, age, status FROM user
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;where&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;if&lt;/span&gt; &lt;span class="na"&gt;test=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;name != null&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;AND name = #{name}&lt;span class="nt"&gt;&amp;lt;/if&amp;gt;&lt;/span&gt;
@@ -475,7 +479,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/select&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。&lt;strong&gt;这种重复劳动催生了两个现象级开源项目&lt;/strong&gt;：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。**这种重复劳动催生了两个现象级开源项目
+**：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;通用 Mapper（tk.mybatis）&lt;/strong&gt;：刘增辉（abel533）2014 年开源&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;MyBatis-Plus&lt;/strong&gt;（MP）：苞米豆团队 2016 年开源&lt;/li&gt;
@@ -941,7 +946,8 @@
 
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;新项目优先 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧 &lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧
+&lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -1001,7 +1007,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用 Mapper。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用
+Mapper。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;不管选哪个，记住几个一致的工程纪律：&lt;/p&gt;

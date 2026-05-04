@@ -204,7 +204,8 @@
 &lt;li&gt;退出时主动释放&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id="3-数据中心-id"&gt;&lt;a href="#3-%e6%95%b0%e6%8d%ae%e4%b8%ad%e5%bf%83-id" class="header-anchor"&gt;&lt;/a&gt;3. 数据中心 ID
-&lt;/h3&gt;&lt;p&gt;如上所述 Twitter 原版就把 10 bit 拆成 5+5；如果你的部署只有一个 DC，可以把 datacenter 位让渡给 worker 位，扩展到 1024 台单 DC 节点。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;如上所述 Twitter 原版就把 10 bit 拆成 5+5；如果你的部署只有一个 DC，可以把 datacenter 位让渡给 worker 位，扩展到 1024 台单
+DC 节点。&lt;/p&gt;
 &lt;h3 id="4-序列号回滚"&gt;&lt;a href="#4-%e5%ba%8f%e5%88%97%e5%8f%b7%e5%9b%9e%e6%bb%9a" class="header-anchor"&gt;&lt;/a&gt;4. 序列号回滚
 &lt;/h3&gt;&lt;p&gt;朴素方案每毫秒序列号从 0 开始——&lt;strong&gt;容易在毫秒边界 burst 时浪费&lt;/strong&gt;。改进：&lt;/p&gt;
 &lt;ul&gt;

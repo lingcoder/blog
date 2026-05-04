@@ -42,7 +42,8 @@
 &lt;li&gt;JSON 让机器能 &lt;strong&gt;读&lt;/strong&gt; 这段数据&lt;/li&gt;
 &lt;li&gt;JSON-LD 让机器能 &lt;strong&gt;理解&lt;/strong&gt; 这段数据是关于一个 &lt;code&gt;Person&lt;/code&gt; 的&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;理解这个差别，是看懂&amp;quot;语义网&amp;quot;、&amp;ldquo;结构化数据 SEO&amp;rdquo;、&amp;ldquo;知识图谱&amp;quot;为什么需要 JSON-LD 的关键。本文把 JSON 和 JSON-LD 的差异、JSON-LD 的本质、它的真实落地场景讲清楚。&lt;/p&gt;
+&lt;p&gt;理解这个差别，是看懂&amp;quot;语义网&amp;quot;、&amp;ldquo;结构化数据 SEO&amp;rdquo;、&amp;ldquo;知识图谱&amp;quot;为什么需要 JSON-LD 的关键。本文把 JSON 和 JSON-LD 的差异、JSON-LD
+的本质、它的真实落地场景讲清楚。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一json-缺了什么"&gt;&lt;a href="#%e4%b8%80json-%e7%bc%ba%e4%ba%86%e4%bb%80%e4%b9%88" class="header-anchor"&gt;&lt;/a&gt;一、JSON 缺了什么
 &lt;/h2&gt;&lt;p&gt;JSON 是非常成功的数据交换格式——简单、轻量、跨语言。但它有一个根本缺陷：&lt;/p&gt;
@@ -94,7 +95,8 @@
 &lt;li&gt;&lt;code&gt;@type: Person&lt;/code&gt; —— 告诉机器：&amp;ldquo;本对象是一个 Schema.org 定义的 Person&amp;rdquo;&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;name&lt;/code&gt;、&lt;code&gt;birthDate&lt;/code&gt; —— 这些字段在 Schema.org 中有明确定义&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;任何机器（搜索引擎、抓取器、知识图谱）拿到这段数据后，&lt;strong&gt;只要它支持 Schema.org，就立刻知道这是一个人，name 是人的姓名，birthDate 是人的出生日期&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;任何机器（搜索引擎、抓取器、知识图谱）拿到这段数据后，&lt;strong&gt;只要它支持 Schema.org，就立刻知道这是一个人，name 是人的姓名，birthDate
+是人的出生日期&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;不需要事先约定。不需要写文档。&lt;strong&gt;语义来自 URI&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="三json-ld-的核心机制"&gt;&lt;a href="#%e4%b8%89json-ld-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%9c%ba%e5%88%b6" class="header-anchor"&gt;&lt;/a&gt;三、JSON-LD 的核心机制
@@ -410,7 +412,8 @@
 &lt;/h3&gt;&lt;p&gt;JSON-LD 字段嵌套深、重复多——&lt;strong&gt;代码生成&lt;/strong&gt;，别手写。Java 用 &lt;code&gt;org.schema.javasdk&lt;/code&gt;，Node 用 &lt;code&gt;schema-dts&lt;/code&gt;，能避免拼字段错。&lt;/p&gt;
 &lt;h3 id="2-验证工具"&gt;&lt;a href="#2-%e9%aa%8c%e8%af%81%e5%b7%a5%e5%85%b7" class="header-anchor"&gt;&lt;/a&gt;2. 验证工具
 &lt;/h3&gt;&lt;p&gt;写完用 &lt;a class="link" href="https://search.google.com/test/rich-results" target="_blank" rel="noopener"
- &gt;Google Rich Results Test&lt;/a&gt; 验证——&lt;strong&gt;不验证就上线，搜索引擎抓不到富片段&lt;/strong&gt;。&lt;/p&gt;
+ &gt;Google Rich Results Test&lt;/a&gt; 验证——**不验证就上线，搜索引擎抓不到富片段
+**。&lt;/p&gt;
 &lt;h3 id="3-context-缓存"&gt;&lt;a href="#3-context-%e7%bc%93%e5%ad%98" class="header-anchor"&gt;&lt;/a&gt;3. context 缓存
 &lt;/h3&gt;&lt;p&gt;&lt;code&gt;https://schema.org&lt;/code&gt; 是个真实的 URL，机器抓数据时会去访问。生产场景把 context 缓存在本地，避免延迟。&lt;/p&gt;
 &lt;h3 id="4-不要塞业务字段"&gt;&lt;a href="#4-%e4%b8%8d%e8%a6%81%e5%a1%9e%e4%b8%9a%e5%8a%a1%e5%ad%97%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;4. 不要塞业务字段
@@ -448,4 +451,5 @@
 &lt;li&gt;&lt;strong&gt;用工具生成，用 Google Rich Results Test 验证&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;内部系统不必折腾&lt;/strong&gt;——纯 JSON 就够&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;理解 JSON-LD 不是为了在每个项目里都用它，而是&lt;strong&gt;理解&amp;quot;语义网&amp;quot;为什么重要&lt;/strong&gt;——当你下次要让机器&amp;quot;看懂&amp;quot;数据而不只是&amp;quot;读懂&amp;quot;时，知道有这件武器可用。&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;理解 JSON-LD 不是为了在每个项目里都用它，而是&lt;strong&gt;理解&amp;quot;语义网&amp;quot;为什么重要&lt;/strong&gt;——当你下次要让机器&amp;quot;看懂&amp;quot;数据而不只是&amp;quot;读懂&amp;quot;
+时，知道有这件武器可用。&lt;/p&gt;</description></item></channel></rss>

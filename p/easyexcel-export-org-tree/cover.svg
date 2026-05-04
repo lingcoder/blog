@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A0C4DC"/>
-          <stop offset="1" stop-color="#E8DAB0"/>
-      </linearGradient>
-      <linearGradient id="river" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#7CA8C0"/>
-          <stop offset="0.5" stop-color="#A8D0E0"/>
-          <stop offset="1" stop-color="#5C8AA8"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A0C4DC"/>
+            <stop offset="1" stop-color="#E8DAB0"/>
+        </linearGradient>
+        <linearGradient id="river" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#7CA8C0"/>
+            <stop offset="0.5" stop-color="#A8D0E0"/>
+            <stop offset="1" stop-color="#5C8AA8"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="280" fill="url(#sky)"/>
 
@@ -62,7 +62,7 @@
     <g fill="#1A2810">
         <ellipse cx="120" cy="600" rx="80" ry="12"/>
         <ellipse cx="1080" cy="610" rx="80" ry="12"/>
-  </g>
+    </g>
 
     <!-- Pines foreground (frame) -->
     <g fill="#0F1F0A">

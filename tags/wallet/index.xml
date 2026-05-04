@@ -129,8 +129,11 @@
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2255" target="_blank" rel="noopener"
  &gt;EIP-2255&lt;/a&gt;: 钱包权限管理，提升钱包对外接口权限的细粒度管理。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2335" target="_blank" rel="noopener"
- &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS 私钥加密存储；普通 EOA 钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
- &gt;Web3 Secret Storage&lt;/a&gt;（业内俗称 Keystore V3）。&lt;/li&gt;
+ &gt;EIP-2335&lt;/a&gt;: BLS12-381 Keystore，专用于以太坊 2.0（信标链）validator 的 BLS
+私钥加密存储；普通 EOA
+钱包使用的是 &lt;a class="link" href="https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/" target="_blank" rel="noopener"
+ &gt;Web3 Secret Storage&lt;/a&gt;
+（业内俗称 Keystore V3）。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-2612" target="_blank" rel="noopener"
  &gt;EIP-2612&lt;/a&gt;: ERC20 代币 Permit 功能，钱包可通过授权签名直接操作approve功能，提升用户体验。&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://eips.ethereum.org/EIPS/eip-3085" target="_blank" rel="noopener"
@@ -343,7 +346,8 @@
 &lt;h3 id="36-安全最佳实践跨生态"&gt;&lt;a href="#36-%e5%ae%89%e5%85%a8%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5%e8%b7%a8%e7%94%9f%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;3.6 安全最佳实践（跨生态）
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a class="link" href="https://consensysdiligence.github.io/smart-contract-best-practices/" target="_blank" rel="noopener"
- &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;（ConsenSys，事实标准）&lt;/li&gt;
+ &gt;Ethereum Smart Contract Best Practices&lt;/a&gt;
+（ConsenSys，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://docs.anza.xyz/" target="_blank" rel="noopener"
  &gt;Solana Security Best Practices&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://swcregistry.io/" target="_blank" rel="noopener"
@@ -707,7 +711,8 @@ DeepLink&lt;/li&gt;
 &lt;h4 id="web3-开发包"&gt;&lt;a href="#web3-%e5%bc%80%e5%8f%91%e5%8c%85" class="header-anchor"&gt;&lt;/a&gt;Web3 开发包
 &lt;/h4&gt;
  &lt;blockquote&gt;
- &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在 Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
+ &lt;p&gt;⚠️ pub.dev 上 Web3 相关包名变化频繁——下面只列出 2025 年仍在维护、可在 pub.dev 上确实存在的包。WalletConnect v2 在
+Flutter 生态实际上由 &lt;strong&gt;Reown&lt;/strong&gt;（前 WalletConnect 团队）维护，是当前主流入口。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;ul&gt;
@@ -730,7 +735,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/reown_core" target="_blank" rel="noopener"
  &gt;reown_core&lt;/a&gt;: Reown 协议核心&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/walletconnect_flutter_v2" target="_blank" rel="noopener"
- &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被 reown_* 取代，新项目用 reown）&lt;/li&gt;
+ &gt;walletconnect_flutter_v2&lt;/a&gt;: 旧版 WalletConnect v2 包（已被
+reown_* 取代，新项目用 reown）&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -739,9 +745,11 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/solana" target="_blank" rel="noopener"
  &gt;solana&lt;/a&gt; / &lt;a class="link" href="https://pub.dev/packages/solana_web3" target="_blank" rel="noopener"
  &gt;solana_web3&lt;/a&gt;: Solana 开发库&lt;/li&gt;
-&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC + 自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
+&lt;li&gt;TRON / Bitcoin 在 pub.dev 上没有事实上的主流 Dart SDK，常见做法是通过节点 RPC +
+自实现签名（参考 &lt;a class="link" href="https://pub.dev/packages/bip32" target="_blank" rel="noopener"
  &gt;bip32&lt;/a&gt; + &lt;a class="link" href="https://pub.dev/packages/pointycastle" target="_blank" rel="noopener"
- &gt;pointycastle&lt;/a&gt;），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
+ &gt;pointycastle&lt;/a&gt;
+），或通过 &lt;code&gt;flutter_rust_bridge&lt;/code&gt; / &lt;code&gt;wallet_core_bindings&lt;/code&gt; 复用 Rust/C++ 实现&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -766,7 +774,8 @@ DeepLink&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/local_auth" target="_blank" rel="noopener"
  &gt;local_auth&lt;/a&gt;: 生物认证（指纹 / 面容，官方包，事实标准）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/flutter_secure_storage" target="_blank" rel="noopener"
- &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore 安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
+ &gt;flutter_secure_storage&lt;/a&gt;: 平台 keychain / keystore
+安全存储（钱包密钥、助记词推荐用这个）&lt;/li&gt;
 &lt;li&gt;&lt;a class="link" href="https://pub.dev/packages/biometric_storage" target="_blank" rel="noopener"
  &gt;biometric_storage&lt;/a&gt;: 生物识别保护下的安全存储&lt;/li&gt;
 &lt;/ul&gt;
@@ -932,7 +941,8 @@ DeepLink&lt;/li&gt;
 &lt;h2 id="6-钱包工程相关术语"&gt;&lt;a href="#6-%e9%92%b1%e5%8c%85%e5%b7%a5%e7%a8%8b%e7%9b%b8%e5%85%b3%e6%9c%af%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;6. 钱包工程相关术语
 &lt;/h2&gt;
  &lt;blockquote&gt;
- &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与 Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
+ &lt;p&gt;通用区块链概念（区块链、共识机制、智能合约、DeFi、NFT、Layer2、分片等）这里不再罗列——可以参考各家公开的术语表。本节只保留&lt;strong&gt;与
+Flutter 钱包工程直接相关&lt;/strong&gt;的术语，其他都假定读者已经熟悉。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h3 id="61-钱包形态"&gt;&lt;a href="#61-%e9%92%b1%e5%8c%85%e5%bd%a2%e6%80%81" class="header-anchor"&gt;&lt;/a&gt;6.1 钱包形态

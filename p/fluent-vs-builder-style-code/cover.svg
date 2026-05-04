@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <radialGradient id="canopy" cx="0.5" cy="0.5" r="0.65">
-          <stop offset="0" stop-color="#FFD9E5"/>
-          <stop offset="0.5" stop-color="#FF9CC0"/>
-          <stop offset="1" stop-color="#C26890"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <radialGradient id="canopy" cx="0.5" cy="0.5" r="0.65">
+            <stop offset="0" stop-color="#FFD9E5"/>
+            <stop offset="0.5" stop-color="#FF9CC0"/>
+            <stop offset="1" stop-color="#C26890"/>
+        </radialGradient>
+    </defs>
 
     <!-- Background pink -->
     <rect width="1200" height="630" fill="url(#canopy)"/>
@@ -36,7 +36,7 @@
         <ellipse cx="830" cy="375" rx="70" ry="60" fill="#FFC2D5"/>
         <ellipse cx="755" cy="380" rx="50" ry="45" fill="#FF9CC0"/>
         <ellipse cx="700" cy="388" rx="35" ry="28" fill="#FFD9E5"/>
-  </g>
+    </g>
 
     <!-- Trunks left side -->
     <g stroke="#5C3A40" stroke-width="6" fill="none">
@@ -71,7 +71,7 @@
         <circle cx="960" cy="290" r="2.5"/>
         <circle cx="380" cy="450" r="2"/>
         <circle cx="800" cy="440" r="2.5"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

@@ -1,25 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0A0F2E"/>
-          <stop offset="1" stop-color="#1F2548"/>
-      </linearGradient>
-      <linearGradient id="aurora1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7BFFB0" stop-opacity="0"/>
-          <stop offset="0.4" stop-color="#7BFFB0" stop-opacity="0.55"/>
-          <stop offset="0.8" stop-color="#3DAA85" stop-opacity="0.4"/>
-          <stop offset="1" stop-color="#3DAA85" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="aurora2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A55ED8" stop-opacity="0"/>
-          <stop offset="0.45" stop-color="#A55ED8" stop-opacity="0.4"/>
-          <stop offset="1" stop-color="#A55ED8" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0A1A30"/>
-          <stop offset="1" stop-color="#000A1A"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0A0F2E"/>
+            <stop offset="1" stop-color="#1F2548"/>
+        </linearGradient>
+        <linearGradient id="aurora1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7BFFB0" stop-opacity="0"/>
+            <stop offset="0.4" stop-color="#7BFFB0" stop-opacity="0.55"/>
+            <stop offset="0.8" stop-color="#3DAA85" stop-opacity="0.4"/>
+            <stop offset="1" stop-color="#3DAA85" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="aurora2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A55ED8" stop-opacity="0"/>
+            <stop offset="0.45" stop-color="#A55ED8" stop-opacity="0.4"/>
+            <stop offset="1" stop-color="#A55ED8" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0A1A30"/>
+            <stop offset="1" stop-color="#000A1A"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="630" fill="url(#nightSky)"/>
 
@@ -75,7 +75,7 @@
     <g transform="translate(0,1020) scale(1,-1)" opacity="0.4">
         <path d="M 0 480 L 200 320 L 380 420 L 580 300 L 780 410 L 980 340 L 1200 420 L 1200 510 L 0 510 Z"
               fill="#3D4A5A"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#7BFFB0" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"
           letter-spacing="2">lingcoder.com

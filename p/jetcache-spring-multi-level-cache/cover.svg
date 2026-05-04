@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#D8E0A8"/>
-          <stop offset="0.45" stop-color="#A8C470"/>
-          <stop offset="1" stop-color="#5C7E40"/>
-    </linearGradient>
-      <radialGradient id="lightBeam" cx="0.5" cy="0" r="0.7">
-          <stop offset="0" stop-color="#FFFCE0" stop-opacity="0.55"/>
-          <stop offset="1" stop-color="#FFFCE0" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D8E0A8"/>
+            <stop offset="0.45" stop-color="#A8C470"/>
+            <stop offset="1" stop-color="#5C7E40"/>
+        </linearGradient>
+        <radialGradient id="lightBeam" cx="0.5" cy="0" r="0.7">
+            <stop offset="0" stop-color="#FFFCE0" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#FFFCE0" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
-  <rect width="1200" height="630" fill="url(#bg)"/>
+    <rect width="1200" height="630" fill="url(#bg)"/>
 
     <!-- Light beams from above -->
     <ellipse cx="600" cy="0" rx="500" ry="500" fill="url(#lightBeam)"/>
@@ -43,7 +43,7 @@
         <!-- bamboo 1 -->
         <g stroke="#3A5C2A" stroke-width="14" fill="none">
             <line x1="180" y1="0" x2="180" y2="630"/>
-    </g>
+        </g>
         <!-- nodes -->
         <g fill="#1F3A18">
             <ellipse cx="180" cy="80" rx="9" ry="3"/>
@@ -51,18 +51,18 @@
             <ellipse cx="180" cy="320" rx="9" ry="3"/>
             <ellipse cx="180" cy="440" rx="9" ry="3"/>
             <ellipse cx="180" cy="560" rx="9" ry="3"/>
-    </g>
+        </g>
 
         <!-- bamboo 2 -->
         <g stroke="#3A5C2A" stroke-width="16" fill="none">
             <line x1="380" y1="0" x2="380" y2="630"/>
-    </g>
+        </g>
         <g fill="#1F3A18">
             <ellipse cx="380" cy="100" rx="10" ry="3.5"/>
             <ellipse cx="380" cy="240" rx="10" ry="3.5"/>
             <ellipse cx="380" cy="380" rx="10" ry="3.5"/>
             <ellipse cx="380" cy="520" rx="10" ry="3.5"/>
-    </g>
+        </g>
 
         <!-- bamboo 3 -->
         <g stroke="#3A5C2A" stroke-width="14" fill="none">
@@ -74,18 +74,18 @@
             <ellipse cx="600" cy="300" rx="9" ry="3"/>
             <ellipse cx="600" cy="420" rx="9" ry="3"/>
             <ellipse cx="600" cy="540" rx="9" ry="3"/>
-    </g>
+        </g>
 
         <!-- bamboo 4 -->
         <g stroke="#3A5C2A" stroke-width="18" fill="none">
             <line x1="820" y1="0" x2="820" y2="630"/>
-    </g>
+        </g>
         <g fill="#1F3A18">
             <ellipse cx="820" cy="120" rx="11" ry="4"/>
             <ellipse cx="820" cy="270" rx="11" ry="4"/>
             <ellipse cx="820" cy="420" rx="11" ry="4"/>
             <ellipse cx="820" cy="570" rx="11" ry="4"/>
-    </g>
+        </g>
 
         <!-- bamboo 5 -->
         <g stroke="#3A5C2A" stroke-width="14" fill="none">
@@ -97,7 +97,7 @@
             <ellipse cx="1020" cy="360" rx="9" ry="3"/>
             <ellipse cx="1020" cy="500" rx="9" ry="3"/>
         </g>
-  </g>
+    </g>
 
     <!-- Bamboo leaves -->
     <g fill="#2E4A1A">

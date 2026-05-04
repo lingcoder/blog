@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0B1538"/>
-          <stop offset="0.6" stop-color="#1B2A5C"/>
-          <stop offset="1" stop-color="#3B4D8A"/>
-    </linearGradient>
-      <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stop-color="#F5E6C8" stop-opacity="0.5"/>
-          <stop offset="1" stop-color="#F5E6C8" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0B1538"/>
+            <stop offset="0.6" stop-color="#1B2A5C"/>
+            <stop offset="1" stop-color="#3B4D8A"/>
+        </linearGradient>
+        <radialGradient id="moonGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#F5E6C8" stop-opacity="0.5"/>
+            <stop offset="1" stop-color="#F5E6C8" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <!-- Night sky -->
     <rect width="1200" height="450" fill="url(#nightSky)"/>
@@ -65,7 +65,7 @@
         <rect x="978" y="435" width="4" height="15"/>
         <rect x="1018" y="450" width="4" height="15"/>
         <rect x="1058" y="440" width="4" height="15"/>
-  </g>
+    </g>
 
     <!-- Footer -->
     <text x="60" y="600" fill="#F5E6C8" font-family="-apple-system, sans-serif" font-size="14" opacity="0.7"

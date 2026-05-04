@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#7CA8C8"/>
-          <stop offset="1" stop-color="#E0EAF0"/>
-      </linearGradient>
-      <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A8C8D8"/>
-          <stop offset="1" stop-color="#5C7E96"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7CA8C8"/>
+            <stop offset="1" stop-color="#E0EAF0"/>
+        </linearGradient>
+        <linearGradient id="ice" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A8C8D8"/>
+            <stop offset="1" stop-color="#5C7E96"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="320" fill="url(#sky)"/>
 
@@ -39,14 +39,14 @@
     <g transform="translate(0,640) scale(1,-1)" opacity="0.45">
         <path d="M 0 320 L 180 130 L 360 240 L 540 100 L 720 220 L 900 90 L 1080 220 L 1200 180 L 1200 320 Z"
               fill="#FFFFFF"/>
-  </g>
+    </g>
 
     <!-- Ice cracks -->
     <g fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.5">
         <path d="M 100 480 L 250 470 L 400 490 L 550 475"/>
         <path d="M 600 520 L 750 510 L 900 525 L 1100 515"/>
         <path d="M 200 580 L 350 575 L 500 585 L 700 580"/>
-  </g>
+    </g>
 
     <!-- Snow patches -->
     <g fill="#FFFFFF" opacity="0.85">
@@ -54,14 +54,14 @@
         <ellipse cx="500" cy="540" rx="60" ry="5"/>
         <ellipse cx="900" cy="560" rx="100" ry="7"/>
         <ellipse cx="350" cy="600" rx="90" ry="6"/>
-  </g>
+    </g>
 
     <!-- Tiny pine trees on shore -->
     <g fill="#1F4028">
         <polygon points="40,560 30,520 50,520 36,495 54,495 40,470"/>
         <polygon points="80,565 70,525 90,525 76,500 94,500 80,475"/>
         <polygon points="1130,560 1120,520 1140,520 1126,495 1144,495 1130,470"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#3A5A6E" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

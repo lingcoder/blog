@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#5DAEDF"/>
-          <stop offset="1" stop-color="#C8E0F0"/>
-      </linearGradient>
-      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#3FAACC"/>
-          <stop offset="1" stop-color="#1F5A7C"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5DAEDF"/>
+            <stop offset="1" stop-color="#C8E0F0"/>
+        </linearGradient>
+        <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3FAACC"/>
+            <stop offset="1" stop-color="#1F5A7C"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="280" fill="url(#sky)"/>
 
@@ -29,7 +29,7 @@
         <polygon points="180,90 230,200 130,200"/>
         <polygon points="520,80 570,200 470,200"/>
         <polygon points="880,100 925,200 835,200"/>
-  </g>
+    </g>
 
     <!-- Mid mountain -->
     <path d="M 0 280 L 130 180 L 280 250 L 460 160 L 640 240 L 820 180 L 1000 240 L 1170 200 L 1200 230 L 1200 290 L 0 290 Z"
@@ -48,7 +48,7 @@
         <polygon points="985,315 970,260 1000,260 980,230 1010,230 985,200"/>
         <polygon points="1060,310 1045,255 1075,255 1055,225 1085,225 1060,195"/>
         <polygon points="1135,315 1120,260 1150,260 1130,230 1160,230 1135,200"/>
-  </g>
+    </g>
 
     <!-- Lake -->
     <rect y="290" width="1200" height="340" fill="url(#lake)"/>
@@ -57,7 +57,7 @@
     <g transform="translate(0,580) scale(1,-1)" opacity="0.55">
         <path d="M 0 280 L 180 90 L 350 200 L 520 80 L 700 190 L 880 100 L 1080 200 L 1200 170 L 1200 290 L 0 290 Z"
               fill="#FFFFFF"/>
-  </g>
+    </g>
 
     <!-- Shore rocks -->
     <g fill="#1F2A30">

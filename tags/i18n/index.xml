@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>I18n on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/i18n/</link><description>Recent content in I18n on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 19 Sep 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/i18n/index.xml" rel="self" type="application/rss+xml"/><item><title>数据字典表与菜单的国际化方案</title><link>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</link><pubDate>Fri, 19 Sep 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/</guid><description>&lt;img src="https://www.lingcoder.com/p/i18n-for-dict-and-menu-tables/cover.svg" alt="Featured image of post 数据字典表与菜单的国际化方案" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;国内系统做国际化常常掉进一个误区——&lt;strong&gt;以为前端搞个 i18n 文件就完事了&lt;/strong&gt;。但当业务真要支持多语言（出海、跨境电商、海外 SaaS）时，你会发现：&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;国内系统做国际化常常掉进一个误区——&lt;strong&gt;以为前端搞个 i18n 文件就完事了&lt;/strong&gt;。但当业务真要支持多语言（出海、跨境电商、海外
+SaaS）时，你会发现：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;错误消息从后端来——前端 i18n 没用&lt;/li&gt;
 &lt;li&gt;数据字典（订单状态、产品类型）从 DB 来——前端写死翻译会脱节&lt;/li&gt;
@@ -520,7 +521,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;后台系统的国际化不是『前端 i18n 文件』那么简单——数据字典、菜单、错误消息这些&amp;quot;动态文本&amp;quot;需要一套完整的『DB + 缓存 + 标准协议』方案。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;后台系统的国际化不是『前端 i18n 文件』那么简单——数据字典、菜单、错误消息这些&amp;quot;动态文本&amp;quot;需要一套完整的『DB + 缓存 +
+标准协议』方案。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

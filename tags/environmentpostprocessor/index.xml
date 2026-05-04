@@ -175,7 +175,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;业务代码完全不知道密码加密过——这是它最干净的姿势。&lt;/p&gt;
 &lt;h3 id="场景-2从配置中心拉配置"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-2%e4%bb%8e%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83%e6%8b%89%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;场景 2：从配置中心拉配置
-&lt;/h3&gt;&lt;p&gt;虽然 Spring Cloud Config / Nacos / Apollo 都有自己的 starter，但&lt;strong&gt;它们底层就是基于 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; / &lt;code&gt;BootstrapContext&lt;/code&gt; 实现的&lt;/strong&gt;。理解这个扩展点，你就能看懂这些组件的源码逻辑。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;虽然 Spring Cloud Config / Nacos / Apollo 都有自己的 starter，但*
+&lt;em&gt;它们底层就是基于 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; / &lt;code&gt;BootstrapContext&lt;/code&gt; 实现的&lt;/em&gt;*。理解这个扩展点，你就能看懂这些组件的源码逻辑。&lt;/p&gt;
 &lt;p&gt;例如自己写一个最小的&amp;quot;远程配置中心客户端&amp;quot;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -203,7 +204,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;addLast&lt;/code&gt; 的语义是&amp;quot;远程配置优先级低于本地&amp;quot;——本地能覆盖远程；反过来 &lt;code&gt;addFirst&lt;/code&gt; 是&amp;quot;远程覆盖本地&amp;quot;。&lt;strong&gt;位置选择是核心设计决策&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;addLast&lt;/code&gt; 的语义是&amp;quot;远程配置优先级低于本地&amp;quot;——本地能覆盖远程；反过来 &lt;code&gt;addFirst&lt;/code&gt; 是&amp;quot;远程覆盖本地&amp;quot;。**位置选择是核心设计决策
+**。&lt;/p&gt;
 &lt;h3 id="场景-3开发测试自动开启功能开关"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-3%e5%bc%80%e5%8f%91%e6%b5%8b%e8%af%95%e8%87%aa%e5%8a%a8%e5%bc%80%e5%90%af%e5%8a%9f%e8%83%bd%e5%bc%80%e5%85%b3" class="header-anchor"&gt;&lt;/a&gt;场景 3：开发/测试自动开启功能开关
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -241,7 +243,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;业务代码都不需要看到这些开关，开发模式自动开启。&lt;/p&gt;
 &lt;h3 id="场景-4从环境变量适配老配置-key-名"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-4%e4%bb%8e%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e9%80%82%e9%85%8d%e8%80%81%e9%85%8d%e7%bd%ae-key-%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;场景 4：从环境变量适配老配置 key 名
-&lt;/h3&gt;&lt;p&gt;公司迁移老系统时，老的 K8s ConfigMap 用的是 &lt;code&gt;DB_USER&lt;/code&gt;、&lt;code&gt;DB_PASSWORD&lt;/code&gt;，新的 Spring Boot 期望 &lt;code&gt;spring.datasource.username&lt;/code&gt;、&lt;code&gt;spring.datasource.password&lt;/code&gt;：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;公司迁移老系统时，老的 K8s ConfigMap 用的是 &lt;code&gt;DB_USER&lt;/code&gt;、&lt;code&gt;DB_PASSWORD&lt;/code&gt;，新的 Spring Boot 期望 &lt;code&gt;spring.datasource.username&lt;/code&gt;、
+&lt;code&gt;spring.datasource.password&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -346,7 +349,8 @@
 &lt;/ul&gt;
 &lt;p&gt;写错位置会导致&amp;quot;为什么我设置了配置不生效？&amp;ldquo;这种排查噩梦。&lt;/p&gt;
 &lt;h3 id="3-不要在-processor-里依赖-spring-bean"&gt;&lt;a href="#3-%e4%b8%8d%e8%a6%81%e5%9c%a8-processor-%e9%87%8c%e4%be%9d%e8%b5%96-spring-bean" class="header-anchor"&gt;&lt;/a&gt;3. 不要在 Processor 里依赖 Spring Bean
-&lt;/h3&gt;&lt;p&gt;EnvironmentPostProcessor 触发时&lt;strong&gt;整个 ApplicationContext 还没建好&lt;/strong&gt;——你不能 &lt;code&gt;@Autowired&lt;/code&gt;，不能用 Spring Bean。需要的工具类要么自己 &lt;code&gt;new&lt;/code&gt;，要么用静态工厂方法。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;EnvironmentPostProcessor 触发时&lt;strong&gt;整个 ApplicationContext 还没建好&lt;/strong&gt;——你不能 &lt;code&gt;@Autowired&lt;/code&gt;，不能用 Spring Bean。需要的工具类要么自己
+&lt;code&gt;new&lt;/code&gt;，要么用静态工厂方法。&lt;/p&gt;
 &lt;h3 id="4-异常处理"&gt;&lt;a href="#4-%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;4. 异常处理
 &lt;/h3&gt;&lt;p&gt;Processor 里抛异常会让整个应用启动失败。像&amp;quot;远程配置中心拉取失败&amp;quot;这种&lt;strong&gt;外部依赖应该有 fallback 行为&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -415,7 +419,8 @@
 &lt;/h2&gt;&lt;p&gt;一句话总结：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;&lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; 是 Spring Boot 配置体系的最后一道前置插入点——业务代码里看到的每一个 &lt;code&gt;@Value&lt;/code&gt;，最终值都可以由它在最早期被改写。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;&lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; 是 Spring Boot 配置体系的最后一道前置插入点——业务代码里看到的每一个 &lt;code&gt;@Value&lt;/code&gt;
+，最终值都可以由它在最早期被改写。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;什么时候用：&lt;/p&gt;

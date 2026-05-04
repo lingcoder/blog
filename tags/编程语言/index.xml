@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>编程语言 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/</link><description>Recent content in 编程语言 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Tue, 09 Dec 2025 15:30:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml"/><item><title>Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用</title><link>https://www.lingcoder.com/p/go-generics-vs-java-generics/</link><pubDate>Tue, 09 Dec 2025 15:30:00 +0800</pubDate><guid>https://www.lingcoder.com/p/go-generics-vs-java-generics/</guid><description>&lt;img src="https://www.lingcoder.com/p/go-generics-vs-java-generics/cover.svg" alt="Featured image of post Go 与 Java 泛型：晚到的 vs 老牌的，对比谁更好用" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;泛型是现代编程语言的&amp;quot;老话题&amp;quot;了——Java 1.5（2004 年）就有，C++、C#、TypeScript 都早早具备。但&lt;strong&gt;Go 直到 1.18（2022 年）才引入泛型&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;泛型是现代编程语言的&amp;quot;老话题&amp;quot;了——Java 1.5（2004 年）就有，C++、C#、TypeScript 都早早具备。但**Go 直到 1.18（2022 年）才引入泛型
+**。&lt;/p&gt;
 &lt;p&gt;很多人好奇——&lt;strong&gt;Go 的泛型和 Java 比有什么不同&lt;/strong&gt;？只是&amp;quot;语法换换&amp;quot;还是真有本质差异？&lt;/p&gt;
 &lt;p&gt;本文从语法、实现机制、边界、常见用法做全面对比——&lt;strong&gt;让你看完能准确判断&amp;quot;什么场景哪个语言的泛型更好用&amp;quot;&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
@@ -458,8 +459,11 @@
 &lt;/div&gt;&lt;p&gt;这是 Go 泛型的最大遗憾——&lt;strong&gt;写流式 API 比 Java 啰嗦&lt;/strong&gt;。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;状态更新（截至 Go 1.25, 2025-08）&lt;/strong&gt;：方法泛型&lt;strong&gt;仍未支持&lt;/strong&gt;，且 Go FAQ 明确写着 &lt;em&gt;&amp;ldquo;we do not anticipate that Go will ever add generic methods&amp;rdquo;&lt;/em&gt;。社区有持续提案（&lt;a class="link" href="https://github.com/golang/go/issues/77273" target="_blank" rel="noopener"
- &gt;issue #77273&lt;/a&gt; 是当前最新的 spec 提案），但官方态度悲观。技术原因主要是&amp;quot;参数化方法会产生无限多的具体方法签名&amp;quot;——会破坏 &lt;code&gt;reflect&lt;/code&gt; 包的向后兼容。所以可见的未来里，写 Go 泛型流式 API 都得用顶级函数包一层。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;状态更新（截至 Go 1.25, 2025-08）&lt;/strong&gt;：方法泛型&lt;strong&gt;仍未支持&lt;/strong&gt;，且 Go FAQ 明确写着 &lt;em&gt;&amp;ldquo;we do not anticipate that Go will ever
+add generic methods&amp;rdquo;&lt;/em&gt;。社区有持续提案（&lt;a class="link" href="https://github.com/golang/go/issues/77273" target="_blank" rel="noopener"
+ &gt;issue #77273&lt;/a&gt; 是当前最新的 spec
+提案），但官方态度悲观。技术原因主要是&amp;quot;参数化方法会产生无限多的具体方法签名&amp;quot;——会破坏 &lt;code&gt;reflect&lt;/code&gt; 包的向后兼容。所以可见的未来里，写
+Go 泛型流式 API 都得用顶级函数包一层。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;h3 id="2-无变型variance"&gt;&lt;a href="#2-%e6%97%a0%e5%8f%98%e5%9e%8bvariance" class="header-anchor"&gt;&lt;/a&gt;2. 无变型（Variance）
@@ -483,7 +487,8 @@
 &lt;/div&gt;&lt;h3 id="3-无-constraint-inference"&gt;&lt;a href="#3-%e6%97%a0-constraint-inference" class="header-anchor"&gt;&lt;/a&gt;3. 无 Constraint Inference
 &lt;/h3&gt;&lt;p&gt;Java 的类型推断范围广，能推断出复杂约束——Go 仅做&amp;quot;显式 + 简单推断&amp;quot;。&lt;/p&gt;
 &lt;h3 id="4-没有条件实现"&gt;&lt;a href="#4-%e6%b2%a1%e6%9c%89%e6%9d%a1%e4%bb%b6%e5%ae%9e%e7%8e%b0" class="header-anchor"&gt;&lt;/a&gt;4. 没有&amp;quot;条件实现&amp;quot;
-&lt;/h3&gt;&lt;p&gt;Go 的方法集是&amp;quot;全有或全无&amp;quot;——无法表达&amp;quot;仅当 T 满足某个约束时，&lt;code&gt;Box[T]&lt;/code&gt; 才实现某个接口&amp;quot;（C# 的 &lt;code&gt;where T: IFoo&lt;/code&gt; + 条件 impl，或 Rust 的 conditional &lt;code&gt;impl&amp;lt;T: Foo&amp;gt; Bar for Box&amp;lt;T&amp;gt;&lt;/code&gt; 都做得到，Go 没有等价物）。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Go 的方法集是&amp;quot;全有或全无&amp;quot;——无法表达&amp;quot;仅当 T 满足某个约束时，&lt;code&gt;Box[T]&lt;/code&gt; 才实现某个接口&amp;quot;（C# 的 &lt;code&gt;where T: IFoo&lt;/code&gt; + 条件 impl，或
+Rust 的 conditional &lt;code&gt;impl&amp;lt;T: Foo&amp;gt; Bar for Box&amp;lt;T&amp;gt;&lt;/code&gt; 都做得到，Go 没有等价物）。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -516,7 +521,9 @@
  &lt;p&gt;以下纯属个人意见，不喜请轻喷。&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;Java / C# / Rust / TypeScript 都用 &lt;code&gt;&amp;lt;T&amp;gt;&lt;/code&gt; 表达泛型，和数组下标 &lt;code&gt;[]&lt;/code&gt;、Map 访问 &lt;code&gt;.get(k)&lt;/code&gt; 各管一摊，看一眼就知道是哪件事。Go 当年的官方理由是 &lt;strong&gt;&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; 会和比较运算符 &lt;code&gt;&amp;lt;&lt;/code&gt; &lt;code&gt;&amp;gt;&lt;/code&gt; 在解析时产生歧义&lt;/strong&gt;（例如 &lt;code&gt;a, b = w &amp;lt; x, y &amp;gt; (z)&lt;/code&gt; 这种）——所以选了已经被 map / slice 占用的方括号。&lt;/p&gt;
+&lt;p&gt;Java / C# / Rust / TypeScript 都用 &lt;code&gt;&amp;lt;T&amp;gt;&lt;/code&gt; 表达泛型，和数组下标 &lt;code&gt;[]&lt;/code&gt;、Map 访问 &lt;code&gt;.get(k)&lt;/code&gt; 各管一摊，看一眼就知道是哪件事。Go
+当年的官方理由是 &lt;strong&gt;&lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt; 会和比较运算符 &lt;code&gt;&amp;lt;&lt;/code&gt; &lt;code&gt;&amp;gt;&lt;/code&gt; 在解析时产生歧义&lt;/strong&gt;（例如 &lt;code&gt;a, b = w &amp;lt; x, y &amp;gt; (z)&lt;/code&gt; 这种）——所以选了已经被
+map / slice 占用的方括号。&lt;/p&gt;
 &lt;p&gt;听起来很学术，但实际上：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Java、C#、Rust、TypeScript 全都用 &lt;code&gt;&amp;lt;&amp;gt;&lt;/code&gt;&lt;/strong&gt;，解析器写得也都没出问题——所谓的歧义在工程上是可以处理的，无非是写编译器麻烦点&lt;/li&gt;
@@ -536,15 +543,18 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nx"&gt;List&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt;&lt;span class="p"&gt;]{&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="c1"&gt;// ↑ 后面跟花括号才知道是泛型实例化，不是数组下标&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;实际项目里读到 &lt;code&gt;Cache[string, User]&lt;/code&gt; 一开始要愣两秒——脑子里要切换到&amp;quot;哦这是泛型&amp;quot;。&lt;code&gt;pool.Get[*User]()&lt;/code&gt; 这种调用乍一看像是&amp;quot;取下标然后调用&amp;quot;，得想一下才反应过来。&lt;/p&gt;
-&lt;p&gt;不算硬伤，但确实是 Go 泛型读起来&amp;quot;差点意思&amp;quot;的最直接原因。&lt;strong&gt;省了编译器作者一次工，让全世界的 Go 程序员每天多想一秒&lt;/strong&gt;——这买卖不太划算。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;实际项目里读到 &lt;code&gt;Cache[string, User]&lt;/code&gt; 一开始要愣两秒——脑子里要切换到&amp;quot;哦这是泛型&amp;quot;。&lt;code&gt;pool.Get[*User]()&lt;/code&gt; 这种调用乍一看像是&amp;quot;
+取下标然后调用&amp;quot;，得想一下才反应过来。&lt;/p&gt;
+&lt;p&gt;不算硬伤，但确实是 Go 泛型读起来&amp;quot;差点意思&amp;quot;的最直接原因。&lt;strong&gt;省了编译器作者一次工，让全世界的 Go 程序员每天多想一秒&lt;/strong&gt;
+——这买卖不太划算。&lt;/p&gt;
 &lt;h3 id="6-顺便再吐一句go-的时间格式"&gt;&lt;a href="#6-%e9%a1%ba%e4%be%bf%e5%86%8d%e5%90%90%e4%b8%80%e5%8f%a5go-%e7%9a%84%e6%97%b6%e9%97%b4%e6%a0%bc%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;6. 顺便再吐一句：Go 的时间格式
 &lt;/h3&gt;
  &lt;blockquote&gt;
  &lt;p&gt;同样是个人吐槽。&lt;/p&gt;
 
  &lt;/blockquote&gt;
-&lt;p&gt;既然提到了 Go 的语法选择——&lt;strong&gt;Go 的时间格式化设计也是一脉相承的&amp;quot;为我自己方便&amp;quot;&lt;/strong&gt;：别的语言都用 &lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 这种 strftime / ISO 风格，Go 偏要让你记一个 reference time：&lt;/p&gt;
+&lt;p&gt;既然提到了 Go 的语法选择——&lt;strong&gt;Go 的时间格式化设计也是一脉相承的&amp;quot;为我自己方便&amp;quot;&lt;/strong&gt;：别的语言都用 &lt;code&gt;%Y-%m-%d %H:%M:%S&lt;/code&gt; 这种
+strftime / ISO 风格，Go 偏要让你记一个 reference time：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -686,7 +696,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Go 泛型的设计哲学是『最小可用 + 高性能』，Java 泛型是『表达力强 + 历史包袱重』——前者赢在简洁和速度，后者赢在生态成熟和工具完善。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Go 泛型的设计哲学是『最小可用 + 高性能』，Java 泛型是『表达力强 + 历史包袱重』——前者赢在简洁和速度，后者赢在生态成熟和工具完善。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;各自适合的场景：&lt;/p&gt;
@@ -695,7 +706,8 @@
 &lt;li&gt;&lt;strong&gt;Java 泛型&lt;/strong&gt;：复杂业务建模、需要变型、生态丰富时胜出&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;但&lt;strong&gt;两者最重要的共同点&lt;/strong&gt;：&lt;strong&gt;90% 的业务代码根本不需要泛型&lt;/strong&gt;。把泛型当工具，需要时拿出来用——不要为了显示&amp;quot;会泛型&amp;quot;而强行抽象。&lt;/p&gt;</description></item><item><title>Lua 速通——核心语法与特性</title><link>https://www.lingcoder.com/p/lua-quick-start/</link><pubDate>Tue, 22 Apr 2025 15:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/lua-quick-start/</guid><description>&lt;img src="https://www.lingcoder.com/p/lua-quick-start/cover.svg" alt="Featured image of post Lua 速通——核心语法与特性" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
-&lt;/h2&gt;&lt;p&gt;Lua 是一门有意保持小巧的脚本语言——核心语法只有几十条规则，标准库非常精简，参考实现的解释器只有约 2.4 万行 C 代码（含标准库），编译后产物约 250 KB。&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Lua 是一门有意保持小巧的脚本语言——核心语法只有几十条规则，标准库非常精简，参考实现的解释器只有约 2.4 万行 C
+代码（含标准库），编译后产物约 250 KB。&lt;/p&gt;
 &lt;p&gt;但它表达力并不弱：first-class function、metatable、协程、模式匹配——很多被现代语言陆续吸收的特性，Lua 早就有。&lt;/p&gt;
 &lt;p&gt;本文给一份偏语言本身的速通——讲清楚 Lua 的核心语法、表、面向对象的实现方式、协程，以及一些容易踩的语法陷阱。读完之后你能看懂多数
 Lua 代码，也能写出一些不丢人的 Lua。&lt;/p&gt;

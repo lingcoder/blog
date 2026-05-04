@@ -525,7 +525,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Protobuf 不只是『二进制 JSON』——它是 schema-driven 序列化的范式：用编号代替字段名、用 Varint 节省空间、用 wire type 保证可解析、用兼容规则保证演进。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Protobuf 不只是『二进制 JSON』——它是 schema-driven 序列化的范式：用编号代替字段名、用 Varint 节省空间、用 wire type
+保证可解析、用兼容规则保证演进。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

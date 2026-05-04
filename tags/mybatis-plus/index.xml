@@ -10,9 +10,11 @@
 &lt;/span&gt;&lt;span class="lnt"&gt;6
 &lt;/span&gt;&lt;span class="lnt"&gt;7
 &lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class="lntd"&gt;
-&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-xml" data-lang="xml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;select&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;selectByCondition&amp;#34;&lt;/span&gt; &lt;span class="na"&gt;resultType=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;User&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; SELECT id, name, age, status FROM user
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;where&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;lt;if&lt;/span&gt; &lt;span class="na"&gt;test=&lt;/span&gt;&lt;span class="s"&gt;&amp;#34;name != null&amp;#34;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;AND name = #{name}&lt;span class="nt"&gt;&amp;lt;/if&amp;gt;&lt;/span&gt;
@@ -22,7 +24,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;&amp;lt;/select&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。&lt;strong&gt;这种重复劳动催生了两个现象级开源项目&lt;/strong&gt;：&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;每张表都要写一遍 CRUD，字段一变就改十几个 XML，任何&amp;quot;按字段查&amp;quot;&amp;ldquo;按字段更新&amp;quot;都要新加一段 SQL。**这种重复劳动催生了两个现象级开源项目
+**：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;通用 Mapper（tk.mybatis）&lt;/strong&gt;：刘增辉（abel533）2014 年开源&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;MyBatis-Plus&lt;/strong&gt;（MP）：苞米豆团队 2016 年开源&lt;/li&gt;
@@ -488,7 +491,8 @@
 
  &lt;blockquote&gt;
  &lt;p&gt;&lt;strong&gt;新项目优先 MyBatis-Plus&lt;/strong&gt;，社区活跃、生态完整、Lambda 类型安全，几乎没有理由选通用 Mapper。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧 &lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;老项目已用通用 Mapper 且稳定&lt;/strong&gt;，没必要为了 MP 重构；对接新表时可以&lt;strong&gt;两者共存&lt;/strong&gt;，MP 接 &lt;code&gt;BaseMapper&amp;lt;T&amp;gt;&lt;/code&gt;，通用 Mapper 留旧
+&lt;code&gt;Mapper&amp;lt;T&amp;gt;&lt;/code&gt;，互不干扰。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -548,7 +552,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压成一句话：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用 Mapper。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;通用 Mapper 是 MyBatis 的&amp;quot;轻量减法&amp;quot;，MyBatis-Plus 是 MyBatis 的&amp;quot;完整加法&amp;quot;。在 2019 年之后的新项目，几乎没有理由再选通用
+Mapper。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;不管选哪个，记住几个一致的工程纪律：&lt;/p&gt;

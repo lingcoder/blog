@@ -8,7 +8,8 @@
 &lt;li&gt;重启 Nacos 后&lt;strong&gt;配置没了&lt;/strong&gt;或者&lt;strong&gt;注册的服务全没了&lt;/strong&gt;——存储模式选错了&lt;/li&gt;
 &lt;li&gt;灰度发布想&amp;quot;只让一台实例生效新配置&amp;quot;，根本做不到&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Nacos 装起来 5 分钟，&lt;strong&gt;用对要几个月经验&lt;/strong&gt;。本文把生产环境的关键决策点讲清楚——&lt;strong&gt;namespace 怎么划、配置怎么组织、监听怎么写对、服务发现怎么用稳&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Nacos 装起来 5 分钟，&lt;strong&gt;用对要几个月经验&lt;/strong&gt;。本文把生产环境的关键决策点讲清楚——**namespace 怎么划、配置怎么组织、监听怎么写对、服务发现怎么用稳
+**。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="一nacos-的核心模型"&gt;&lt;a href="#%e4%b8%80nacos-%e7%9a%84%e6%a0%b8%e5%bf%83%e6%a8%a1%e5%9e%8b" class="header-anchor"&gt;&lt;/a&gt;一、Nacos 的核心模型
 &lt;/h2&gt;&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TB
@@ -292,15 +293,19 @@
 &lt;h3 id="心跳与剔除"&gt;&lt;a href="#%e5%bf%83%e8%b7%b3%e4%b8%8e%e5%89%94%e9%99%a4" class="header-anchor"&gt;&lt;/a&gt;心跳与剔除
 &lt;/h3&gt;
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;版本差异（重要）&lt;/strong&gt;：下面&amp;quot;5 秒心跳 / 15 秒不健康 / 30 秒剔除&amp;quot;是 &lt;strong&gt;Nacos 1.x（HTTP 短连接）&lt;/strong&gt; 的行为；&lt;strong&gt;Nacos 2.x 起默认改为 gRPC 长连接 + keepalive&lt;/strong&gt;——客户端不再定时发 HTTP 心跳，连接断开即被识别下线，整体响应时延显著缩短（亚秒级）。如果你用的是 2.x（2024 年起的主流版本），心跳模型已经不适用。&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;版本差异（重要）&lt;/strong&gt;：下面&amp;quot;5 秒心跳 / 15 秒不健康 / 30 秒剔除&amp;quot;是 &lt;strong&gt;Nacos 1.x（HTTP 短连接）&lt;/strong&gt; 的行为；&lt;strong&gt;Nacos 2.x 起默认改为
+gRPC 长连接 + keepalive&lt;/strong&gt;——客户端不再定时发 HTTP 心跳，连接断开即被识别下线，整体响应时延显著缩短（亚秒级）。如果你用的是
+2.x（2024 年起的主流版本），心跳模型已经不适用。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Nacos 1.x 行为&lt;/strong&gt;：临时实例每 5 秒发心跳，15 秒没心跳变&amp;quot;不健康&amp;quot;，30 秒后剔除——这意味着实例突然 kill 后最长有 30 秒不可用窗口。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Nacos 2.x 行为&lt;/strong&gt;：客户端与 server 维持 gRPC 长连接，server 通过连接状态判断实例存活；连接异常断开（进程崩溃、网络隔离）会立即触发下线事件，避免 30 秒窗口。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Nacos 2.x 行为&lt;/strong&gt;：客户端与 server 维持 gRPC 长连接，server 通过连接状态判断实例存活；连接异常断开（进程崩溃、网络隔离）会立即触发下线事件，避免
+30 秒窗口。&lt;/p&gt;
 &lt;p&gt;解决（不论版本都建议）：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;客户端配置健康检查 + 重试&lt;/strong&gt;（OpenFeign / Ribbon / Spring Cloud LoadBalancer）&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;实例下线前先调用 &lt;code&gt;Nacos NamingService.deregisterInstance&lt;/code&gt; 优雅注销&lt;/strong&gt;——通常用 Spring Boot 的 &lt;code&gt;ApplicationListener&amp;lt;ContextClosedEvent&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;实例下线前先调用 &lt;code&gt;Nacos NamingService.deregisterInstance&lt;/code&gt; 优雅注销&lt;/strong&gt;——通常用 Spring Boot 的
+&lt;code&gt;ApplicationListener&amp;lt;ContextClosedEvent&amp;gt;&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;h2 id="七生产部署踩过的坑"&gt;&lt;a href="#%e4%b8%83%e7%94%9f%e4%ba%a7%e9%83%a8%e7%bd%b2%e8%b8%a9%e8%bf%87%e7%9a%84%e5%9d%91" class="header-anchor"&gt;&lt;/a&gt;七、生产部署：踩过的坑
@@ -385,7 +390,8 @@
 &lt;hr&gt;
 &lt;h2 id="九监控与排查"&gt;&lt;a href="#%e4%b9%9d%e7%9b%91%e6%8e%a7%e4%b8%8e%e6%8e%92%e6%9f%a5" class="header-anchor"&gt;&lt;/a&gt;九、监控与排查
 &lt;/h2&gt;&lt;h3 id="1-看配置历史"&gt;&lt;a href="#1-%e7%9c%8b%e9%85%8d%e7%bd%ae%e5%8e%86%e5%8f%b2" class="header-anchor"&gt;&lt;/a&gt;1. 看配置历史
-&lt;/h3&gt;&lt;p&gt;Nacos 控制台保留每次变更的历史，&lt;strong&gt;改错了能直接 rollback&lt;/strong&gt;。这是 Nacos 区别于&amp;quot;配置写在 yaml 里 + git&amp;quot; 模式的核心价值——&lt;strong&gt;不需要发版本就能改配置，但同时有审计&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;Nacos 控制台保留每次变更的历史，&lt;strong&gt;改错了能直接 rollback&lt;/strong&gt;。这是 Nacos 区别于&amp;quot;配置写在 yaml 里 + git&amp;quot; 模式的核心价值——*
+&lt;em&gt;不需要发版本就能改配置，但同时有审计&lt;/em&gt;*。&lt;/p&gt;
 &lt;h3 id="2-看订阅者"&gt;&lt;a href="#2-%e7%9c%8b%e8%ae%a2%e9%98%85%e8%80%85" class="header-anchor"&gt;&lt;/a&gt;2. 看订阅者
 &lt;/h3&gt;&lt;p&gt;Nacos 控制台 → 配置详情 → &amp;ldquo;订阅者列表&amp;rdquo;，能看到当前哪些实例订阅了这个配置——&lt;strong&gt;调试&amp;quot;为什么我的应用没收到推送&amp;quot;的第一步&lt;/strong&gt;。&lt;/p&gt;
 &lt;h3 id="3-应用侧日志"&gt;&lt;a href="#3-%e5%ba%94%e7%94%a8%e4%be%a7%e6%97%a5%e5%bf%97" class="header-anchor"&gt;&lt;/a&gt;3. 应用侧日志
@@ -422,7 +428,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;Nacos 的真正价值不在『配置存哪里』，而在『配置变更能可控、可审计、能秒级生效』——但要让它真正可靠，命名空间、监听机制、集群部署一个都不能省。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;**Nacos 的真正价值不在『配置存哪里』，而在『配置变更能可控、可审计、能秒级生效』——但要让它真正可靠，命名空间、监听机制、集群部署一个都不能省。
+**&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;记住几条工程纪律：&lt;/p&gt;
@@ -609,7 +616,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;业务代码完全不知道密码加密过——这是它最干净的姿势。&lt;/p&gt;
 &lt;h3 id="场景-2从配置中心拉配置"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-2%e4%bb%8e%e9%85%8d%e7%bd%ae%e4%b8%ad%e5%bf%83%e6%8b%89%e9%85%8d%e7%bd%ae" class="header-anchor"&gt;&lt;/a&gt;场景 2：从配置中心拉配置
-&lt;/h3&gt;&lt;p&gt;虽然 Spring Cloud Config / Nacos / Apollo 都有自己的 starter，但&lt;strong&gt;它们底层就是基于 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; / &lt;code&gt;BootstrapContext&lt;/code&gt; 实现的&lt;/strong&gt;。理解这个扩展点，你就能看懂这些组件的源码逻辑。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;虽然 Spring Cloud Config / Nacos / Apollo 都有自己的 starter，但*
+&lt;em&gt;它们底层就是基于 &lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; / &lt;code&gt;BootstrapContext&lt;/code&gt; 实现的&lt;/em&gt;*。理解这个扩展点，你就能看懂这些组件的源码逻辑。&lt;/p&gt;
 &lt;p&gt;例如自己写一个最小的&amp;quot;远程配置中心客户端&amp;quot;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -637,7 +645,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="w"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;code&gt;addLast&lt;/code&gt; 的语义是&amp;quot;远程配置优先级低于本地&amp;quot;——本地能覆盖远程；反过来 &lt;code&gt;addFirst&lt;/code&gt; 是&amp;quot;远程覆盖本地&amp;quot;。&lt;strong&gt;位置选择是核心设计决策&lt;/strong&gt;。&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;addLast&lt;/code&gt; 的语义是&amp;quot;远程配置优先级低于本地&amp;quot;——本地能覆盖远程；反过来 &lt;code&gt;addFirst&lt;/code&gt; 是&amp;quot;远程覆盖本地&amp;quot;。**位置选择是核心设计决策
+**。&lt;/p&gt;
 &lt;h3 id="场景-3开发测试自动开启功能开关"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-3%e5%bc%80%e5%8f%91%e6%b5%8b%e8%af%95%e8%87%aa%e5%8a%a8%e5%bc%80%e5%90%af%e5%8a%9f%e8%83%bd%e5%bc%80%e5%85%b3" class="header-anchor"&gt;&lt;/a&gt;场景 3：开发/测试自动开启功能开关
 &lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
@@ -675,7 +684,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;业务代码都不需要看到这些开关，开发模式自动开启。&lt;/p&gt;
 &lt;h3 id="场景-4从环境变量适配老配置-key-名"&gt;&lt;a href="#%e5%9c%ba%e6%99%af-4%e4%bb%8e%e7%8e%af%e5%a2%83%e5%8f%98%e9%87%8f%e9%80%82%e9%85%8d%e8%80%81%e9%85%8d%e7%bd%ae-key-%e5%90%8d" class="header-anchor"&gt;&lt;/a&gt;场景 4：从环境变量适配老配置 key 名
-&lt;/h3&gt;&lt;p&gt;公司迁移老系统时，老的 K8s ConfigMap 用的是 &lt;code&gt;DB_USER&lt;/code&gt;、&lt;code&gt;DB_PASSWORD&lt;/code&gt;，新的 Spring Boot 期望 &lt;code&gt;spring.datasource.username&lt;/code&gt;、&lt;code&gt;spring.datasource.password&lt;/code&gt;：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;公司迁移老系统时，老的 K8s ConfigMap 用的是 &lt;code&gt;DB_USER&lt;/code&gt;、&lt;code&gt;DB_PASSWORD&lt;/code&gt;，新的 Spring Boot 期望 &lt;code&gt;spring.datasource.username&lt;/code&gt;、
+&lt;code&gt;spring.datasource.password&lt;/code&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
@@ -780,7 +790,8 @@
 &lt;/ul&gt;
 &lt;p&gt;写错位置会导致&amp;quot;为什么我设置了配置不生效？&amp;ldquo;这种排查噩梦。&lt;/p&gt;
 &lt;h3 id="3-不要在-processor-里依赖-spring-bean"&gt;&lt;a href="#3-%e4%b8%8d%e8%a6%81%e5%9c%a8-processor-%e9%87%8c%e4%be%9d%e8%b5%96-spring-bean" class="header-anchor"&gt;&lt;/a&gt;3. 不要在 Processor 里依赖 Spring Bean
-&lt;/h3&gt;&lt;p&gt;EnvironmentPostProcessor 触发时&lt;strong&gt;整个 ApplicationContext 还没建好&lt;/strong&gt;——你不能 &lt;code&gt;@Autowired&lt;/code&gt;，不能用 Spring Bean。需要的工具类要么自己 &lt;code&gt;new&lt;/code&gt;，要么用静态工厂方法。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;EnvironmentPostProcessor 触发时&lt;strong&gt;整个 ApplicationContext 还没建好&lt;/strong&gt;——你不能 &lt;code&gt;@Autowired&lt;/code&gt;，不能用 Spring Bean。需要的工具类要么自己
+&lt;code&gt;new&lt;/code&gt;，要么用静态工厂方法。&lt;/p&gt;
 &lt;h3 id="4-异常处理"&gt;&lt;a href="#4-%e5%bc%82%e5%b8%b8%e5%a4%84%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;4. 异常处理
 &lt;/h3&gt;&lt;p&gt;Processor 里抛异常会让整个应用启动失败。像&amp;quot;远程配置中心拉取失败&amp;quot;这种&lt;strong&gt;外部依赖应该有 fallback 行为&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
@@ -849,7 +860,8 @@
 &lt;/h2&gt;&lt;p&gt;一句话总结：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;&lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; 是 Spring Boot 配置体系的最后一道前置插入点——业务代码里看到的每一个 &lt;code&gt;@Value&lt;/code&gt;，最终值都可以由它在最早期被改写。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;&lt;code&gt;EnvironmentPostProcessor&lt;/code&gt; 是 Spring Boot 配置体系的最后一道前置插入点——业务代码里看到的每一个 &lt;code&gt;@Value&lt;/code&gt;
+，最终值都可以由它在最早期被改写。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;什么时候用：&lt;/p&gt;

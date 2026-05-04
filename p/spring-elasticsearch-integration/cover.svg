@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#FFE5C8"/>
-          <stop offset="1" stop-color="#FFB58A"/>
-      </linearGradient>
-      <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#D8AC7C"/>
-          <stop offset="1" stop-color="#A87830"/>
-    </linearGradient>
-      <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#A87830"/>
-          <stop offset="1" stop-color="#5A4218"/>
-      </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFE5C8"/>
+            <stop offset="1" stop-color="#FFB58A"/>
+        </linearGradient>
+        <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D8AC7C"/>
+            <stop offset="1" stop-color="#A87830"/>
+        </linearGradient>
+        <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A87830"/>
+            <stop offset="1" stop-color="#5A4218"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="280" fill="url(#sky)"/>
 
@@ -55,7 +55,7 @@
         <ellipse cx="1000" cy="430" rx="14" ry="10"/>
         <ellipse cx="1060" cy="430" rx="14" ry="10"/>
         <ellipse cx="1120" cy="430" rx="14" ry="10"/>
-  </g>
+    </g>
     <g fill="#3D2A0F">
         <!-- Row 2 -->
         <ellipse cx="80" cy="490" rx="18" ry="13"/>
@@ -96,7 +96,7 @@
         <rect x="25" y="18" width="10" height="22" fill="#5C3A1F"/>
         <rect x="8" y="10" width="8" height="8" fill="#7C5A2A"/>
         <rect x="44" y="10" width="8" height="8" fill="#7C5A2A"/>
-  </g>
+    </g>
 
     <text x="60" y="610" fill="#3D2A0F" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
           letter-spacing="2">lingcoder.com

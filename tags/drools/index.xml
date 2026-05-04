@@ -474,8 +474,10 @@
 &lt;p&gt;&lt;strong&gt;4. 编译缓存&lt;/strong&gt;：同一个表达式重复 execute 时&lt;strong&gt;一定要预编译&lt;/strong&gt;，否则每次都重新解析。&lt;/p&gt;
 &lt;h3 id="drools-篇"&gt;&lt;a href="#drools-%e7%af%87" class="header-anchor"&gt;&lt;/a&gt;Drools 篇
 &lt;/h3&gt;&lt;p&gt;&lt;strong&gt;1. 内存里的规则&lt;/strong&gt;：DRL 改了不会自动重载——要主动 reload KieBase。生产实践通常用 Drools Workbench 或自己实现热更新。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;2. then 部分别写复杂逻辑&lt;/strong&gt;：&lt;code&gt;then&lt;/code&gt; 是 Java 代码，但塞太多业务逻辑会让规则文件膨胀。&lt;strong&gt;复杂动作应该放回 Service&lt;/strong&gt;，then 只调一行。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;3. fireAllRules 的副作用&lt;/strong&gt;：规则的 then 段可能修改 fact，触发其他规则——容易陷入&amp;quot;规则套规则&amp;quot;的循环。&lt;strong&gt;用 &lt;code&gt;no-loop true&lt;/code&gt; 关键字防止&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. then 部分别写复杂逻辑&lt;/strong&gt;：&lt;code&gt;then&lt;/code&gt; 是 Java 代码，但塞太多业务逻辑会让规则文件膨胀。&lt;strong&gt;复杂动作应该放回 Service&lt;/strong&gt;，then
+只调一行。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. fireAllRules 的副作用&lt;/strong&gt;：规则的 then 段可能修改 fact，触发其他规则——容易陷入&amp;quot;规则套规则&amp;quot;的循环。&lt;strong&gt;用 &lt;code&gt;no-loop true&lt;/code&gt;
+关键字防止&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;4. 性能&lt;/strong&gt;：Rete 算法在规则少时反而慢——50 条以下用 Drools 收益不明显。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="七规则的版本与审计"&gt;&lt;a href="#%e4%b8%83%e8%a7%84%e5%88%99%e7%9a%84%e7%89%88%e6%9c%ac%e4%b8%8e%e5%ae%a1%e8%ae%a1" class="header-anchor"&gt;&lt;/a&gt;七、规则的版本与审计
@@ -492,7 +494,8 @@
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;业务规则要从代码里抽出来——简单场景 Aviator 一行表达式 + 配置中心，复杂决策 Drools 完整规则引擎，绝不要硬编码 if-else 然后频繁发版。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;业务规则要从代码里抽出来——简单场景 Aviator 一行表达式 + 配置中心，复杂决策 Drools 完整规则引擎，绝不要硬编码 if-else
+然后频繁发版。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程实践：&lt;/p&gt;

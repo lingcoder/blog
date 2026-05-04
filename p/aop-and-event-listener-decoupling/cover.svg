@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#F5C8E0"/>
-          <stop offset="0.5" stop-color="#C8A5D8"/>
-          <stop offset="1" stop-color="#8C6CB0"/>
-      </linearGradient>
-      <linearGradient id="lavBack" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#8C6CB0"/>
-          <stop offset="1" stop-color="#5E3F8A"/>
-      </linearGradient>
-      <linearGradient id="lavFront" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#6E4C9A"/>
-          <stop offset="1" stop-color="#3D245C"/>
-    </linearGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F5C8E0"/>
+            <stop offset="0.5" stop-color="#C8A5D8"/>
+            <stop offset="1" stop-color="#8C6CB0"/>
+        </linearGradient>
+        <linearGradient id="lavBack" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#8C6CB0"/>
+            <stop offset="1" stop-color="#5E3F8A"/>
+        </linearGradient>
+        <linearGradient id="lavFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#6E4C9A"/>
+            <stop offset="1" stop-color="#3D245C"/>
+        </linearGradient>
+    </defs>
 
     <rect width="1200" height="380" fill="url(#sky)"/>
 
@@ -32,7 +32,7 @@
         <path d="M 0 390 Q 200 380 400 388 T 800 385 T 1200 390 L 1200 410 L 0 410 Z"/>
         <path d="M 0 420 Q 200 410 400 418 T 800 415 T 1200 420 L 1200 440 L 0 440 Z"/>
         <path d="M 0 450 Q 200 440 400 448 T 800 445 T 1200 450 L 1200 470 L 0 470 Z"/>
-  </g>
+    </g>
 
     <!-- Lavender field front -->
     <rect y="480" width="1200" height="150" fill="url(#lavFront)"/>

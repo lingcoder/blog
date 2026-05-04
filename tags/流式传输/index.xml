@@ -22,7 +22,8 @@
 &lt;h2 id="一需求拆解什么叫下载进度"&gt;&lt;a href="#%e4%b8%80%e9%9c%80%e6%b1%82%e6%8b%86%e8%a7%a3%e4%bb%80%e4%b9%88%e5%8f%ab%e4%b8%8b%e8%bd%bd%e8%bf%9b%e5%ba%a6" class="header-anchor"&gt;&lt;/a&gt;一、需求拆解：什么叫&amp;quot;下载进度&amp;quot;
 &lt;/h2&gt;&lt;p&gt;要讲清进度反馈，先把&amp;quot;下载&amp;quot;分两类：&lt;/p&gt;
 &lt;h3 id="类型-a纯文件传输"&gt;&lt;a href="#%e7%b1%bb%e5%9e%8b-a%e7%ba%af%e6%96%87%e4%bb%b6%e4%bc%a0%e8%be%93" class="header-anchor"&gt;&lt;/a&gt;类型 A：纯文件传输
-&lt;/h3&gt;&lt;p&gt;文件已存在，浏览器直接下载——&lt;strong&gt;进度信息浏览器自己能算&lt;/strong&gt;（Content-Length / 已接收字节）。前端不需要服务端告诉，可以自己监听 &lt;code&gt;progress&lt;/code&gt; 事件。这种场景&lt;strong&gt;根本不需要后端反馈&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;文件已存在，浏览器直接下载——&lt;strong&gt;进度信息浏览器自己能算&lt;/strong&gt;（Content-Length / 已接收字节）。前端不需要服务端告诉，可以自己监听
+&lt;code&gt;progress&lt;/code&gt; 事件。这种场景&lt;strong&gt;根本不需要后端反馈&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
 &lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
@@ -47,7 +48,8 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;&lt;strong&gt;这种是大部分场景&lt;/strong&gt;——多数情况下不需要后端介入，避免加不必要的复杂度。&lt;/p&gt;
 &lt;h3 id="类型-b服务端要先做事才有文件"&gt;&lt;a href="#%e7%b1%bb%e5%9e%8b-b%e6%9c%8d%e5%8a%a1%e7%ab%af%e8%a6%81%e5%85%88%e5%81%9a%e4%ba%8b%e6%89%8d%e6%9c%89%e6%96%87%e4%bb%b6" class="header-anchor"&gt;&lt;/a&gt;类型 B：服务端要先&amp;quot;做事&amp;quot;才有文件
-&lt;/h3&gt;&lt;p&gt;真正复杂的——服务端先生成 Excel（30 秒）、再让前端下载。生成过程中浏览器看到的是 0 字节、Content-Length 还没确定。&lt;strong&gt;进度只有服务端知道&lt;/strong&gt;。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;真正复杂的——服务端先生成 Excel（30 秒）、再让前端下载。生成过程中浏览器看到的是 0 字节、Content-Length 还没确定。**进度只有服务端知道
+**。&lt;/p&gt;
 &lt;p&gt;类型 B 才是本文的主场。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="二方案-1http-流式响应chunked"&gt;&lt;a href="#%e4%ba%8c%e6%96%b9%e6%a1%88-1http-%e6%b5%81%e5%bc%8f%e5%93%8d%e5%ba%94chunked" class="header-anchor"&gt;&lt;/a&gt;二、方案 1：HTTP 流式响应（chunked）
@@ -93,7 +95,8 @@
 &lt;/div&gt;
 &lt;/div&gt;
  &lt;blockquote&gt;
- &lt;p&gt;这里&lt;strong&gt;故意不用 SSE 的 &lt;code&gt;data: …\n\n&lt;/code&gt; 协议格式&lt;/strong&gt;——避免和方案 2 混淆。要 SSE 就直接用 &lt;code&gt;SseEmitter&lt;/code&gt;（见方案 2），这里就是普通的&amp;quot;按行 JSON 流&amp;quot;。&lt;/p&gt;
+ &lt;p&gt;这里&lt;strong&gt;故意不用 SSE 的 &lt;code&gt;data: …\n\n&lt;/code&gt; 协议格式&lt;/strong&gt;——避免和方案 2 混淆。要 SSE 就直接用 &lt;code&gt;SseEmitter&lt;/code&gt;（见方案
+2），这里就是普通的&amp;quot;按行 JSON 流&amp;quot;。&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;前端用 &lt;code&gt;fetch&lt;/code&gt; + &lt;code&gt;ReadableStream&lt;/code&gt; 读：&lt;/p&gt;
@@ -112,7 +115,7 @@
 &lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-javascript" data-lang="javascript"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;resp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kr"&gt;await&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/export&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;reader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;body&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getReader&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;done&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kr"&gt;await&lt;/span&gt; &lt;span class="nx"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;read&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;done&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kr"&gt;await&lt;/span&gt; &lt;span class="nx"&gt;reader&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;read&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;done&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;TextDecoder&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="nx"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="c1"&gt;// 解析进度
@@ -511,14 +514,15 @@
 &lt;/h3&gt;&lt;p&gt;如果导出任务是异步发到 MQ 或别的进程执行——&lt;strong&gt;进度数据要走 Redis&lt;/strong&gt;：&lt;/p&gt;
 &lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart LR
  Front --&gt; SSE[SSE Endpoint]
- SSE -.poll.-&gt; Redis[(Redis)]
- Worker[(异步 Worker)] -.write.-&gt; Redis&lt;/pre&gt;&lt;p&gt;SSE 通道每秒查一次 Redis 拿进度推给前端，Worker 进度写 Redis。&lt;strong&gt;进度生产和消费解耦&lt;/strong&gt;。&lt;/p&gt;
+ SSE -. poll .-&gt; Redis[(Redis)]
+ Worker[(异步 Worker)] -. write .-&gt; Redis&lt;/pre&gt;&lt;p&gt;SSE 通道每秒查一次 Redis 拿进度推给前端，Worker 进度写 Redis。&lt;strong&gt;进度生产和消费解耦&lt;/strong&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="小结"&gt;&lt;a href="#%e5%b0%8f%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;小结
 &lt;/h2&gt;&lt;p&gt;把全文压一句：&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;&lt;strong&gt;HTTP 是请求响应模型，要做&amp;quot;实时进度反馈&amp;quot;，就要打开一个『可以持续推送』的通道——单向选 SSE，双向选 WebSocket，文件本体永远走标准 HTTP 下载。&lt;/strong&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;HTTP 是请求响应模型，要做&amp;quot;实时进度反馈&amp;quot;，就要打开一个『可以持续推送』的通道——单向选 SSE，双向选 WebSocket，文件本体永远走标准
+HTTP 下载。&lt;/strong&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;p&gt;工程要点：&lt;/p&gt;

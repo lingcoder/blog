@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
-  <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#0F2A28"/>
-          <stop offset="0.55" stop-color="#3A5C50"/>
-          <stop offset="1" stop-color="#FFD8A0"/>
-    </linearGradient>
-      <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
-          <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
-      </radialGradient>
-  </defs>
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#0F2A28"/>
+            <stop offset="0.55" stop-color="#3A5C50"/>
+            <stop offset="1" stop-color="#FFD8A0"/>
+        </linearGradient>
+        <radialGradient id="sunRay" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#FFE5A0" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#FFE5A0" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
 
     <rect width="1200" height="630" fill="url(#sky)"/>
 
@@ -48,7 +48,7 @@
         <polygon points="900,560 870,430 930,430 895,350 935,350 900,270"/>
         <polygon points="1020,580 990,450 1050,450 1015,370 1055,370 1020,290"/>
         <polygon points="1140,560 1110,440 1170,440 1135,360 1175,360 1140,280"/>
-  </g>
+    </g>
 
     <!-- Forest floor with mist -->
     <rect y="560" width="1200" height="70" fill="#0A1A14"/>
