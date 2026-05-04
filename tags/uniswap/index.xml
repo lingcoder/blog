@@ -96,8 +96,9 @@
  &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;PancakeSwap 把中间档从 0.30% 调到 0.25%，并且配套 tickSpacing=50。这小幅让利给 trader，叠加 PancakeSwap 在 BNB Chain 上的低
-gas 成本，主流 BNB token 池子大多集中在这一档。&lt;strong&gt;注意这两个生态的池子无法互通&lt;/strong&gt;——一个是 0.30%/60、一个是 0.25%/50，单看 fee
-tier 就不是同一组合约。&lt;/p&gt;
+gas 成本，主流 BNB token 池子大多集中在这一档。&lt;strong&gt;做跨 DEX 聚合 / 路径搜索时要注意&lt;/strong&gt;——PancakeSwap 0.25% 档和 Uniswap 0.30% 档
+&lt;strong&gt;不是同一档&lt;/strong&gt;，聚合器配置或自实现路径时不能简单地把它们当作等价 fee tier。（顺带一提：两个协议的池子本来就是独立合约、流动性不互通，
+价格只通过套利者在链下慢慢趋同。）&lt;/p&gt;
 &lt;p&gt;低费率适合稳定币对——价格变化小、tickSpacing 也小；高费率适合波动大的资产——粗 tick 节省 Gas。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id="四nft-仓位每个仓位是独立-nft"&gt;&lt;a href="#%e5%9b%9bnft-%e4%bb%93%e4%bd%8d%e6%af%8f%e4%b8%aa%e4%bb%93%e4%bd%8d%e6%98%af%e7%8b%ac%e7%ab%8b-nft" class="header-anchor"&gt;&lt;/a&gt;四、NFT 仓位：每个仓位是独立 NFT
