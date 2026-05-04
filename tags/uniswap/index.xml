@@ -13,7 +13,7 @@
 为讲解载体，会随时标出哪些是 V3 共性、哪些是 PancakeSwap 独有。下篇会拆 PancakeSwap V3 的合约源码。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;系列阅读：&lt;strong&gt;上篇·协议篇（本文）&lt;/strong&gt; → &lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/" &gt;下篇·合约篇&lt;/a&gt;&lt;/p&gt;
+ &lt;p&gt;系列阅读：&lt;strong&gt;上篇·协议篇（本文）&lt;/strong&gt; → &lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-contracts/" &gt;下篇·合约篇&lt;/a&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;
 &lt;hr&gt;
@@ -372,6 +372,6 @@ boost 系数。&lt;/p&gt;
 的源码，看看每一行代码是怎么把上面这些抽象概念实现出来的。&lt;/p&gt;
 
  &lt;blockquote&gt;
- &lt;p&gt;继续阅读：&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-contract-architecture/" &gt;PancakeSwap V3 深度解析（下）：合约篇&lt;/a&gt;&lt;/p&gt;
+ &lt;p&gt;继续阅读：&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-contracts/" &gt;PancakeSwap V3 深度解析（下）：合约篇&lt;/a&gt;&lt;/p&gt;
 
  &lt;/blockquote&gt;</description></item></channel></rss>
