@@ -51,7 +51,7 @@ Uniswap / PancakeSwap 都把 core 锁得死死的（连接口都很 minimal）�
  User --&gt; Router
  User --&gt; MC
  User --&gt; Quoter
- MC -. NFT.safeTransfer .-&gt; PM
+ MC -. "NFT safeTransfer" .-&gt; PM
  Router --&gt; Pool
  PM --&gt; Pool
  Quoter --&gt; Pool
