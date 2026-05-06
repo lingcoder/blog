@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on 牛哥聊技术</title><link>https://www.lingcoder.com/post/</link><description>Recent content in Posts on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 03 May 2026 10:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/post/index.xml" rel="self" type="application/rss+xml"/><item><title>PancakeSwap V3 深度解析（下）：合约篇</title><link>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</link><pubDate>Sun, 03 May 2026 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-contracts/cover.svg" alt="Featured image of post PancakeSwap V3 深度解析（下）：合约篇" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on 牛哥聊技术</title><link>https://www.lingcoder.com/post/</link><description>Recent content in Posts on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 May 2026 10:20:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/post/index.xml" rel="self" type="application/rss+xml"/><item><title>PancakeSwap V3 深度解析（下）：合约篇</title><link>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</link><pubDate>Sun, 03 May 2026 10:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-contracts/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-contracts/cover.svg" alt="Featured image of post PancakeSwap V3 深度解析（下）：合约篇" /&gt;&lt;h2 id="前言"&gt;&lt;a href="#%e5%89%8d%e8%a8%80" class="header-anchor"&gt;&lt;/a&gt;前言
 &lt;/h2&gt;&lt;p&gt;本文是「PancakeSwap V3 深度解析」系列的&lt;strong&gt;下篇——合约篇&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-protocol/" &gt;上篇&lt;/a&gt;讲了 V3 的协议设计：&lt;strong&gt;集中流动性、tick 离散化、NFT 仓位、TWAP 预言机&lt;/strong&gt;，以及 PancakeSwap
 在协议层独有的 3 处改动（0.25% 费率档、LMPool 协议级挖矿 hook、FarmBooster + veCAKE）。&lt;/p&gt;
@@ -832,16 +832,13 @@ SwapMath，极易出 bug）。&lt;/p&gt;
 &lt;li&gt;feeGrowth / tickCumulative 都是同一种&amp;quot;前缀和差分&amp;quot;思想；&lt;/li&gt;
 &lt;li&gt;LMPool / MasterChefV3 / FarmBooster 是 PancakeSwap 在 Uniswap V3 之上的协议级延伸；&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;你会发现整个架构其实非常一致——所有看似奇怪的拆分，都是在回答同一个问题：**怎么在以太坊的 gas 预算下，把一个连续函数的做市逻辑跑起来。
-**&lt;/p&gt;
-&lt;p&gt;下一篇打算单独写 &lt;strong&gt;tick / tickBitmap / liquidityNet 是怎么把&amp;quot;集中流动性&amp;quot;在链上落地的&lt;/strong&gt;，以及 SwapMath 那段循环每一步到底在算什么——把数学和
-Solidity 一一对上。&lt;/p&gt;
+&lt;p&gt;你会发现整个架构其实非常一致——所有看似奇怪的拆分，都是在回答同一个问题：&lt;strong&gt;怎么在以太坊的 gas 预算下，把一个连续函数的做市逻辑跑起来。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;至此协议篇与合约篇都讲完了——前一篇看的是&amp;quot;为什么这么设计&amp;quot;，这一篇看的是&amp;quot;代码上怎么落地&amp;quot;。两篇合起来，PancakeSwap V3 这套东西就算从外到里走过一遍了。&lt;/p&gt;
 
  &lt;blockquote&gt;
  &lt;p&gt;系列阅读：&lt;a class="link" href="https://www.lingcoder.com/p/pancakeswap-v3-protocol/" &gt;上篇·协议篇&lt;/a&gt; → 下篇·合约篇（本文）&lt;/p&gt;
 
- &lt;/blockquote&gt;
-&lt;p&gt;如果这篇有讲不清楚的地方，欢迎在评论区或邮件指出。&lt;/p&gt;</description></item><item><title>PancakeSwap V3 深度解析（上）：协议篇</title><link>https://www.lingcoder.com/p/pancakeswap-v3-protocol/</link><pubDate>Sun, 19 Apr 2026 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-protocol/cover.svg" alt="Featured image of post PancakeSwap V3 深度解析（上）：协议篇" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
+ &lt;/blockquote&gt;</description></item><item><title>PancakeSwap V3 深度解析（上）：协议篇</title><link>https://www.lingcoder.com/p/pancakeswap-v3-protocol/</link><pubDate>Sun, 19 Apr 2026 16:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/pancakeswap-v3-protocol/</guid><description>&lt;img src="https://www.lingcoder.com/p/pancakeswap-v3-protocol/cover.svg" alt="Featured image of post PancakeSwap V3 深度解析（上）：协议篇" /&gt;&lt;h2 id="写在前面"&gt;&lt;a href="#%e5%86%99%e5%9c%a8%e5%89%8d%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;写在前面
 &lt;/h2&gt;&lt;p&gt;PancakeSwap V3 和 Uniswap V3 的关系经常被简化成一句&amp;quot;前者是后者的 fork&amp;quot;——这话一半对一半不对。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;协议设计上，PancakeSwap V3 确实继承自 Uniswap V3&lt;/strong&gt;：同样的集中流动性、同样的 tick 离散化、同样的 NFT 仓位、同样的 TWAP
 预言机。这些东西先讲清楚，再来谈细节。&lt;/p&gt;
