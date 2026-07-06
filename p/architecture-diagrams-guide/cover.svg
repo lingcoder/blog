@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1426"/>
+      <stop offset="1" stop-color="#1A2D4A"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4FC3F7"/>
+      <stop offset="1" stop-color="#9575CD"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- decorative diagram motif: layered architecture on the right -->
+  <g opacity="0.85">
+    <!-- context circle -->
+    <circle cx="950" cy="160" r="60" fill="none" stroke="#4FC3F7" stroke-width="2" opacity="0.5"/>
+    <rect x="915" y="135" width="70" height="50" rx="8" fill="#1E3A5F" stroke="#4FC3F7" stroke-width="2"/>
+    <text x="950" y="165" text-anchor="middle" fill="#4FC3F7" font-size="18" font-weight="600">C4</text>
+    <circle cx="860" cy="110" r="10" fill="none" stroke="#4FC3F7" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="1045" cy="120" r="10" fill="none" stroke="#4FC3F7" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="1040" cy="215" r="10" fill="none" stroke="#4FC3F7" stroke-width="1.5" opacity="0.6"/>
+    <line x1="868" y1="118" x2="918" y2="145" stroke="#4FC3F7" stroke-width="1.5" opacity="0.4"/>
+    <line x1="1036" y1="126" x2="987" y2="143" stroke="#4FC3F7" stroke-width="1.5" opacity="0.4"/>
+    <line x1="1031" y1="209" x2="987" y2="178" stroke="#4FC3F7" stroke-width="1.5" opacity="0.4"/>
+
+    <!-- 4A layered bands -->
+    <g>
+      <rect x="800" y="280" width="300" height="44" rx="8" fill="#1E3A5F" stroke="#64B5F6" stroke-width="1.5"/>
+      <text x="950" y="308" text-anchor="middle" fill="#90CAF9" font-size="18">业务架构</text>
+      <rect x="800" y="336" width="300" height="44" rx="8" fill="#1E3A5F" stroke="#81C784" stroke-width="1.5"/>
+      <text x="950" y="364" text-anchor="middle" fill="#A5D6A7" font-size="18">应用架构</text>
+      <rect x="800" y="392" width="300" height="44" rx="8" fill="#1E3A5F" stroke="#FFB74D" stroke-width="1.5"/>
+      <text x="950" y="420" text-anchor="middle" fill="#FFCC80" font-size="18">数据 · 技术 · 部署</text>
+    </g>
+
+    <!-- fund flow arrow chain -->
+    <g>
+      <rect x="780" y="490" width="90" height="40" rx="20" fill="none" stroke="#F06292" stroke-width="2"/>
+      <text x="825" y="516" text-anchor="middle" fill="#F48FB1" font-size="15">买家</text>
+      <path d="M 872 510 L 922 510" stroke="#F06292" stroke-width="2" marker-end="none"/>
+      <polygon points="922,510 912,505 912,515" fill="#F06292"/>
+      <rect x="925" y="490" width="110" height="40" rx="20" fill="none" stroke="#F06292" stroke-width="2"/>
+      <text x="980" y="516" text-anchor="middle" fill="#F48FB1" font-size="15">监管账户</text>
+      <path d="M 1037 510 L 1087 510" stroke="#F06292" stroke-width="2" stroke-dasharray="6 4"/>
+      <polygon points="1087,510 1077,505 1077,515" fill="#F06292"/>
+      <rect x="1090" y="490" width="80" height="40" rx="20" fill="none" stroke="#F06292" stroke-width="2"/>
+      <text x="1130" y="516" text-anchor="middle" fill="#F48FB1" font-size="15">商户</text>
+      <text x="975" y="560" text-anchor="middle" fill="#F06292" font-size="14" opacity="0.8">¥ 资金流</text>
+    </g>
+  </g>
+
+  <!-- title block -->
+  <rect x="80" y="180" width="8" height="200" rx="4" fill="url(#accent)"/>
+  <text x="120" y="240" fill="#FFFFFF" font-size="58" font-weight="700">架构图，</text>
+  <text x="120" y="320" fill="#FFFFFF" font-size="58" font-weight="700">到底该画哪几张？</text>
+  <text x="120" y="390" fill="#8FA8C9" font-size="26">从 4A、C4 聊到支付平台的资金流图</text>
+
+  <!-- footer -->
+  <text x="120" y="520" fill="#5C7A9E" font-size="20">企业架构 · 软件设计 · 行业特有视图</text>
+  <text x="120" y="556" fill="#4A6586" font-size="18">牛哥聊技术 · lingcoder.com</text>
+</svg>

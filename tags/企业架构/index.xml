@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>企业架构 on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/%E4%BC%81%E4%B8%9A%E6%9E%B6%E6%9E%84/</link><description>Recent content in 企业架构 on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Thu, 11 Jun 2026 20:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/%E4%BC%81%E4%B8%9A%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml"/><item><title>架构图到底该画哪几张、怎么画？——从 4A、C4 到一份可抄的九张图清单</title><link>https://www.lingcoder.com/p/architecture-diagrams-guide/</link><pubDate>Thu, 11 Jun 2026 20:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/architecture-diagrams-guide/</guid><description>&lt;img src="https://www.lingcoder.com/p/architecture-diagrams-guide/cover.svg" alt="Featured image of post 架构图到底该画哪几张、怎么画？——从 4A、C4 到一份可抄的九张图清单" /&gt;&lt;p&gt;最近在做一个跨境支付平台的产品方案，画架构图时遇到两个一直没想清楚的老问题：&lt;strong&gt;到底该画哪几张图？每一张又该怎么画才不翻车？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;业务架构、应用架构、技术架构、数据架构、部署架构、时序图……模板里这些图五花八门，有的方案只画一张&amp;quot;应用架构&amp;quot;，有的画了十几张。画少了怕评审时被问住，画多了维护不过来；更常见的毛病是图画出来了，可颗粒度忽大忽小、箭头一会儿表示调用一会儿表示数据流，读的人对不上比例尺。&lt;/p&gt;
+&lt;p&gt;这篇文章把我这次梳理的结论沉淀下来：架构图有哪几套主流体系、本质分工是什么、一份可以直接抄的清单，以及——重点——&lt;strong&gt;每一张图具体怎么画好&lt;/strong&gt;。支付平台只是贯穿全文的例子，方法本身和行业无关。&lt;/p&gt;
+&lt;h2 id="一三套主流体系别混着用"&gt;&lt;a href="#%e4%b8%80%e4%b8%89%e5%a5%97%e4%b8%bb%e6%b5%81%e4%bd%93%e7%b3%bb%e5%88%ab%e6%b7%b7%e7%9d%80%e7%94%a8" class="header-anchor"&gt;&lt;/a&gt;一、三套主流体系：别混着用
+&lt;/h2&gt;&lt;p&gt;市面上的架构图，基本出自三套体系。很多混乱来自把它们混在一起讨论。&lt;/p&gt;
+&lt;h3 id="1-企业架构视角togaf--国内4a按领域切"&gt;&lt;a href="#1-%e4%bc%81%e4%b8%9a%e6%9e%b6%e6%9e%84%e8%a7%86%e8%a7%92togaf--%e5%9b%bd%e5%86%854a%e6%8c%89%e9%a2%86%e5%9f%9f%e5%88%87" class="header-anchor"&gt;&lt;/a&gt;1. 企业架构视角（TOGAF / 国内&amp;quot;4A&amp;quot;）：按领域切
+&lt;/h3&gt;&lt;p&gt;这是国内方案文档（尤其金融行业）最常见的一套，按&lt;strong&gt;领域&lt;/strong&gt;把架构切成四块：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;类型&lt;/th&gt;
+					&lt;th&gt;回答的问题&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;业务架构&lt;/td&gt;
+					&lt;td&gt;做什么业务、有哪些能力&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;应用架构&lt;/td&gt;
+					&lt;td&gt;用哪些系统/服务承载这些能力&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;数据架构&lt;/td&gt;
+					&lt;td&gt;数据怎么产生、流转、消费&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;技术架构&lt;/td&gt;
+					&lt;td&gt;用什么技术栈/中间件支撑&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;实践中通常在 4A 基础上再加&lt;strong&gt;部署架构&lt;/strong&gt;（多区域、多可用区怎么部）和&lt;strong&gt;安全架构&lt;/strong&gt;（信任域、密钥体系、合规边界），凑成&amp;quot;4+2&amp;quot;。&lt;/p&gt;
+&lt;h3 id="2-软件设计视角41-视图--uml按动静切"&gt;&lt;a href="#2-%e8%bd%af%e4%bb%b6%e8%ae%be%e8%ae%a1%e8%a7%86%e8%a7%9241-%e8%a7%86%e5%9b%be--uml%e6%8c%89%e5%8a%a8%e9%9d%99%e5%88%87" class="header-anchor"&gt;&lt;/a&gt;2. 软件设计视角（4+1 视图 / UML）：按动静切
+&lt;/h3&gt;&lt;p&gt;Kruchten 的 4+1 视图：逻辑视图、开发视图、进程视图、物理视图，外加用例/场景把前四个串起来。我们常画的&lt;strong&gt;时序图&lt;/strong&gt;就属于这里的场景视图——严格说它不是和业务架构、应用架构并列的&amp;quot;分类&amp;quot;，而是把静态架构&amp;quot;动起来&amp;quot;的验证视图。&lt;/p&gt;
+&lt;p&gt;这套体系现在更多出现在教科书里，实际工程中已经逐渐被 C4 取代。&lt;/p&gt;
+&lt;h3 id="3-c4-模型按缩放层级切"&gt;&lt;a href="#3-c4-%e6%a8%a1%e5%9e%8b%e6%8c%89%e7%bc%a9%e6%94%be%e5%b1%82%e7%ba%a7%e5%88%87" class="header-anchor"&gt;&lt;/a&gt;3. C4 模型：按缩放层级切
+&lt;/h3&gt;&lt;p&gt;C4 不按领域切，按&amp;quot;&lt;strong&gt;放大倍数&lt;/strong&gt;&amp;ldquo;切：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Context（系统上下文）→ Container（容器/服务）→ Component（组件）→ Code（代码）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;像地图一样逐级放大：先看系统和外部世界的关系，再看系统内部有哪些服务，再看某个服务内部有哪些组件。近几年它是工程团队的主流，因为每一层都和代码对得上，好维护。&lt;/p&gt;
+&lt;p&gt;有一块天然的重叠值得注意：&lt;strong&gt;企业架构里的&amp;quot;应用架构图&amp;rdquo;，大致相当于 C4 的 Container 图&lt;/strong&gt;。这意味着两套体系不必重复画——同一张图在不同阶段加细节就行。&lt;/p&gt;
+&lt;h2 id="二本质分工看场景不看阶段"&gt;&lt;a href="#%e4%ba%8c%e6%9c%ac%e8%b4%a8%e5%88%86%e5%b7%a5%e7%9c%8b%e5%9c%ba%e6%99%af%e4%b8%8d%e7%9c%8b%e9%98%b6%e6%ae%b5" class="header-anchor"&gt;&lt;/a&gt;二、本质分工：看场景，不看阶段
+&lt;/h2&gt;&lt;p&gt;两套视角不是&amp;quot;选一种&amp;quot;的关系。&lt;strong&gt;真正的判据是这张图画给谁看、撑什么决策&lt;/strong&gt;——也就是场景，而不是项目走到了哪个阶段：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;&lt;/th&gt;
+					&lt;th&gt;企业架构视角（4A）&lt;/th&gt;
+					&lt;th&gt;软件设计视角（C4 / 4+1）&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;回答&lt;/td&gt;
+					&lt;td&gt;做什么、为什么、整体怎么布局&lt;/td&gt;
+					&lt;td&gt;具体怎么实现&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;受众&lt;/td&gt;
+					&lt;td&gt;老板、投资人、产品、合规、评审会&lt;/td&gt;
+					&lt;td&gt;开发团队自己&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;常见阶段（仅相关，非判据）&lt;/td&gt;
+					&lt;td&gt;立项、方案、规划&lt;/td&gt;
+					&lt;td&gt;开发、交接、维护&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;变化频率&lt;/td&gt;
+					&lt;td&gt;低（季度/年级别）&lt;/td&gt;
+					&lt;td&gt;高（随迭代演进）&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;颗粒度&lt;/td&gt;
+					&lt;td&gt;系统/能力级&lt;/td&gt;
+					&lt;td&gt;服务/模块/代码级&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;一句话：&lt;strong&gt;图跟着受众走&lt;/strong&gt;——&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给&lt;strong&gt;老板、投资人、产品、合规、评审&lt;/strong&gt;看，撑&amp;quot;建不建、值不值、合不合规&amp;quot;的决策 → 企业架构视角&lt;/li&gt;
+&lt;li&gt;给&lt;strong&gt;开发自己&lt;/strong&gt;看，撑&amp;quot;怎么建、怎么改&amp;quot;的决策 → 软件设计视角&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;很多人把它记成&amp;quot;早期画企业架构、开发画软件设计&amp;quot;——阶段确实常和场景对应，但那只是相关，不是判据。开发中途来一次合规审计，照样得掏出企业架构那套；立项时碰上技术型投资人，一张 C4 Container 比十页 PPT 管用。所以判断永远回到那一句：&lt;strong&gt;给谁看、撑什么决策&lt;/strong&gt;。拿 C4 Component 图给投资人讲会把人讲睡着，拿业务架构图指导开发则什么也指导不了。&lt;/p&gt;
+&lt;pre class="mermaid" style="visibility:hidden"&gt;flowchart TD
+ A[要画架构图了] --&gt; B{画给谁看?}
+ B --&gt;|老板 / 客户 / 评审 / 合规| C["企业架构视角&lt;br/&gt;业务 + 应用 + 部署（+数据/技术/安全）"]
+ B --&gt;|开发团队| D{要画多深?}
+ D --&gt;|整体服务划分| E["C4 Context + Container&lt;br/&gt;（Container 可由应用架构图细化而来）"]
+ D --&gt;|单个服务内部| F["Component + 状态机 + 异常时序图"]&lt;/pre&gt;&lt;h2 id="三实践中的典型组合"&gt;&lt;a href="#%e4%b8%89%e5%ae%9e%e8%b7%b5%e4%b8%ad%e7%9a%84%e5%85%b8%e5%9e%8b%e7%bb%84%e5%90%88" class="header-anchor"&gt;&lt;/a&gt;三、实践中的典型组合
+&lt;/h2&gt;&lt;p&gt;实际项目几乎没人把两套画全（4A 四张 + 安全 + 部署 + C4 四层 + 4+1 五视图 = 十几张，没人维护得动）。常见的节奏是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;方案/立项期&lt;/strong&gt;：企业架构套餐（业务/应用/数据/技术/部署）+ 一两张关键场景时序图&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;开发启动期&lt;/strong&gt;：补 C4 的 Context 和 Container——Container 直接从应用架构图细化，标上技术栈、通信协议、同步/异步，不用另起炉灶&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;开发进行中&lt;/strong&gt;：每个核心服务按需画 Component 图、状态机图、关键链路时序图&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;长期维护&lt;/strong&gt;：只保鲜 Container 层和状态机，更细的图让它随代码文档化&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;不同团队的&amp;quot;默认选择&amp;quot;也不一样：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;互联网产品/创业团队&lt;/strong&gt;：通常只画两三张——一张&amp;quot;应用架构图&amp;quot;（其实是 4A 和 C4 Container 的混血）+ 部署图 + 关键时序图，不讲究流派，够用就行&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;金融/银行/大厂中台&lt;/strong&gt;：企业架构 4A 是规定动作，方案评审模板就长那样&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;乙方/咨询公司&lt;/strong&gt;：几乎全是企业架构视角，因为受众永远是客户的决策层&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;纯工程团队&lt;/strong&gt;：C4 是主流&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="四画好每一张图的四条通则"&gt;&lt;a href="#%e5%9b%9b%e7%94%bb%e5%a5%bd%e6%af%8f%e4%b8%80%e5%bc%a0%e5%9b%be%e7%9a%84%e5%9b%9b%e6%9d%a1%e9%80%9a%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;四、画好每一张图的四条通则
+&lt;/h2&gt;&lt;p&gt;选对体系只解决了&amp;quot;画哪几张&amp;quot;，更容易翻车的其实是&amp;quot;每一张怎么画&amp;quot;。下面四条通则和图的类型无关，是我踩坑总结出来、贯穿后面所有示例的底层规矩。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通则一：一张图只讲一个主语、一个抽象层级。&lt;/strong&gt; 最常见的翻车是颗粒度不一致——同一张图里，左边画到&amp;quot;系统级&amp;quot;（订单系统），右边却画到&amp;quot;类级&amp;quot;（OrderValidator），读者瞬间失去比例尺。动笔前先定一句话：&amp;ldquo;这张图的最小单元是系统、是服务、还是组件？&amp;ldquo;定了就不破例。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通则二：箭头必须有统一且显式的语义。&lt;/strong&gt; 一张图里的箭头如果一会儿表示调用、一会儿表示数据流、一会儿表示依赖，就等于没画。把规则固定下来——实线/虚线、实心/空心、同步/异步各代表什么——并在角落放一个图例（legend）。后面资金流图里&amp;quot;实线＝资金划拨、虚线＝逻辑记账&amp;quot;就是这条的应用。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通则三：分层图和流向图是两种语法，别揉在一起。&lt;/strong&gt; 技术架构图那种上下分层，表达的是&amp;quot;谁依赖谁&amp;rdquo;（上层依赖下层），不是调用顺序，所以图里不该有回头箭头；数据架构图、时序图那种从左到右，表达的才是&amp;quot;流动方向&amp;rdquo;。把分层图画上一堆来回箭头、或把流程硬塞进分层结构，都是把两种语法揉到一起。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通则四：通用清单画完，再问一句&amp;quot;这个系统最怕什么出错&amp;quot;。&lt;/strong&gt; 上面那套通用图有个共同点：画的几乎全是&amp;quot;&lt;strong&gt;信息怎么走&lt;/strong&gt;&amp;quot;。但一个项目最关键、最怕错的那条流程，未必落在这套表达能力之内。画完之后停一下，想想这个系统最致命的失败模式是什么，如果现有的图都答不上来，就为它单独补一张。这张按需补的图，我称之为&amp;quot;&lt;strong&gt;领域关键流图&lt;/strong&gt;&amp;quot;——画本领域最怕出错的那条流。我这个支付方案就是如此：标准八张图画完，没有一张能回答&amp;quot;&lt;strong&gt;钱怎么走、此刻在谁名下、哪条是监管红线&lt;/strong&gt;&amp;quot;，于是补了第 9 张——支付领域的关键流图就是资金流图（详见第六节）。补图的判断只有一条：已有的图表达不了那条最该说清的流程。&lt;/p&gt;
+&lt;h2 id="五一套可以直接抄的清单"&gt;&lt;a href="#%e4%ba%94%e4%b8%80%e5%a5%97%e5%8f%af%e4%bb%a5%e7%9b%b4%e6%8e%a5%e6%8a%84%e7%9a%84%e6%b8%85%e5%8d%95" class="header-anchor"&gt;&lt;/a&gt;五、一套可以直接抄的清单
+&lt;/h2&gt;&lt;p&gt;最后给一个我这次实际落地的清单，单个 drawio 文件、9 个 Sheet，供做方案的同学参考：&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;#&lt;/th&gt;
+					&lt;th&gt;Sheet&lt;/th&gt;
+					&lt;th&gt;体系归属&lt;/th&gt;
+					&lt;th&gt;一句话用途&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;1&lt;/td&gt;
+					&lt;td&gt;系统上下文图&lt;/td&gt;
+					&lt;td&gt;C4 Context&lt;/td&gt;
+					&lt;td&gt;给非技术干系人看的第一张图：我们和世界的关系&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;2&lt;/td&gt;
+					&lt;td&gt;业务架构图&lt;/td&gt;
+					&lt;td&gt;4A&lt;/td&gt;
+					&lt;td&gt;业务能力地图&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;3&lt;/td&gt;
+					&lt;td&gt;应用架构图&lt;/td&gt;
+					&lt;td&gt;4A ≈ C4 Container&lt;/td&gt;
+					&lt;td&gt;服务划分，开发期直接细化复用&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;4&lt;/td&gt;
+					&lt;td&gt;数据架构图&lt;/td&gt;
+					&lt;td&gt;4A&lt;/td&gt;
+					&lt;td&gt;数据采集 → 数仓 → 应用的流向&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;5&lt;/td&gt;
+					&lt;td&gt;技术架构图&lt;/td&gt;
+					&lt;td&gt;4A&lt;/td&gt;
+					&lt;td&gt;技术栈分层&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;6&lt;/td&gt;
+					&lt;td&gt;部署架构图&lt;/td&gt;
+					&lt;td&gt;4A 扩展&lt;/td&gt;
+					&lt;td&gt;多区域多可用区、灾备&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;7&lt;/td&gt;
+					&lt;td&gt;安全架构图&lt;/td&gt;
+					&lt;td&gt;4A 扩展&lt;/td&gt;
+					&lt;td&gt;信任域、密钥体系、合规边界&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;8&lt;/td&gt;
+					&lt;td&gt;时序图&lt;/td&gt;
+					&lt;td&gt;4+1 场景视图&lt;/td&gt;
+					&lt;td&gt;核心链路动态验证&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;9&lt;/td&gt;
+					&lt;td&gt;领域关键流图&lt;/td&gt;
+					&lt;td&gt;清单外按需补充（通则四）&lt;/td&gt;
+					&lt;td&gt;本领域最怕出错的那条流程；本文例子里是资金流图&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;不必九张全画——方案早期画 1、2、3、6 四张就能撑起一场评审；其余的按受众追问的方向补。&lt;/p&gt;
+&lt;h2 id="六把九张图完整画一遍脱敏示例"&gt;&lt;a href="#%e5%85%ad%e6%8a%8a%e4%b9%9d%e5%bc%a0%e5%9b%be%e5%ae%8c%e6%95%b4%e7%94%bb%e4%b8%80%e9%81%8d%e8%84%b1%e6%95%8f%e7%a4%ba%e4%be%8b" class="header-anchor"&gt;&lt;/a&gt;六、把九张图完整画一遍（脱敏示例）
+&lt;/h2&gt;&lt;p&gt;光给清单不给图等于没说。下面以一个虚构的跨境支付平台为例，把九张图完整画一遍——重点不在支付，而在每张图怎么落笔、第四节那四条通则具体长什么样。全部用 draw.io 绘制后导出 SVG，点开可看原始大图。第二节那种简单示意用 Mermaid 足够，但这种分层全景图，还是 draw.io 这类画布工具才控制得住布局。&lt;/p&gt;
+&lt;h3 id="1-系统上下文图我们和世界的关系"&gt;&lt;a href="#1-%e7%b3%bb%e7%bb%9f%e4%b8%8a%e4%b8%8b%e6%96%87%e5%9b%be%e6%88%91%e4%bb%ac%e5%92%8c%e4%b8%96%e7%95%8c%e7%9a%84%e5%85%b3%e7%b3%bb" class="header-anchor"&gt;&lt;/a&gt;1. 系统上下文图：我们和世界的关系
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="01-context.svg" &gt;&lt;img alt="系统上下文图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/01-context.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 把&amp;quot;我们的系统&amp;quot;画成正中央一个框，绝不展开内部；外部的人和系统环绕四周，箭头只标&amp;quot;谁发起、为了什么&amp;quot;。画这张图的纪律是克制——任何想往中间那个框里加细节的冲动都要忍住，那是 Container 图的事。给非技术干系人讲方案，从这张开始。&lt;/p&gt;
+&lt;h3 id="2-业务架构图业务能力地图"&gt;&lt;a href="#2-%e4%b8%9a%e5%8a%a1%e6%9e%b6%e6%9e%84%e5%9b%be%e4%b8%9a%e5%8a%a1%e8%83%bd%e5%8a%9b%e5%9c%b0%e5%9b%be" class="header-anchor"&gt;&lt;/a&gt;2. 业务架构图：业务能力地图
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="02-business.svg" &gt;&lt;img alt="业务架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/02-business.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 用分块/分层把能力堆起来，一个技术词、一个系统名都不该出现——出现了就说明你画串到应用架构去了（通则一里的&amp;quot;主语&amp;quot;跑偏）。检验方法：把图丢给业务方看，他们能全部读懂才算合格。&lt;/p&gt;
+&lt;h3 id="3-应用架构图服务划分-c4-container"&gt;&lt;a href="#3-%e5%ba%94%e7%94%a8%e6%9e%b6%e6%9e%84%e5%9b%be%e6%9c%8d%e5%8a%a1%e5%88%92%e5%88%86-c4-container" class="header-anchor"&gt;&lt;/a&gt;3. 应用架构图：服务划分（≈ C4 Container）
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="03-application.svg" &gt;&lt;img alt="应用架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/03-application.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 全图保持同一颗粒度（都画到&amp;quot;服务&amp;quot;这一层，别一个框是系统、一个框是类）。开发启动后，往每个框上补技术栈、通信协议、同步/异步，这张图就升级成了 C4 Container，可以直接用，不必重画。&lt;/p&gt;
+&lt;h3 id="4-数据架构图数据的一生"&gt;&lt;a href="#4-%e6%95%b0%e6%8d%ae%e6%9e%b6%e6%9e%84%e5%9b%be%e6%95%b0%e6%8d%ae%e7%9a%84%e4%b8%80%e7%94%9f" class="header-anchor"&gt;&lt;/a&gt;4. 数据架构图：数据的一生
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="04-data.svg" &gt;&lt;img alt="数据架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/04-data.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 按数据的生命周期从左到右排——采集 → 存储/数仓 → 消费，箭头表示流向（这是流向图，不是分层图）。画的时候别漏掉&amp;quot;非分析型&amp;quot;的消费方：在这个支付例子里，对账引擎和监管报送就和 BI 并列，都是一等公民，而不是附属品。&lt;/p&gt;
+&lt;h3 id="5-技术架构图技术栈分层"&gt;&lt;a href="#5-%e6%8a%80%e6%9c%af%e6%9e%b6%e6%9e%84%e5%9b%be%e6%8a%80%e6%9c%af%e6%a0%88%e5%88%86%e5%b1%82" class="header-anchor"&gt;&lt;/a&gt;5. 技术架构图：技术栈分层
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="05-tech.svg" &gt;&lt;img alt="技术架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/05-tech.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 这是典型的分层语法（通则三）——上下表示依赖层次而非调用顺序，所以图里不该出现回头箭头。每个系统的层数按需增减：这个支付例子就比一般系统多了&amp;quot;区块链层&amp;quot;和更重的密钥安全组件。&lt;/p&gt;
+&lt;h3 id="6-部署架构图怎么部怎么活下来"&gt;&lt;a href="#6-%e9%83%a8%e7%bd%b2%e6%9e%b6%e6%9e%84%e5%9b%be%e6%80%8e%e4%b9%88%e9%83%a8%e6%80%8e%e4%b9%88%e6%b4%bb%e4%b8%8b%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;6. 部署架构图：怎么部、怎么活下来
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="06-deployment.svg" &gt;&lt;img alt="部署架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/06-deployment.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 把评审必问的三件事直接标到图上，让图自己回答读者的问题——单点在哪（最好是&amp;quot;没有&amp;quot;）、数据怎么不丢（跨 AZ + 异步复制）、挂了怎么切（DNS 切流）。读图人想问的，图上已经写着，评审就顺。&lt;/p&gt;
+&lt;h3 id="7-安全架构图信任域与红线"&gt;&lt;a href="#7-%e5%ae%89%e5%85%a8%e6%9e%b6%e6%9e%84%e5%9b%be%e4%bf%a1%e4%bb%bb%e5%9f%9f%e4%b8%8e%e7%ba%a2%e7%ba%bf" class="header-anchor"&gt;&lt;/a&gt;7. 安全架构图：信任域与红线
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="07-security.svg" &gt;&lt;img alt="安全架构图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/07-security.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 信任域用嵌套的框来画——框套框，越往里信任级越高，红线就是框的边界。核心思想一行字：&lt;strong&gt;纵深防御 + 最小权限&lt;/strong&gt;。在这个支付例子里，卡 Vault、MPC 这类最敏感的组件，就要落在最里层的隔离区。&lt;/p&gt;
+&lt;h3 id="8-时序图核心支付链路动起来"&gt;&lt;a href="#8-%e6%97%b6%e5%ba%8f%e5%9b%be%e6%a0%b8%e5%bf%83%e6%94%af%e4%bb%98%e9%93%be%e8%b7%af%e5%8a%a8%e8%b5%b7%e6%9d%a5" class="header-anchor"&gt;&lt;/a&gt;8. 时序图：核心支付链路动起来
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="08-sequence.svg" &gt;&lt;img alt="核心支付链路时序图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/08-sequence.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 时序图的价值不在把流程画顺，而在顺手标注工程约束——哪一步要幂等、哪一步是异步回调、回调丢了靠什么兜底。把这些标上，这张图就成了静态架构的&amp;quot;验收测试&amp;quot;；不标，它就只是一张谁都会画的步骤图。&lt;/p&gt;
+&lt;h3 id="9-领域关键流图本例资金流图钱在谁名下"&gt;&lt;a href="#9-%e9%a2%86%e5%9f%9f%e5%85%b3%e9%94%ae%e6%b5%81%e5%9b%be%e6%9c%ac%e4%be%8b%e8%b5%84%e9%87%91%e6%b5%81%e5%9b%be%e9%92%b1%e5%9c%a8%e8%b0%81%e5%90%8d%e4%b8%8b" class="header-anchor"&gt;&lt;/a&gt;9. 领域关键流图（本例：资金流图）：钱在谁名下
+&lt;/h3&gt;&lt;p&gt;这就是第四节通则四说的&amp;quot;领域关键流图&amp;quot;落到支付领域的实例——资金流图：三条入金路径汇入监管账户，再分流出金：&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="09-fundflow.svg" &gt;&lt;img alt="资金流图" loading="lazy" sizes="(max-width: 767px) calc(100vw - 30px), (max-width: 1023px) 700px, (max-width: 1279px) 950px, 1232px" src="https://www.lingcoder.com/p/architecture-diagrams-guide/09-fundflow.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画法：&lt;/strong&gt; 节点换成本领域的关键实体、连线换成那条最怕出错的流，本质上就是一张流程图。画的时候注意三点：箭头语义要显式（通则二），用实线/虚线区分&amp;quot;实际发生的转移&amp;quot;和&amp;quot;逻辑记录、可选路径&amp;quot;；分清物理实体和逻辑实体，逻辑实体并不真实存在，图上要交代它靠什么和物理实体核对一致；涉及合规、隔离、一致性的边界要明确画出来，不能只靠口头说明。换个领域，这张图会叫不同的名字：支付是资金流图，电商是库存与履约流图，IM 是消息投递链路图，IoT 是设备状态流转图，画的都是本系统最怕出错的那条流程。&lt;/p&gt;
+&lt;h2 id="结语"&gt;&lt;a href="#%e7%bb%93%e8%af%ad" class="header-anchor"&gt;&lt;/a&gt;结语
+&lt;/h2&gt;&lt;p&gt;回到开头的两个问题。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;画哪几张？&lt;/strong&gt; 看这张图给谁看：给老板和评审，用企业架构那套；给开发自己，用 C4。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;怎么画好？&lt;/strong&gt; 一张图只讲一个主语，箭头配图例，分层图和流向图别混用。通用清单画完，再检查系统最怕出错的那条流程有没有图能说清，没有就补一张。&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+    <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7FA8D8"/>
+            <stop offset="1" stop-color="#FFE2B8"/>
+        </linearGradient>
+        <linearGradient id="river" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#D8ECF8"/>
+            <stop offset="1" stop-color="#8CBEDF"/>
+        </linearGradient>
+        <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#FFE9A8" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#FFE9A8" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <rect width="1200" height="380" fill="url(#sky)"/>
+
+    <!-- Morning sun -->
+    <circle cx="840" cy="150" r="42" fill="#FFE9A8" opacity="0.95"/>
+    <circle cx="840" cy="150" r="120" fill="url(#sunGlow)"/>
+
+    <!-- Soft clouds -->
+    <g fill="#FFFFFF" opacity="0.8">
+        <ellipse cx="220" cy="90" rx="105" ry="18"/>
+        <ellipse cx="265" cy="76" rx="70" ry="14"/>
+        <ellipse cx="560" cy="140" rx="120" ry="20"/>
+        <ellipse cx="605" cy="126" rx="80" ry="16"/>
+        <ellipse cx="1030" cy="95" rx="90" ry="16"/>
+    </g>
+
+    <!-- Distant mountains -->
+    <path d="M 0 375 L 130 285 L 250 340 L 395 275 L 530 340 L 655 295 L 775 345 L 905 290 L 1040 340 L 1200 295 L 1200 375 Z"
+          fill="#90A8C8" opacity="0.6"/>
+    <path d="M 0 380 Q 160 335 320 368 Q 480 335 640 372 Q 820 340 960 370 Q 1090 348 1200 370 L 1200 415 L 0 415 Z"
+          fill="#6D88A8" opacity="0.85"/>
+
+    <!-- Valley meadow layers -->
+    <path d="M 0 408 Q 600 385 1200 412 L 1200 630 L 0 630 Z" fill="#A8CC8C"/>
+    <path d="M 0 490 Q 600 470 1200 492 L 1200 630 L 0 630 Z" fill="#8CB871"/>
+    <path d="M 0 570 Q 600 552 1200 572 L 1200 630 L 0 630 Z" fill="#6E9E58"/>
+
+    <!-- Main river: from horizon gap widening to the foreground -->
+    <path d="M 576 386 Q 566 440 528 490 Q 478 550 470 630 L 736 630 Q 712 545 664 488 Q 630 438 626 386 Z"
+          fill="url(#river)"/>
+
+    <!-- Left tributary joining the main river -->
+    <path d="M 0 424 Q 210 438 352 472 Q 462 500 522 542 L 496 590 Q 424 534 322 508 Q 184 474 0 460 Z"
+          fill="url(#river)"/>
+
+    <!-- Right tributary joining the main river -->
+    <path d="M 1200 438 Q 1004 452 862 486 Q 764 512 694 556 L 718 604 Q 788 548 880 524 Q 1022 490 1200 476 Z"
+          fill="url(#river)"/>
+
+    <!-- Sun glint on the water -->
+    <g fill="none" stroke="#FFF4D0" stroke-linecap="round" stroke-opacity="0.8" stroke-width="3">
+        <path d="M 588 420 q 8 -2 16 0"/>
+        <path d="M 574 470 q 10 -2 20 0"/>
+        <path d="M 552 530 q 12 -2 24 0"/>
+        <path d="M 540 590 q 14 -2 28 0"/>
+    </g>
+    <!-- Water flow lines -->
+    <g fill="none" stroke="#E8F6FF" stroke-linecap="round" stroke-opacity="0.6" stroke-width="2">
+        <path d="M 160 446 q 30 3 60 9"/>
+        <path d="M 320 486 q 28 6 54 14"/>
+        <path d="M 1010 462 q -30 4 -58 11"/>
+        <path d="M 856 500 q -26 7 -50 16"/>
+        <path d="M 636 470 q 6 14 16 26"/>
+    </g>
+
+    <!-- Pine clusters on the banks -->
+    <g fill="#4A7A48">
+        <g transform="translate(150,530)">
+            <polygon points="0,-52 18,0 -18,0"/>
+            <polygon points="0,-70 14,-26 -14,-26"/>
+            <rect x="-4" y="0" width="8" height="14" fill="#5C3820"/>
+        </g>
+        <g transform="translate(210,556)">
+            <polygon points="0,-42 15,0 -15,0"/>
+            <polygon points="0,-57 12,-21 -12,-21"/>
+            <rect x="-3" y="0" width="6" height="12" fill="#5C3820"/>
+        </g>
+        <g transform="translate(1005,540)">
+            <polygon points="0,-50 17,0 -17,0"/>
+            <polygon points="0,-67 13,-25 -13,-25"/>
+            <rect x="-4" y="0" width="8" height="13" fill="#5C3820"/>
+        </g>
+        <g transform="translate(1070,566)">
+            <polygon points="0,-40 14,0 -14,0"/>
+            <polygon points="0,-54 11,-20 -11,-20"/>
+            <rect x="-3" y="0" width="6" height="11" fill="#5C3820"/>
+        </g>
+    </g>
+
+    <!-- Wildflowers -->
+    <g>
+        <g transform="translate(70,600)">
+            <circle r="5" fill="#FFFFFF"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(300,606)">
+            <circle r="4" fill="#FFB0C8"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(388,586)">
+            <circle r="4" fill="#FFFFFF"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(830,608)">
+            <circle r="5" fill="#E8B0FF"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(920,590)">
+            <circle r="4" fill="#FFFFFF"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+        <g transform="translate(1150,610)">
+            <circle r="4" fill="#FFB0C8"/>
+            <circle r="2" fill="#FFE0A0"/>
+        </g>
+    </g>
+
+    <!-- Birds -->
+    <g fill="none" stroke="#4A5870" stroke-width="2" stroke-linecap="round">
+        <path d="M 400 200 q 6 -7 12 0 q 6 -7 12 0"/>
+        <path d="M 660 170 q 5 -6 10 0 q 5 -6 10 0"/>
+        <path d="M 500 240 q 5 -6 10 0 q 5 -6 10 0"/>
+    </g>
+
+    <text x="60" y="615" fill="#3D5828" font-family="-apple-system, sans-serif" font-size="14" opacity="0.85"
+          letter-spacing="2">lingcoder.com
+    </text>
+</svg>

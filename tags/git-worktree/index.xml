@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Git Worktree on 牛哥聊技术</title><link>https://www.lingcoder.com/tags/git-worktree/</link><description>Recent content in Git Worktree on 牛哥聊技术</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Fri, 15 May 2026 20:00:00 +0800</lastBuildDate><atom:link href="https://www.lingcoder.com/tags/git-worktree/index.xml" rel="self" type="application/rss+xml"/><item><title>Claude Code 多仓库协作最佳实践</title><link>https://www.lingcoder.com/p/claude-code-multi-repo-best-practices/</link><pubDate>Fri, 15 May 2026 20:00:00 +0800</pubDate><guid>https://www.lingcoder.com/p/claude-code-multi-repo-best-practices/</guid><description>&lt;img src="https://www.lingcoder.com/p/claude-code-multi-repo-best-practices/cover.svg" alt="Featured image of post Claude Code 多仓库协作最佳实践" /&gt;
+ &lt;blockquote&gt;
+ &lt;p&gt;适用范围：使用 Claude Code 在 Monorepo、多独立 Git 仓库、git worktree、submodule 等场景下进行协作开发。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;p&gt;先立个基调：多仓协作难不倒 AI，出问题的几乎都在人这一侧：拓扑没选对，约定没写成机制，上下文没做卫生。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="一先选仓库拓扑结构决定协作方式"&gt;&lt;a href="#%e4%b8%80%e5%85%88%e9%80%89%e4%bb%93%e5%ba%93%e6%8b%93%e6%89%91%e7%bb%93%e6%9e%84%e5%86%b3%e5%ae%9a%e5%8d%8f%e4%bd%9c%e6%96%b9%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;一、先选仓库拓扑：结构决定协作方式
+&lt;/h2&gt;&lt;p&gt;后面所有实践都建立在一个前提上：仓库结构本身选对了。AI 多端开发（前端 + 后端 + 小程序……）的仓库组织，主流是三种方案，外加一个轻量变体。&lt;/p&gt;
+&lt;h3 id="11-方案一工作台仓库--git-submodule最重"&gt;&lt;a href="#11-%e6%96%b9%e6%a1%88%e4%b8%80%e5%b7%a5%e4%bd%9c%e5%8f%b0%e4%bb%93%e5%ba%93--git-submodule%e6%9c%80%e9%87%8d" class="header-anchor"&gt;&lt;/a&gt;1.1 方案一：工作台仓库 + git submodule（最重）
+&lt;/h3&gt;&lt;p&gt;按端拆分独立仓库，另建一个&amp;quot;工作台&amp;quot;仓库，把各端仓库以 submodule 引入，统一在工作台开发：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;workspace/ # 工作台仓库
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ .gitmodules
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ CLAUDE.md # 跨仓协作约定
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ scripts/ # 联调脚本
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ frontend/ # submodule → 前端仓库
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└─ backend/ # submodule → 后端仓库
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这套方案真正买到的只有一样东西：&lt;strong&gt;版本锁定&lt;/strong&gt;，工作台记录每个子仓的精确 commit。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：git 原生强制锁定，&amp;ldquo;哪个前端版本配哪个后端版本&amp;quot;可复现、可回滚；CI checkout 工作台即得完整组合，集成测试可以直接自动化；各子仓权限与发布边界清晰&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：两步提交、detached HEAD、&lt;code&gt;update --remote&lt;/code&gt;，submodule 的这套摩擦一样不少；提交规则要显式写进工作台 CLAUDE.md 约束 AI，否则容易两步提交漏一步（见第六节）；日常联调本要同步演进到最新，锁定旧 commit 反而是摩擦源&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;适用&lt;/strong&gt;：多团队分治、发布需要组合版本审计。没有这个需求，摩擦全是白付的。&lt;/p&gt;
+&lt;h3 id="12-方案二工作台仓库--gitignore-普通文件夹甜点位"&gt;&lt;a href="#12-%e6%96%b9%e6%a1%88%e4%ba%8c%e5%b7%a5%e4%bd%9c%e5%8f%b0%e4%bb%93%e5%ba%93--gitignore-%e6%99%ae%e9%80%9a%e6%96%87%e4%bb%b6%e5%a4%b9%e7%94%9c%e7%82%b9%e4%bd%8d" class="header-anchor"&gt;&lt;/a&gt;1.2 方案二：工作台仓库 + gitignore 普通文件夹（甜点位）
+&lt;/h3&gt;&lt;p&gt;在方案一基础上去掉 submodule：各端仓库直接 &lt;code&gt;git clone&lt;/code&gt; 进工作台目录，每个被忽略的文件夹内部都是一个完整的独立 git 仓库，有自己的 &lt;code&gt;.git/&lt;/code&gt;、完整历史和远端；工作台的 &lt;code&gt;.gitignore&lt;/code&gt; 只是让工作台对它们视而不见，工作台仓库本身只版本化&amp;quot;胶水层&amp;rdquo;：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-fallback" data-lang="fallback"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;workspace/ # 工作台仓库（只版本化胶水）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ .gitignore # 忽略 frontend/ backend/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ CLAUDE.md # 跨仓约定、联调流程
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ docs/api-contract.md # 接口契约
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ docker-compose.yml # 联调环境
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;├─ frontend/ # 独立 git 仓库，被 ignore
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;└─ backend/ # 独立 git 仓库，被 ignore
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;本质是 &amp;ldquo;meta repo&amp;rdquo; 模式（Android &lt;code&gt;repo&lt;/code&gt;、&lt;code&gt;meta&lt;/code&gt; 这类工具的手工版）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：零 submodule 摩擦；所有子仓都在主工作目录之内，AI 全部可见，&lt;strong&gt;不需要任何 &lt;code&gt;/add-dir&lt;/code&gt;&lt;/strong&gt;，各子仓自己的 CLAUDE.md 也会按需自动加载（见 4.3 节）；跨仓胶水（CLAUDE.md、联调脚本、接口契约）有地方版本化；子仓各自保留独立历史与独立部署&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：工作台是空壳、不可复现；没有版本锁定；集成 CI 跑不起来；嵌套仓库下 AI 容易搞错提交目标&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;缺点看着多，但每条都有便宜的机制兜底：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;工作台是个空壳，不可复现&lt;/strong&gt;：clone 下来只有胶水层。但这条在 AI 时代成色大打折扣，把子仓清单（目录名、仓库地址、分支）写进工作台 CLAUDE.md 就够了：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gu"&gt;## 子仓清单
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; frontend/ → git&lt;span class="ni"&gt;@github&lt;/span&gt;.com:org/frontend.git（main）
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;-&lt;/span&gt; backend/ → git&lt;span class="ni"&gt;@github&lt;/span&gt;.com:org/backend.git（main）
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;新环境 clone 工作台后，让 Claude 照单把子仓拉齐即可；子仓一旦就位，每个目录都是完整 git 仓库，remote、分支这些信息 git 本身就带着，不需要额外维护。想要不依赖 AI 的确定性引导，再升级成 &lt;code&gt;repos.yaml&lt;/code&gt; + &lt;code&gt;setup.sh&lt;/code&gt;（Android &lt;code&gt;repo&lt;/code&gt; 工具的 manifest.xml 干的就是这件事）。脚本化还有个副产品，&lt;strong&gt;穷人版版本锁定&lt;/strong&gt;：联调到里程碑时，把各子仓当前 SHA 写进 lockfile 提交，&amp;ldquo;组合版本审计&amp;quot;的需求就覆盖了大半。方案一的适用面被进一步压缩到只剩&amp;quot;需要 git 原生强制锁定&amp;quot;一种。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;AI 容易搞错目标仓&lt;/strong&gt;：嵌套 git 仓库下，在工作台根目录跑 &lt;code&gt;git add&lt;/code&gt; / &lt;code&gt;git commit&lt;/code&gt;，作用的是工作台仓库而不是子仓。除了在工作台 CLAUDE.md 写明「每个子目录是独立 git 仓库，进入子目录分别提交」，更硬的兜底是用 PreToolUse hook 直接拦截工作台根目录的 git 提交。约定不如机制。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;集成 CI 跑不起来&lt;/strong&gt;：CI checkout 工作台得到的同样是空壳。跨端集成测试要么靠 manifest 驱动多仓 checkout，要么退回各子仓自己的 CI（对选型的影响见 1.5）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;适用&lt;/strong&gt;：个人 / 小团队 AI 开发、前后端紧耦合日常联调。&lt;/p&gt;
+&lt;h3 id="13-方案三monorepo新项目默认"&gt;&lt;a href="#13-%e6%96%b9%e6%a1%88%e4%b8%89monorepo%e6%96%b0%e9%a1%b9%e7%9b%ae%e9%bb%98%e8%ae%a4" class="header-anchor"&gt;&lt;/a&gt;1.3 方案三：Monorepo（新项目默认）
+&lt;/h3&gt;&lt;p&gt;所有端放同一个仓库。AI 时代它不只是&amp;quot;最简单&amp;rdquo;，更大的红利是&lt;strong&gt;跨栈原子提交&lt;/strong&gt;：改一个 API，同时改掉服务端实现和所有客户端调用，接口漂移在物理上不可能发生。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：跨栈原子提交，一个 commit、一次 review、一套 CI 验证全链路；没有任何跨仓机制要维护，上手心智成本最低；上下文对 AI 完整连续&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：部署与发布耦合；访问权限只能到目录粒度；项目扩大后仓库内容持续膨胀，CI/CD 越跑越重，任何一端的改动默认触发全仓构建发布，不做增量裁剪时流水线时长随仓库体积线性上涨，这也是团队和代码量长大后必须付构建工具链（turborepo / nx 的 affected 增量构建）门槛的原因；仓库大了 AI 上下文有压力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最后一条的直接回应是 &lt;code&gt;git sparse-checkout&lt;/code&gt;：只检出在做的子树，Claude 的可见范围和上下文随检出范围收缩。各端约束用嵌套 CLAUDE.md 分层管理（见 4.3 节）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;适用&lt;/strong&gt;：新项目、有选择权 → 默认选它。&lt;/p&gt;
+&lt;h3 id="14-轻量变体平级目录--additionaldirectories"&gt;&lt;a href="#14-%e8%bd%bb%e9%87%8f%e5%8f%98%e4%bd%93%e5%b9%b3%e7%ba%a7%e7%9b%ae%e5%bd%95--additionaldirectories" class="header-anchor"&gt;&lt;/a&gt;1.4 轻量变体：平级目录 + additionalDirectories
+&lt;/h3&gt;&lt;p&gt;不建工作台，各仓平级摆放，在主仓 &lt;code&gt;.claude/settings.json&lt;/code&gt; 里持久声明兄弟仓（写法见 2.2 节）。四个方案里最轻的一个，连工作台仓库都不用建，配一次每次启动自动生效。代价：跨仓胶水无处版本化；辅仓 CLAUDE.md 默认不加载（见 4.3 节）；&lt;code&gt;../&lt;/code&gt; 相对路径依赖每个人本地目录摆放一致，仓库本身无法强制。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;适用&lt;/strong&gt;：&amp;ldquo;一主一辅&amp;quot;形态，比如主要在后端开发，偶尔看前端怎么调用。&lt;/p&gt;
+&lt;h3 id="15-选型一览"&gt;&lt;a href="#15-%e9%80%89%e5%9e%8b%e4%b8%80%e8%a7%88" class="header-anchor"&gt;&lt;/a&gt;1.5 选型一览
+&lt;/h3&gt;&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;方案&lt;/th&gt;
+					&lt;th&gt;一句话判据&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;一：工作台 + submodule&lt;/td&gt;
+					&lt;td&gt;需要组合版本审计、可复现的集成点&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;二：工作台 + ignore 文件夹&lt;/td&gt;
+					&lt;td&gt;紧耦合多仓日常联调，跨仓胶水多到值得一个仓库来管&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;三：Monorepo&lt;/td&gt;
+					&lt;td&gt;新项目、有选择权，默认选它&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;四：平级目录 + additionalDirectories&lt;/td&gt;
+					&lt;td&gt;一主一辅，偶尔跨仓看看&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;方案二和方案四的分界线就一句话：&lt;strong&gt;跨仓的胶水（脚本、契约、共享规范）多到值得专门一个仓库来管吗？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;还有一条隐形判据是 &lt;strong&gt;CI&lt;/strong&gt;：如果跨端集成测试必须在 CI 里强制执行，可选项基本只剩方案一（submodule 可以直接 checkout）和方案三（本来就是一个仓库）；方案二要靠 manifest 驱动多仓 checkout 才能补上这块。反过来，集成验证只在本地联调时做的团队，方案二没有任何损失。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="二add-dir-命令"&gt;&lt;a href="#%e4%ba%8cadd-dir-%e5%91%bd%e4%bb%a4" class="header-anchor"&gt;&lt;/a&gt;二、&lt;code&gt;/add-dir&lt;/code&gt; 命令
+&lt;/h2&gt;&lt;h3 id="21-定位"&gt;&lt;a href="#21-%e5%ae%9a%e4%bd%8d" class="header-anchor"&gt;&lt;/a&gt;2.1 定位
+&lt;/h3&gt;&lt;p&gt;把 Claude Code 从「单仓库工具」扩展为「多仓库协调器」：将当前会话之外的目录动态纳入工作上下文。&lt;/p&gt;
+&lt;h3 id="22-三种加入方式"&gt;&lt;a href="#22-%e4%b8%89%e7%a7%8d%e5%8a%a0%e5%85%a5%e6%96%b9%e5%bc%8f" class="header-anchor"&gt;&lt;/a&gt;2.2 三种加入方式
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;claude --add-dir &amp;lt;path&amp;gt;...&lt;/code&gt;&lt;/strong&gt;：启动即生效，适合本次任务的已知工作集&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;/add-dir &amp;lt;path&amp;gt;&lt;/code&gt;&lt;/strong&gt;：会话内动态追加，适合临时引用参考实现，重启即清&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;settings.json 持久化&lt;/strong&gt;：固定不变的工作集（如前后端两仓永远一起开）写进仓库级 &lt;code&gt;.claude/settings.json&lt;/code&gt;，每次启动自动生效：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;permissions&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;additionalDirectories&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;../frontend-repo&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="23-权限与边界"&gt;&lt;a href="#23-%e6%9d%83%e9%99%90%e4%b8%8e%e8%be%b9%e7%95%8c" class="header-anchor"&gt;&lt;/a&gt;2.3 权限与边界
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;额外目录与主工作目录&lt;strong&gt;共享同一权限模型&lt;/strong&gt;：自动可读，编辑权限沿用 settings.json&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不会出现额外的权限提示 ⇒ &lt;strong&gt;不要随手加敏感目录&lt;/strong&gt;（如 &lt;code&gt;~/.ssh&lt;/code&gt;、家目录、根目录）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;工作目录内的敏感文件（&lt;code&gt;.env&lt;/code&gt;、密钥、凭据）用 &lt;code&gt;permissions.deny&lt;/code&gt; 挡住。这是&lt;strong&gt;安全防线&lt;/strong&gt;，搜索效率上并不需要它（&lt;code&gt;.gitignore&lt;/code&gt; 已经覆盖，见 7.1 节）：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-json" data-lang="json"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;permissions&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="nt"&gt;&amp;#34;deny&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;#34;Read(./.env*)&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;Read(./secrets/**)&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;额外目录的 CLAUDE.md 默认不加载，开启方式见 4.3 节&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="三多仓库协作核心决策"&gt;&lt;a href="#%e4%b8%89%e5%a4%9a%e4%bb%93%e5%ba%93%e5%8d%8f%e4%bd%9c%e6%a0%b8%e5%bf%83%e5%86%b3%e7%ad%96" class="header-anchor"&gt;&lt;/a&gt;三、多仓库协作核心决策
+&lt;/h2&gt;&lt;h3 id="31-同会话-vs-多会话"&gt;&lt;a href="#31-%e5%90%8c%e4%bc%9a%e8%af%9d-vs-%e5%a4%9a%e4%bc%9a%e8%af%9d" class="header-anchor"&gt;&lt;/a&gt;3.1 同会话 vs 多会话
+&lt;/h3&gt;&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;仓库关系&lt;/th&gt;
+					&lt;th&gt;仓库数量&lt;/th&gt;
+					&lt;th&gt;推荐策略&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;紧耦合（共享库、接口实时联调）&lt;/td&gt;
+					&lt;td&gt;≤ 3&lt;/td&gt;
+					&lt;td&gt;&lt;strong&gt;同会话&lt;/strong&gt; + &lt;code&gt;/add-dir&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;松耦合（独立功能、各自上线）&lt;/td&gt;
+					&lt;td&gt;任意&lt;/td&gt;
+					&lt;td&gt;&lt;strong&gt;每仓一会话&lt;/strong&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;主仓 + 临时参考仓&lt;/td&gt;
+					&lt;td&gt;≤ 5&lt;/td&gt;
+					&lt;td&gt;主仓会话 + 临时 &lt;code&gt;/add-dir&lt;/code&gt; 参考仓&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;大型 Monorepo（单仓 &amp;gt; 50MB）&lt;/td&gt;
+					&lt;td&gt;1&lt;/td&gt;
+					&lt;td&gt;单会话 + 嵌套 CLAUDE.md + sparse-checkout 收缩可见范围&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;跨语言异构仓库&lt;/td&gt;
+					&lt;td&gt;≥ 3&lt;/td&gt;
+					&lt;td&gt;多会话 + MCP server / 共享工具桥接&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="32-跨仓代码引用策略"&gt;&lt;a href="#32-%e8%b7%a8%e4%bb%93%e4%bb%a3%e7%a0%81%e5%bc%95%e7%94%a8%e7%ad%96%e7%95%a5" class="header-anchor"&gt;&lt;/a&gt;3.2 跨仓代码引用策略
+&lt;/h3&gt;&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;引用类型&lt;/th&gt;
+					&lt;th&gt;推荐方案&lt;/th&gt;
+					&lt;th&gt;避免&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;类型 / 接口契约&lt;/td&gt;
+					&lt;td&gt;抽共享包（npm / go module / proto）&lt;/td&gt;
+					&lt;td&gt;在多仓重复声明&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;工具函数 / 通用库&lt;/td&gt;
+					&lt;td&gt;独立仓库 + 包管理器引用&lt;/td&gt;
+					&lt;td&gt;copy-paste&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;紧耦合代码（前后端同步演进）&lt;/td&gt;
+					&lt;td&gt;git submodule&lt;/td&gt;
+					&lt;td&gt;长期 &lt;code&gt;/add-dir&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;一次性参考别人怎么写&lt;/td&gt;
+					&lt;td&gt;临时 &lt;code&gt;/add-dir&lt;/code&gt; + 注释标注来源&lt;/td&gt;
+					&lt;td&gt;不留痕直接 copy&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id="33-契约优先比拓扑更高杠杆"&gt;&lt;a href="#33-%e5%a5%91%e7%ba%a6%e4%bc%98%e5%85%88%e6%af%94%e6%8b%93%e6%89%91%e6%9b%b4%e9%ab%98%e6%9d%a0%e6%9d%86" class="header-anchor"&gt;&lt;/a&gt;3.3 契约优先：比拓扑更高杠杆
+&lt;/h3&gt;&lt;p&gt;3.2 里&amp;quot;抽共享包&amp;quot;解决的是复用，真正消灭接口漂移的是&lt;strong&gt;契约优先（schema-first）&lt;/strong&gt;：OpenAPI / proto 文件作为唯一事实源，两端代码由生成器产出。AI 改接口时改的是 schema，改完跑 codegen，两端实现跟着走，&amp;ldquo;前端以为的接口&amp;quot;和&amp;quot;后端实际的接口&amp;quot;物理上就是同一份文件。&lt;/p&gt;
+&lt;p&gt;它对拓扑选型也有影响：接口漂移这个多仓最大的痛点被工具链消掉之后，拓扑本身的权重就下降了，松耦合方案的最大缺陷不复存在。落点上它和拓扑方案二配合最好：契约文件正好放工作台仓库里版本化。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="四claudemd-与-settingsjson-组织"&gt;&lt;a href="#%e5%9b%9bclaudemd-%e4%b8%8e-settingsjson-%e7%bb%84%e7%bb%87" class="header-anchor"&gt;&lt;/a&gt;四、CLAUDE.md 与 settings.json 组织
+&lt;/h2&gt;&lt;h3 id="41-分层原则"&gt;&lt;a href="#41-%e5%88%86%e5%b1%82%e5%8e%9f%e5%88%99" class="header-anchor"&gt;&lt;/a&gt;4.1 分层原则
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;用户级&lt;/strong&gt; &lt;code&gt;~/.claude/&lt;/code&gt;：个人编码风格、全局偏好与 permissions 兜底&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;仓库级&lt;/strong&gt; &lt;code&gt;&amp;lt;repo&amp;gt;/CLAUDE.md&lt;/code&gt; + &lt;code&gt;.claude/settings.json&lt;/code&gt;：该仓库的技术栈、构建/测试命令、编码规范、领域知识，以及仓库特定权限、hooks&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;跨仓共通规范&lt;/strong&gt;单独放一个文件，用 &lt;strong&gt;&lt;code&gt;@import&lt;/code&gt; 语法&lt;/strong&gt;引进各仓库的 CLAUDE.md（支持相对/绝对路径，最多递归 4 层）：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-markdown" data-lang="markdown"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="gh"&gt;# 本仓库 CLAUDE.md
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;@../shared/team-standards.md
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这比&amp;quot;抄一份进每个仓库&amp;quot;或&amp;quot;放 wiki 里指望人去看&amp;quot;都可靠：规范只维护一份，各仓库引用同源。&lt;strong&gt;不要把跨仓库的内容写进单一仓库的 CLAUDE.md&lt;/strong&gt;，会随仓库漂移。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="42-权限管理"&gt;&lt;a href="#42-%e6%9d%83%e9%99%90%e7%ae%a1%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;4.2 权限管理
+&lt;/h3&gt;&lt;p&gt;跨仓共享的 Bash / MCP 权限放用户级 settings.json，仓库特有的放仓库级；&lt;code&gt;.claude/settings.local.json&lt;/code&gt; 是个人临时配置，不要提交进 git。&lt;/p&gt;
+&lt;h3 id="43-多仓-claudemd-加载"&gt;&lt;a href="#43-%e5%a4%9a%e4%bb%93-claudemd-%e5%8a%a0%e8%bd%bd" class="header-anchor"&gt;&lt;/a&gt;4.3 多仓 CLAUDE.md 加载
+&lt;/h3&gt;&lt;p&gt;关键分界是子仓在不在主工作目录之内，两边机制完全不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在主工作目录之内&lt;/strong&gt;（方案一的 submodule、方案二的 ignore 文件夹、Monorepo 的子包）：嵌套 CLAUDE.md &lt;strong&gt;按需自动加载&lt;/strong&gt;，Claude 读到某个子目录下的文件时，该目录的 CLAUDE.md 才被拉进上下文。不需要任何配置，还顺便省 token：没碰过的子仓，其约束也不占上下文。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在主工作目录之外&lt;/strong&gt;（&lt;code&gt;--add-dir&lt;/code&gt; / &lt;code&gt;additionalDirectories&lt;/code&gt; 加入的目录）：CLAUDE.md &lt;strong&gt;默认不加载&lt;/strong&gt;，需显式开启：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;注意两个限制：值是 &lt;code&gt;1&lt;/code&gt; 而不是 &lt;code&gt;true&lt;/code&gt;；且只对 &lt;code&gt;--add-dir&lt;/code&gt; / &lt;code&gt;/add-dir&lt;/code&gt; 加入的目录生效，对 settings.json 里 &lt;code&gt;additionalDirectories&lt;/code&gt; 配置的目录不生效。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+ &lt;blockquote&gt;
+ &lt;p&gt;⚠️ 多份 CLAUDE.md 同时加载可能产生约束冲突，提前对齐风格。&lt;/p&gt;
+
+ &lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id="五git-worktree-场景"&gt;&lt;a href="#%e4%ba%94git-worktree-%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;五、git worktree 场景
+&lt;/h2&gt;&lt;p&gt;同一仓库多分支并行的首选：物理隔离、无需切换 / stash，每个 worktree 一个 Claude 会话（&lt;code&gt;~/code/demo/&lt;/code&gt;、&lt;code&gt;demo-feat-x/&lt;/code&gt;、&lt;code&gt;demo-fix-y/&lt;/code&gt; 平级摆放），CLAUDE.md 共用同源，任务上下文互不污染。&lt;/p&gt;
+&lt;p&gt;不想手动 &lt;code&gt;git worktree add&lt;/code&gt; 的话，Claude Code 已把这套流程产品化：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;claude --worktree&lt;/code&gt;（&lt;code&gt;-w&lt;/code&gt;）&lt;/strong&gt;：启动时自动创建/进入一个隔离 worktree，任务做完没有改动会自动清理&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;.worktreeinclude&lt;/code&gt;&lt;/strong&gt;：声明哪些未跟踪文件（如 &lt;code&gt;.env&lt;/code&gt;、本地配置）要拷贝进新 worktree，解决&amp;quot;新 worktree 缺本地配置跑不起来&amp;quot;的经典问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;跨 worktree 对比代码：&lt;code&gt;/add-dir ../demo-feat-x&lt;/code&gt;，临时查看后清理。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="六git-submodule-场景"&gt;&lt;a href="#%e5%85%adgit-submodule-%e5%9c%ba%e6%99%af" class="header-anchor"&gt;&lt;/a&gt;六、git submodule 场景
+&lt;/h2&gt;&lt;p&gt;这是拓扑方案一（工作台 + submodule）的日常形态：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在外层仓启动 Claude，submodule 路径&lt;strong&gt;自动&lt;/strong&gt;在工作目录内，无需 &lt;code&gt;/add-dir&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;但需注意：
+&lt;ul&gt;
+&lt;li&gt;submodule 更新需手动 &lt;code&gt;git submodule update --remote&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;修改 submodule 内文件 → 需要在 submodule 仓提交，再到外层仓更新引用&lt;/li&gt;
+&lt;li&gt;在工作台 CLAUDE.md 写明「这是 submodule，提交分两步」，写一次每个会话自动加载，不用口头反复提醒&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="七上下文管理"&gt;&lt;a href="#%e4%b8%83%e4%b8%8a%e4%b8%8b%e6%96%87%e7%ae%a1%e7%90%86" class="header-anchor"&gt;&lt;/a&gt;七、上下文管理
+&lt;/h2&gt;&lt;p&gt;多仓本身并不额外费上下文：搜索按需进行，嵌套 CLAUDE.md 按需加载，没碰过的子仓几乎是免费的。真正要管理的是&lt;strong&gt;长会话的上下文污染&lt;/strong&gt;：跨仓任务战线长，读过的文件、跑过的命令残留累积，稀释注意力、拉低回答质量。下面的动作说到底就两件事：少装进来，及时卸载。&lt;/p&gt;
+&lt;h3 id="71-缩小搜索面"&gt;&lt;a href="#71-%e7%bc%a9%e5%b0%8f%e6%90%9c%e7%b4%a2%e9%9d%a2" class="header-anchor"&gt;&lt;/a&gt;7.1 缩小搜索面
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;使用 Grep / Glob 工具精准定位，&lt;strong&gt;禁止整仓扫描&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;构建产物、依赖目录不需要任何额外配置：搜索工具默认尊重 &lt;code&gt;.gitignore&lt;/code&gt;。顺带辟个谣：Claude Code &lt;strong&gt;没有&lt;/strong&gt; &lt;code&gt;.claudeignore&lt;/code&gt; 文件，网上不少文章以讹传讹&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="72-主动卸载上下文"&gt;&lt;a href="#72-%e4%b8%bb%e5%8a%a8%e5%8d%b8%e8%bd%bd%e4%b8%8a%e4%b8%8b%e6%96%87" class="header-anchor"&gt;&lt;/a&gt;7.2 主动卸载上下文
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;切换任务时用 &lt;strong&gt;&lt;code&gt;/clear&lt;/code&gt;&lt;/strong&gt; 清空上下文，效果等同重启，不用退出进程&lt;/li&gt;
+&lt;li&gt;长任务中途上下文臃肿但还不能丢，用 &lt;strong&gt;&lt;code&gt;/compact&lt;/code&gt;&lt;/strong&gt; 智能压缩（保留结论、丢弃过程）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="73-agent-teams-分工"&gt;&lt;a href="#73-agent-teams-%e5%88%86%e5%b7%a5" class="header-anchor"&gt;&lt;/a&gt;7.3 Agent Teams 分工
+&lt;/h3&gt;&lt;p&gt;仓库多到单会话装不下时，改用分工：主 agent 只做调度与结果汇总，每个 teammate 负责一个仓（其会话只持有该仓上下文），避免单会话上下文爆炸。团队无需手动创建或销毁：通过 Agent 工具派生 teammate 时自动建团，任务结束自动回收。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="八决策清单quick-reference"&gt;&lt;a href="#%e5%85%ab%e5%86%b3%e7%ad%96%e6%b8%85%e5%8d%95quick-reference" class="header-anchor"&gt;&lt;/a&gt;八、决策清单（Quick Reference）
+&lt;/h2&gt;&lt;p&gt;启动多仓任务前，先回答：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 仓库拓扑定了吗？（四选一，见第一节；新项目默认 Monorepo）&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 这些仓库是&lt;strong&gt;紧耦合&lt;/strong&gt;还是&lt;strong&gt;松耦合&lt;/strong&gt;？数量是否 ≤ 3？若否，多会话或 agent teams&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 接口契约是否 schema 化（OpenAPI / proto + codegen）？共享代码是否抽包？&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 跨端集成测试要不要在 CI 强制执行？（直接影响拓扑选择，见 1.5 节）&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 每个仓库是否都有自己的 CLAUDE.md？跨仓规范是否用 &lt;code&gt;@import&lt;/code&gt; 同源引用？&lt;/li&gt;
+&lt;li&gt;&lt;input disabled="" type="checkbox"&gt; 敏感文件（&lt;code&gt;.env&lt;/code&gt;、密钥、凭据）是否用 &lt;code&gt;permissions.deny&lt;/code&gt; 挡住？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id="九反模式总结"&gt;&lt;a href="#%e4%b9%9d%e5%8f%8d%e6%a8%a1%e5%bc%8f%e6%80%bb%e7%bb%93" class="header-anchor"&gt;&lt;/a&gt;九、反模式总结
+&lt;/h2&gt;&lt;table&gt;
+	&lt;thead&gt;
+			&lt;tr&gt;
+					&lt;th&gt;反模式&lt;/th&gt;
+					&lt;th&gt;后果&lt;/th&gt;
+					&lt;th&gt;正确做法&lt;/th&gt;
+			&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+			&lt;tr&gt;
+					&lt;td&gt;拓扑没想清楚，靠 &lt;code&gt;/add-dir&lt;/code&gt; 缝合&lt;/td&gt;
+					&lt;td&gt;结构问题被会话技巧掩盖，越缝越乱&lt;/td&gt;
+					&lt;td&gt;先按第一节选定拓扑&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;把 5 个以上仓库 add 进同一会话&lt;/td&gt;
+					&lt;td&gt;上下文爆炸&lt;/td&gt;
+					&lt;td&gt;agent teams 分工&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;用 &lt;code&gt;/add-dir&lt;/code&gt; 替代版本化的共享包&lt;/td&gt;
+					&lt;td&gt;接口漂移、回归风险&lt;/td&gt;
+					&lt;td&gt;抽包 + 包管理器&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;接口靠口头 / 文档同步&lt;/td&gt;
+					&lt;td&gt;两端各写各的类型，必然漂移&lt;/td&gt;
+					&lt;td&gt;schema 单一事实源 + codegen&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;跨仓库写在同一 CLAUDE.md&lt;/td&gt;
+					&lt;td&gt;仓库迁移 / 拆分时失效&lt;/td&gt;
+					&lt;td&gt;仓库各自 CLAUDE.md + &lt;code&gt;@import&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;把敏感目录 add 进会话&lt;/td&gt;
+					&lt;td&gt;凭据 / 密钥泄露给模型&lt;/td&gt;
+					&lt;td&gt;严格审查 add 路径&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+					&lt;td&gt;长会话不清理，反复 add / 切任务&lt;/td&gt;
+					&lt;td&gt;token 浪费、回答质量下降&lt;/td&gt;
+					&lt;td&gt;任务边界 = 会话边界，切任务先 &lt;code&gt;/clear&lt;/code&gt;&lt;/td&gt;
+			&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id="参考"&gt;&lt;a href="#%e5%8f%82%e8%80%83" class="header-anchor"&gt;&lt;/a&gt;参考
+&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/en/large-codebases" target="_blank" rel="noopener"
+ &gt;官方文档：Large codebases（additionalDirectories、额外目录 CLAUDE.md 加载）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/en/settings" target="_blank" rel="noopener"
+ &gt;官方文档：Settings（permissions.deny 排除敏感文件）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener"
+ &gt;官方文档：Memory（CLAUDE.md 分层与 @import）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/en/worktrees" target="_blank" rel="noopener"
+ &gt;官方文档：Worktrees（&amp;ndash;worktree 与 .worktreeinclude）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener"
+ &gt;官方文档：Agent teams&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a class="link" href="https://github.com/anthropics/claude-code/issues/21138" target="_blank" rel="noopener"
+ &gt;GitHub Issue #21138: add-dir CLAUDE.md 加载&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description></item></channel></rss>
